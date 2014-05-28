@@ -61,4 +61,10 @@ public class DebugInterfaceActivity extends Activity {
 		Log.i("DebugInterfaceActivity", "'Clear Internal Log' button was pressed!");
 		// TODO: make this function delete the log file
 	}
+
+	
+	public void goToAudioRecorder(View view) {
+		Intent audioRecorderIntent = new Intent(this, AudioRecorderActivity.class);
+		startActivity(audioRecorderIntent);
+	}
 }
