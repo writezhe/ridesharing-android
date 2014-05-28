@@ -8,5 +8,7 @@
     <string name="button_print_log">Print Internal Log</string>
     <string name="button_clear_log">Clear Internal Log</string>
     <string name="button_go_to_audio_recorder_activity">Go to Audio Recorder</string>
+    <string name="button_play">Play Recording</string>
+    <string name="button_record">Record</string>
 
 </resources>

@@ -17,7 +17,7 @@ import android.widget.LinearLayout;
 /**
  * Audio Recorder
  * 
- * Provides a GUI to record audio clips and save them as files
+ * Provides a GUI to record audio clips and save them as files.
  * Heavily based on code from:
  * http://developer.android.com/guide/topics/media/audio-capture.html
  * 
