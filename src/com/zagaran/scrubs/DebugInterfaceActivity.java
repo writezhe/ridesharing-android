@@ -9,17 +9,20 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import com.zagaran.scrubs.FileManager;
 
 public class DebugInterfaceActivity extends Activity {
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_debug_interface);
 		
+		FileManager.startFileManager(this.getApplicationContext());
+		
 		startScreenOnOffListener();
 	}
-
+	
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
