@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 
 /**
  * Audio Recorder
@@ -29,10 +28,29 @@ public class AudioRecorderActivity extends Activity {
 
     private RecordButton mRecordButton = null;
     private MediaRecorder mRecorder = null;
+    
+    private boolean currentlyRecording = false;
+    private boolean currentlyPlaying = false;
 
     private PlayButton mPlayButton = null;
     private MediaPlayer mPlayer = null;
 
+    public void buttonRecordPressed(View view) {
+    	if (!currentlyRecording) {
+			startRecording();
+		} else {
+			stopRecording();
+		}
+    }
+    
+    public void buttonPlayPressed(View view) {
+    	if (!currentlyPlaying) {
+			startPlaying();
+		} else {
+			stopPlaying();
+		}    	
+    }
+    
     private void onRecord(boolean start) {
         if (start) {
             startRecording();
@@ -50,7 +68,11 @@ public class AudioRecorderActivity extends Activity {
     }
 
     private void startPlaying() {
-        mPlayer = new MediaPlayer();
+    	currentlyPlaying = true;
+    	Button playButton = (Button) findViewById(R.id.buttonPlay);
+    	playButton.setText("Stop Playing");
+
+    	mPlayer = new MediaPlayer();
         try {
             mPlayer.setDataSource(mFileName);
             mPlayer.prepare();
@@ -61,12 +83,21 @@ public class AudioRecorderActivity extends Activity {
     }
 
     private void stopPlaying() {
-        mPlayer.release();
+    	currentlyPlaying = false;
+    	Button playButton = (Button) findViewById(R.id.buttonPlay);
+    	playButton.setText("Start Playing");
+
+    	mPlayer.release();
         mPlayer = null;
     }
 
     private void startRecording() {
+    	currentlyRecording = true;
+    	Button recordingButton = (Button) findViewById(R.id.buttonRecord);
+    	recordingButton.setText("Stop Recording");
+    	
         mRecorder = new MediaRecorder();
+        mRecorder.reset();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
         mRecorder.setOutputFile(mFileName);
@@ -82,12 +113,16 @@ public class AudioRecorderActivity extends Activity {
     }
 
     private void stopRecording() {
-        mRecorder.stop();
+    	currentlyRecording = false;
+    	Button recordingButton = (Button) findViewById(R.id.buttonRecord);
+    	recordingButton.setText("Start Recording");
+
+    	mRecorder.stop();
         mRecorder.release();
         mRecorder = null;
     }
 
-    class RecordButton extends Button {
+    public class RecordButton extends Button {
         boolean mStartRecording = true;
 
         OnClickListener clicker = new OnClickListener() {
@@ -109,7 +144,7 @@ public class AudioRecorderActivity extends Activity {
         }
     }
 
-    class PlayButton extends Button {
+    public class PlayButton extends Button {
         boolean mStartPlaying = true;
 
         OnClickListener clicker = new OnClickListener() {
@@ -140,9 +175,15 @@ public class AudioRecorderActivity extends Activity {
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 
-		// setContentView(R.layout.activity_audio_recorder);
+		setContentView(R.layout.activity_audio_recorder);
         
-        LinearLayout ll = new LinearLayout(this);
+		/*Button oldRecordButton = (Button) findViewById(R.id.buttonRecord);
+        Button oldPlayButton = (Button) findViewById(R.id.buttonPlay);
+        
+        replaceButton(oldRecordButton, new RecordButton(getApplicationContext()));
+        replaceButton(oldPlayButton, new PlayButton(getApplicationContext()));*/
+		
+        /*LinearLayout ll = new LinearLayout(this);
         mRecordButton = new RecordButton(this);
         ll.addView(mRecordButton,
             new LinearLayout.LayoutParams(
@@ -155,7 +196,7 @@ public class AudioRecorderActivity extends Activity {
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 0));
-        setContentView(ll);
+        setContentView(ll);*/
     }
 
     @Override
@@ -171,4 +212,13 @@ public class AudioRecorderActivity extends Activity {
             mPlayer = null;
         }
     }
+    
+    
+    private void replaceButton(Button oldButton, Button newButton) {
+    	ViewGroup parent = (ViewGroup) oldButton.getParent();
+    	int index = parent.indexOfChild(oldButton);
+    	parent.removeView(oldButton);
+    	parent.addView(newButton, index);
+    }
+    
 }
