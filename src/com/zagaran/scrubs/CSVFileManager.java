@@ -87,7 +87,7 @@ public class CSVFileManager {
 		if (debugLogFile != null || GPSFile != null || accelFile != null ){
 			throw new NullPointerException("You may only start the FileManager once."); }
 		
-		debugLogFile = new CSVFileManager(appContext, "logFile", "generic header 1 2 3\n");
+		debugLogFile = new CSVFileManager(appContext, "logFile", "THIS LINE IS THE LOG FILE HEADER\n");
 		debugLogFile.newFile();
 		GPSFile = new CSVFileManager(appContext, "gpsFile", "generic header 1 2 3\n");
 		GPSFile.newFile();
@@ -144,7 +144,7 @@ public class CSVFileManager {
 			e.printStackTrace(); }
 		return new String(inputBuffer);
 	}
-		
+	
 /*###############################################################################
 ######################## DEBUG STUFF ############################################
 ###############################################################################*/

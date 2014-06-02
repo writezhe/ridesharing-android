@@ -13,13 +13,15 @@ import com.zagaran.scrubs.CSVFileManager;
 
 public class DebugInterfaceActivity extends Activity {
 	
+	static CSVFileManager logFile = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_debug_interface);
 		
 		CSVFileManager.startFileManager(this.getApplicationContext());
-		
+		logFile = CSVFileManager.getDebugLogFile();
 		startScreenOnOffListener();
 	}
 	
@@ -55,13 +57,14 @@ public class DebugInterfaceActivity extends Activity {
 	
 	
 	public void printInternalLog(View view) {
-		Log.i("DebugInterfaceActivity", "'Print Internal Log' button was pressed!");
-		// TODO: make this function write to something (Logcat or the app's screen)
+		Log.i("print log button pressed", "press.");
+		String log = logFile.read();
+		Log.i("logfile", log);
 	}
 
 
 	public void clearInternalLog(View view) {
-		Log.i("DebugInterfaceActivity", "'Clear Internal Log' button was pressed!");
-		// TODO: make this function delete the log file
+		Log.i("clear log button pressed", "poke.");
+		logFile.deleteMeSafely();
 	}
 }
