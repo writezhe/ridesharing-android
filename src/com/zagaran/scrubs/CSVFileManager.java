@@ -27,41 +27,41 @@ surveyData
  */
 
 
-public class FileManager {
+public class CSVFileManager {
 	
 //TODO: we need to escape all separator values that get dumped into strings 
 //TODO: sanitize inputs for the survey info, coordinate with kevin on that, may be easier to implement serverside.
 //TODO: implement public static header variables for all the classes that will need them, import here
 //TODO: we probably want a static array pointing to all the static objects to make a static X_for_everything functions easier?
 	//Static instances of the individual FileManager objects.
-	private static FileManager debugLogFile = null;
-	private static FileManager GPSFile = null;
-	private static FileManager accelFile = null;
-	private static FileManager screenState = null;
-	private static FileManager callLog = null;
-	private static FileManager textsLog = null;
-	private static FileManager surveyResponse = null;
+	private static CSVFileManager debugLogFile = null;
+	private static CSVFileManager GPSFile = null;
+	private static CSVFileManager accelFile = null;
+	private static CSVFileManager screenState = null;
+	private static CSVFileManager callLog = null;
+	private static CSVFileManager textsLog = null;
+	private static CSVFileManager surveyResponse = null;
 	
 	//"global" static variables
 	private static Context appContext;
 	
 	//public static getters
-	public static synchronized FileManager getDebugLogFile(){
+	public static synchronized CSVFileManager getDebugLogFile(){
 		if (debugLogFile == null) throw new NullPointerException("you need to call startFileManager."); 
 		return debugLogFile; }
-	public static synchronized FileManager getGPSFile(){
+	public static synchronized CSVFileManager getGPSFile(){
 		if (GPSFile == null) throw new NullPointerException("you need to call startFileManager."); 
 		return GPSFile; }
-	public static synchronized FileManager getScreenStateFile(){
+	public static synchronized CSVFileManager getScreenStateFile(){
 		if (screenState == null) throw new NullPointerException("you need to call startFileManager."); 
 		return screenState; }
-	public static synchronized FileManager getCallLogFile(){
+	public static synchronized CSVFileManager getCallLogFile(){
 		if (callLog == null) throw new NullPointerException("you need to call startFileManager."); 
 		return callLog; }
-	public static synchronized FileManager getTextsLogFile(){
+	public static synchronized CSVFileManager getTextsLogFile(){
 		if (textsLog == null) throw new NullPointerException("you need to call startFileManager."); 
 		return textsLog; }
-	public static synchronized FileManager surveyResponseFile(){
+	public static synchronized CSVFileManager surveyResponseFile(){
 		if (surveyResponse == null) throw new NullPointerException("you need to call startFileManager."); 
 		return surveyResponse; }
 	
@@ -75,8 +75,8 @@ public class FileManager {
 	######################## CONSTRUCTOR STUFF ######################################
 	###############################################################################*/
 	
-	private FileManager(Context appContext, String name, String header){
-		FileManager.appContext = appContext;
+	private CSVFileManager(Context appContext, String name, String header){
+		CSVFileManager.appContext = appContext;
 		this.name = name;
 		this.header = header;
 		//TODO: check if on file creation it wants mode private?
@@ -87,19 +87,19 @@ public class FileManager {
 		if (debugLogFile != null || GPSFile != null || accelFile != null ){
 			throw new NullPointerException("You may only start the FileManager once."); }
 		
-		debugLogFile = new FileManager(appContext, "logFile", "generic header 1 2 3\n");
+		debugLogFile = new CSVFileManager(appContext, "logFile", "generic header 1 2 3\n");
 		debugLogFile.newFile();
-		GPSFile = new FileManager(appContext, "gpsFile", "generic header 1 2 3\n");
+		GPSFile = new CSVFileManager(appContext, "gpsFile", "generic header 1 2 3\n");
 		GPSFile.newFile();
-		accelFile = new FileManager(appContext, "accelFile", "generic header 1 2 3\n");
+		accelFile = new CSVFileManager(appContext, "accelFile", "generic header 1 2 3\n");
 		accelFile.newFile();
-		surveyResponse = new FileManager(appContext, "surveyData", "generic header 1 2 3\n");
+		surveyResponse = new CSVFileManager(appContext, "surveyData", "generic header 1 2 3\n");
 		surveyResponse.newFile();
-		textsLog = new FileManager(appContext, "textsLog", "generic header 1 2 3\n");
+		textsLog = new CSVFileManager(appContext, "textsLog", "generic header 1 2 3\n");
 		textsLog.newFile();
-		screenState = new FileManager(appContext, "screenState", "generic header 1 2 3\n");
+		screenState = new CSVFileManager(appContext, "screenState", "generic header 1 2 3\n");
 		screenState.newFile();
-		callLog = new FileManager(appContext, "callLog", "generic header 1 2 3\n");
+		callLog = new CSVFileManager(appContext, "callLog", "generic header 1 2 3\n");
 		callLog.newFile();
 	}
 	
@@ -148,6 +148,7 @@ public class FileManager {
 /*###############################################################################
 ######################## DEBUG STUFF ############################################
 ###############################################################################*/
+
 // one of the delete functions will be upgraded to non-debug
 	public synchronized void deleteMeSafely(){
 		/**create new instance of file, then delete the old file.*/

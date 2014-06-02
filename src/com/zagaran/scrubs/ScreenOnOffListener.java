@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import com.zagaran.scrubs.FileManager;
+import com.zagaran.scrubs.CSVFileManager;
 
 /**
  * Screen On/Off Listener
@@ -12,7 +12,7 @@ import com.zagaran.scrubs.FileManager;
  * @author Josh Zagorsky, May 2014
  */
 public class ScreenOnOffListener extends BroadcastReceiver {
-	FileManager logFile = FileManager.getDebugLogFile();
+	CSVFileManager logFile = CSVFileManager.getDebugLogFile();
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		

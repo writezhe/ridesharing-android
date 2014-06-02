@@ -9,7 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import com.zagaran.scrubs.FileManager;
+import com.zagaran.scrubs.CSVFileManager;
 
 public class DebugInterfaceActivity extends Activity {
 	
@@ -18,7 +18,7 @@ public class DebugInterfaceActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_debug_interface);
 		
-		FileManager.startFileManager(this.getApplicationContext());
+		CSVFileManager.startFileManager(this.getApplicationContext());
 		
 		startScreenOnOffListener();
 	}
