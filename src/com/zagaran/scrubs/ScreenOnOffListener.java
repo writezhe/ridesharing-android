@@ -29,7 +29,8 @@ public class ScreenOnOffListener extends BroadcastReceiver {
 			Log.i("ScreenOnOffListener", "Screen turned on"); 
 			logFile.write("screen turned on.\n"); }
 		
-		// TODO: this does not appear to trigger anything
+		// TODO: this does not appear to trigger anything.  Look at this for help:
+		// http://developer.android.com/training/monitoring-device-state/battery-monitoring.html
 		// Power connected/disconnected
 		else if (intent.getAction().equals(Intent.ACTION_POWER_CONNECTED)) {
 			Log.i("ScreenOnOffListener", "Power connected");
