@@ -2,6 +2,7 @@ package com.zagaran.scrubs;
  
 import android.app.Activity;
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -9,19 +10,31 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
 import com.zagaran.scrubs.CSVFileManager;
+import com.zagaran.scrubs.BackgroundProcess;
 
 public class DebugInterfaceActivity extends Activity {
 	
-	static CSVFileManager logFile = null;
+	CSVFileManager logFile = null;
+	Context appContext = null;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_debug_interface);
+		appContext = this.getApplicationContext();
 		
+		//start logger
 		CSVFileManager.startFileManager(this.getApplicationContext());
 		logFile = CSVFileManager.getDebugLogFile();
+		
+		//start background service
+		Intent backgroundProcess = new Intent(this, BackgroundProcess.class);
+		appContext.startService(backgroundProcess);
+		
+		//TODO: move to background service
 		startScreenOnOffListener();
 	}
 	

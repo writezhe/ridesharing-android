@@ -87,8 +87,9 @@ public class CSVFileManager {
 		if (debugLogFile != null || GPSFile != null || accelFile != null ){
 			throw new NullPointerException("You may only start the FileManager once."); }
 		
-		debugLogFile = new CSVFileManager(appContext, "logFile", "THIS LINE IS THE LOG FILE HEADER\n");
-		debugLogFile.newFile();
+		debugLogFile = new CSVFileManager(appContext, "logFile", "THIS LINE IS A LOG FILE HEADER\n");
+		debugLogFile.newLogFile();
+		
 		GPSFile = new CSVFileManager(appContext, "gpsFile", "generic header 1 2 3\n");
 		GPSFile.newFile();
 		accelFile = new CSVFileManager(appContext, "accelFile", "generic header 1 2 3\n");
@@ -170,8 +171,17 @@ public class CSVFileManager {
 		}
 	}
 	
+	
+	public synchronized void newLogFile(){
+		String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
+		this.fileName = this.name;
+		this.write(header + " -:- " + timecode);
+	}
+	
+	
 	public static synchronized void newFilesForEverything(){
-		debugLogFile.newFile();
+		debugLogFile.newLogFile();
+		
 		GPSFile.newFile();
 		accelFile.newFile();
 		screenState.newFile();
