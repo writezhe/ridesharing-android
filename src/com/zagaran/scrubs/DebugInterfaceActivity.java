@@ -67,4 +67,10 @@ public class DebugInterfaceActivity extends Activity {
 		Log.i("clear log button pressed", "poke.");
 		logFile.deleteMeSafely();
 	}
+
+	
+	public void goToAudioRecorder(View view) {
+		Intent audioRecorderIntent = new Intent(this, AudioRecorderActivity.class);
+		startActivity(audioRecorderIntent);
+	}
 }

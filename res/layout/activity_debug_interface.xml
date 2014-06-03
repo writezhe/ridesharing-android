@@ -17,4 +17,11 @@
         android:text="@string/button_clear_log"
         android:onClick="clearInternalLog" />
 
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_go_to_audio_recorder_activity"
+        android:onClick="goToAudioRecorder" />
+
 </LinearLayout>
