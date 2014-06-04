@@ -42,6 +42,13 @@
             android:label="@string/title_activity_audio_recorder" >
         </activity>
         
+        <receiver android:name=".PowerStateListener">
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
+            </intent-filter>
+        </receiver>
+        
         <service
             android:name=".BackgroundProcess"
             android:label="BackgroundProcess-thing"

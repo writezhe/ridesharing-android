@@ -7,11 +7,11 @@ import android.util.Log;
 import com.zagaran.scrubs.CSVFileManager;
 
 /**
- * Screen On/Off Listener
+ * Screen On/Off and Battery/Power State Listener
  * Listens for and records when the screen is turned on or off
  * @author Josh Zagorsky, May 2014
  */
-public class ScreenOnOffListener extends BroadcastReceiver {
+public class PowerStateListener extends BroadcastReceiver {
 	CSVFileManager logFile = CSVFileManager.getDebugLogFile();
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -29,8 +29,6 @@ public class ScreenOnOffListener extends BroadcastReceiver {
 			Log.i("ScreenOnOffListener", "Screen turned on"); 
 			logFile.write("screen turned on.\n"); }
 		
-		// TODO: this does not appear to trigger anything.  Look at this for help:
-		// http://developer.android.com/training/monitoring-device-state/battery-monitoring.html
 		// Power connected/disconnected
 		else if (intent.getAction().equals(Intent.ACTION_POWER_CONNECTED)) {
 			Log.i("ScreenOnOffListener", "Power connected");
@@ -41,6 +39,7 @@ public class ScreenOnOffListener extends BroadcastReceiver {
 			logFile.write("Power disconnected.\n");
 		}
 		
+		// TODO: make this work (probably by making the Service run on boot of the device)
 		// Device turned on/off
 		else if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
 			Log.i("ScreenOnOffListener", "Device finished booting."); }
