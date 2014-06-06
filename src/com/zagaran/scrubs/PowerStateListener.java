@@ -40,6 +40,14 @@ public class PowerStateListener extends BroadcastReceiver {
 		}
 		
 		// TODO: make this work (probably by making the Service run on boot of the device)
+		// Probably need Manifest.xml intent-filters for android.intent.action.BOOT_COMPLETED
+		// and also android.intent.action.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE
+		// see here: http://www.vogella.com/tutorials/AndroidBroadcastReceiver/article.html
+		
+		// TODO: figure out what the problem is with this crash that happened after
+		// I opened the app or plugged in the phone or something:
+		// java.lang.RuntimeException: Unable to instantiate receiver com.zagaran.scrubs.PowerStateListener: java.lang.NullPointerException: you need to call startFileManager.		
+		
 		// Device turned on/off
 		else if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
 			Log.i("ScreenOnOffListener", "Device finished booting."); }

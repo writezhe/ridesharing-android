@@ -4,10 +4,10 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
-
-import com.zagaran.scrubs.CSVFileManager;
  
 
 public class BackgroundProcess extends Service {
@@ -22,6 +22,8 @@ public class BackgroundProcess extends Service {
 		Log.i("BackgroundService has started.", "start");
 		appContext = this.getApplicationContext();
 		packageManager = this.getPackageManager();
+		
+		startSmsSentLogger();
 	}
 
 	@Override
@@ -33,6 +35,12 @@ public class BackgroundProcess extends Service {
 		logFile.write("\nBackgroundProcess killed at " + timecode);
 	}
 	
+	// TODO: ask Eli if this is the right place (from a code organizational standpoint) to call this function
+	public void startSmsSentLogger() {
+		SmsSentLogger smsSentLogger = new SmsSentLogger(new Handler(), appContext);
+		this.getContentResolver().registerContentObserver(Uri.parse("content://sms/"), true, smsSentLogger);
+	}
+	// TODO: decide if we need to unRegisterContentObserver(SmsSentLogger) in onDestroy() or something
 	
 /*###############################################################################
 ################ onStartCommand and onBind, ignore these ########################

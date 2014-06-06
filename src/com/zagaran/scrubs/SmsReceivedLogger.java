@@ -19,8 +19,12 @@ import android.util.Log;
 // http://stackoverflow.com/questions/14545661/android-get-sms-from-inbox-optimized-way-to-read-all-messages-and-group-them
 // http://stackoverflow.com/questions/5946262/read-inbox-messages-of-a-particular-number-and-display-them-in-an-activity
 
-
-public class SMSLogger extends BroadcastReceiver {
+/**
+ * Listens for Broadcast saying that an SMS message has been received
+ * 
+ * @author Josh Zagorsky June 2014
+ */
+public class SmsReceivedLogger extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
