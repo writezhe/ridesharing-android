@@ -14,6 +14,11 @@ import android.util.Log;
 // and another tutorial (the link is correct): 
 // https://web.archive.org/web/20121022021217/http://mobdev.olin.edu/mobdevwiki/FrontPage/Tutorials/SMS%20Messaging
 
+// TODO: look into also reading what's in the inbox.  Can we get more data from there, such as whether a message was opened?
+// http://stackoverflow.com/questions/848728/how-can-i-read-sms-messages-from-the-inbox-programmatically-in-android
+// http://stackoverflow.com/questions/14545661/android-get-sms-from-inbox-optimized-way-to-read-all-messages-and-group-them
+// http://stackoverflow.com/questions/5946262/read-inbox-messages-of-a-particular-number-and-display-them-in-an-activity
+
 
 public class SMSLogger extends BroadcastReceiver {
 
