@@ -38,6 +38,10 @@ public class SMSLogger extends BroadcastReceiver {
 						String messageBody = messages[i].getMessageBody();
 						Log.i("SMSLogger", "Message from: " + messageFrom);
 						Log.i("SMSLogger", "Message text: " + messageBody);
+						
+						// TODO: Decide what data to pull out of the SMS message (time, phone number, anything else?)
+						// TODO: One-way hash the phone number
+						// TODO: Write the data to the text-message log file
 					}
 				}
 				catch (Exception e) {
