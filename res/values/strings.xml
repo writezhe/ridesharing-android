@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Reference strings in Java code using a line like this:
+    appContext.getResources().getString(R.string.name_of_string) -->
+    
     <string name="app_name">Scrubs</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>

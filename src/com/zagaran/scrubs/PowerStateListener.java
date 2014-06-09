@@ -7,11 +7,11 @@ import android.util.Log;
 import com.zagaran.scrubs.CSVFileManager;
 
 /**
- * Screen On/Off Listener
+ * Screen On/Off and Battery/Power State Listener
  * Listens for and records when the screen is turned on or off
  * @author Josh Zagorsky, May 2014
  */
-public class ScreenOnOffListener extends BroadcastReceiver {
+public class PowerStateListener extends BroadcastReceiver {
 	CSVFileManager logFile = CSVFileManager.getDebugLogFile();
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -29,8 +29,6 @@ public class ScreenOnOffListener extends BroadcastReceiver {
 			Log.i("ScreenOnOffListener", "Screen turned on"); 
 			logFile.write("screen turned on.\n"); }
 		
-		// TODO: this does not appear to trigger anything.  Look at this for help:
-		// http://developer.android.com/training/monitoring-device-state/battery-monitoring.html
 		// Power connected/disconnected
 		else if (intent.getAction().equals(Intent.ACTION_POWER_CONNECTED)) {
 			Log.i("ScreenOnOffListener", "Power connected");
@@ -40,6 +38,15 @@ public class ScreenOnOffListener extends BroadcastReceiver {
 			Log.i("ScreenOnOffListener", "Power disconnected"); 
 			logFile.write("Power disconnected.\n");
 		}
+		
+		// TODO: make this work (probably by making the Service run on boot of the device)
+		// Probably need Manifest.xml intent-filters for android.intent.action.BOOT_COMPLETED
+		// and also android.intent.action.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE
+		// see here: http://www.vogella.com/tutorials/AndroidBroadcastReceiver/article.html
+		
+		// TODO: figure out what the problem is with this crash that happened after
+		// I opened the app or plugged in the phone or something:
+		// java.lang.RuntimeException: Unable to instantiate receiver com.zagaran.scrubs.PowerStateListener: java.lang.NullPointerException: you need to call startFileManager.		
 		
 		// Device turned on/off
 		else if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {

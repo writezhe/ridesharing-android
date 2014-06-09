@@ -58,6 +58,7 @@ public class AudioRecorderActivity extends Activity {
 
     
     // TODO: add arbitrary recording length limiter, like 2 hours
+    // probably make this a timer that calls stopRecording() after a while
     // TODO: add UI text saying "the recording can't be longer than X"
     
     // When the user presses the "record" button, toggle (start/stop) recording

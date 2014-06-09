@@ -64,7 +64,7 @@ public class DebugInterfaceActivity extends Activity {
 	private void startScreenOnOffListener() {
 		final IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
 		filter.addAction(Intent.ACTION_SCREEN_OFF);
-		final BroadcastReceiver mReceiver = new ScreenOnOffListener();
+		final BroadcastReceiver mReceiver = new PowerStateListener();
 		registerReceiver(mReceiver, filter);
 	}
 	
