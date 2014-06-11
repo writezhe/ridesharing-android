@@ -3,7 +3,6 @@ package com.zagaran.scrubs;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.Handler;
 import android.util.Log;
@@ -23,36 +22,35 @@ import android.util.Log;
  * 
  * @author Josh Zagorsky June 2014
  */
-public class SmsSentLogger extends ContentObserver {
-	
+public class SmsSentLogger extends ContentObserver {	
 	private Handler handler = null;
 	Context appContext = null;
+	String idOfLastSmsSent = null;
 
+	
 	public SmsSentLogger(Handler theHandler, Context context) {
 		super(theHandler);
 		theHandler = handler;
 		appContext = context;
 	}
 	
+	
 	@Override
 	public void onChange(boolean selfChange) {
 		super.onChange(selfChange);
-		Log.i("SmsSentLogger", "onChange triggered");
 		
 		Uri uriSmsUri = Uri.parse("content://sms");
 		
 		Cursor cursor = appContext.getContentResolver().query(uriSmsUri, null, null, null, null);
 		cursor.moveToNext();
 		
+		String id = cursor.getString(cursor.getColumnIndex("_id"));
 		String protocol = cursor.getString(cursor.getColumnIndex("protocol"));
 		String address = cursor.getString(cursor.getColumnIndex("address"));
 		String body = cursor.getString(cursor.getColumnIndex("body"));
 		String date = cursor.getString(cursor.getColumnIndex("date"));
 		
-		String cursorContents = DatabaseUtils.dumpCurrentRowToString(cursor);
-		Log.i("SmsSentLogger", "Cursor contents: " + cursorContents);
-		
-		if (protocol == null) {
+		if ((protocol == null) && (idIsNew(id))) {
 			// Message was just sent
 			Log.i("SmsSentLogger", "Message just sent.");
 			Log.i("SmsSentLogger", "Phone number: " + address);
@@ -60,13 +58,24 @@ public class SmsSentLogger extends ContentObserver {
 			Log.i("SmsSentLogger", "Date/time: " + date);
 			
 			// TODO: write messages to the appropriate SMS log file
-			// ************* TODO: figure out why this registers each outgoing text 5 times! ***************
+			// TODO: hash the phone numbers
 			// TODO: figure out what MESSAGE_TYPE means and if it's important: http://stackoverflow.com/a/18873822
 		}
-		else {
-			// Message was just received
-			Log.i("SmsSentLogger", "Message just received.");
+	}
+	
+	
+	/* Returns true if the ID doesn't match idOfLastSmsSent.
+	 * This check is because every time an SMS goes out, the ContentObserver on
+	 * "content://sms" registers about 5 changes, because the message gets
+	 * changed and/or moved around. See: http://stackoverflow.com/a/8242090
+	 * This check is to make SmsSentLogger only register one text for every
+	 * one text that's sent out. */
+	private boolean idIsNew(String id) {
+		if ((idOfLastSmsSent == null) || (!idOfLastSmsSent.equals(id))) {
+			idOfLastSmsSent = id; // Reset idOfLastSmsSent
+			return true;
 		}
+		return false; // This is not a new/unique ID; return false
 	}
 
 }
