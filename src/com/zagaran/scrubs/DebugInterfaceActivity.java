@@ -86,4 +86,11 @@ public class DebugInterfaceActivity extends Activity {
 		Intent audioRecorderIntent = new Intent(this, AudioRecorderActivity.class);
 		startActivity(audioRecorderIntent);
 	}
+
+	
+	public void goToSurvey(View view) {
+		Intent surveyIntent = new Intent(this, SurveyActivity.class);
+		startActivity(surveyIntent);
+	}
+
 }

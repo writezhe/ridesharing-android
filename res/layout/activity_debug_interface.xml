@@ -18,10 +18,17 @@
         android:onClick="clearInternalLog" />
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/buttonGoToAudioRecorder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/button_go_to_audio_recorder_activity"
         android:onClick="goToAudioRecorder" />
+
+    <Button
+        android:id="@+id/buttonGoToSurvey"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_go_to_survey"
+        android:onClick="goToSurvey" />
 
 </LinearLayout>
