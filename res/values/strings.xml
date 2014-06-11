@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Reference strings in Java code using a line like this:
-    appContext.getResources().getString(R.string.name_of_string) -->
-    
+    <!--
+    Reference strings in Java code using a line like this:
+    appContext.getResources().getString(R.string.name_of_string)
+    -->
+
     <string name="app_name">Scrubs</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -13,5 +15,8 @@
     <string name="button_go_to_audio_recorder_activity">Go to Audio Recorder</string>
     <string name="button_play">Play Recording</string>
     <string name="button_record">Record</string>
+    <string name="title_activity_survey">SurveyActivity</string>
+    <string name="button_go_to_survey">Take Survey</string>
+    <string name="default_question_text">If you are reading this, something broke. Please contact the study administrators!</string>
 
 </resources>
