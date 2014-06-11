@@ -5,7 +5,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,11 +15,16 @@ import android.view.View;
 
 import com.zagaran.scrubs.CSVFileManager;
 import com.zagaran.scrubs.BackgroundProcess;
+import com.zagaran.scrubs.GPSListener;
 
 public class DebugInterfaceActivity extends Activity {
 	
 	CSVFileManager logFile = null;
 	Context appContext = null;
+	
+	GPSListener aGPSListener = null;
+	
+	//test variables of our classes
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,19 +41,24 @@ public class DebugInterfaceActivity extends Activity {
 		Intent backgroundProcess = new Intent(this, BackgroundProcess.class);
 		appContext.startService(backgroundProcess);
 		
-		//TODO: move to background service
+		//##########################################################
+		// call the start functionality functions here for debugging
+		//##########################################################
 		startScreenOnOffListener();
+		startSmsSentLogger();
+		
+		aGPSListener = new GPSListener(appContext);
+		aGPSListener.turn_on();
+		
 	}
 	
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.debug_interface, menu);
 		return true;
 	}
-
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -59,15 +71,6 @@ public class DebugInterfaceActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
-	
-	private void startScreenOnOffListener() {
-		final IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
-		filter.addAction(Intent.ACTION_SCREEN_OFF);
-		final BroadcastReceiver mReceiver = new PowerStateListener();
-		registerReceiver(mReceiver, filter);
-	}
-	
 	
 	public void printInternalLog(View view) {
 		Log.i("print log button pressed", "press.");
@@ -75,22 +78,37 @@ public class DebugInterfaceActivity extends Activity {
 		Log.i("logfile", log);
 	}
 
-
 	public void clearInternalLog(View view) {
 		Log.i("clear log button pressed", "poke.");
 		logFile.deleteMeSafely();
 	}
-
 	
 	public void goToAudioRecorder(View view) {
 		Intent audioRecorderIntent = new Intent(this, AudioRecorderActivity.class);
 		startActivity(audioRecorderIntent);
 	}
-
 	
 	public void goToSurvey(View view) {
 		Intent surveyIntent = new Intent(this, SurveyActivity.class);
 		startActivity(surveyIntent);
 	}
 
+	
+	
+//########################################################################################
+//###################### Non-UI Things for debugging ###############################
+//########################################################################################
+	
+	
+	public void startSmsSentLogger() {
+		SmsSentLogger smsSentLogger = new SmsSentLogger(new Handler(), appContext);
+		this.getContentResolver().registerContentObserver(Uri.parse("content://sms/"), true, smsSentLogger);
+	}
+	
+	private void startScreenOnOffListener() {
+		final IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+		filter.addAction(Intent.ACTION_SCREEN_OFF);
+		final BroadcastReceiver mReceiver = new PowerStateListener();
+		registerReceiver(mReceiver, filter);
+	}
 }

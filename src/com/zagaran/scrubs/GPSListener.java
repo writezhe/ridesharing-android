@@ -35,17 +35,17 @@ public class GPSListener implements LocationListener {
 		trueGPS = pkgManager.hasSystemFeature(PackageManager.FEATURE_LOCATION_GPS);
 		networkGPS = pkgManager.hasSystemFeature(PackageManager.FEATURE_LOCATION_NETWORK);
 		
+		Log.i("location services:", "GPS"+trueGPS.toString()+ " Network:"+networkGPS);
+		
+		
 		enabled = false;
 		
 		try { locationManager = (LocationManager) appContext.getSystemService(Context.LOCATION_SERVICE); }
 		catch (SecurityException e) {
 			Log.i("the LocationManager failed to initiate, SecurityException, see stack trace.", "");
 			e.printStackTrace(); }
-	}
-			
-	public synchronized void turn_off(){
-		locationManager.removeUpdates(this);
-		enabled = false;
+		
+		Log.i("LocationListener instatiated", "");
 	}
 	
 	public synchronized void turn_on(){
@@ -53,14 +53,20 @@ public class GPSListener implements LocationListener {
 		//TODO: does this crash if you request location updates when it is already requested
 		// parameters: provider, minTime, minDistance, listener);
 		if ( trueGPS ) {
-			locationManager.requestLocationUpdates(PackageManager.FEATURE_LOCATION_GPS, 0, 0, this); }
-		else if ( networkGPS ) {
-			locationManager.requestLocationUpdates(PackageManager.FEATURE_LOCATION_NETWORK, 0, 0, this); }
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this); }
+		if ( networkGPS ) {
+			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this); }
 		enabled = true;
+	}
+	public synchronized void turn_off(){
+		locationManager.removeUpdates(this);
+		enabled = false;
 	}
 	
 	@Override
 	public void onLocationChanged(Location location) {
+		//TODO: Crap, getTime only returns unixtime, milliseconds are rounded out.
+		
 		//order: time, latitude, longitude, altitude, horizontal_accuracy\n
 		String data = location.getTime() + ","
 				+ location.getLatitude() + ","
@@ -76,7 +82,7 @@ public class GPSListener implements LocationListener {
 	@Override
 	public void onProviderDisabled(String arg0) { Log.i("A location provider was disabled.", arg0); }
 	@Override
-	public void onProviderEnabled(String arg0) {  Log.i("A location provider was enabled.", arg0); }
+	public void onProviderEnabled(String arg0) { Log.i("A location provider was enabled.", arg0); }
 
 	@Override
 	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {

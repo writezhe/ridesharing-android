@@ -1,8 +1,10 @@
 package com.zagaran.scrubs;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Handler;
@@ -23,7 +25,11 @@ public class BackgroundProcess extends Service {
 		appContext = this.getApplicationContext();
 		packageManager = this.getPackageManager();
 		
-		startSmsSentLogger();
+//the background service can make debugging a little more difficult (we have to deal with a background service)
+// so test things using the debug inferface activity, but insert the same code commented out here.
+		
+//		startSmsSentLogger();
+//		startScreenOnOffListener();
 	}
 
 	@Override
@@ -36,11 +42,19 @@ public class BackgroundProcess extends Service {
 	}
 	
 	// TODO: ask Eli if this is the right place (from a code organizational standpoint) to call this function
+	// Eli: it is, but we are also going to shove it into the debug interface activity
 	public void startSmsSentLogger() {
 		SmsSentLogger smsSentLogger = new SmsSentLogger(new Handler(), appContext);
 		this.getContentResolver().registerContentObserver(Uri.parse("content://sms/"), true, smsSentLogger);
 	}
 	// TODO: decide if we need to unRegisterContentObserver(SmsSentLogger) in onDestroy() or something
+	
+	private void startScreenOnOffListener() {
+		final IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+		filter.addAction(Intent.ACTION_SCREEN_OFF);
+		final BroadcastReceiver mReceiver = new PowerStateListener();
+		registerReceiver(mReceiver, filter);
+	}
 	
 /*###############################################################################
 ################ onStartCommand and onBind, ignore these ########################
