@@ -90,7 +90,7 @@ public class CSVFileManager {
 		debugLogFile = new CSVFileManager(appContext, "logFile", "THIS LINE IS A LOG FILE HEADER\n");
 		debugLogFile.newLogFile();
 		
-		GPSFile = new CSVFileManager(appContext, "gpsFile", "generic header 1 2 3\n");
+		GPSFile = new CSVFileManager(appContext, "gpsFile", GPSListener.header );
 		GPSFile.newFile();
 		accelFile = new CSVFileManager(appContext, "accelFile", "generic header 1 2 3\n");
 		accelFile.newFile();
