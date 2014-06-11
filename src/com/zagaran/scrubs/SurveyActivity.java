@@ -3,6 +3,8 @@ package com.zagaran.scrubs;
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -20,6 +22,15 @@ public class SurveyActivity extends Activity {
 
 		surveyLayout.addView(createQuestionText("How annoyed are you at this survey?"));
 		surveyLayout.addView(createSlider(5, 0));
+		
+		surveyLayout.addView(createQuestionText("What day is today?"));
+		String[] answerOptions1 = {"Your birthday", "Your un-birthday"};
+		surveyLayout.addView(createRadioButtons(answerOptions1));
+
+		surveyLayout.addView(createQuestionText("What device are you using to take this survey?"));
+		String[] answerOptions2 = {"Android smartphone", 
+				"Android tablet", "Android phablet", "Google glass", "Rotary-dial phone", "Bananaphone"};
+		surveyLayout.addView(createRadioButtons(answerOptions2));
 
 		surveyLayout.addView(createQuestionText("Eli, how far are you through your current audio book?"));
 		surveyLayout.addView(createSlider(100, 32));
@@ -66,6 +77,26 @@ public class SurveyActivity extends Activity {
 		slider.setProgress(defaultValue);
 		
 		return slider;
+	}
+	
+	
+	/**
+	 * Creates a group of radio buttons
+	 * @param answers An array of strings that are options matched with radio buttons
+	 * @return RadioGroup A vertical set of radio buttons 
+	 */
+	private RadioGroup createRadioButtons(String[] answers) {
+		RadioGroup radioGroup = (RadioGroup) getLayoutInflater().inflate(R.layout.survey_radio_group, null);
+		
+		// TODO: clean inputs/add constraints, or decide it's unnecessary
+		
+		for (int i = 0; i < answers.length; i++) {
+			RadioButton radioButton = (RadioButton) getLayoutInflater().inflate(R.layout.survey_radio_button, null);
+			radioButton.setText(answers[i]);
+			radioGroup.addView(radioButton);
+		}
+		
+		return radioGroup;
 	}
 	
 }
