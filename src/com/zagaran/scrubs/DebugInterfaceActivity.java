@@ -44,7 +44,7 @@ public class DebugInterfaceActivity extends Activity {
 		//##########################################################
 		// call the start functionality functions here for debugging
 		//##########################################################
-		startScreenOnOffListener();
+		startPowerStateListener();
 		startSmsSentLogger();
 		
 		aGPSListener = new GPSListener(appContext);
@@ -105,10 +105,10 @@ public class DebugInterfaceActivity extends Activity {
 		this.getContentResolver().registerContentObserver(Uri.parse("content://sms/"), true, smsSentLogger);
 	}
 	
-	private void startScreenOnOffListener() {
+	private void startPowerStateListener() {
 		final IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
 		filter.addAction(Intent.ACTION_SCREEN_OFF);
-		final BroadcastReceiver mReceiver = new PowerStateListener();
-		registerReceiver(mReceiver, filter);
+		final BroadcastReceiver powerStateReceiver = new PowerStateListener();
+		registerReceiver(powerStateReceiver, filter);
 	}
 }

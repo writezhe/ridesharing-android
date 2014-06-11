@@ -26,10 +26,10 @@ public class BackgroundProcess extends Service {
 		packageManager = this.getPackageManager();
 		
 //the background service can make debugging a little more difficult (we have to deal with a background service)
-// so test things using the debug inferface activity, but insert the same code commented out here.
+// so test things using the debug interface activity, but insert the same code commented out here.
 		
 //		startSmsSentLogger();
-//		startScreenOnOffListener();
+//		startPowerStateListener();
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class BackgroundProcess extends Service {
 	}
 	// TODO: decide if we need to unRegisterContentObserver(SmsSentLogger) in onDestroy() or something
 	
-	private void startScreenOnOffListener() {
+	private void startPowerStateListener() {
 		final IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
 		filter.addAction(Intent.ACTION_SCREEN_OFF);
 		final BroadcastReceiver mReceiver = new PowerStateListener();
