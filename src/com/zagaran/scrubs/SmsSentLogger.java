@@ -23,6 +23,9 @@ import android.util.Log;
  * @author Josh Zagorsky June 2014
  */
 public class SmsSentLogger extends ContentObserver {	
+
+	public static String header = "timestamp, phone_number, message_body\n";
+
 	private Handler handler = null;
 	Context appContext = null;
 	String idOfLastSmsSent = null;
@@ -57,10 +60,14 @@ public class SmsSentLogger extends ContentObserver {
 			Log.i("SmsSentLogger", "Message body: " + body);
 			Log.i("SmsSentLogger", "Date/time: " + date);
 			
+			// TODO: figure out if we need to log more data, like "type"
 			// TODO: write messages to the appropriate SMS log file
 			// TODO: hash the phone numbers
 			// TODO: figure out what MESSAGE_TYPE means and if it's important: http://stackoverflow.com/a/18873822
 		}
+		
+		// TODO: also log incoming SMS messages this way
+		// TODO: check how MMS messages are handled
 	}
 	
 	
