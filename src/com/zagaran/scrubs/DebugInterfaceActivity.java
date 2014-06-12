@@ -23,7 +23,7 @@ public class DebugInterfaceActivity extends Activity {
 	Context appContext = null;
 	
 	GPSListener aGPSListener = null;
-	
+	AccelerometerListener anAccelerometerListener = null;
 	//test variables of our classes
 	
 	@Override
@@ -38,17 +38,21 @@ public class DebugInterfaceActivity extends Activity {
 		logFile = CSVFileManager.getDebugLogFile();
 		
 		//start background service
-		Intent backgroundProcess = new Intent(this, BackgroundProcess.class);
-		appContext.startService(backgroundProcess);
+//		Intent backgroundProcess = new Intent(this, BackgroundProcess.class);
+//		appContext.startService(backgroundProcess);
 		
 		//##########################################################
 		// call the start functionality functions here for debugging
 		//##########################################################
-		startPowerStateListener();
-		startSmsSentLogger();
+//		startPowerStateListener();
+//		startSmsSentLogger();
 		
 		aGPSListener = new GPSListener(appContext);
 		aGPSListener.turn_on();
+		
+		anAccelerometerListener = new AccelerometerListener(appContext);
+		Boolean accel = anAccelerometerListener.turn_on();
+		Log.i("debuging accelerometer:", accel.toString() );
 		
 	}
 	

@@ -49,6 +49,9 @@ public class CSVFileManager {
 	public static synchronized CSVFileManager getDebugLogFile(){
 		if (debugLogFile == null) throw new NullPointerException("you need to call startFileManager."); 
 		return debugLogFile; }
+	public static synchronized CSVFileManager getAccelFile(){
+		if (accelFile == null) throw new NullPointerException("you need to call startFileManager."); 
+		return accelFile; }
 	public static synchronized CSVFileManager getGPSFile(){
 		if (GPSFile == null) throw new NullPointerException("you need to call startFileManager."); 
 		return GPSFile; }
@@ -92,7 +95,7 @@ public class CSVFileManager {
 		
 		GPSFile = new CSVFileManager(appContext, "gpsFile", GPSListener.header );
 		GPSFile.newFile();
-		accelFile = new CSVFileManager(appContext, "accelFile", "generic header 1 2 3\n");
+		accelFile = new CSVFileManager(appContext, "accelFile", AccelerometerListener.header);
 		accelFile.newFile();
 		surveyResponse = new CSVFileManager(appContext, "surveyData", "generic header 1 2 3\n");
 		surveyResponse.newFile();
