@@ -2,6 +2,7 @@ package com.zagaran.scrubs;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -19,6 +20,9 @@ public class SurveyActivity extends Activity {
 				
 		surveyLayout.addView(createQuestionText("How are you feeling today, Dave??"));
 		surveyLayout.addView(createSlider(5, 2));
+		
+		surveyLayout.addView(createQuestionText("How many eggs did you eat this morning?"));
+		surveyLayout.addView(createNumberInput());
 
 		surveyLayout.addView(createQuestionText("How annoyed are you at this survey?"));
 		surveyLayout.addView(createSlider(5, 0));
@@ -92,7 +96,6 @@ public class SurveyActivity extends Activity {
 	private RadioGroup createRadioButtons(String[] answers) {
 		RadioGroup radioGroup = (RadioGroup) getLayoutInflater().inflate(R.layout.survey_radio_group, null);
 		
-		// TODO: clean inputs/add constraints, or decide it's unnecessary
 		// If the array of answers is null or too short, replace it with an error message
 		if ((answers == null) || (answers.length < 2)) {
 			String replacementAnswer = getResources().getString(R.string.question_error_text);
@@ -110,6 +113,22 @@ public class SurveyActivity extends Activity {
 		}
 		
 		return radioGroup;
+	}
+	
+	
+	/**
+	 * Creates a text-input field that wants a number as input
+	 * Note: only allows as input the characters 0-9 and "." "," "-".  To change 
+	 * this, edit the "android:digits=" line in survey_free_number_input.xml
+	 * @return EditText with number input specified
+	 */
+	private EditText createNumberInput() {
+		EditText editText = (EditText) getLayoutInflater().inflate(R.layout.survey_free_number_input, null);
+		
+		// TODO: prevent the EditText from gaining focus- see here: http://stackoverflow.com/questions/1555109/stop-edittext-from-gaining-focus-at-activity-startup
+		// TODO: prevent the EditText blue bar on the bottom from being the whole width of the device
+		
+		return editText;
 	}
 	
 }
