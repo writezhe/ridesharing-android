@@ -17,6 +17,6 @@
     <string name="button_record">Record</string>
     <string name="title_activity_survey">SurveyActivity</string>
     <string name="button_go_to_survey">Take Survey</string>
-    <string name="default_question_text">If you are reading this, something broke. Please contact the study administrators!</string>
+    <string name="question_error_text">If you are reading this, something broke. Please contact the study administrators!</string>
 
 </resources>

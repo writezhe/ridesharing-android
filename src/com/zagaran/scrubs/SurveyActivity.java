@@ -32,6 +32,10 @@ public class SurveyActivity extends Activity {
 				"Android tablet", "Android phablet", "Google glass", "Rotary-dial phone", "Bananaphone"};
 		surveyLayout.addView(createRadioButtons(answerOptions2));
 
+		surveyLayout.addView(createQuestionText(null));
+		String[] answerOptions3 = {"Android smartphone", null, "blergh"};
+		surveyLayout.addView(createRadioButtons(answerOptions3));
+
 		surveyLayout.addView(createQuestionText("Eli, how far are you through your current audio book?"));
 		surveyLayout.addView(createSlider(100, 32));
 	}
@@ -47,7 +51,7 @@ public class SurveyActivity extends Activity {
 		
 		// Clean inputs
 		if (text == null) {
-			text = getResources().getString(R.string.default_question_text);
+			text = getResources().getString(R.string.question_error_text);
 		}
 		
 		// Set the question text
@@ -89,10 +93,19 @@ public class SurveyActivity extends Activity {
 		RadioGroup radioGroup = (RadioGroup) getLayoutInflater().inflate(R.layout.survey_radio_group, null);
 		
 		// TODO: clean inputs/add constraints, or decide it's unnecessary
+		// If the array of answers is null or too short, replace it with an error message
+		if ((answers == null) || (answers.length < 2)) {
+			String replacementAnswer = getResources().getString(R.string.question_error_text);
+			String[] replacementAnswers = {replacementAnswer, replacementAnswer};
+			answers = replacementAnswers;
+		}
 		
+		// Loop through the answer strings, and make each one a radio button option
 		for (int i = 0; i < answers.length; i++) {
 			RadioButton radioButton = (RadioButton) getLayoutInflater().inflate(R.layout.survey_radio_button, null);
-			radioButton.setText(answers[i]);
+			if (answers[i] != null) {
+				radioButton.setText(answers[i]);
+			}
 			radioGroup.addView(radioButton);
 		}
 		
