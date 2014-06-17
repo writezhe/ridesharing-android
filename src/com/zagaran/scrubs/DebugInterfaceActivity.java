@@ -47,8 +47,8 @@ public class DebugInterfaceActivity extends Activity {
 //		startPowerStateListener();
 //		startSmsSentLogger();
 		
-//		aGPSListener = new GPSListener(appContext);
-//		aGPSListener.turn_on();
+		aGPSListener = new GPSListener(appContext);
+		aGPSListener.turn_on();
 //		
 //		anAccelerometerListener = new AccelerometerListener(appContext);
 //		Boolean accel = anAccelerometerListener.turn_on();

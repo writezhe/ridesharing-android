@@ -37,7 +37,7 @@ public class CSVFileManager {
 	private static CSVFileManager debugLogFile = null;
 	private static CSVFileManager GPSFile = null;
 	private static CSVFileManager accelFile = null;
-	private static CSVFileManager screenState = null;
+	private static CSVFileManager powerStateLog = null;
 	private static CSVFileManager callLog = null;
 	private static CSVFileManager textsLog = null;
 	private static CSVFileManager surveyResponse = null;
@@ -55,9 +55,9 @@ public class CSVFileManager {
 	public static synchronized CSVFileManager getGPSFile(){
 		if (GPSFile == null) throw new NullPointerException("you need to call startFileManager."); 
 		return GPSFile; }
-	public static synchronized CSVFileManager getScreenStateFile(){
-		if (screenState == null) throw new NullPointerException("you need to call startFileManager."); 
-		return screenState; }
+	public static synchronized CSVFileManager getPowerStateFile(){
+		if (powerStateLog == null) throw new NullPointerException("you need to call startFileManager."); 
+		return powerStateLog; }
 	public static synchronized CSVFileManager getCallLogFile(){
 		if (callLog == null) throw new NullPointerException("you need to call startFileManager."); 
 		return callLog; }
@@ -101,8 +101,8 @@ public class CSVFileManager {
 		surveyResponse.newFile();
 		textsLog = new CSVFileManager(appContext, "textsLog", "generic header 1 2 3\n");
 		textsLog.newFile();
-		screenState = new CSVFileManager(appContext, "screenState", "generic header 1 2 3\n");
-		screenState.newFile();
+		powerStateLog = new CSVFileManager(appContext, "screenState", "generic header 1 2 3\n");
+		powerStateLog.newFile();
 		callLog = new CSVFileManager(appContext, "callLog", "generic header 1 2 3\n");
 		callLog.newFile();
 	}
@@ -187,7 +187,7 @@ public class CSVFileManager {
 		
 		GPSFile.newFile();
 		accelFile.newFile();
-		screenState.newFile();
+		powerStateLog.newFile();
 		callLog.newFile();
 		textsLog.newFile();
 		surveyResponse.newFile();

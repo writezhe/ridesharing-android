@@ -100,6 +100,7 @@ public class AccelerometerListener implements SensorEventListener{
 		//All values are in SI units (m/s^2) 
 		//values[0]: Acceleration minus Gx on the x-axis 
 		//values[1]: Acceleration minus Gy on the y-axis 
-		//values[2]: Acceleration minus Gz on the z-axis 
+		//values[2]: Acceleration minus Gz on the z-axis
+		//note on time: the accelerometer returns time with millisecond precision on a nexus 7 tablet.
 	}
 }

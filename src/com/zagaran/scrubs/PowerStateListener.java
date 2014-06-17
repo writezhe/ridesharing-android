@@ -13,11 +13,12 @@ import com.zagaran.scrubs.CSVFileManager;
  */
 public class PowerStateListener extends BroadcastReceiver {
 	CSVFileManager logFile = CSVFileManager.getDebugLogFile();
+	CSVFileManager powerStateLog = CSVFileManager.getPowerStateFile();
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		
-		//view all receipts
-		logFile.write(intent.getAction()+"\n");
+		//makke a log of all receipts
+		logFile.write("the following intent was recieved by the PowerStateListener:" + intent.getAction().toString()+"\n");
 		
 		// Screen on/off
 		if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
@@ -26,7 +27,7 @@ public class PowerStateListener extends BroadcastReceiver {
 			logFile.write("screen turned off.\n"); }
 		
 		else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-			Log.i("ScreenOnOffListener", "Screen turned on"); 
+			Log.i("ScreenOnOffListener", "Screen turned on");
 			logFile.write("screen turned on.\n"); }
 		
 		// Power connected/disconnected
@@ -56,5 +57,4 @@ public class PowerStateListener extends BroadcastReceiver {
 		else if (intent.getAction().equals(Intent.ACTION_REBOOT)) {
 			Log.i("ScreenOnOffListener", "Device is rebooting."); }
 	}
-	
 }

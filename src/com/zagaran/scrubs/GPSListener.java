@@ -8,6 +8,19 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 
+/* Notes/observation on Location Services:
+ * We are passing in "0" as the minimum time for location updates to be pushed to us, this results in about
+ * 1 update every second.  This is based on logs made using a nexus 7 tablet.
+ * This makes sense, GPSs on phones do not Have that kind of granularity/resolution.
+ * However, we need the resolution in milliseconds for the line-by-line encryption scheme.
+ * So, we grab the system time instead.  This may add a fraction of a second to the timestamp.
+ * 
+ * There are some features which were considered but not included:
+ * We are NOT recording which location provider provided the update, or which location providers
+ * are available on a given device.  This was not within scope for the original study, and implementation
+ * is not trivial.  
+ */
+
 public class GPSListener implements LocationListener {
 	
 	public static String header = "time, latitude, longitude, altitude, accuracy\n";
@@ -50,18 +63,18 @@ public class GPSListener implements LocationListener {
 		catch (SecurityException e) {
 			Log.i("the LocationManager failed to initiate, SecurityException, see stack trace.", "");
 			e.printStackTrace(); }
-		Log.i("LocationListener instatiated", "_");
+		Log.i("LocationListener instatiated", "event...");
 	}
 	
 	//turn_on and turn_off functions:
-	//should be idempotent, and when they succeed should return true.
-	//should return false (and not crash) if called on a feature that does not work.
+	// Idempotent.  When it succeeds, it should return true.
+	// Should return false (and not crash due to sensor errors) if called on a feature that does not work.
 	public synchronized Boolean turn_on(){
 		//if both DNE, return false.
 		if ( !trueGPS & !networkGPS ) { return false; }
-		// if already enabled return true
+		// if already enabled return true.
 		if ( enabled ) { return true; }
-		//for network and true GPS, enable them if their boolean flag is true.
+		//If the feature exists, request locations from it. (enable if their boolean flag is true.)
 		if ( trueGPS ) {			// parameters: provider, minTime, minDistance, listener);
 			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this); }
 		if ( networkGPS ) {
@@ -77,11 +90,10 @@ public class GPSListener implements LocationListener {
 	}
 	
 	@Override
-	public void onLocationChanged(Location location) {
-		//TODO: Crap, getTime only returns unixtime, milliseconds are rounded out.
-		
+	public void onLocationChanged(Location location) {		
+		Long javaTimeCode = System.currentTimeMillis();
 		//order: time, latitude, longitude, altitude, horizontal_accuracy\n
-		String data = location.getTime() + ","
+		String data = javaTimeCode.toString() + ","
 				+ location.getLatitude() + ","
 				+ location.getLongitude() + ","
 				+ location.getAltitude() + ","
@@ -91,15 +103,24 @@ public class GPSListener implements LocationListener {
 		logFile.write("GPS: " + data);
 	}
 
-	// the arg for Provider Enabled and disabled should just be the straight name of the location service...  
+
+	
+/*#################################################################################################
+/*###### we don't require these built-in overrides for any features, they are irrelevant  #########
+/*###############################################################################################*/
+	
+	// arg0 for Provider Enabled/Disabled is a string saying "network" or "gps".
 	@Override
 	public void onProviderDisabled(String arg0) { Log.i("A location provider was disabled.", arg0); }
 	@Override
 	public void onProviderEnabled(String arg0) { Log.i("A location provider was enabled.", arg0); }
 	@Override
 	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+		//Called when the provider status changes; when a provider is unable to fetch a location
+		// or if the provider has recently become available after a period of unavailability.
 		// arg0 is the name of the provider with a changed status
 		// arg1 is the status of the provider. 0=out of service, 1=temporarily unavailable, 2=available
-		Log.i("OH GOD WE GOT A STATUSCHANGE FROM THE GPSListener", arg0 + "," + arg1 + arg2 );
+		Log.i("OH GOD WE GOT A STATUSCHANGE FROM THE GPSListener", arg0 + "," + arg1 + "," + arg2.toString() );
+		logFile.write("STATUSCHANGE FROM THE GPSListener" + arg0 + "," + arg1 + "," + arg2.toString());
 	}
 }
