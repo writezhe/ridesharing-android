@@ -47,12 +47,12 @@ public class DebugInterfaceActivity extends Activity {
 //		startPowerStateListener();
 //		startSmsSentLogger();
 		
-		aGPSListener = new GPSListener(appContext);
-		aGPSListener.turn_on();
-		
-		anAccelerometerListener = new AccelerometerListener(appContext);
-		Boolean accel = anAccelerometerListener.turn_on();
-		Log.i("debuging accelerometer:", accel.toString() );
+//		aGPSListener = new GPSListener(appContext);
+//		aGPSListener.turn_on();
+//		
+//		anAccelerometerListener = new AccelerometerListener(appContext);
+//		Boolean accel = anAccelerometerListener.turn_on();
+//		Log.i("debuging accelerometer:", accel.toString() );
 		
 	}
 	
@@ -79,7 +79,9 @@ public class DebugInterfaceActivity extends Activity {
 	public void printInternalLog(View view) {
 		Log.i("print log button pressed", "press.");
 		String log = logFile.read();
-		Log.i("logfile", log);
+		
+		for( String line : log.split("\n") ) {
+			Log.i( "log file...", line ); }
 	}
 
 	public void clearInternalLog(View view) {

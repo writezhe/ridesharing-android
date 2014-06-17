@@ -30,6 +30,7 @@ public class BackgroundProcess extends Service {
 		
 //		startSmsSentLogger();
 //		startPowerStateListener();
+		
 	}
 
 	@Override

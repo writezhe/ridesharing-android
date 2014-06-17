@@ -5,6 +5,7 @@ import java.io.IOException;
 import android.app.Activity;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -118,13 +119,17 @@ public class AudioRecorderActivity extends Activity {
     	Button recordingButton = (Button) findViewById(R.id.buttonRecord);
     	recordingButton.setText("Stop Recording");
     	
+    	//note: AudioEncoder.AAC requires the phone to have api 10+.
         mRecorder = new MediaRecorder();
         mRecorder.reset();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         mRecorder.setOutputFile(mFileName);
-        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-
+        mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+        mRecorder.setAudioChannels(1);
+        mRecorder.setAudioSamplingRate(44100);
+        mRecorder.setAudioEncodingBitRate(64000);
+        
         try {
             mRecorder.prepare();
         }
