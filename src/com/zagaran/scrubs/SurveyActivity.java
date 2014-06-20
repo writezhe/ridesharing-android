@@ -22,6 +22,8 @@ public class SurveyActivity extends Activity {
 		
 		LinearLayout surveyLayout = (LinearLayout) findViewById(R.id.surveyLayout);
 		
+		surveyLayout.addView(createInfoTextbox("Welcome to the survey! Please answer these questions as creatively as possible.  It helps us debug!"));
+		
 		surveyLayout.addView(createFreeResponseQuestion("How many eggs did you eat this morning?", TextFieldType.NUMERIC));
 
 		surveyLayout.addView(createFreeResponseQuestion("What is your nickname, moniker, or nom de guerre?", TextFieldType.SINGLE_LINE_TEXT));
@@ -50,22 +52,22 @@ public class SurveyActivity extends Activity {
 	
 	
 	/**
-	 * Creates the text of a question
-	 * @param text The text of the question
+	 * Creates an informational text view that does not have an answer type
+	 * @param infoText The informational text
 	 * @return TextView (to be displayed as question text)
 	 */
-	private TextView createQuestionText(String text) {
-		TextView question = (TextView) getLayoutInflater().inflate(R.layout.survey_question_text, null);
+	private TextView createInfoTextbox(String infoText) {
+		TextView infoTextbox = (TextView) getLayoutInflater().inflate(R.layout.survey_info_textbox, null);
 		
 		// Clean inputs
-		if (text == null) {
-			text = getResources().getString(R.string.question_error_text);
+		if (infoText == null) {
+			infoText = getResources().getString(R.string.question_error_text);
 		}
 		
 		// Set the question text
-		question.setText(text);
+		infoTextbox.setText(infoText);
 		
-		return question;
+		return infoTextbox;
 	}
 	
 	
@@ -204,6 +206,7 @@ public class SurveyActivity extends Activity {
 		textFieldContainer.addView(editText);
 		
 		// TODO: prevent the EditText from gaining focus- see here: http://stackoverflow.com/questions/1555109/stop-edittext-from-gaining-focus-at-activity-startup
+		// TODO: on press carriage return, move to next question
 		
 		return question;
 	}
