@@ -2,6 +2,7 @@ package com.zagaran.scrubs;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 public class SurveyActivity extends Activity {
 
 	// TODO: when you rotate the screen, the EditTexts get wiped clear, and some of the sliders jump to 100%. Debug this.
+	// TODO: figure out if we can put subdirectories in res/layout/
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,9 @@ public class SurveyActivity extends Activity {
 		surveyLayout.addView(createRadioButtonQuestion(null, answerOptions3));
 
 		surveyLayout.addView(createSliderQuestion("Eli, how far are you through your current audio book?", 100, 32));
+		
+		String[] checkboxes1 = {"Tattered baseball cap", "Cowboy boots with spurs", "Lucky talisman necklace", "Tie-dyed spandex"};
+		surveyLayout.addView(createCheckboxQuestion("Which of the following are you wearing?", checkboxes1));
 	}
 	
 	
@@ -128,6 +133,37 @@ public class SurveyActivity extends Activity {
 		}
 		
 		return question;
+	}
+	
+	
+	/**
+	 * Creates a question with an array of checkboxes
+	 * @param questionText The text of the question
+	 * @param options Each string in options[] will caption one checkbox
+	 * @return LinearLayout a question with a list of checkboxes
+	 */
+	private LinearLayout createCheckboxQuestion(String questionText, String[] options) {
+		LinearLayout question = (LinearLayout) getLayoutInflater().inflate(R.layout.survey_checkbox_question, null);
+		LinearLayout checkboxesList = (LinearLayout) question.findViewById(R.id.checkboxesList);
+		
+		// Set the text of the question itself
+		TextView questionTextView = (TextView) question.findViewById(R.id.questionText);
+		if (questionText != null) {
+			questionTextView.setText(questionText);
+		}
+		
+		// Loop through the options strings, and make each one a checkbox option
+		if (options != null) {
+			for (int i = 0; i < options.length; i++) {
+				CheckBox checkbox = (CheckBox) getLayoutInflater().inflate(R.layout.survey_checkbox, null);
+				if (options[i] != null) {
+					checkbox.setText(options[i]);
+				}
+				checkboxesList.addView(checkbox);
+			}			
+		}
+		
+		return question;		
 	}
 	
 	
