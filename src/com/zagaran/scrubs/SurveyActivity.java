@@ -176,14 +176,13 @@ public class SurveyActivity extends Activity {
 	private LinearLayout createFreeResponseQuestion(String questionText, TextFieldType inputTextType) {
 		LinearLayout question = (LinearLayout) getLayoutInflater().inflate(R.layout.survey_open_response_question, null);
 
-		EditText editText = (EditText) getLayoutInflater().inflate(R.layout.survey_free_number_input, null);
-
 		// Set the text of the question itself
 		TextView questionTextView = (TextView) question.findViewById(R.id.questionText);
 		if (questionText != null) {
 			questionTextView.setText(questionText);
 		}
 		
+		EditText editText = null;
 		switch (inputTextType) {
 		case NUMERIC:
 			editText = (EditText) getLayoutInflater().inflate(R.layout.survey_free_number_input, null);
@@ -201,11 +200,10 @@ public class SurveyActivity extends Activity {
 			editText = (EditText) getLayoutInflater().inflate(R.layout.survey_free_text_input, null);			
 			break;
 		}
-		
-		question.addView(editText);
+		LinearLayout textFieldContainer = (LinearLayout) question.findViewById(R.id.textFieldContainer);
+		textFieldContainer.addView(editText);
 		
 		// TODO: prevent the EditText from gaining focus- see here: http://stackoverflow.com/questions/1555109/stop-edittext-from-gaining-focus-at-activity-startup
-		// TODO: prevent the EditText blue bar on the bottom from being the whole width of the screen
 		
 		return question;
 	}

@@ -13,5 +13,17 @@
 	    android:textSize="20sp"
 	    android:text="@string/question_error_text" >	    
 	</TextView>
+	
+	<LinearLayout
+	    android:id="@+id/textFieldContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="50dp" >
+    </LinearLayout>
+	
     
 </LinearLayout>
