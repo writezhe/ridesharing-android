@@ -8,35 +8,48 @@
         android:minSdkVersion="10"
         android:targetSdkVersion="19" />
 
+    <!-- GPS and network-location service -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.BATTERY_STATS" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Call Log -->
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <!-- texts logging -->
     <uses-permission android:name="android.permission.READ_SMS" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.RECEIVE_MMS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <!-- mapping and anonymizing contacts in call and text logs -->
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <!-- voice recording -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!-- network and upload -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- starting the background service at boot.  -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    
+    <!-- PERMISSIONS BELOW NOT IMPLEMENTED/USED -->    
+    <!-- Power management and monitoring, not sure where this would be used... -->
+    <uses-permission android:name="android.permission.BATTERY_STATS" />
+    <!-- bluetooth proximity -->
+	<uses-permission android:name="android.permission.BLUETOOTH" />
+	
+    <!-- only for debug, remove before final product is finished -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <!-- and possibly android.permission.READ_SOCIAL_STREAM -->
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+        
         <activity
             android:name="com.zagaran.scrubs.DebugInterfaceActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
         <activity
             android:name="com.zagaran.scrubs.AudioRecorderActivity"
             android:label="@string/title_activity_audio_recorder" >
@@ -46,8 +59,10 @@
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
+        
         <receiver android:name="com.zagaran.scrubs.SmsReceivedLogger" >
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />

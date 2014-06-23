@@ -3,58 +3,98 @@ package com.zagaran.scrubs;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
+
 import com.zagaran.scrubs.CSVFileManager;
 
 /**
- * Screen On/Off and Battery/Power State Listener
- * Listens for and records when the screen is turned on or off
- * @author Josh Zagorsky, May 2014
- */
+ * Screen On/Off, Power Connect/Disconnect, Device Boot.  Listens for power state changes.
+ * @author Josh Zagorsky, Eli Jones, May/June 2014 */
+
 public class PowerStateListener extends BroadcastReceiver {
-	CSVFileManager logFile = CSVFileManager.getDebugLogFile();
-	CSVFileManager powerStateLog = CSVFileManager.getPowerStateFile();
+	String header = "time, event\n";
+	CSVFileManager logFile = null;
+	CSVFileManager powerStateLog = null;
+	
+	private Boolean checkForSDCardInstall(Context externalContext) throws NameNotFoundException{
+		/** Checks whether the app is installed on the SD card; needs a context passed in 
+		 *  Grab a pagkageManager (general info) -> get packageInfo (info about this package) ->
+		 *  ApplicationInfo (information about this application instance).
+		 *  http://stackoverflow.com/questions/5814474/how-can-i-find-out-if-my-app-is-installed-on-sd-card */
+		PackageManager pkgManager = externalContext.getPackageManager();
+		try {
+			PackageInfo pkgInfo = pkgManager.getPackageInfo(externalContext.getPackageName(), 0);
+			ApplicationInfo appInfo = pkgInfo.applicationInfo;
+			//appInfo.flags is an int; docs say: "Flags associated with the application. Any combination of... [list_of_flags]."  
+			// the following line returns true if the app is installed on an SD card.  
+			return (appInfo.flags & ApplicationInfo.FLAG_EXTERNAL_STORAGE) == ApplicationInfo.FLAG_EXTERNAL_STORAGE; }
+		catch (NameNotFoundException e) {
+			Log.i("PowerStateListener", "Things is broken in the check for installation on an SD card.");
+			throw e; }
+	}
+	
+	private void startBackgroundProcess(Context externalContext){
+		/** does what it says, starts the background service running, also loads log files.
+		 * called when SDcard available and device startup. */
+		//this is the construction for starting a service on reboot.
+		Intent intent_to_start_background_service = new Intent(externalContext, BackgroundProcess.class);
+	    externalContext.startService(intent_to_start_background_service);
+	    logFile = CSVFileManager.getDebugLogFile();
+		powerStateLog = CSVFileManager.getPowerStateFile();
+	}
+	
+	private void make_log_statement(String message) {
+		/** Handles the logging, includes a new line for the CSV files.
+		 * This code is otherwised reused everywhere.*/
+		Log.i("PowerStateListener", message);
+		Long javaTimeCode = System.currentTimeMillis();
+		logFile.write(javaTimeCode.toString() + "," + message +"\n" ); 
+//		powerStateLog.write(javaTimeCode.toString() + + "," + message + "\n");
+	}
+	
 	@Override
-	public void onReceive(Context context, Intent intent) {
+	public void onReceive(Context externalContext, Intent intent) {
 		
-		//makke a log of all receipts
-		logFile.write("the following intent was recieved by the PowerStateListener:" + intent.getAction().toString()+"\n");
+		// Device turned on
+		if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
+			/** Check whether the app is installed on the SD card, if so we need to
+			 *  stop and wait for the ACTION_EXTERNAL_APPLICATIONS_AVAILABLE intent. 
+			 *  intent to be sent to us. */
+			//if the app is Not on an sd card, start up the background process/service.
+			try { if ( checkForSDCardInstall(externalContext) ) { return; } }
+			catch (NameNotFoundException e) { e.printStackTrace(); }
+			startBackgroundProcess(externalContext);
+			make_log_statement("Device booted, background service started"); }
+		
+		if (intent.getAction().equals(Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE)) {
+			/** Almost identical to the boot_completed code, but invert the logic.*/
+			//If app is installed on the SD card, start the background process/service.
+			try { if ( !checkForSDCardInstall(externalContext) ) { return; } }
+			catch (NameNotFoundException e) { e.printStackTrace(); }
+			startBackgroundProcess(externalContext);
+			make_log_statement("SD card available, background service started."); }
+		
+		//these need to be checked whenever the service was started by the user opening the app. 
+		if (logFile == null) { logFile = CSVFileManager.getDebugLogFile(); }
+		if (powerStateLog == null) { powerStateLog = CSVFileManager.getPowerStateFile(); }
+		
+		//make a log of all receipts (for debugging)
+		make_log_statement("the following intent was recieved by the PowerStateListener:" + intent.getAction().toString()+"\n");
 		
 		// Screen on/off
-		if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-			// TODO: write to a file to record this
-			Log.i("ScreenOnOffListener", "Screen turned off");
-			logFile.write("screen turned off.\n"); }
-		
-		else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
-			Log.i("ScreenOnOffListener", "Screen turned on");
-			logFile.write("screen turned on.\n"); }
+		if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) { make_log_statement("Screen turned off"); }
+		if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) { make_log_statement("Screen turned on"); }
 		
 		// Power connected/disconnected
-		else if (intent.getAction().equals(Intent.ACTION_POWER_CONNECTED)) {
-			Log.i("ScreenOnOffListener", "Power connected");
-			logFile.write("Power connected.\n");
-		} 
-		else if (intent.getAction().equals(Intent.ACTION_POWER_DISCONNECTED)) {
-			Log.i("ScreenOnOffListener", "Power disconnected"); 
-			logFile.write("Power disconnected.\n");
-		}
+		if (intent.getAction().equals(Intent.ACTION_POWER_CONNECTED)) { make_log_statement("Power connected"); }
+		if (intent.getAction().equals(Intent.ACTION_POWER_DISCONNECTED)) { make_log_statement("Power disconnected"); }
 		
-		// TODO: make this work (probably by making the Service run on boot of the device)
-		// Probably need Manifest.xml intent-filters for android.intent.action.BOOT_COMPLETED
-		// and also android.intent.action.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE
-		// see here: http://www.vogella.com/tutorials/AndroidBroadcastReceiver/article.html
-		
-		// TODO: figure out what the problem is with this crash that happened after
-		// I opened the app or plugged in the phone or something:
-		// java.lang.RuntimeException: Unable to instantiate receiver com.zagaran.scrubs.PowerStateListener: java.lang.NullPointerException: you need to call startFileManager.		
-		
-		// Device turned on/off
-		else if (intent.getAction().equals(Intent.ACTION_BOOT_COMPLETED)) {
-			Log.i("ScreenOnOffListener", "Device finished booting."); }
-		else if (intent.getAction().equals(Intent.ACTION_SHUTDOWN)) {
-			Log.i("ScreenOnOffListener", "Device is shutting down."); }
-		else if (intent.getAction().equals(Intent.ACTION_REBOOT)) {
-			Log.i("ScreenOnOffListener", "Device is rebooting."); }
+		// Shutdown/Restart
+		if (intent.getAction().equals(Intent.ACTION_SHUTDOWN)) { make_log_statement("Device shut down signal received"); }
+		if (intent.getAction().equals(Intent.ACTION_REBOOT)) { make_log_statement("Device reboot signal received"); }
 	}
 }
