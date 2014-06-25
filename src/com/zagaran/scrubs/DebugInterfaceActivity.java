@@ -44,11 +44,11 @@ public class DebugInterfaceActivity extends Activity {
 		//##########################################################
 		// call the start functionality functions here for debugging
 		//##########################################################
-//		startPowerStateListener();
+		startPowerStateListener();
 //		startSmsSentLogger();
 		
-		aGPSListener = new GPSListener(appContext);
-		aGPSListener.turn_on();
+//		aGPSListener = new GPSListener(appContext);
+//		aGPSListener.turn_on();
 //		
 //		anAccelerometerListener = new AccelerometerListener(appContext);
 //		Boolean accel = anAccelerometerListener.turn_on();
@@ -111,6 +111,7 @@ public class DebugInterfaceActivity extends Activity {
 		this.getContentResolver().registerContentObserver(Uri.parse("content://sms/"), true, smsSentLogger);
 	}
 	
+//	well this is interesting, registering these actions in the manifest does not work...
 	private void startPowerStateListener() {
 		final IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
 		filter.addAction(Intent.ACTION_SCREEN_OFF);

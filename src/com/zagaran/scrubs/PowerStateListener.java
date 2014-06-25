@@ -12,7 +12,8 @@ import android.util.Log;
 import com.zagaran.scrubs.CSVFileManager;
 
 /**
- * Screen On/Off, Power Connect/Disconnect, Device Boot.  Listens for power state changes.
+ * Screen On/Off, Power Connect/Disconnect, Device Boot/Reboot/Shutdown, Airplane Mode.
+ * Listens for power state changes.
  * @author Josh Zagorsky, Eli Jones, May/June 2014 */
 
 public class PowerStateListener extends BroadcastReceiver {
@@ -94,7 +95,10 @@ public class PowerStateListener extends BroadcastReceiver {
 		if (intent.getAction().equals(Intent.ACTION_POWER_DISCONNECTED)) { make_log_statement("Power disconnected"); }
 		
 		// Shutdown/Restart
+		//TODO: investigate why this is not received
 		if (intent.getAction().equals(Intent.ACTION_SHUTDOWN)) { make_log_statement("Device shut down signal received"); }
 		if (intent.getAction().equals(Intent.ACTION_REBOOT)) { make_log_statement("Device reboot signal received"); }
+		
+		if (intent.getAction().equals(Intent.ACTION_AIRPLANE_MODE_CHANGED)) { make_log_statement("Airplane mode"); }
 	}
 }
