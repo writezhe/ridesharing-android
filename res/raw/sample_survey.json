@@ -11,6 +11,18 @@
 			"default_value" : 2
 		},
 		{
+			"question_type" : "slider",
+			"question_text" : "How annoyed are you at this survey?",
+			"number_of_values" : 5,
+			"default_value" : 0
+		},
+		{
+			"question_type" : "slider",
+			"question_text" : "How far are you through the book you are currently reading?",
+			"number_of_values" : 100,
+			"default_value" : 32
+		},
+		{
 			"question_type" : "radio_button",
 			"question_text" : "What device are you using to take this survey?",
 			"answers" : [
@@ -49,6 +61,30 @@
 				},
 				{
 					"text" : "Tie-dyed spandex"
+				}
+			]
+		},
+		{
+			"question_type" : "radio_button",
+			"question_text" : "What day is today?",
+			"answers" : [
+				{
+					"text" : "Your birthday"
+				},
+				{
+					"text" : "Your un-birthday"
+				}
+			]
+		},
+		{
+			"question_type" : "radio_button",
+			"question_text" : 5,
+			"answers" : [
+				{
+					"text" : "This option should work; the next two should be broken"
+				},
+				{
+					"text" : []
 				}
 			]
 		},
