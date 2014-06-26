@@ -19,6 +19,12 @@ import android.widget.Button;
  * Heavily based on code from:
  * http://developer.android.com/guide/topics/media/audio-capture.html
  * 
+ * filename
+ * type of data: "voice recording" or "accereometer
+ * start timestamp
+ * stop timestamp
+ * user id #
+ * 
  * @author Josh Zagorsky, May 2014
  */
 public class AudioRecorderActivity extends Activity {

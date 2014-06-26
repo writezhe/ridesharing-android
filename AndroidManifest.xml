@@ -63,8 +63,8 @@
                 <action android:name="android.intent.action.ACTION_SHUTDOWN" />
                 <action android:name="android.intent.action.ACTION_REBOOT" />
                 <action android:name="android.intent.action.AIRPLANE_MODE" />
-                <action android:name="android.intent.action.HEADSET_PLUG" />
-                <action android:name="android.intent.action.USER_PRESENT" />
+                <!-- action android:name="android.intent.action.USER_PRESENT" /-->
+                <!-- action android:name="android.intent.action.HEADSET_PLUG" /-->
                 <!-- action android:name="android.intent.action.ACTION_SCREEN_ON" />
 				<action android:name="android.intent.action.ACTION_SCREEN_OFF" /-->
             </intent-filter>

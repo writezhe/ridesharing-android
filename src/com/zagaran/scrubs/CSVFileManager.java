@@ -93,6 +93,12 @@ public class CSVFileManager {
 		debugLogFile = new CSVFileManager(appContext, "logFile", "THIS LINE IS A LOG FILE HEADER\n");
 		debugLogFile.newLogFile();
 		
+		
+//		 * filename
+//		 * type of data: "voice recording" or "accereometer
+//		 * start timestamp, stop timestamp
+//		 * user id #
+		
 		GPSFile = new CSVFileManager(appContext, "gpsFile", GPSListener.header );
 		GPSFile.newFile();
 		accelFile = new CSVFileManager(appContext, "accelFile", AccelerometerListener.header);
