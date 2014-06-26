@@ -1,4 +1,4 @@
-package com.zagaran.scrubs;
+package com.zagaran.scrubs.listeners;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

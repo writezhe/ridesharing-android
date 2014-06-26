@@ -51,11 +51,11 @@
         </activity>
         
         <activity
-            android:name="com.zagaran.scrubs.AudioRecorderActivity"
+            android:name="com.zagaran.scrubs.survey.AudioRecorderActivity"
             android:label="@string/title_activity_audio_recorder" >
         </activity>
 
-        <receiver android:name="com.zagaran.scrubs.PowerStateListener" >
+        <receiver android:name="com.zagaran.scrubs.listeners.PowerStateListener" >
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
@@ -70,7 +70,7 @@
             </intent-filter>
         </receiver>
         
-        <receiver android:name="com.zagaran.scrubs.SmsReceivedLogger" >
+        <receiver android:name="com.zagaran.scrubs.listeners.SmsReceivedLogger" >
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>

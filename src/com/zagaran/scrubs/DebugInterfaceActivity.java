@@ -13,9 +13,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.zagaran.scrubs.CSVFileManager;
 import com.zagaran.scrubs.BackgroundProcess;
-import com.zagaran.scrubs.GPSListener;
+import com.zagaran.scrubs.listeners.AccelerometerListener;
+import com.zagaran.scrubs.listeners.GPSListener;
+import com.zagaran.scrubs.listeners.PowerStateListener;
+import com.zagaran.scrubs.listeners.SmsSentLogger;
+import com.zagaran.scrubs.storage.CSVFileManager;
+import com.zagaran.scrubs.survey.AudioRecorderActivity;
 import com.zagaran.scrubs.survey.SurveyActivity;
 
 public class DebugInterfaceActivity extends Activity {

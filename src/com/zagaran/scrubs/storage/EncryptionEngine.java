@@ -1,4 +1,4 @@
-package com.zagaran.scrubs;
+package com.zagaran.scrubs.storage;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

@@ -1,6 +1,10 @@
-package com.zagaran.scrubs;
+package com.zagaran.scrubs.survey;
 
 import java.io.IOException;
+
+import com.zagaran.scrubs.R;
+import com.zagaran.scrubs.R.id;
+import com.zagaran.scrubs.R.layout;
 
 import android.app.Activity;
 import android.media.MediaPlayer;

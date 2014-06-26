@@ -1,9 +1,12 @@
-package com.zagaran.scrubs;
+package com.zagaran.scrubs.storage;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import com.zagaran.scrubs.listeners.AccelerometerListener;
+import com.zagaran.scrubs.listeners.GPSListener;
 
 import android.content.Context;
 import android.util.Log;

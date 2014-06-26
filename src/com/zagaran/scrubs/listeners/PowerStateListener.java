@@ -1,4 +1,4 @@
-package com.zagaran.scrubs;
+package com.zagaran.scrubs.listeners;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,9 +7,11 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.os.Bundle;
 import android.util.Log;
 
-import com.zagaran.scrubs.CSVFileManager;
+import com.zagaran.scrubs.BackgroundProcess;
+import com.zagaran.scrubs.storage.CSVFileManager;
 
 /**
  * Screen On/Off, Power Connect/Disconnect, Device Boot/Reboot/Shutdown, Airplane Mode.
@@ -99,6 +101,14 @@ public class PowerStateListener extends BroadcastReceiver {
 		if (intent.getAction().equals(Intent.ACTION_SHUTDOWN)) { make_log_statement("Device shut down signal received"); }
 		if (intent.getAction().equals(Intent.ACTION_REBOOT)) { make_log_statement("Device reboot signal received"); }
 		
-		if (intent.getAction().equals(Intent.ACTION_AIRPLANE_MODE_CHANGED)) { make_log_statement("Airplane mode"); }
+		if (intent.getAction().equals(Intent.ACTION_AIRPLANE_MODE_CHANGED)) { 
+			make_log_statement("Airplane mode"); 
+			Bundle steve = intent.getExtras();
+			intent.getBooleanExtra(name, defaultValue)
+			intent.getBundleExtra(name)
+			make_log_statement("\nbundle: " + .toString() + "\n");
+			intent.getBooleanArrayExtra(name)
+			make_log_statement("\nbundle: " + steve.toString() + "\n");
+		}
 	}
 }
