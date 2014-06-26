@@ -12,12 +12,12 @@ import android.widget.TextView;
 
 import com.zagaran.scrubs.R;
 
-public class SurveyQuestionRendering {
+public class SurveyQuestionRenderer {
 
 	private Context appContext;
 	private LayoutInflater inflater;
 	
-	public SurveyQuestionRendering(Context applicationContext) {
+	public SurveyQuestionRenderer(Context applicationContext) {
 		appContext = applicationContext;
 		inflater = (LayoutInflater) appContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
