@@ -109,7 +109,7 @@ public class JsonParser {
 	
 	private View renderFreeResponseQuestion(JSONObject jsonQuestion) {
 		String questionText = getStringFromJSONObject(jsonQuestion, "question_text");
-		SurveyTextFieldType.Type textFieldType = Type.MULTI_LINE_TEXT;
+		SurveyTextFieldType.Type textFieldType = getTextFieldTypeFromJSONObject(jsonQuestion, "text_field_type");
 		return renderer.createFreeResponseQuestion(questionText, textFieldType);
 	}
 
@@ -195,6 +195,16 @@ public class JsonParser {
 			String[] errorArray = {""};
 			return errorArray;
 		}		
+	}
+	
+	
+	// Get the Enum text field type from a JSONObject key, and return SINGLE_LINE_TEXT as the default instead of throwing a JSONException
+	private SurveyTextFieldType.Type getTextFieldTypeFromJSONObject(JSONObject obj, String key) {
+		try {
+			return Type.valueOf(obj.getString(key));
+		} catch (JSONException e) {
+			return Type.SINGLE_LINE_TEXT;
+		}
 	}
 
 }

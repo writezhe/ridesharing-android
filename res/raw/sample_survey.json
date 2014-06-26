@@ -55,17 +55,17 @@
 		{
 			"question_type" : "free_response",
 			"question_text" : "How many eggs did you eat this morning?",
-			"text_field_type" : "numeric"
+			"text_field_type" : "NUMERIC"
 		},
 		{
 			"question_type" : "free_response",
 			"question_text" : "What is your nickname, moniker, or nom de guerre?",
-			"text_field_type" : "single_line_text"
+			"text_field_type" : "SINGLE_LINE_TEXT"
 		},
 		{
 			"question_type" : "free_response",
 			"question_text" : "Please enter any suggestions you have about this whole process.",
-			"text_field_type" : "multi_line_text"
+			"text_field_type" : "MULTI_LINE_TEXT"
 		}
 	]
 }
