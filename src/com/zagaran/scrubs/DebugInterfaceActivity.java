@@ -16,6 +16,7 @@ import android.view.View;
 import com.zagaran.scrubs.CSVFileManager;
 import com.zagaran.scrubs.BackgroundProcess;
 import com.zagaran.scrubs.GPSListener;
+import com.zagaran.scrubs.survey.SurveyActivity;
 
 public class DebugInterfaceActivity extends Activity {
 	

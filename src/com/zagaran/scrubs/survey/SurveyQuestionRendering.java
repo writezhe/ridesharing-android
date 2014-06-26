@@ -1,4 +1,4 @@
-package com.zagaran.scrubs;
+package com.zagaran.scrubs.survey;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,6 +9,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import com.zagaran.scrubs.R;
 
 public class SurveyQuestionRendering {
 

@@ -1,8 +1,10 @@
-package com.zagaran.scrubs;
+package com.zagaran.scrubs.survey;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.LinearLayout;
+
+import com.zagaran.scrubs.R;
 
 public class SurveyActivity extends Activity {
 	
