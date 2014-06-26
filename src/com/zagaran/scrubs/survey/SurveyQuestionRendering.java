@@ -1,7 +1,7 @@
-package com.zagaran.scrubs;
+package com.zagaran.scrubs.survey;
 
-import android.app.Activity;
-import android.os.Bundle;
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -10,58 +10,36 @@ import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-public class SurveyActivity extends Activity {
+import com.zagaran.scrubs.R;
 
-	// TODO: when you rotate the screen, the EditTexts get wiped clear, and some of the sliders jump to 100%. Debug this.
-	// TODO: figure out if we can put subdirectories in res/layout/
+public class SurveyQuestionRendering {
+
+	private Context appContext;
+	private LayoutInflater inflater;
 	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_survey);
-		
-		LinearLayout surveyLayout = (LinearLayout) findViewById(R.id.surveyLayout);
-		
-		surveyLayout.addView(createInfoTextbox("Welcome to the survey! Please answer these questions as creatively as possible.  It helps us debug!"));
-		
-		surveyLayout.addView(createFreeResponseQuestion("How many eggs did you eat this morning?", TextFieldType.NUMERIC));
+	public SurveyQuestionRendering(Context applicationContext) {
+		appContext = applicationContext;
+		inflater = (LayoutInflater) appContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-		surveyLayout.addView(createFreeResponseQuestion("What is your nickname, moniker, or nom de guerre?", TextFieldType.SINGLE_LINE_TEXT));
-		
-		surveyLayout.addView(createFreeResponseQuestion("Please enter any suggestions you have about this whole process.", TextFieldType.MULTI_LINE_TEXT));
-		
-		surveyLayout.addView(createSliderQuestion("How are you feeling today, Dave??", 5, 2));
-		
-		surveyLayout.addView(createSliderQuestion("How annoyed are you at this survey?", 5, 0));
-		
-		String[] answerOptions1 = {"Your birthday", "Your un-birthday"};
-		surveyLayout.addView(createRadioButtonQuestion("What day is today?", answerOptions1));
-
-		String[] answerOptions2 = {"Android smartphone", 
-				"Android tablet", "Android phablet", "Google glass", "Rotary-dial phone", "Bananaphone"};
-		surveyLayout.addView(createRadioButtonQuestion("What device are you using to take this survey?", answerOptions2));
-
-		String[] answerOptions3 = {"Android smartphone", null, "blergh"};
-		surveyLayout.addView(createRadioButtonQuestion(null, answerOptions3));
-
-		surveyLayout.addView(createSliderQuestion("Eli, how far are you through your current audio book?", 100, 32));
-		
-		String[] checkboxes1 = {"Tattered baseball cap", "Cowboy boots with spurs", "Lucky talisman necklace", "Tie-dyed spandex"};
-		surveyLayout.addView(createCheckboxQuestion("Which of the following are you wearing?", checkboxes1));
+		/* XML views inflated by an Activity render with the app's default
+		 * style (set in the Manifest.XML), but for some reason, XML views
+		 * inflated by this class don't render with the app's default style,
+		 * unless we set it manually: */
+		appContext.setTheme(R.style.AppTheme);
 	}
-	
+
 	
 	/**
 	 * Creates an informational text view that does not have an answer type
 	 * @param infoText The informational text
 	 * @return TextView (to be displayed as question text)
 	 */
-	private TextView createInfoTextbox(String infoText) {
-		TextView infoTextbox = (TextView) getLayoutInflater().inflate(R.layout.survey_info_textbox, null);
+	public TextView createInfoTextbox(String infoText) {
+		TextView infoTextbox = (TextView) inflater.inflate(R.layout.survey_info_textbox, null);
 		
 		// Clean inputs
 		if (infoText == null) {
-			infoText = getResources().getString(R.string.question_error_text);
+			infoText = appContext.getResources().getString(R.string.question_error_text);
 		}
 		
 		// Set the question text
@@ -69,8 +47,8 @@ public class SurveyActivity extends Activity {
 		
 		return infoTextbox;
 	}
-	
-	
+
+
 	/**
 	 * Creates a slider with a range of discrete values
 	 * @param questionText The text of the question to be asked
@@ -78,8 +56,8 @@ public class SurveyActivity extends Activity {
 	 * @param defaultValue Starts at 0; can be as high as (numberOfValues - 1)
 	 * @return LinearLayout A slider bar
 	 */
-	private LinearLayout createSliderQuestion(String questionText, int numberOfValues, int defaultValue) {
-		LinearLayout question = (LinearLayout) getLayoutInflater().inflate(R.layout.survey_slider_question, null);
+	public LinearLayout createSliderQuestion(String questionText, int numberOfValues, int defaultValue) {
+		LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_slider_question, null);
 		SeekBar slider = (SeekBar) question.findViewById(R.id.slider);
 		
 		// Set the text of the question itself
@@ -108,8 +86,8 @@ public class SurveyActivity extends Activity {
 	 * @param answers An array of strings that are options matched with radio buttons
 	 * @return RadioGroup A vertical set of radio buttons 
 	 */
-	private LinearLayout createRadioButtonQuestion(String questionText, String[] answers) {
-		LinearLayout question = (LinearLayout) getLayoutInflater().inflate(R.layout.survey_radio_button_question, null);
+	public LinearLayout createRadioButtonQuestion(String questionText, String[] answers) {
+		LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_radio_button_question, null);
 		RadioGroup radioGroup = (RadioGroup) question.findViewById(R.id.radioGroup);
 		
 		// Set the text of the question itself
@@ -120,14 +98,14 @@ public class SurveyActivity extends Activity {
 		
 		// If the array of answers is null or too short, replace it with an error message
 		if ((answers == null) || (answers.length < 2)) {
-			String replacementAnswer = getResources().getString(R.string.question_error_text);
+			String replacementAnswer = appContext.getResources().getString(R.string.question_error_text);
 			String[] replacementAnswers = {replacementAnswer, replacementAnswer};
 			answers = replacementAnswers;
 		}
 		
 		// Loop through the answer strings, and make each one a radio button option
 		for (int i = 0; i < answers.length; i++) {
-			RadioButton radioButton = (RadioButton) getLayoutInflater().inflate(R.layout.survey_radio_button, null);
+			RadioButton radioButton = (RadioButton) inflater.inflate(R.layout.survey_radio_button, null);
 			if (answers[i] != null) {
 				radioButton.setText(answers[i]);
 			}
@@ -137,15 +115,15 @@ public class SurveyActivity extends Activity {
 		return question;
 	}
 	
-	
+
 	/**
 	 * Creates a question with an array of checkboxes
 	 * @param questionText The text of the question
 	 * @param options Each string in options[] will caption one checkbox
 	 * @return LinearLayout a question with a list of checkboxes
 	 */
-	private LinearLayout createCheckboxQuestion(String questionText, String[] options) {
-		LinearLayout question = (LinearLayout) getLayoutInflater().inflate(R.layout.survey_checkbox_question, null);
+	public LinearLayout createCheckboxQuestion(String questionText, String[] options) {
+		LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_checkbox_question, null);
 		LinearLayout checkboxesList = (LinearLayout) question.findViewById(R.id.checkboxesList);
 		
 		// Set the text of the question itself
@@ -157,7 +135,7 @@ public class SurveyActivity extends Activity {
 		// Loop through the options strings, and make each one a checkbox option
 		if (options != null) {
 			for (int i = 0; i < options.length; i++) {
-				CheckBox checkbox = (CheckBox) getLayoutInflater().inflate(R.layout.survey_checkbox, null);
+				CheckBox checkbox = (CheckBox) inflater.inflate(R.layout.survey_checkbox, null);
 				if (options[i] != null) {
 					checkbox.setText(options[i]);
 				}
@@ -175,8 +153,8 @@ public class SurveyActivity extends Activity {
 	 * @param inputTextType The type of answer (number, text, etc.)
 	 * @return LinearLayout question and answer
 	 */
-	private LinearLayout createFreeResponseQuestion(String questionText, TextFieldType inputTextType) {
-		LinearLayout question = (LinearLayout) getLayoutInflater().inflate(R.layout.survey_open_response_question, null);
+	public LinearLayout createFreeResponseQuestion(String questionText, SurveyTextFieldType.Type inputTextType) {
+		LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_open_response_question, null);
 
 		// Set the text of the question itself
 		TextView questionTextView = (TextView) question.findViewById(R.id.questionText);
@@ -187,19 +165,19 @@ public class SurveyActivity extends Activity {
 		EditText editText = null;
 		switch (inputTextType) {
 		case NUMERIC:
-			editText = (EditText) getLayoutInflater().inflate(R.layout.survey_free_number_input, null);
+			editText = (EditText) inflater.inflate(R.layout.survey_free_number_input, null);
 			break;
 			
 		case SINGLE_LINE_TEXT:
-			editText = (EditText) getLayoutInflater().inflate(R.layout.survey_free_text_input, null);			
+			editText = (EditText) inflater.inflate(R.layout.survey_free_text_input, null);			
 			break;
 			
 		case MULTI_LINE_TEXT:
-			editText = (EditText) getLayoutInflater().inflate(R.layout.survey_multiline_text_input, null);			
+			editText = (EditText) inflater.inflate(R.layout.survey_multiline_text_input, null);			
 			break;
 
 		default:
-			editText = (EditText) getLayoutInflater().inflate(R.layout.survey_free_text_input, null);			
+			editText = (EditText) inflater.inflate(R.layout.survey_free_text_input, null);			
 			break;
 		}
 		LinearLayout textFieldContainer = (LinearLayout) question.findViewById(R.id.textFieldContainer);
@@ -207,14 +185,10 @@ public class SurveyActivity extends Activity {
 		
 		// TODO: prevent the EditText from gaining focus- see here: http://stackoverflow.com/questions/1555109/stop-edittext-from-gaining-focus-at-activity-startup
 		// TODO: on press carriage return, move to next question
+		// TODO: add date and time pickers as input types: http://stackoverflow.com/a/14933515
+		// TODO: when you rotate the screen, the EditTexts get wiped clear, and some of the sliders jump to 100%. Debug this.
 		
 		return question;
 	}
-	
-	public enum TextFieldType {
-		NUMERIC,
-		SINGLE_LINE_TEXT,
-		MULTI_LINE_TEXT;
-	}
-	
+
 }

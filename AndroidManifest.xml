@@ -83,7 +83,7 @@
         </service>
 
         <activity
-            android:name="com.zagaran.scrubs.SurveyActivity"
+            android:name="com.zagaran.scrubs.survey.SurveyActivity"
             android:label="@string/title_activity_survey" >
         </activity>
     </application>
