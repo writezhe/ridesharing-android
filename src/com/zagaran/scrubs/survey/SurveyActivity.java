@@ -15,7 +15,7 @@ public class SurveyActivity extends Activity {
 		
 		LinearLayout surveyLayout = (LinearLayout) findViewById(R.id.surveyLayout);
 		
-		SurveyQuestionRendering surveyQ = new SurveyQuestionRendering(getApplicationContext());
+		SurveyQuestionRenderer surveyQ = new SurveyQuestionRenderer(getApplicationContext());
 		
 		surveyLayout.addView(surveyQ.createInfoTextbox("Welcome to the survey! Please answer these questions as creatively as possible.  It helps us debug!"));
 		
@@ -43,6 +43,10 @@ public class SurveyActivity extends Activity {
 		
 		String[] checkboxes1 = {"Tattered baseball cap", "Cowboy boots with spurs", "Lucky talisman necklace", "Tie-dyed spandex"};
 		surveyLayout.addView(surveyQ.createCheckboxQuestion("Which of the following are you wearing?", checkboxes1));
+		
+		
+		JsonParser jsonParser = new JsonParser(getApplicationContext());
+		jsonParser.tryToRenderSurveyFromJSON();
 	}
 
 }
