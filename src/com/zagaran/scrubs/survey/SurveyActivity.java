@@ -46,7 +46,7 @@ public class SurveyActivity extends Activity {
 		
 		
 		JsonParser jsonParser = new JsonParser(getApplicationContext());
-		jsonParser.tryToRenderSurveyFromJSON(surveyLayout);
+		jsonParser.renderSurveyFromJSON(surveyLayout);
 	}
 
 }
