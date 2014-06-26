@@ -15,8 +15,11 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import com.zagaran.scrubs.R;
+import com.zagaran.scrubs.survey.SurveyTextFieldType.Type;
 
 public class JsonParser {
 
@@ -29,9 +32,9 @@ public class JsonParser {
 	}
 	
 	
-	public void tryToRenderSurveyFromJSON() {
+	public void tryToRenderSurveyFromJSON(LinearLayout surveyLayout) {
 		try {
-			renderSurveyFromJSON();
+			renderSurveyFromJSON(surveyLayout);
 		} catch (Exception e) {
 			Log.i("JsonParser", "Failed to parse JSON properly");
 			e.printStackTrace();
@@ -39,66 +42,75 @@ public class JsonParser {
 	}
 	
 	
-	private void renderSurveyFromJSON() throws Exception {
+	private void renderSurveyFromJSON(LinearLayout surveyLayout) throws Exception {
 		InputStream inputStream = appContext.getResources().openRawResource(R.raw.sample_survey);
 		JSONObject wholeSurveyObject = new JSONObject(fileToString(inputStream));
 		
 		JSONArray jsonQuestions = wholeSurveyObject.getJSONArray("questions");
 		for (int i = 0; i < jsonQuestions.length(); i++) {
-			renderQuestionFromJSON(jsonQuestions.getJSONObject(i));
+			View question = renderQuestionFromJSON(jsonQuestions.getJSONObject(i));
+			surveyLayout.addView(question);
 		}		
 	}
 	
 	
-	private void renderQuestionFromJSON(JSONObject jsonQuestion) {
+	private View renderQuestionFromJSON(JSONObject jsonQuestion) {
 		String questionType = getStringFromJSONObject(jsonQuestion, "question_type");
 
 		if (questionType.equals("info_text_box")) {
-			renderInfoTextBox(jsonQuestion);
+			return renderInfoTextBox(jsonQuestion);
 		}
 		else if (questionType.equals("slider")) {
-			renderSliderQuestion(jsonQuestion);
+			return renderSliderQuestion(jsonQuestion);
 		}
 		else if (questionType.equals("radio_button")) {
-			renderRadioButtonQuestion(jsonQuestion);
+			return renderRadioButtonQuestion(jsonQuestion);
 		}
 		else if (questionType.equals("checkbox")) {
-			renderCheckboxQuestion(jsonQuestion);
+			return renderCheckboxQuestion(jsonQuestion);
 		}
 		else if (questionType.equals("free_response")) {
-			renderFreeResponseQuestion(jsonQuestion);
+			return renderFreeResponseQuestion(jsonQuestion);
+		}
+		else {
+			// TODO: return an XML layout file with an error in it
+			return null;
 		}
 	}
 	
 	
-	private void renderInfoTextBox(JSONObject jsonQuestion) {
+	private View renderInfoTextBox(JSONObject jsonQuestion) {
 		String infoText = getStringFromJSONObject(jsonQuestion, "question_text");
-		renderer.createInfoTextbox(infoText);
+		return renderer.createInfoTextbox(infoText);
 	}
 	
 	
-	private void renderSliderQuestion(JSONObject jsonQuestion) {
+	private View renderSliderQuestion(JSONObject jsonQuestion) {
 		String questionText = getStringFromJSONObject(jsonQuestion, "question_text");
 		int numberOfValues = getIntFromJSONObject(jsonQuestion, "number_of_values");
 		int defaultValue = getIntFromJSONObject(jsonQuestion, "default_value");
-		renderer.createSliderQuestion(questionText, numberOfValues, defaultValue);
+		return renderer.createSliderQuestion(questionText, numberOfValues, defaultValue);
 	}
 	
 	
-	private void renderRadioButtonQuestion(JSONObject jsonQuestion) {
+	private View renderRadioButtonQuestion(JSONObject jsonQuestion) {
 		String questionText = getStringFromJSONObject(jsonQuestion, "question_text");
 		String[] answers = getStringArrayFromJSONObject(jsonQuestion, "answers");
-		renderer.createRadioButtonQuestion(questionText, answers);
+		return renderer.createRadioButtonQuestion(questionText, answers);
 	}
 	
 	
-	private void renderCheckboxQuestion(JSONObject jsonQuestion) {
-		
+	private View renderCheckboxQuestion(JSONObject jsonQuestion) {
+		String questionText = getStringFromJSONObject(jsonQuestion, "question_text");
+		String[] options = getStringArrayFromJSONObject(jsonQuestion, "answers");
+		return renderer.createCheckboxQuestion(questionText, options);
 	}
 	
 	
-	private void renderFreeResponseQuestion(JSONObject jsonQuestion) {
-		
+	private View renderFreeResponseQuestion(JSONObject jsonQuestion) {
+		String questionText = getStringFromJSONObject(jsonQuestion, "question_text");
+		SurveyTextFieldType.Type textFieldType = Type.MULTI_LINE_TEXT;
+		return renderer.createFreeResponseQuestion(questionText, textFieldType);
 	}
 
 	
@@ -172,7 +184,7 @@ public class JsonParser {
 			String[] strings = new String[jsonArray.length()];
 			for (int i = 0; i < jsonArray.length(); i++) {
 				try {
-					strings[i] = jsonArray.getString(i);
+					strings[i] = jsonArray.getJSONObject(i).getString("text");
 				} catch (JSONException e) {
 					strings[i] = "";
 				}

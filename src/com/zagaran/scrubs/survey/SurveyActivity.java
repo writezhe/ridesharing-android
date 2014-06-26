@@ -15,7 +15,7 @@ public class SurveyActivity extends Activity {
 		
 		LinearLayout surveyLayout = (LinearLayout) findViewById(R.id.surveyLayout);
 		
-		SurveyQuestionRenderer surveyQ = new SurveyQuestionRenderer(getApplicationContext());
+		/*SurveyQuestionRenderer surveyQ = new SurveyQuestionRenderer(getApplicationContext());
 		
 		surveyLayout.addView(surveyQ.createInfoTextbox("Welcome to the survey! Please answer these questions as creatively as possible.  It helps us debug!"));
 		
@@ -42,11 +42,11 @@ public class SurveyActivity extends Activity {
 		surveyLayout.addView(surveyQ.createSliderQuestion("Eli, how far are you through your current audio book?", 100, 32));
 		
 		String[] checkboxes1 = {"Tattered baseball cap", "Cowboy boots with spurs", "Lucky talisman necklace", "Tie-dyed spandex"};
-		surveyLayout.addView(surveyQ.createCheckboxQuestion("Which of the following are you wearing?", checkboxes1));
+		surveyLayout.addView(surveyQ.createCheckboxQuestion("Which of the following are you wearing?", checkboxes1)); */
 		
 		
 		JsonParser jsonParser = new JsonParser(getApplicationContext());
-		jsonParser.tryToRenderSurveyFromJSON();
+		jsonParser.tryToRenderSurveyFromJSON(surveyLayout);
 	}
 
 }
