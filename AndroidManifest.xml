@@ -83,7 +83,8 @@
         </service>
 
         <activity
-            android:name="org.beiwe.app.survey.SurveyActivity" >
+            android:name="org.beiwe.app.survey.SurveyActivity"
+            android:label="@string/title_activity_survey" >
         </activity>
     </application>
 
