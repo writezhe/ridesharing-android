@@ -6,7 +6,7 @@
     appContext.getResources().getString(R.string.name_of_string)
     -->
 
-    <string name="app_name">Scrubs</string>
+    <string name="app_name">Beiwe</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_audio_recorder">Record Audio</string>

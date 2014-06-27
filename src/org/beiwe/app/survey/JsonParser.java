@@ -1,4 +1,4 @@
-package com.zagaran.scrubs.survey;
+package org.beiwe.app.survey;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,6 +9,8 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
+import org.beiwe.app.R;
+import org.beiwe.app.survey.SurveyTextFieldType.Type;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,9 +20,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
-
-import com.zagaran.scrubs.R;
-import com.zagaran.scrubs.survey.SurveyTextFieldType.Type;
 
 public class JsonParser {
 

@@ -1,10 +1,10 @@
-package com.zagaran.scrubs.survey;
+package org.beiwe.app.survey;
+
+import org.beiwe.app.R;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.LinearLayout;
-
-import com.zagaran.scrubs.R;
 
 public class SurveyActivity extends Activity {
 	

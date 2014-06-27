@@ -1,4 +1,4 @@
-package com.zagaran.scrubs.survey;
+package org.beiwe.app.survey;
 
 import android.util.Log;
 import android.view.View;

@@ -1,5 +1,13 @@
-package com.zagaran.scrubs;
+package org.beiwe.app;
  
+import org.beiwe.app.listeners.AccelerometerListener;
+import org.beiwe.app.listeners.GPSListener;
+import org.beiwe.app.listeners.PowerStateListener;
+import org.beiwe.app.listeners.SmsSentLogger;
+import org.beiwe.app.storage.CSVFileManager;
+import org.beiwe.app.survey.AudioRecorderActivity;
+import org.beiwe.app.survey.SurveyActivity;
+
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,14 +21,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.zagaran.scrubs.BackgroundProcess;
-import com.zagaran.scrubs.listeners.AccelerometerListener;
-import com.zagaran.scrubs.listeners.GPSListener;
-import com.zagaran.scrubs.listeners.PowerStateListener;
-import com.zagaran.scrubs.listeners.SmsSentLogger;
-import com.zagaran.scrubs.storage.CSVFileManager;
-import com.zagaran.scrubs.survey.AudioRecorderActivity;
-import com.zagaran.scrubs.survey.SurveyActivity;
 
 public class DebugInterfaceActivity extends Activity {
 	

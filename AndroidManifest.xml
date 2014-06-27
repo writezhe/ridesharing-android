@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.zagaran.scrubs"
+    package="org.beiwe.app"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -42,7 +42,7 @@
         android:theme="@style/AppTheme" >
         
         <activity
-            android:name="com.zagaran.scrubs.DebugInterfaceActivity"
+            android:name="org.beiwe.app.DebugInterfaceActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -51,11 +51,11 @@
         </activity>
         
         <activity
-            android:name="com.zagaran.scrubs.survey.AudioRecorderActivity"
+            android:name="org.beiwe.app.survey.AudioRecorderActivity"
             android:label="@string/title_activity_audio_recorder" >
         </activity>
 
-        <receiver android:name="com.zagaran.scrubs.listeners.PowerStateListener" >
+        <receiver android:name="org.beiwe.app.listeners.PowerStateListener">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
@@ -70,21 +70,20 @@
             </intent-filter>
         </receiver>
         
-        <receiver android:name="com.zagaran.scrubs.listeners.SmsReceivedLogger" >
+        <receiver android:name="org.beiwe.app.listeners.SmsReceivedLogger">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
 
         <service
-            android:name="com.zagaran.scrubs.BackgroundProcess"
+            android:name="org.beiwe.app.BackgroundProcess"
             android:exported="false"
             android:label="BackgroundProcess-thing" >
         </service>
 
         <activity
-            android:name="com.zagaran.scrubs.survey.SurveyActivity"
-            android:label="@string/title_activity_survey" >
+            android:name="org.beiwe.app.survey.SurveyActivity" >
         </activity>
     </application>
 

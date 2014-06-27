@@ -1,8 +1,8 @@
-package com.zagaran.scrubs;
+package org.beiwe.app;
 
-import com.zagaran.scrubs.listeners.PowerStateListener;
-import com.zagaran.scrubs.listeners.SmsSentLogger;
-import com.zagaran.scrubs.storage.CSVFileManager;
+import org.beiwe.app.listeners.PowerStateListener;
+import org.beiwe.app.listeners.SmsSentLogger;
+import org.beiwe.app.storage.CSVFileManager;
 
 import android.annotation.TargetApi;
 import android.app.Service;

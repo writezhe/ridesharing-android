@@ -1,12 +1,13 @@
-package com.zagaran.scrubs.storage;
+package org.beiwe.app.storage;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import com.zagaran.scrubs.listeners.AccelerometerListener;
-import com.zagaran.scrubs.listeners.GPSListener;
+import org.beiwe.app.listeners.AccelerometerListener;
+import org.beiwe.app.listeners.GPSListener;
+
 
 import android.content.Context;
 import android.util.Log;

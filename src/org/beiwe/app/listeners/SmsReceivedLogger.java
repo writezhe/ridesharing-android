@@ -1,4 +1,4 @@
-package com.zagaran.scrubs.listeners;
+package org.beiwe.app.listeners;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

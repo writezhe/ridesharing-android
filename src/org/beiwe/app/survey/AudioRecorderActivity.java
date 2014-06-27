@@ -1,15 +1,12 @@
-package com.zagaran.scrubs.survey;
+package org.beiwe.app.survey;
 
 import java.io.IOException;
 
-import com.zagaran.scrubs.R;
-import com.zagaran.scrubs.R.id;
-import com.zagaran.scrubs.R.layout;
+import org.beiwe.app.R;
 
 import android.app.Activity;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;

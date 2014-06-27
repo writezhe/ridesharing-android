@@ -1,4 +1,7 @@
-package com.zagaran.scrubs.listeners;
+package org.beiwe.app.listeners;
+
+import org.beiwe.app.BackgroundProcess;
+import org.beiwe.app.storage.CSVFileManager;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,12 +10,8 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 
-import com.zagaran.scrubs.BackgroundProcess;
-import com.zagaran.scrubs.storage.CSVFileManager;
 
 /**
  * Screen On/Off, Power Connect/Disconnect, Device Boot/Reboot/Shutdown, Airplane Mode.

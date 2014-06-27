@@ -1,4 +1,4 @@
-package com.zagaran.scrubs.storage;
+package org.beiwe.app.storage;
 
 public class AudioFileManager {
 

@@ -1,4 +1,4 @@
-package com.zagaran.scrubs.survey;
+package org.beiwe.app.survey;
 
 public class SurveyTextFieldType {
 	public enum Type {

@@ -1,4 +1,4 @@
-package com.zagaran.scrubs.storage;
+package org.beiwe.app.storage;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
