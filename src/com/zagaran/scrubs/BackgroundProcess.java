@@ -4,15 +4,19 @@ import com.zagaran.scrubs.listeners.PowerStateListener;
 import com.zagaran.scrubs.listeners.SmsSentLogger;
 import com.zagaran.scrubs.storage.CSVFileManager;
 
+import android.annotation.TargetApi;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.util.Log;
  
 
@@ -59,6 +63,26 @@ public class BackgroundProcess extends Service {
 		filter.addAction(Intent.ACTION_SCREEN_OFF);
 		final BroadcastReceiver mReceiver = new PowerStateListener();
 		registerReceiver(mReceiver, filter);
+	}
+
+	//TODO: research targetApi thing.
+	@SuppressWarnings("deprecation")
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+	
+	public synchronized void doAirplaneModeThings(){
+		//MUST check if airplane mode is enabled, cannot trust the system broadcasts if it is toggled quickly.
+		Boolean AirplaneModeEnabled = null;
+		ContentResolver resolver = appContext.getContentResolver();
+	    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+	        AirplaneModeEnabled = Settings.System.getInt(resolver, Settings.System.AIRPLANE_MODE_ON, 0) != 0; }
+	    else { AirplaneModeEnabled = Settings.Global.getInt(resolver, Settings.Global.AIRPLANE_MODE_ON, 0) != 0; }
+	    
+//	    if (AirplaneModeEnabled){
+//	    	disable things
+//	    }
+//	    else {
+//	    	enable things
+//	    }
 	}
 	
 /*###############################################################################

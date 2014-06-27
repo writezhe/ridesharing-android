@@ -8,6 +8,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 
 import com.zagaran.scrubs.BackgroundProcess;
@@ -17,6 +18,8 @@ import com.zagaran.scrubs.storage.CSVFileManager;
  * Screen On/Off, Power Connect/Disconnect, Device Boot/Reboot/Shutdown, Airplane Mode.
  * Listens for power state changes.
  * @author Josh Zagorsky, Eli Jones, May/June 2014 */
+
+
 
 public class PowerStateListener extends BroadcastReceiver {
 	String header = "time, event\n";
@@ -101,14 +104,10 @@ public class PowerStateListener extends BroadcastReceiver {
 		if (intent.getAction().equals(Intent.ACTION_SHUTDOWN)) { make_log_statement("Device shut down signal received"); }
 		if (intent.getAction().equals(Intent.ACTION_REBOOT)) { make_log_statement("Device reboot signal received"); }
 		
+		//Order is not guaranteed for the airplane mode change intent, so we have to call the 
+		//BackgroundProcess doAirplaneModeThings().  This function is idempotent and synchronized.
 		if (intent.getAction().equals(Intent.ACTION_AIRPLANE_MODE_CHANGED)) { 
-			make_log_statement("Airplane mode"); 
-			Bundle steve = intent.getExtras();
-			intent.getBooleanExtra(name, defaultValue)
-			intent.getBundleExtra(name)
-			make_log_statement("\nbundle: " + .toString() + "\n");
-			intent.getBooleanArrayExtra(name)
-			make_log_statement("\nbundle: " + steve.toString() + "\n");
+//			BackgroundProcess.doAirplaneModeThings
 		}
 	}
 }
