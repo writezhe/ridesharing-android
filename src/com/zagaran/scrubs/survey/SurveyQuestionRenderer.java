@@ -16,10 +16,12 @@ public class SurveyQuestionRenderer {
 
 	private Context appContext;
 	private LayoutInflater inflater;
+	private SurveyInputRecorder inputRecorder;
 	
 	public SurveyQuestionRenderer(Context applicationContext) {
 		appContext = applicationContext;
 		inflater = (LayoutInflater) appContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		inputRecorder = new SurveyInputRecorder();
 
 		/* XML views inflated by an Activity render with the app's default
 		 * style (set in the Manifest.XML), but for some reason, XML views
@@ -75,6 +77,9 @@ public class SurveyQuestionRenderer {
 		// Set the slider's range and default/starting value
 		slider.setMax(numberOfValues - 1);
 		slider.setProgress(defaultValue);
+
+		// Set the slider to listen for and record user input
+		slider.setOnSeekBarChangeListener(inputRecorder.onSeekBarChangeListener);
 		
 		return question;
 	}
@@ -112,6 +117,9 @@ public class SurveyQuestionRenderer {
 			radioGroup.addView(radioButton);
 		}
 		
+		// Set the group of radio buttons to listen for and record user input
+		radioGroup.setOnCheckedChangeListener(inputRecorder.onCheckedChangeListener);
+		
 		return question;
 	}
 	
@@ -135,13 +143,23 @@ public class SurveyQuestionRenderer {
 		// Loop through the options strings, and make each one a checkbox option
 		if (options != null) {
 			for (int i = 0; i < options.length; i++) {
+				
+				// Inflate the checkbox from an XML layout file
 				CheckBox checkbox = (CheckBox) inflater.inflate(R.layout.survey_checkbox, null);
+				
+				// Set the text if it's provided; otherwise leave text as default error message
 				if (options[i] != null) {
 					checkbox.setText(options[i]);
 				}
+				
+				// Make the checkbox listen for and record user input
+				checkbox.setOnClickListener(inputRecorder.onCheckboxClickedListener);
+				
+				// Add the checkbox to the list of checkboxes
 				checkboxesList.addView(checkbox);
 			}			
 		}
+		
 		
 		return question;		
 	}
@@ -180,6 +198,10 @@ public class SurveyQuestionRenderer {
 			editText = (EditText) inflater.inflate(R.layout.survey_free_text_input, null);			
 			break;
 		}
+		
+		// Set the text field to listen for and record user input
+		editText.setOnFocusChangeListener(inputRecorder.onFocusChangeListener);
+		
 		LinearLayout textFieldContainer = (LinearLayout) question.findViewById(R.id.textFieldContainer);
 		textFieldContainer.addView(editText);
 		
