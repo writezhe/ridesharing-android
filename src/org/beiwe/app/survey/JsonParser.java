@@ -100,42 +100,47 @@ public class JsonParser {
 	
 	// Gets and cleans the parameters necessary to create an Info Text Box
 	private View renderInfoTextBox(JSONObject jsonQuestion) {
+		String questionID = getStringFromJSONObject(jsonQuestion, "question_id");
 		String infoText = getStringFromJSONObject(jsonQuestion, "question_text");
-		return renderer.createInfoTextbox(infoText);
+		return renderer.createInfoTextbox(questionID, infoText);
 	}
 	
 	
 	// Gets and cleans the parameters necessary to create a Slider Question
 	private View renderSliderQuestion(JSONObject jsonQuestion) {
+		String questionID = getStringFromJSONObject(jsonQuestion, "question_id");
 		String questionText = getStringFromJSONObject(jsonQuestion, "question_text");
 		int numberOfValues = getIntFromJSONObject(jsonQuestion, "number_of_values");
 		int defaultValue = getIntFromJSONObject(jsonQuestion, "default_value");
-		return renderer.createSliderQuestion(questionText, numberOfValues, defaultValue);
+		return renderer.createSliderQuestion(questionID, questionText, numberOfValues, defaultValue);
 	}
 	
 	
 	// Gets and cleans the parameters necessary to create a Radio Button Question
 	private View renderRadioButtonQuestion(JSONObject jsonQuestion) {
+		String questionID = getStringFromJSONObject(jsonQuestion, "question_id");
 		String questionText = getStringFromJSONObject(jsonQuestion, "question_text");
 		String[] answers = getStringArrayFromJSONObject(jsonQuestion, "answers");
-		return renderer.createRadioButtonQuestion(questionText, answers);
+		return renderer.createRadioButtonQuestion(questionID, questionText, answers);
 	}
 	
 	
 	// Gets and cleans the parameters necessary to create a Checkbox Question
 	private View renderCheckboxQuestion(JSONObject jsonQuestion) {
+		String questionID = getStringFromJSONObject(jsonQuestion, "question_id");
 		String questionText = getStringFromJSONObject(jsonQuestion, "question_text");
 		String[] options = getStringArrayFromJSONObject(jsonQuestion, "answers");
-		return renderer.createCheckboxQuestion(questionText, options);
+		return renderer.createCheckboxQuestion(questionID, questionText, options);
 	}
 	
 	
 	// Gets and cleans the parameters necessary to create a Free-Response Question
 	private View renderFreeResponseQuestion(JSONObject jsonQuestion) {
+		String questionID = getStringFromJSONObject(jsonQuestion, "question_id");
 		String questionText = getStringFromJSONObject(jsonQuestion, "question_text");
 		SurveyTextFieldType.Type textFieldType = 
 				getTextFieldTypeFromJSONObject(jsonQuestion, "text_field_type");
-		return renderer.createFreeResponseQuestion(questionText, textFieldType);
+		return renderer.createFreeResponseQuestion(questionID, questionText, textFieldType);
 	}
 
 	

@@ -36,7 +36,7 @@ public class SurveyQuestionRenderer {
 	 * @param infoText The informational text
 	 * @return TextView (to be displayed as question text)
 	 */
-	public TextView createInfoTextbox(String infoText) {
+	public TextView createInfoTextbox(String questionID, String infoText) {
 		TextView infoTextbox = (TextView) inflater.inflate(R.layout.survey_info_textbox, null);
 		
 		// Clean inputs
@@ -58,7 +58,7 @@ public class SurveyQuestionRenderer {
 	 * @param defaultValue Starts at 0; can be as high as (numberOfValues - 1)
 	 * @return LinearLayout A slider bar
 	 */
-	public LinearLayout createSliderQuestion(String questionText, int numberOfValues, int defaultValue) {
+	public LinearLayout createSliderQuestion(String questionID, String questionText, int numberOfValues, int defaultValue) {
 		LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_slider_question, null);
 		SeekBar slider = (SeekBar) question.findViewById(R.id.slider);
 		
@@ -79,7 +79,7 @@ public class SurveyQuestionRenderer {
 		slider.setProgress(defaultValue);
 
 		// Set the slider to listen for and record user input
-		slider.setOnSeekBarChangeListener(inputRecorder.new SliderListener(57));
+		slider.setOnSeekBarChangeListener(inputRecorder.new SliderListener(questionID, questionText));
 		
 		return question;
 	}
@@ -91,7 +91,7 @@ public class SurveyQuestionRenderer {
 	 * @param answers An array of strings that are options matched with radio buttons
 	 * @return RadioGroup A vertical set of radio buttons 
 	 */
-	public LinearLayout createRadioButtonQuestion(String questionText, String[] answers) {
+	public LinearLayout createRadioButtonQuestion(String questionID, String questionText, String[] answers) {
 		LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_radio_button_question, null);
 		RadioGroup radioGroup = (RadioGroup) question.findViewById(R.id.radioGroup);
 		
@@ -118,7 +118,7 @@ public class SurveyQuestionRenderer {
 		}
 		
 		// Set the group of radio buttons to listen for and record user input
-		radioGroup.setOnCheckedChangeListener(inputRecorder.new RadioButtonListener(31));
+		radioGroup.setOnCheckedChangeListener(inputRecorder.new RadioButtonListener(questionID, questionText));
 		
 		return question;
 	}
@@ -130,7 +130,7 @@ public class SurveyQuestionRenderer {
 	 * @param options Each string in options[] will caption one checkbox
 	 * @return LinearLayout a question with a list of checkboxes
 	 */
-	public LinearLayout createCheckboxQuestion(String questionText, String[] options) {
+	public LinearLayout createCheckboxQuestion(String questionID, String questionText, String[] options) {
 		LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_checkbox_question, null);
 		LinearLayout checkboxesList = (LinearLayout) question.findViewById(R.id.checkboxesList);
 		
@@ -153,7 +153,7 @@ public class SurveyQuestionRenderer {
 				}
 				
 				// Make the checkbox listen for and record user input
-				checkbox.setOnClickListener(inputRecorder.new CheckboxListener(9));
+				checkbox.setOnClickListener(inputRecorder.new CheckboxListener(questionID, questionText));
 				
 				// Add the checkbox to the list of checkboxes
 				checkboxesList.addView(checkbox);
@@ -171,7 +171,7 @@ public class SurveyQuestionRenderer {
 	 * @param inputTextType The type of answer (number, text, etc.)
 	 * @return LinearLayout question and answer
 	 */
-	public LinearLayout createFreeResponseQuestion(String questionText, SurveyTextFieldType.Type inputTextType) {
+	public LinearLayout createFreeResponseQuestion(String questionID, String questionText, SurveyTextFieldType.Type inputTextType) {
 		LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_open_response_question, null);
 
 		// Set the text of the question itself
@@ -200,7 +200,7 @@ public class SurveyQuestionRenderer {
 		}
 		
 		// Set the text field to listen for and record user input
-		editText.setOnFocusChangeListener(inputRecorder.new OpenResponseListener(137));
+		editText.setOnFocusChangeListener(inputRecorder.new OpenResponseListener(questionID, questionText));
 		
 		LinearLayout textFieldContainer = (LinearLayout) question.findViewById(R.id.textFieldContainer);
 		textFieldContainer.addView(editText);

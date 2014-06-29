@@ -18,12 +18,15 @@ public class SurveyInputRecorder {
 	// TODO: create a function in this class that escapes commas, carriage returns/newlines, quotes, apostrophes, etc. from text strings
 	
 	
+	/** Listens for a touch/answer to a Slider Question, and records the answer */
 	public class SliderListener implements OnSeekBarChangeListener {
 
-		int questionID;
+		String questionID;
+		String questionText;
 		
-		public SliderListener(int questionID) {
+		public SliderListener(String questionID, String questionText) {
 			this.questionID = questionID;
+			this.questionText = questionText;
 		}
 		
 		@Override
@@ -33,31 +36,34 @@ public class SurveyInputRecorder {
 
 		@Override
 		public void onStartTrackingTouch(SeekBar seekBar) {
-			Log.i("Slider Recorder", "Start tracking SeekBar on Question #" + questionID);
+			Log.i("Slider Recorder", "Start tracking SeekBar on Question #" + questionID + " with text: " + questionText);
 		}
 
 		@Override
 		public void onStopTrackingTouch(SeekBar seekBar) {
 			int progress = seekBar.getProgress();
-			Log.i("Slider Recorder", "User selected " + progress + " on Question #" + questionID);
+			Log.i("Slider Recorder", "User selected " + progress + " on Question #" + questionID + " with text: " + questionText);
 		}
 		
 	}
 	
 	
+	/** Listens for a touch/answer to a Radio Button Question, and records the answer */
 	public class RadioButtonListener implements OnCheckedChangeListener {
 
-		int questionID;
+		String questionID;
+		String questionText;
 		
-		public RadioButtonListener(int questionID) {
+		public RadioButtonListener(String questionID, String questionText) {
 			this.questionID = questionID;
+			this.questionText = questionText;
 		}
 		
 		@Override
 		public void onCheckedChanged(RadioGroup group, int checkedId) {
 			RadioButton selectedButton = (RadioButton) group.findViewById(checkedId);
 			if (selectedButton.isChecked()) {
-				Log.i("RadioButton Recorder", "Selected " + selectedButton.getText() + " for Question #" + questionID);
+				Log.i("RadioButton Recorder", "Selected " + selectedButton.getText() + " for Question #" + questionID + " with text: " + questionText);
 			}
 			else {
 				Log.i("RadioButton Recorder", "Dunno why, but " + selectedButton.getText() + "is apparently no longer checked");					
@@ -66,12 +72,15 @@ public class SurveyInputRecorder {
 	}
 	
 	
+	/** Listens for a touch/answer to a Checkbox Question, and records the answer */
 	public class CheckboxListener implements OnClickListener {
 
-		int questionID;
+		String questionID;
+		String questionText;
 		
-		public CheckboxListener(int questionID) {
+		public CheckboxListener(String questionID, String questionText) {
 			this.questionID = questionID;
+			this.questionText = questionText;
 		}
 		
 		@Override
@@ -97,18 +106,21 @@ public class SurveyInputRecorder {
 					}
 				}
 				
-				Log.i("Checkbox Recorder", "Selected: " + checkedOptionsList + " on question #" + questionID);
+				Log.i("Checkbox Recorder", "Selected: " + checkedOptionsList + " on question #" + questionID + " with text: " + questionText);
 			}
 		}		
 	}
 	
 	
+	/** Listens for an input/answer to an Open/Free Response Question, and records the answer */
 	public class OpenResponseListener implements OnFocusChangeListener {
 
-		int questionID;
+		String questionID;
+		String questionText;
 		
-		public OpenResponseListener(int questionID) {
+		public OpenResponseListener(String questionID, String questionText) {
 			this.questionID = questionID;
+			this.questionText = questionText;
 		}
 		
 		@Override
@@ -122,12 +134,10 @@ public class SurveyInputRecorder {
 				if (v instanceof EditText) {
 					EditText textField = (EditText) v;
 					String answer = textField.getText().toString();
-					Log.i("FreeResponse Recorder", "USER ENTERED ANSWER = " + answer + " for question #" + questionID);
+					Log.i("FreeResponse Recorder", "USER ENTERED ANSWER = " + answer + " for question #" + questionID + " with text: " + questionText);
 				}
-			}
-			
+			}			
 		}
-		
 	}
 
 }
