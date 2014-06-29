@@ -18,42 +18,61 @@ public class SurveyInputRecorder {
 	// TODO: create a function in this class that escapes commas, carriage returns/newlines, quotes, apostrophes, etc. from text strings
 	
 	
-	public OnSeekBarChangeListener onSeekBarChangeListener = new OnSeekBarChangeListener() {
+	public class SliderListener implements OnSeekBarChangeListener {
+
+		int questionID;
 		
-		@Override
-		public void onStopTrackingTouch(SeekBar seekBar) {
-			int progress = seekBar.getProgress();
-			Log.i("Slider Recorder", "User selected " + progress);
-		}
-		
-		@Override
-		public void onStartTrackingTouch(SeekBar seekBar) {
-			Log.i("Slider Recorder", "Start tracking SeekBar");
+		public SliderListener(int questionID) {
+			this.questionID = questionID;
 		}
 		
 		@Override
 		public void onProgressChanged(SeekBar seekBar, int progress,
 				boolean fromUser) {
 		}
-	};
+
+		@Override
+		public void onStartTrackingTouch(SeekBar seekBar) {
+			Log.i("Slider Recorder", "Start tracking SeekBar on Question #" + questionID);
+		}
+
+		@Override
+		public void onStopTrackingTouch(SeekBar seekBar) {
+			int progress = seekBar.getProgress();
+			Log.i("Slider Recorder", "User selected " + progress + " on Question #" + questionID);
+		}
+		
+	}
 	
 	
-	public OnCheckedChangeListener onCheckedChangeListener = new OnCheckedChangeListener() {
+	public class RadioButtonListener implements OnCheckedChangeListener {
+
+		int questionID;
+		
+		public RadioButtonListener(int questionID) {
+			this.questionID = questionID;
+		}
 		
 		@Override
 		public void onCheckedChanged(RadioGroup group, int checkedId) {
 			RadioButton selectedButton = (RadioButton) group.findViewById(checkedId);
 			if (selectedButton.isChecked()) {
-				Log.i("RadioButton Recorder", "Selected " + selectedButton.getText());
+				Log.i("RadioButton Recorder", "Selected " + selectedButton.getText() + " for Question #" + questionID);
 			}
 			else {
 				Log.i("RadioButton Recorder", "Dunno why, but " + selectedButton.getText() + "is apparently no longer checked");					
 			}			
+		}		
+	}
+	
+	
+	public class CheckboxListener implements OnClickListener {
+
+		int questionID;
+		
+		public CheckboxListener(int questionID) {
+			this.questionID = questionID;
 		}
-	};
-	
-	
-	public OnClickListener onCheckboxClickedListener = new OnClickListener() {
 		
 		@Override
 		public void onClick(View view) {
@@ -78,13 +97,19 @@ public class SurveyInputRecorder {
 					}
 				}
 				
-				Log.i("Checkbox Recorder", "Selected: " + checkedOptionsList);
+				Log.i("Checkbox Recorder", "Selected: " + checkedOptionsList + " on question #" + questionID);
 			}
+		}		
+	}
+	
+	
+	public class OpenResponseListener implements OnFocusChangeListener {
+
+		int questionID;
+		
+		public OpenResponseListener(int questionID) {
+			this.questionID = questionID;
 		}
-	};
-	
-	
-	public OnFocusChangeListener onFocusChangeListener = new OnFocusChangeListener() {
 		
 		@Override
 		public void onFocusChange(View v, boolean hasFocus) {
@@ -97,11 +122,12 @@ public class SurveyInputRecorder {
 				if (v instanceof EditText) {
 					EditText textField = (EditText) v;
 					String answer = textField.getText().toString();
-					Log.i("FreeResponse Recorder", "USER ENTERED ANSWER = " + answer);
+					Log.i("FreeResponse Recorder", "USER ENTERED ANSWER = " + answer + " for question #" + questionID);
 				}
 			}
 			
 		}
-	};
+		
+	}
 
 }

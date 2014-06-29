@@ -79,7 +79,7 @@ public class SurveyQuestionRenderer {
 		slider.setProgress(defaultValue);
 
 		// Set the slider to listen for and record user input
-		slider.setOnSeekBarChangeListener(inputRecorder.onSeekBarChangeListener);
+		slider.setOnSeekBarChangeListener(inputRecorder.new SliderListener(57));
 		
 		return question;
 	}
@@ -118,7 +118,7 @@ public class SurveyQuestionRenderer {
 		}
 		
 		// Set the group of radio buttons to listen for and record user input
-		radioGroup.setOnCheckedChangeListener(inputRecorder.onCheckedChangeListener);
+		radioGroup.setOnCheckedChangeListener(inputRecorder.new RadioButtonListener(31));
 		
 		return question;
 	}
@@ -153,7 +153,7 @@ public class SurveyQuestionRenderer {
 				}
 				
 				// Make the checkbox listen for and record user input
-				checkbox.setOnClickListener(inputRecorder.onCheckboxClickedListener);
+				checkbox.setOnClickListener(inputRecorder.new CheckboxListener(9));
 				
 				// Add the checkbox to the list of checkboxes
 				checkboxesList.addView(checkbox);
@@ -200,7 +200,7 @@ public class SurveyQuestionRenderer {
 		}
 		
 		// Set the text field to listen for and record user input
-		editText.setOnFocusChangeListener(inputRecorder.onFocusChangeListener);
+		editText.setOnFocusChangeListener(inputRecorder.new OpenResponseListener(137));
 		
 		LinearLayout textFieldContainer = (LinearLayout) question.findViewById(R.id.textFieldContainer);
 		textFieldContainer.addView(editText);
