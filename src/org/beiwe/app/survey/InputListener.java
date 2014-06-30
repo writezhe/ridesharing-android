@@ -13,9 +13,6 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
 public class InputListener {
-
-	// TODO: create a function in this class that escapes commas, carriage returns/newlines, quotes, apostrophes, etc. from text strings
-	
 	
 	/** Listens for a touch/answer to a Slider Question, and records the answer */
 	public class SliderListener implements OnSeekBarChangeListener {
@@ -64,8 +61,8 @@ public class InputListener {
 				/* It should not be possible to un-check a radio button, but if
 				 * that happens, record the answer as an empty string */
 				AnswerRecorder.recordAnswer("", questionDescription);
-			}			
-		}		
+			}
+		}
 	}
 	
 	

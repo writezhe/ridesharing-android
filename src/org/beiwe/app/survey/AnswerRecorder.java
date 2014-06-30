@@ -5,12 +5,24 @@ import android.util.Log;
 public class AnswerRecorder {
 	
 	public static void recordAnswer(String answer, QuestionDescription questionDescription) {
-		Log.i("AnswerRecorder", "Question ID: " + questionDescription.getId());
-		Log.i("AnswerRecorder", "Question Type: " + questionDescription.getType());
-		Log.i("AnswerRecorder", "Question Text: " + questionDescription.getText());
-		Log.i("AnswerRecorder", "Question Answer Options: " + questionDescription.getOptions());
-		Log.i("AnswerRecorder", "Answer: " + answer);
-		Log.i("AnswerRecorder", "__________________");
+		String line = "";
+		String delimiter = "" + '\t';
+		line += sanitizeString(questionDescription.getId()) + delimiter;
+		line += sanitizeString(questionDescription.getType()) + delimiter;
+		line += sanitizeString(questionDescription.getText()) + delimiter;
+		line += sanitizeString(questionDescription.getOptions()) + delimiter;
+		line += sanitizeString(answer) + delimiter;
+		Log.i("AnswerRecorder", line);
 	}
+
 	
+	/**
+	 * Sanitize a string for use in a Tab-Separated Values file
+	 * @param input string to be sanitized
+	 * @return String with tabs and newlines removed
+	 */
+	private static String sanitizeString(String input) {
+		input = input.replaceAll("[\t\n\r]", "  ");
+		return input;
+	}
 }
