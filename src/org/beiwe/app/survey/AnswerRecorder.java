@@ -25,4 +25,5 @@ public class AnswerRecorder {
 		input = input.replaceAll("[\t\n\r]", "  ");
 		return input;
 	}
+
 }

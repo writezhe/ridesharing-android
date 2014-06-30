@@ -84,7 +84,8 @@
 
         <activity
             android:name="org.beiwe.app.survey.SurveyActivity"
-            android:label="@string/title_activity_survey" >
+            android:label="@string/title_activity_survey"
+            android:configChanges="orientation" >
         </activity>
     </application>
 

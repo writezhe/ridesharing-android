@@ -6,6 +6,7 @@ import org.beiwe.app.R;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -20,11 +21,16 @@ public class QuestionRenderer {
 	private LayoutInflater inflater;
 	private InputListener inputRecorder;
 	
+	private int viewID;
+	
 	public QuestionRenderer(Context applicationContext) {
+		
 		appContext = applicationContext;
 		inflater = (LayoutInflater) appContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		inputRecorder = new InputListener();
-
+		
+		viewID = 100;
+		
 		/* XML views inflated by an Activity render with the app's default
 		 * style (set in the Manifest.XML), but for some reason, XML views
 		 * inflated by this class don't render with the app's default style,
@@ -39,6 +45,7 @@ public class QuestionRenderer {
 	 * @return TextView (to be displayed as question text)
 	 */
 	public TextView createInfoTextbox(String questionID, String infoText) {
+		
 		TextView infoTextbox = (TextView) inflater.inflate(R.layout.survey_info_textbox, null);
 		
 		// Clean inputs
@@ -60,7 +67,9 @@ public class QuestionRenderer {
 	 * @param defaultValue Starts at 0; can be as high as (numberOfValues - 1)
 	 * @return LinearLayout A slider bar
 	 */
-	public LinearLayout createSliderQuestion(String questionID, String questionText, int numberOfValues, int defaultValue) {
+	public LinearLayout createSliderQuestion(String questionID, 
+			String questionText, int numberOfValues, int defaultValue) {
+		
 		LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_slider_question, null);
 		SeekBar slider = (SeekBar) question.findViewById(R.id.slider);
 		
@@ -80,6 +89,8 @@ public class QuestionRenderer {
 		slider.setMax(numberOfValues - 1);
 		slider.setProgress(defaultValue);
 
+		setViewId(slider);
+		
 		// Create text strings that represent the question and its answer choices
 		String options = "From 0 to " + numberOfValues + "; default " + defaultValue;
 		QuestionDescription questionDescription = 
@@ -99,6 +110,7 @@ public class QuestionRenderer {
 	 * @return RadioGroup A vertical set of radio buttons 
 	 */
 	public LinearLayout createRadioButtonQuestion(String questionID, String questionText, String[] answers) {
+		
 		LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_radio_button_question, null);
 		RadioGroup radioGroup = (RadioGroup) question.findViewById(R.id.radioGroup);
 		
@@ -120,10 +132,11 @@ public class QuestionRenderer {
 			RadioButton radioButton = (RadioButton) inflater.inflate(R.layout.survey_radio_button, null);
 			if (answers[i] != null) {
 				radioButton.setText(answers[i]);
-			}
+			}			
+			setViewId(radioButton);
 			radioGroup.addView(radioButton);
 		}
-
+		
 		// Create text strings that represent the question and its answer choices
 		QuestionDescription questionDescription = 
 				new QuestionDescription(questionID, "Radio Button Question", questionText, Arrays.toString(answers));
@@ -142,6 +155,7 @@ public class QuestionRenderer {
 	 * @return LinearLayout a question with a list of checkboxes
 	 */
 	public LinearLayout createCheckboxQuestion(String questionID, String questionText, String[] options) {
+		
 		LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_checkbox_question, null);
 		LinearLayout checkboxesList = (LinearLayout) question.findViewById(R.id.checkboxesList);
 		
@@ -167,6 +181,8 @@ public class QuestionRenderer {
 					checkbox.setText(options[i]);
 				}
 				
+				setViewId(checkbox);
+				
 				// Make the checkbox listen for and record user input
 				checkbox.setOnClickListener(inputRecorder.new CheckboxListener(questionDescription));
 				
@@ -185,7 +201,9 @@ public class QuestionRenderer {
 	 * @param inputTextType The type of answer (number, text, etc.)
 	 * @return LinearLayout question and answer
 	 */
-	public LinearLayout createFreeResponseQuestion(String questionID, String questionText, TextFieldType.Type inputTextType) {
+	public LinearLayout createFreeResponseQuestion(String questionID, 
+			String questionText, TextFieldType.Type inputTextType) {
+		
 		LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_open_response_question, null);
 
 		// Set the text of the question itself
@@ -212,6 +230,8 @@ public class QuestionRenderer {
 			editText = (EditText) inflater.inflate(R.layout.survey_free_text_input, null);			
 			break;
 		}
+
+		setViewId(editText);
 		
 		// Create text strings that represent the question and its answer choices
 		String options = "Text-field input type = " + inputTextType.toString();
@@ -230,6 +250,16 @@ public class QuestionRenderer {
 		// TODO: when you rotate the screen, the EditTexts get wiped clear, and some of the sliders jump to 100%. Debug this.
 		
 		return question;
+	}
+	
+	
+	/**
+	 * Set the view's ID so that its data are automatically saved when the screen rotates
+	 * @param view
+	 */
+	private synchronized void setViewId(View view) {
+		view.setId(viewID);
+		viewID++;
 	}
 
 }
