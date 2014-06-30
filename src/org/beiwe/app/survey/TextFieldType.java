@@ -1,6 +1,6 @@
 package org.beiwe.app.survey;
 
-public class SurveyTextFieldType {
+public class TextFieldType {
 	public enum Type {
 		NUMERIC,
 		SINGLE_LINE_TEXT,

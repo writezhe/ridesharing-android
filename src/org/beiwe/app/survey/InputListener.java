@@ -1,6 +1,5 @@
 package org.beiwe.app.survey;
 
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
@@ -13,7 +12,7 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
-public class SurveyInputRecorder {
+public class InputListener {
 
 	// TODO: create a function in this class that escapes commas, carriage returns/newlines, quotes, apostrophes, etc. from text strings
 	
@@ -21,12 +20,10 @@ public class SurveyInputRecorder {
 	/** Listens for a touch/answer to a Slider Question, and records the answer */
 	public class SliderListener implements OnSeekBarChangeListener {
 
-		String questionID;
-		String questionText;
+		QuestionDescription questionDescription;
 		
-		public SliderListener(String questionID, String questionText) {
-			this.questionID = questionID;
-			this.questionText = questionText;
+		public SliderListener(QuestionDescription questionDescription) {
+			this.questionDescription = questionDescription;
 		}
 		
 		@Override
@@ -36,13 +33,13 @@ public class SurveyInputRecorder {
 
 		@Override
 		public void onStartTrackingTouch(SeekBar seekBar) {
-			Log.i("Slider Recorder", "Start tracking SeekBar on Question #" + questionID + " with text: " + questionText);
+			// TODO: Start tracking touch if JP wants
 		}
 
 		@Override
 		public void onStopTrackingTouch(SeekBar seekBar) {
-			int progress = seekBar.getProgress();
-			Log.i("Slider Recorder", "User selected " + progress + " on Question #" + questionID + " with text: " + questionText);
+			String answer = "" + seekBar.getProgress();
+			AnswerRecorder.recordAnswer(answer, questionDescription);
 		}
 		
 	}
@@ -51,22 +48,22 @@ public class SurveyInputRecorder {
 	/** Listens for a touch/answer to a Radio Button Question, and records the answer */
 	public class RadioButtonListener implements OnCheckedChangeListener {
 
-		String questionID;
-		String questionText;
+		QuestionDescription questionDescription;
 		
-		public RadioButtonListener(String questionID, String questionText) {
-			this.questionID = questionID;
-			this.questionText = questionText;
+		public RadioButtonListener(QuestionDescription questionDescription) {
+			this.questionDescription = questionDescription;
 		}
 		
 		@Override
 		public void onCheckedChanged(RadioGroup group, int checkedId) {
 			RadioButton selectedButton = (RadioButton) group.findViewById(checkedId);
 			if (selectedButton.isChecked()) {
-				Log.i("RadioButton Recorder", "Selected " + selectedButton.getText() + " for Question #" + questionID + " with text: " + questionText);
+				AnswerRecorder.recordAnswer(selectedButton.getText().toString(), questionDescription);
 			}
 			else {
-				Log.i("RadioButton Recorder", "Dunno why, but " + selectedButton.getText() + "is apparently no longer checked");					
+				/* It should not be possible to un-check a radio button, but if
+				 * that happens, record the answer as an empty string */
+				AnswerRecorder.recordAnswer("", questionDescription);
 			}			
 		}		
 	}
@@ -75,12 +72,10 @@ public class SurveyInputRecorder {
 	/** Listens for a touch/answer to a Checkbox Question, and records the answer */
 	public class CheckboxListener implements OnClickListener {
 
-		String questionID;
-		String questionText;
+		QuestionDescription questionDescription;
 		
-		public CheckboxListener(String questionID, String questionText) {
-			this.questionID = questionID;
-			this.questionText = questionText;
+		public CheckboxListener(QuestionDescription questionDescription) {
+			this.questionDescription = questionDescription;
 		}
 		
 		@Override
@@ -89,7 +84,8 @@ public class SurveyInputRecorder {
 			// If it's a CheckBox and its parent is a LinearLayout
 			if ((view instanceof CheckBox) && (view.getParent() instanceof LinearLayout)) {
 				
-				String checkedOptionsList = "";
+				// Make a list of the checked answers that reads like a printed array of strings
+				String answersList = "[";
 				
 				// Iterate over the whole list of CheckBoxes in this LinearLayout
 				LinearLayout checkboxesList = (LinearLayout) view.getParent();
@@ -101,12 +97,18 @@ public class SurveyInputRecorder {
 						
 						// If this CheckBox is selected, add it to the list of selected answers
 						if (checkBox.isChecked()) {
-							checkedOptionsList += "'" + checkBox.getText() + "' & ";
+							answersList += checkBox.getText() + ", ";
 						}
 					}
 				}
 				
-				Log.i("Checkbox Recorder", "Selected: " + checkedOptionsList + " on question #" + questionID + " with text: " + questionText);
+				// Trim the last comma off the list so that it's formatted like a String[] printed to a String
+				if (answersList.length() > 3) {
+					answersList = answersList.substring(0, answersList.length() - 2);
+				}
+				answersList += "]";
+				
+				AnswerRecorder.recordAnswer(answersList, questionDescription);
 			}
 		}		
 	}
@@ -115,26 +117,24 @@ public class SurveyInputRecorder {
 	/** Listens for an input/answer to an Open/Free Response Question, and records the answer */
 	public class OpenResponseListener implements OnFocusChangeListener {
 
-		String questionID;
-		String questionText;
+		QuestionDescription questionDescription;
 		
-		public OpenResponseListener(String questionID, String questionText) {
-			this.questionID = questionID;
-			this.questionText = questionText;
+		public OpenResponseListener(QuestionDescription questionDescription) {
+			this.questionDescription = questionDescription;
 		}
 		
 		@Override
 		public void onFocusChange(View v, boolean hasFocus) {
 			if (hasFocus) {
 				// The user just selected the input box
-				Log.i("FreeResponse Recorder", "just gained focus");
+				// TODO: figure out if JP wants us to record this event
 			}
 			else {
 				// The user just selected away from the input box
 				if (v instanceof EditText) {
 					EditText textField = (EditText) v;
 					String answer = textField.getText().toString();
-					Log.i("FreeResponse Recorder", "USER ENTERED ANSWER = " + answer + " for question #" + questionID + " with text: " + questionText);
+					AnswerRecorder.recordAnswer(answer, questionDescription);
 				}
 			}			
 		}

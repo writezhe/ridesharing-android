@@ -10,7 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 
 import org.beiwe.app.R;
-import org.beiwe.app.survey.SurveyTextFieldType.Type;
+import org.beiwe.app.survey.TextFieldType.Type;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,14 +24,14 @@ import android.widget.LinearLayout;
 public class JsonParser {
 
 	private Context appContext;
-	private SurveyQuestionRenderer renderer;
+	private QuestionRenderer renderer;
 	private View errorWidget;
 	
 	
 	// Constructor exists to set up class variables
 	public JsonParser(Context applicationContext) {
 		appContext = applicationContext;
-		renderer = new SurveyQuestionRenderer(applicationContext);
+		renderer = new QuestionRenderer(applicationContext);
 		
 		// Create an error message widget that displays by default
 		LayoutInflater inflater = 
@@ -138,7 +138,7 @@ public class JsonParser {
 	private View renderFreeResponseQuestion(JSONObject jsonQuestion) {
 		String questionID = getStringFromJSONObject(jsonQuestion, "question_id");
 		String questionText = getStringFromJSONObject(jsonQuestion, "question_text");
-		SurveyTextFieldType.Type textFieldType = 
+		TextFieldType.Type textFieldType = 
 				getTextFieldTypeFromJSONObject(jsonQuestion, "text_field_type");
 		return renderer.createFreeResponseQuestion(questionID, questionText, textFieldType);
 	}
@@ -236,7 +236,7 @@ public class JsonParser {
 	 * @param key the JSON key
 	 * @return return SINGLE_LINE_TEXT as the default instead of throwing a JSONException
 	 */
-	private SurveyTextFieldType.Type getTextFieldTypeFromJSONObject(JSONObject obj, String key) {
+	private TextFieldType.Type getTextFieldTypeFromJSONObject(JSONObject obj, String key) {
 		try {
 			return Type.valueOf(obj.getString(key));
 		} catch (JSONException e) {

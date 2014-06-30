@@ -1,5 +1,7 @@
 package org.beiwe.app.survey;
 
+import java.util.Arrays;
+
 import org.beiwe.app.R;
 
 import android.content.Context;
@@ -12,16 +14,16 @@ import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-public class SurveyQuestionRenderer {
+public class QuestionRenderer {
 
 	private Context appContext;
 	private LayoutInflater inflater;
-	private SurveyInputRecorder inputRecorder;
+	private InputListener inputRecorder;
 	
-	public SurveyQuestionRenderer(Context applicationContext) {
+	public QuestionRenderer(Context applicationContext) {
 		appContext = applicationContext;
 		inflater = (LayoutInflater) appContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		inputRecorder = new SurveyInputRecorder();
+		inputRecorder = new InputListener();
 
 		/* XML views inflated by an Activity render with the app's default
 		 * style (set in the Manifest.XML), but for some reason, XML views
@@ -78,8 +80,13 @@ public class SurveyQuestionRenderer {
 		slider.setMax(numberOfValues - 1);
 		slider.setProgress(defaultValue);
 
+		// Create text strings that represent the question and its answer choices
+		String options = "From 0 to " + numberOfValues + "; default " + defaultValue;
+		QuestionDescription questionDescription = 
+				new QuestionDescription(questionID, "Slider Question", questionText, options);
+		
 		// Set the slider to listen for and record user input
-		slider.setOnSeekBarChangeListener(inputRecorder.new SliderListener(questionID, questionText));
+		slider.setOnSeekBarChangeListener(inputRecorder.new SliderListener(questionDescription));
 		
 		return question;
 	}
@@ -116,9 +123,13 @@ public class SurveyQuestionRenderer {
 			}
 			radioGroup.addView(radioButton);
 		}
-		
+
+		// Create text strings that represent the question and its answer choices
+		QuestionDescription questionDescription = 
+				new QuestionDescription(questionID, "Radio Button Question", questionText, Arrays.toString(answers));
+
 		// Set the group of radio buttons to listen for and record user input
-		radioGroup.setOnCheckedChangeListener(inputRecorder.new RadioButtonListener(questionID, questionText));
+		radioGroup.setOnCheckedChangeListener(inputRecorder.new RadioButtonListener(questionDescription));
 		
 		return question;
 	}
@@ -140,6 +151,10 @@ public class SurveyQuestionRenderer {
 			questionTextView.setText(questionText);
 		}
 		
+		// Create text strings that represent the question and its answer choices
+		QuestionDescription questionDescription = 
+				new QuestionDescription(questionID, "Checkbox Question", questionText, Arrays.toString(options));
+
 		// Loop through the options strings, and make each one a checkbox option
 		if (options != null) {
 			for (int i = 0; i < options.length; i++) {
@@ -153,13 +168,12 @@ public class SurveyQuestionRenderer {
 				}
 				
 				// Make the checkbox listen for and record user input
-				checkbox.setOnClickListener(inputRecorder.new CheckboxListener(questionID, questionText));
+				checkbox.setOnClickListener(inputRecorder.new CheckboxListener(questionDescription));
 				
 				// Add the checkbox to the list of checkboxes
 				checkboxesList.addView(checkbox);
 			}			
-		}
-		
+		}		
 		
 		return question;		
 	}
@@ -171,7 +185,7 @@ public class SurveyQuestionRenderer {
 	 * @param inputTextType The type of answer (number, text, etc.)
 	 * @return LinearLayout question and answer
 	 */
-	public LinearLayout createFreeResponseQuestion(String questionID, String questionText, SurveyTextFieldType.Type inputTextType) {
+	public LinearLayout createFreeResponseQuestion(String questionID, String questionText, TextFieldType.Type inputTextType) {
 		LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_open_response_question, null);
 
 		// Set the text of the question itself
@@ -199,8 +213,13 @@ public class SurveyQuestionRenderer {
 			break;
 		}
 		
+		// Create text strings that represent the question and its answer choices
+		String options = "Text-field input type = " + inputTextType.toString();
+		QuestionDescription questionDescription = 
+				new QuestionDescription(questionID, "Open Response Question", questionText, options);
+
 		// Set the text field to listen for and record user input
-		editText.setOnFocusChangeListener(inputRecorder.new OpenResponseListener(questionID, questionText));
+		editText.setOnFocusChangeListener(inputRecorder.new OpenResponseListener(questionDescription));
 		
 		LinearLayout textFieldContainer = (LinearLayout) question.findViewById(R.id.textFieldContainer);
 		textFieldContainer.addView(editText);
