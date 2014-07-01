@@ -13,6 +13,8 @@ public class AnswerRecorder {
 		line += sanitizeString(questionDescription.getOptions()) + delimiter;
 		line += sanitizeString(answer) + delimiter;
 		Log.i("AnswerRecorder", line);
+		
+		// TODO: print this to a TSV file
 	}
 
 	

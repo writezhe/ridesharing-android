@@ -1,5 +1,6 @@
 package org.beiwe.app.survey;
 
+import android.content.Context;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
@@ -13,6 +14,13 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
 public class InputListener {
+	
+	private Context appContext;
+	
+	public InputListener(Context applicationContext) {
+		this.appContext = applicationContext;
+	}
+	
 	
 	/** Listens for a touch/answer to a Slider Question, and records the answer */
 	public class SliderListener implements OnSeekBarChangeListener {
@@ -125,6 +133,12 @@ public class InputListener {
 			if (hasFocus) {
 				// The user just selected the input box
 				// TODO: figure out if JP wants us to record this event
+
+				// Set the EditText so that if the user taps outside, the keyboard disappears
+				if (v instanceof EditText) {
+					TextFieldKeyboard keyboard = new TextFieldKeyboard(appContext);
+					keyboard.makeKeyboardBehave((EditText) v);
+				}
 			}
 			else {
 				// The user just selected away from the input box

@@ -27,9 +27,9 @@ public class QuestionRenderer {
 		
 		appContext = applicationContext;
 		inflater = (LayoutInflater) appContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		inputRecorder = new InputListener();
+		inputRecorder = new InputListener(appContext);
 		
-		viewID = 100;
+		viewID = 100;  // Start from an arbitrary number, in case other Views have low, sequential ID #s
 		
 		/* XML views inflated by an Activity render with the app's default
 		 * style (set in the Manifest.XML), but for some reason, XML views
@@ -247,7 +247,6 @@ public class QuestionRenderer {
 		// TODO: prevent the EditText from gaining focus- see here: http://stackoverflow.com/questions/1555109/stop-edittext-from-gaining-focus-at-activity-startup
 		// TODO: on press carriage return, move to next question
 		// TODO: add date and time pickers as input types: http://stackoverflow.com/a/14933515
-		// TODO: when you rotate the screen, the EditTexts get wiped clear, and some of the sliders jump to 100%. Debug this.
 		
 		return question;
 	}
