@@ -244,7 +244,6 @@ public class QuestionRenderer {
 		LinearLayout textFieldContainer = (LinearLayout) question.findViewById(R.id.textFieldContainer);
 		textFieldContainer.addView(editText);
 		
-		// TODO: prevent the EditText from gaining focus- see here: http://stackoverflow.com/questions/1555109/stop-edittext-from-gaining-focus-at-activity-startup
 		// TODO: on press carriage return, move to next question
 		// TODO: add date and time pickers as input types: http://stackoverflow.com/a/14933515
 		
