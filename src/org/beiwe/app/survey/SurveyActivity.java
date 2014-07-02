@@ -19,10 +19,13 @@ public class SurveyActivity extends Activity {
 	
 	
 	private void renderSurvey() {
-		LinearLayout surveyLayout = (LinearLayout) findViewById(R.id.surveyQuestionsLayout);
-		
+		QuestionsDownloader downloader = new QuestionsDownloader(getApplicationContext());
 		JsonParser jsonParser = new JsonParser(getApplicationContext());
-		jsonParser.renderSurveyFromJSON(surveyLayout);
+
+		LinearLayout surveyLayout = (LinearLayout) findViewById(R.id.surveyQuestionsLayout);
+		String jsonSurveyString = downloader.getJsonSurveyString();
+		
+		jsonParser.renderSurveyFromJSON(surveyLayout, jsonSurveyString);
 		
 		AnswerRecorder.recordSurveyFirstDisplayed();
 	}
