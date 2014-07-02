@@ -186,9 +186,9 @@ public class CSVFileManager {
 	
 	
 	public synchronized void newLogFile(){
-		String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
+		String timecode = ((Long)System.currentTimeMillis()).toString();
 		this.fileName = this.name;
-		this.write(header + " -:- " + timecode);
+		this.write( timecode + " -:- " + header );
 	}
 	
 	
