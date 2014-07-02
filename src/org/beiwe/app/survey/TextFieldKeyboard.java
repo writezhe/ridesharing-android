@@ -9,6 +9,13 @@ import android.view.ViewParent;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+/**
+ * TextFieldKeyboard contains methods to improve the user experience with the
+ * EditText (editable text-field) software keyboard.  When the user taps any-
+ * where outside the currently opened EditText, the keyboard disappears.
+ * 
+ * @author Josh Zagorsky <josh@zagaran.com>  June-July 2014
+ */
 public class TextFieldKeyboard {
 	
 	private Context appContext;
@@ -29,7 +36,11 @@ public class TextFieldKeyboard {
 	}
 	
 
-	// Gets the view's parent's parent's parent... and so on, until you find a parent-less view
+	/**
+	 * Gets the view's parent's parent's parent... and so on, until you find a parent-less view
+	 * @param view the starting View
+	 * @return the highest parent View available
+	 */
 	private View getTopParentView(View view) {
 		ViewParent parent = view.getParent();
 		if ((parent != null) && (parent instanceof View)) {
@@ -41,8 +52,12 @@ public class TextFieldKeyboard {
 	}
 	
 	
-    // If you tap anywhere but a text box (the Search box), hide the keyboard
-    // Source: http://stackoverflow.com/a/11656129
+    /**
+     * If you tap anywhere outside the given text box, hide the keyboard
+     * Based on: http://stackoverflow.com/a/11656129
+     * @param rootView the highest parent View available
+     * @param editText the EditText that the user is currently typing in
+     */
     private void setupUiToHideKeyboard(View rootView, final EditText editText) {
         if(!(rootView instanceof EditText)) {
             rootView.setOnTouchListener(new OnTouchListener() {
@@ -63,8 +78,11 @@ public class TextFieldKeyboard {
     }
 
 	
-	// Hide the keyboard and close the Search text box
-    // Source: http://stackoverflow.com/a/11656129
+	/**
+	 * Hide the keyboard and close the Search text box
+	 * Based on: http://stackoverflow.com/a/11656129
+	 * @param editText the EditText that the user is currently typing in
+	 */
     private void hideSoftKeyboard(EditText editText) {
     	InputMethodManager imm = (InputMethodManager) appContext.getSystemService(Context.INPUT_METHOD_SERVICE);
     	imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
