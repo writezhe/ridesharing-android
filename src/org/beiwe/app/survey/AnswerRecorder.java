@@ -12,6 +12,10 @@ public class AnswerRecorder {
 	private static String delimiter = "" + '\t';
 		
 	
+	/**
+	 * Create a new Survey Response file, and record the timestamp of when 
+	 * the survey first displayed to the user
+	 */
 	public static void recordSurveyFirstDisplayed() {
 		// TODO: switch it to SurveyResponseFile()
 		//CSVFileManager.getSurveyResponseFile().newFile();
@@ -21,6 +25,11 @@ public class AnswerRecorder {
 	}
 	
 	
+	/**
+	 * Record (in the Survey Response file) the answer to a single survey question
+	 * @param answer the user's input answer
+	 * @param questionDescription the question that was answered
+	 */
 	public static void recordAnswer(String answer, QuestionDescription questionDescription) {
 		String message = "";
 		message += sanitizeString(questionDescription.getId()) + delimiter;
@@ -34,6 +43,11 @@ public class AnswerRecorder {
 	}
 
 	
+	/**
+	 * Record (in the Survey Response file) that the user pressed the "Submit" 
+	 * button at the bottom of a survey
+	 * @param appContext
+	 */
 	public static void recordSubmit(Context appContext) {
 		String message = "User hit submit";
 		appendLineToLogFile(message);
@@ -44,6 +58,10 @@ public class AnswerRecorder {
 	}
 	
 	
+	/**
+	 * Write a line to the bottom of the Survey Response file
+	 * @param message
+	 */
 	private static void appendLineToLogFile(String message) {
 		/** Handles the logging, includes a new line for the CSV files.
 		 * This code is otherwised reused everywhere.*/
