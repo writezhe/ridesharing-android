@@ -20,5 +20,6 @@
     <string name="question_error_text">If you are reading this, something broke. Please contact the study administrators, and tell them that there is a bug in the survey!</string>
     <string name="survey_submit_button">Submit Answers</string>
     <string name="survey_submit_success_message">Thank you! Your answers have been recorded and saved.</string>
+    <string name="survey_questions_url">http://beiwe.org/fetch_survey/</string>
 
 </resources>
