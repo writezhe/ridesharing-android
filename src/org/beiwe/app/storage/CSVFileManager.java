@@ -68,7 +68,7 @@ public class CSVFileManager {
 	public static synchronized CSVFileManager getTextsLogFile(){
 		if (textsLog == null) throw new NullPointerException("you need to call startFileManager."); 
 		return textsLog; }
-	public static synchronized CSVFileManager surveyResponseFile(){
+	public static synchronized CSVFileManager getSurveyResponseFile(){
 		if (surveyResponse == null) throw new NullPointerException("you need to call startFileManager."); 
 		return surveyResponse; }
 	

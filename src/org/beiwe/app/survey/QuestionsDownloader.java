@@ -20,6 +20,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.beiwe.app.R;
 
 import android.content.Context;
+import android.content.res.Resources.NotFoundException;
 
 public class QuestionsDownloader {
 
@@ -31,6 +32,20 @@ public class QuestionsDownloader {
 	
 	
 	public String getJsonSurveyString() {
+		
+		// Try getting straight from the server (with timeout)
+		/*try {
+			return getStringFromFileOnServer();
+		} catch (NotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+		// Try getting from the local filesystem
+		// Try getting from the app's res/ folder
+		
 		// Get the JSON array of questions
 		InputStream inputStream = 
 				appContext.getResources().openRawResource(R.raw.sample_survey);
@@ -71,42 +86,40 @@ public class QuestionsDownloader {
 	 * Get the current survey questions from the server as a JSON file
 	 * @throws Exception
 	 */
-	private void updateLocations() throws Exception {
+	private void updateSurveyQuestions() throws Exception {
 	    // Run the HTTP GET on a separate, non-blocking thread
 		ExecutorService executor = Executors.newFixedThreadPool(1);
 		Callable<HttpGet> thread = new Callable<HttpGet>() {
 			@Override
 			public HttpGet call() throws Exception {
 				// Copy the survey questions from the server
-				copyFileFromServerToLocal();
+				getStringFromFileOnServer();
 				return null;
 			}
 		};
 		executor.submit(thread);
 	}
-
+	
 	
 	/**
-	 * Read a JSON file from the server, and copy it to a file in the local Android filesystem
-	 * @throws Exception
+	 * Read a file from the server, and return the file as a String 
+	 * @throws NotFoundException 
+	 * @throws IOException 
 	 */
-	private void copyFileFromServerToLocal() throws Exception {
+	private String getStringFromFileOnServer() throws NotFoundException, IOException {
 		URL locationsFileURL;
 		locationsFileURL = new URL(appContext.getResources().getString(R.string.survey_questions_url));
 		BufferedReader reader = new BufferedReader(new InputStreamReader(locationsFileURL.openStream()));
 		
-		// TODO: reconcile this with Eli's filesystem manager
-		String filePath = appContext.getFilesDir() + "/survey1.json";
-		File writeFile = new File(filePath);
- 		BufferedWriter writer = new BufferedWriter(new FileWriter(writeFile));
+		// Based on code from http://stackoverflow.com/a/4666766
+		StringBuilder builder = new StringBuilder();
+		String aux = "";
 		
-		String inputLine;
-		while ((inputLine = reader.readLine()) != null) {
-			writer.write(inputLine);
+		while ((aux = reader.readLine()) != null) {
+			builder.append(aux);
 		}
 		
-		reader.close();
-		writer.close();		
+		return builder.toString();
 	}
 
 }
