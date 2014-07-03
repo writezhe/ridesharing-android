@@ -21,5 +21,6 @@
     <string name="survey_submit_button">Submit Answers</string>
     <string name="survey_submit_success_message">Thank you! Your answers have been recorded and saved.</string>
     <string name="survey_questions_url">http://beiwe.org/fetch_survey/</string>
+    <string name="button_upload">Upload Data Files</string>
 
 </resources>

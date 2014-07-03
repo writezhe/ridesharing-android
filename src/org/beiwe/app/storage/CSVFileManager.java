@@ -202,4 +202,12 @@ public class CSVFileManager {
 		textsLog.newFile();
 		surveyResponse.newFile();
 	}
+	
+	
+	// TODO: I (Josh) believe this function getAllFiles() is NOT thread-safe
+	// with deleteEverything()- Eli, we need to work this out
+	public static synchronized String[] getAllFiles() {
+		return appContext.getFilesDir().list();
+	}
+	
 }

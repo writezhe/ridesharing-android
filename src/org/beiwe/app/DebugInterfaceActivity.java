@@ -5,6 +5,7 @@ import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
 import org.beiwe.app.storage.CSVFileManager;
+import org.beiwe.app.storage.Upload;
 import org.beiwe.app.survey.AudioRecorderActivity;
 import org.beiwe.app.survey.SurveyActivity;
 
@@ -92,6 +93,11 @@ public class DebugInterfaceActivity extends Activity {
 	public void clearInternalLog(View view) {
 		Log.i("clear log button pressed", "poke.");
 		logFile.deleteMeSafely();
+	}
+	
+	public void uploadDataFiles(View view) {
+		Upload uploader = new Upload(appContext);
+		uploader.uploadAllFiles();
 	}
 	
 	public void goToAudioRecorder(View view) {
