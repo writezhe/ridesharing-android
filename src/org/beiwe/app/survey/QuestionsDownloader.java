@@ -9,15 +9,12 @@ import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URL;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import org.apache.http.client.methods.HttpGet;
 import org.beiwe.app.R;
 
 import android.content.Context;
 import android.content.res.Resources.NotFoundException;
+import android.util.Log;
 
 public class QuestionsDownloader {
 
@@ -30,26 +27,57 @@ public class QuestionsDownloader {
 	
 	public String getJsonSurveyString() {
 		
-		// Try getting straight from the server (with timeout)
-		/*try {
-			return getStringFromFileOnServer();
-		} catch (NotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-		// Try getting from the local filesystem
-		// Try getting from the app's res/ folder
+		Log.i("QuestionsDownloader", "Called getJsonSurveyString()");
 		
-		// Get the JSON array of questions
+		try {
+			return getSurveyQuestionsFromServer();
+		}catch (Exception e) {
+			e.printStackTrace();
+			return getSurveyQuestionsFromAppResources();
+		}
+		
+		// TODO: Try getting from the local filesystem
+		
+	}
+	
+	
+	/**
+	 * Returns as a String the JSON survey file that's hard-coded into res/raw/
+	 * @return
+	 */
+	private String getSurveyQuestionsFromAppResources() {
+		Log.i("QuestionsDownloader", "Called getSurveyQuestionsFromAppResources()");
+		
 		InputStream inputStream = 
 				appContext.getResources().openRawResource(R.raw.sample_survey);
 		return fileToString(inputStream);
 	}
 	
 	
+	/**
+	 * Read a file from the server, and return the file as a String 
+	 * @throws NotFoundException 
+	 * @throws IOException 
+	 */
+	private String getSurveyQuestionsFromServer() throws NotFoundException, IOException {
+		Log.i("QuestionsDownloader", "Called getSurveyQuestionsFromServer()");
+		
+		URL locationsFileURL;
+		locationsFileURL = new URL(appContext.getResources().getString(R.string.survey_questions_url));
+		BufferedReader reader = new BufferedReader(new InputStreamReader(locationsFileURL.openStream()));
+		
+		// Based on code from http://stackoverflow.com/a/4666766
+		StringBuilder builder = new StringBuilder();
+		String aux = "";
+		
+		while ((aux = reader.readLine()) != null) {
+			builder.append(aux);
+		}
+		
+		return builder.toString();
+	}
+
+		
 	/**
 	 * Read a file (really an InputStream) and return a string
 	 * @param inputStream the file you want to read
@@ -83,7 +111,7 @@ public class QuestionsDownloader {
 	 * Get the current survey questions from the server as a JSON file
 	 * @throws Exception
 	 */
-	private void updateSurveyQuestions() throws Exception {
+	/*private void updateSurveyQuestions() throws Exception {
 	    // Run the HTTP GET on a separate, non-blocking thread
 		ExecutorService executor = Executors.newFixedThreadPool(1);
 		Callable<HttpGet> thread = new Callable<HttpGet>() {
@@ -95,35 +123,6 @@ public class QuestionsDownloader {
 			}
 		};
 		executor.submit(thread);
-	}
+	}*/
 	
-	
-	public String getSurveyQuestionsFromAppResources() {
-		InputStream inputStream = 
-				appContext.getResources().openRawResource(R.raw.sample_survey);
-		return fileToString(inputStream);
-	}
-	
-	
-	/**
-	 * Read a file from the server, and return the file as a String 
-	 * @throws NotFoundException 
-	 * @throws IOException 
-	 */
-	public String getSurveyQuestionsFromServer() throws NotFoundException, IOException {
-		URL locationsFileURL;
-		locationsFileURL = new URL(appContext.getResources().getString(R.string.survey_questions_url));
-		BufferedReader reader = new BufferedReader(new InputStreamReader(locationsFileURL.openStream()));
-		
-		// Based on code from http://stackoverflow.com/a/4666766
-		StringBuilder builder = new StringBuilder();
-		String aux = "";
-		
-		while ((aux = reader.readLine()) != null) {
-			builder.append(aux);
-		}
-		
-		return builder.toString();
-	}
-
 }

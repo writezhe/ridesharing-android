@@ -3,7 +3,7 @@
 		{
 			"question_id" : "A101",
 			"question_type" : "info_text_box",
-			"question_text" : "Welcome to the survey! Please answer these questions as creatively as possible.  It helps us debug!"
+			"question_text" : "Welcome to the survey! This survey loaded from the res/raw/ directory in the app.  Please answer these questions as creatively as possible.  It helps us debug!"
 		},
 		{
 			"question_id" : "A102",
