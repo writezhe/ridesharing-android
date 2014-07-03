@@ -20,8 +20,15 @@ public class SurveyActivity extends Activity {
 	
 	
 	private void renderSurvey() {
+		String jsonSurveyString = null;
+		
 		QuestionsDownloader downloader = new QuestionsDownloader(getApplicationContext());
-		String jsonSurveyString = downloader.getJsonSurveyString();
+		try {
+			jsonSurveyString = downloader.getSurveyQuestionsFromServer();
+		}
+		catch (Exception e) {
+			jsonSurveyString = downloader.getSurveyQuestionsFromAppResources();
+		}		
 
 		LinearLayout surveyLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.survey_layout, null);
 		LinearLayout surveyQuestionsLayout = (LinearLayout) surveyLayout.findViewById(R.id.surveyQuestionsLayout);

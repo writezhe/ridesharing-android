@@ -49,7 +49,7 @@ public class QuestionsDownloader {
 		return fileToString(inputStream);
 	}
 	
-
+	
 	/**
 	 * Read a file (really an InputStream) and return a string
 	 * @param inputStream the file you want to read
@@ -90,11 +90,18 @@ public class QuestionsDownloader {
 			@Override
 			public HttpGet call() throws Exception {
 				// Copy the survey questions from the server
-				getStringFromFileOnServer();
+				getSurveyQuestionsFromServer();
 				return null;
 			}
 		};
 		executor.submit(thread);
+	}
+	
+	
+	public String getSurveyQuestionsFromAppResources() {
+		InputStream inputStream = 
+				appContext.getResources().openRawResource(R.raw.sample_survey);
+		return fileToString(inputStream);
 	}
 	
 	
@@ -103,7 +110,7 @@ public class QuestionsDownloader {
 	 * @throws NotFoundException 
 	 * @throws IOException 
 	 */
-	private String getStringFromFileOnServer() throws NotFoundException, IOException {
+	public String getSurveyQuestionsFromServer() throws NotFoundException, IOException {
 		URL locationsFileURL;
 		locationsFileURL = new URL(appContext.getResources().getString(R.string.survey_questions_url));
 		BufferedReader reader = new BufferedReader(new InputStreamReader(locationsFileURL.openStream()));
