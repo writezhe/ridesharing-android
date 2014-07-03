@@ -8,6 +8,7 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.beiwe.app.R;
@@ -31,12 +32,15 @@ public class QuestionsDownloader {
 		
 		try {
 			return getSurveyQuestionsFromServer();
-		}catch (Exception e) {
+		}
+		catch (Exception e) {
 			e.printStackTrace();
 			return getSurveyQuestionsFromAppResources();
 		}
 		
 		// TODO: Try getting from the local filesystem
+		// TODO: update the file in the local filesystem if you download a new 
+		// one from the server, even if the download timed out
 		
 	}
 	
@@ -64,9 +68,12 @@ public class QuestionsDownloader {
 		
 		URL locationsFileURL;
 		locationsFileURL = new URL(appContext.getResources().getString(R.string.survey_questions_url));
-		BufferedReader reader = new BufferedReader(new InputStreamReader(locationsFileURL.openStream()));
 		
-		// Based on code from http://stackoverflow.com/a/4666766
+		HttpURLConnection connection = (HttpURLConnection) (locationsFileURL.openConnection());
+		connection.setConnectTimeout(4000);
+		connection.connect();		
+		BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		
 		StringBuilder builder = new StringBuilder();
 		String aux = "";
 		
@@ -74,6 +81,7 @@ public class QuestionsDownloader {
 			builder.append(aux);
 		}
 		
+		connection.disconnect();
 		return builder.toString();
 	}
 
