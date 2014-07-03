@@ -1,8 +1,11 @@
 package org.beiwe.app.storage;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -34,7 +37,7 @@ public class Upload {
 		Callable<HttpGet> thread = new Callable<HttpGet>() {
 			@Override
 			public HttpGet call() {
-				String[] files = CSVFileManager.getAllFiles();
+				String[] files = CSVFileManager.getAllFilesSafely();
 				
 				//for (String fileName : files) {
 					try {
@@ -117,5 +120,59 @@ public class Upload {
 			Log.i("Upload", "HTTP Response = " + response);
 		//}
 	}
+	
+	
+	/**reads in the entire file, returns a string.
+	 * @param fileName a file name
+	 * @return contents of file 
+	 * @throws IOException */
+	private String readTextFile(String fileName) throws IOException{
+		
+		BufferedInputStream bufferedInputStream;// BufferedInputStream( new FileInputStream(null));
+		StringBuffer inputStringBuffer = new StringBuffer();
+		int data;
+		try {
+			bufferedInputStream = new BufferedInputStream( appContext.openFileInput(fileName) );
 
+			try{ while( (data = bufferedInputStream.read()) != -1)
+				inputStringBuffer.append((char)data); }
+			catch (IOException e) {
+				Log.i("Upload", "read error in " + fileName);
+				e.printStackTrace(); }
+			bufferedInputStream.close();
+		}
+		catch (FileNotFoundException e) {
+			Log.i("Upload", "file " + fileName + " does not exist");
+			e.printStackTrace(); }
+		return inputStringBuffer.toString();
+	}
+
+	
+private String readDataFile(String fileName) throws IOException{
+		
+		DataInputStream dataInputStream;// BufferedInputStream( new FileInputStream(null));
+		StringBuffer inputStringBuffer = new StringBuffer();
+		
+		try {			
+			String filePath = appContext.getFilesDir() + "/" + fileName;
+			File file = new File(filePath);
+			dataInputStream = new DataInputStream( new FileInputStream(file) );	
+			//we need a byte array of exactly the correct length
+			byte[] fileData = new byte[(int) file.length()];
+
+			try{ dataInputStream.readFully(fileData); }
+			catch (IOException e) {
+				Log.i("Upload", "read error in " + fileName);
+				e.printStackTrace(); }
+			
+			dataInputStream.close();
+		}
+		catch (FileNotFoundException e) {
+			Log.i("Upload", "file " + fileName + " does not exist");
+			e.printStackTrace(); }
+		return inputStringBuffer.toString();
+		
+	}
+
+	
 }

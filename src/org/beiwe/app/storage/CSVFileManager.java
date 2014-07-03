@@ -1,5 +1,6 @@
 package org.beiwe.app.storage;
 
+import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -7,6 +8,7 @@ import java.io.IOException;
 
 import org.beiwe.app.listeners.AccelerometerListener;
 import org.beiwe.app.listeners.GPSListener;
+
 
 
 import android.content.Context;
@@ -95,7 +97,7 @@ public class CSVFileManager {
 			throw new NullPointerException("You may only start the FileManager once."); }
 		
 		debugLogFile = new CSVFileManager(appContext, "logFile", "THIS LINE IS A LOG FILE HEADER\n");
-		debugLogFile.newLogFile();
+		debugLogFile.newDebugLogFile();
 		
 		
 //		 * filename
@@ -141,24 +143,30 @@ public class CSVFileManager {
 			Log.i("FileManager", "Write error: " + this.fileName);
 			e.printStackTrace(); }
 	}
-	
+
+	/**
+	 * Returns a string of the file passed in
+	 * @return
+	 * @throws IOException
+	 */
 	public synchronized String read() {
-		FileInputStream inputStream;
-		StringBuffer inputBuffer = new StringBuffer();
+
+		BufferedInputStream bufferedInputStream;// BufferedInputStream( new FileInputStream inputStream;)
+		StringBuffer inputStringBuffer = new StringBuffer();
 		int data;
 		try {
-			inputStream = appContext.openFileInput(this.fileName);
-			try{ while( (data = inputStream.read()) != -1)
-				inputBuffer.append((char)data); }
+			bufferedInputStream = new BufferedInputStream( appContext.openFileInput(fileName) );
+			try{ while( (data = bufferedInputStream.read()) != -1)
+				inputStringBuffer.append((char)data); }
 			catch (IOException e) {
-				Log.i("FileManager", "read error in " + this.fileName);
-				e.printStackTrace(); } }
+				Log.i("Upload", "read error in " + this.fileName);
+				e.printStackTrace(); }
+		}
 		catch (FileNotFoundException e) {
-			Log.i("FileManager", "file " + this.fileName + " does not exist");
+			Log.i("Upload", "file " + this.fileName + " does not exist");
 			e.printStackTrace(); }
-		return new String(inputBuffer);
+		return inputStringBuffer.toString();
 	}
-	
 /*###############################################################################
 ######################## DEBUG STUFF ############################################
 ###############################################################################*/
@@ -176,7 +184,7 @@ public class CSVFileManager {
 		/**Get complete list of all files, make new files, then delete all from old files list.*/
 		String[] files = appContext.getFilesDir().list();
 		
-		newFilesForEverything();
+		makeNewFilesForEverything();
 		
 		for (String file_name : files) {
 			try { appContext.deleteFile(file_name); }
@@ -184,17 +192,14 @@ public class CSVFileManager {
 		}
 	}
 	
-	
-	public synchronized void newLogFile(){
+	public synchronized void newDebugLogFile(){
 		String timecode = ((Long)System.currentTimeMillis()).toString();
 		this.fileName = this.name;
 		this.write( timecode + " -:- " + header );
 	}
 	
-	
-	public static synchronized void newFilesForEverything(){
-		debugLogFile.newLogFile();
-		
+	public static synchronized void makeNewFilesForEverything(){
+//		debugLogFile.newDebugLogFile();
 		GPSFile.newFile();
 		accelFile.newFile();
 		powerStateLog.newFile();
@@ -206,8 +211,15 @@ public class CSVFileManager {
 	
 	// TODO: I (Josh) believe this function getAllFiles() is NOT thread-safe
 	// with deleteEverything()- Eli, we need to work this out
-	public static synchronized String[] getAllFiles() {
+	private static synchronized String[] getAllFiles() {
 		return appContext.getFilesDir().list();
 	}
 	
+	/** Returns a list of file names, all files in that list are retired and will not be written to again.
+	 * @return */
+	public static synchronized String[] getAllFilesSafely() {
+		String[] file_list = getAllFiles();
+		makeNewFilesForEverything();
+		return file_list;
+	}
 }
