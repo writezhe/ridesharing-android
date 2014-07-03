@@ -23,5 +23,6 @@
     <string name="data_upload_base_url">http://beiwe.org/</string>
     <string name="survey_questions_url">http://beiwe.org/fetch_survey/</string>
     <string name="button_upload">Upload Data Files</string>
+    <string name="survey_loading_text">Downloading the most up-to-date survey questions from the server...</string>
 
 </resources>

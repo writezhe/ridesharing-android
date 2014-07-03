@@ -32,6 +32,9 @@ public class SurveyActivity extends Activity {
 		ViewGroup page = (ViewGroup) findViewById(R.id.scrollViewMain);
 		page.addView(surveyLayout);
 		
+		//View loadingSpinner = getLayoutInflater().inflate(R.layout.survey_loading_spinner, null);
+		//page.addView(loadingSpinner);
+		
 		AnswerRecorder.recordSurveyFirstDisplayed();
 	}
 	
