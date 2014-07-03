@@ -5,6 +5,7 @@ import org.beiwe.app.R;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 public class SurveyActivity extends Activity {
@@ -20,12 +21,16 @@ public class SurveyActivity extends Activity {
 	
 	private void renderSurvey() {
 		QuestionsDownloader downloader = new QuestionsDownloader(getApplicationContext());
-		JsonParser jsonParser = new JsonParser(getApplicationContext());
-
-		LinearLayout surveyLayout = (LinearLayout) findViewById(R.id.surveyQuestionsLayout);
 		String jsonSurveyString = downloader.getJsonSurveyString();
+
+		LinearLayout surveyLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.survey_layout, null);
+		LinearLayout surveyQuestionsLayout = (LinearLayout) surveyLayout.findViewById(R.id.surveyQuestionsLayout);
 		
-		jsonParser.renderSurveyFromJSON(surveyLayout, jsonSurveyString);
+		JsonParser jsonParser = new JsonParser(getApplicationContext());
+		jsonParser.renderSurveyFromJSON(surveyQuestionsLayout, jsonSurveyString);
+
+		ViewGroup page = (ViewGroup) findViewById(R.id.scrollViewMain);
+		page.addView(surveyLayout);
 		
 		AnswerRecorder.recordSurveyFirstDisplayed();
 	}
