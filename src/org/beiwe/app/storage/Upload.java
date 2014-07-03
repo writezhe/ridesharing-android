@@ -36,14 +36,15 @@ public class Upload {
 			public HttpGet call() {
 				String[] files = CSVFileManager.getAllFiles();
 				
-				for (String fileName : files) {
+				//for (String fileName : files) {
 					try {
-						tryToUploadFile(fileName);
+						tryToUploadFile("");
 					}
 					catch (Exception e) {
-						Log.w("Upload", "File " + fileName + " didn't exist");
+						//Log.w("Upload", "File " + fileName + " didn't exist");
+						e.printStackTrace();
 					}
-				}
+				//}
 				
 				return null;
 			}
@@ -85,8 +86,9 @@ public class Upload {
 	
 	private void uploadFile(File file, String uploadUrl) throws IOException {
 		// Based on: http://www.codejava.net/java-ee/servlet/upload-file-to-servlet-without-using-html-form
-				
+		
 		URL url = new URL(uploadUrl);
+		//URL url = new URL("http://joshzagorsky.com/foobar");
 		HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
 		httpConn.setUseCaches(false);
 		httpConn.setDoOutput(true);
@@ -109,11 +111,11 @@ public class Upload {
 		// Process HTTP Response
 		int responseCode = httpConn.getResponseCode();
 		Log.i("Upload", "HTTP response code = " + responseCode);
-		if (responseCode == HttpURLConnection.HTTP_OK) {
+		//if (responseCode == HttpURLConnection.HTTP_OK) {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(httpConn.getInputStream()));
 			String response = reader.readLine();
 			Log.i("Upload", "HTTP Response = " + response);
-		}
+		//}
 	}
 
 }
