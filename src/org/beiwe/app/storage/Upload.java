@@ -13,6 +13,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.apache.http.client.methods.HttpGet;
+import org.beiwe.app.R;
 
 import android.content.Context;
 import android.os.Environment;
@@ -53,7 +54,13 @@ public class Upload {
 	
 	private void tryToUploadFile(String filename) {
 		try {
-			uploadFile(filename);
+			// TODO: get Eli to provide a function that grabs a File, given the file name
+			// This is uploading the dummy audio recording file, just for testing
+			File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/audiorecordtest.3gp");
+			//File file = new File(appContext.getFilesDir() + fileName);
+			//File file = new File(fileName);
+
+			uploadFile(file, getUploadUrl(filename));
 		} catch (IOException e) {
 			Log.w("Upload", "Failed to upload file. Raised exception " + e.getCause());
 			e.printStackTrace();
@@ -61,17 +68,25 @@ public class Upload {
 	}
 	
 	
-	private void uploadFile(String fileName) throws IOException {
+	private String getUploadUrl(String filename) {
+		String url = appContext.getResources().getString(R.string.data_upload_base_url);
+		return url + "upload_gps/";
+		/* Upload URLs:
+		 * http://54.204.178.17/upload_gps/
+		 * http://54.204.178.17/upload_accel/
+		 * http://54.204.178.17/upload_powerstate/
+		 * http://54.204.178.17/upload_calls/
+		 * http://54.204.178.17/upload_texts/
+		 * http://54.204.178.17/upload_surveyresposne/
+		 * http://54.204.178.17/upload_audio/
+		 */		
+	}
+	
+	
+	private void uploadFile(File file, String uploadUrl) throws IOException {
 		// Based on: http://www.codejava.net/java-ee/servlet/upload-file-to-servlet-without-using-html-form
-		
-		// TODO: get Eli to provide a function that grabs a File, given the file name
-		// This is uploading the dummy audio recording file, just for testing
-		File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/audiorecordtest.3gp");
-		//File file = new File(appContext.getFilesDir() + fileName);
-		//File file = new File(fileName);
-		Log.i("Upload", "Attempting to upload file " + fileName);
-		
-		URL url = new URL("http://beiwe.org/upload_gps/");
+				
+		URL url = new URL(uploadUrl);
 		HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
 		httpConn.setUseCaches(false);
 		httpConn.setDoOutput(true);
@@ -84,16 +99,14 @@ public class Upload {
 		byte[] buffer = new byte[4096];
 		int bytesRead = -1;
 		
-		Log.i("Upload", "Start writing data");
-		
 		while ((bytesRead = inputStream.read(buffer)) != -1) {
 			outputStream.write(buffer, 0, bytesRead);
 		}
 		
-		Log.i("Upload", "Finished writing data");
 		outputStream.close();
 		inputStream.close();
 		
+		// Process HTTP Response
 		int responseCode = httpConn.getResponseCode();
 		Log.i("Upload", "HTTP response code = " + responseCode);
 		if (responseCode == HttpURLConnection.HTTP_OK) {
@@ -103,13 +116,4 @@ public class Upload {
 		}
 	}
 
-	/* Upload URLS:
-	 * http://54.204.178.17/upload_gps/
-	 * http://54.204.178.17/upload_accel/
-	 * http://54.204.178.17/upload_powerstate/
-	 * http://54.204.178.17/upload_calls/
-	 * http://54.204.178.17/upload_texts/
-	 * http://54.204.178.17/upload_surveyresposne/
-	 * http://54.204.178.17/upload_audio/
-	 */
 }
