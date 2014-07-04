@@ -31,30 +31,24 @@ public class QuestionsDownloader {
 		Log.i("QuestionsDownloader", "Called getJsonSurveyString()");
 		
 		try {
+			// Try to download the questions from the server
 			return getSurveyQuestionsFromServer();
 		}
 		catch (Exception e) {
 			e.printStackTrace();
-			return getSurveyQuestionsFromAppResources();
+			try {
+				// If that failed, try loading questions from the local filesystem
+				return getSurveyQuestionsFromFilesystem();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+				// Last resort: load questions that are hard-coded into the app
+				return getSurveyQuestionsFromAppResources();
+			}
 		}
 		
-		// TODO: Try getting from the local filesystem
 		// TODO: update the file in the local filesystem if you download a new 
 		// one from the server, even if the download timed out
 		
-	}
-	
-	
-	/**
-	 * Returns as a String the JSON survey file that's hard-coded into res/raw/
-	 * @return
-	 */
-	private String getSurveyQuestionsFromAppResources() {
-		Log.i("QuestionsDownloader", "Called getSurveyQuestionsFromAppResources()");
-		
-		InputStream inputStream = 
-				appContext.getResources().openRawResource(R.raw.sample_survey);
-		return fileToString(inputStream);
 	}
 	
 	
@@ -80,9 +74,45 @@ public class QuestionsDownloader {
 		while ((aux = reader.readLine()) != null) {
 			builder.append(aux);
 		}
-		
 		connection.disconnect();
-		return builder.toString();
+		
+		String surveyQuestionsFileString = builder.toString();
+		writeStringToFile(surveyQuestionsFileString);
+		return surveyQuestionsFileString;
+	}
+	
+	
+	/**
+	 * Read a file from the local Android filesystem, and return it as a String
+	 */
+	private String getSurveyQuestionsFromFilesystem() {
+		Log.i("QuestionsDownloader", "Called getSurveyQuestionsFromFilesystem()");
+		
+		// TODO: implement this
+		return fileToString(null);		
+	}
+	
+	
+	/**
+	 * Returns as a String the JSON survey file that's hard-coded into res/raw/
+	 * @return
+	 */
+	private String getSurveyQuestionsFromAppResources() {
+		Log.i("QuestionsDownloader", "Called getSurveyQuestionsFromAppResources()");
+		
+		InputStream inputStream = 
+				appContext.getResources().openRawResource(R.raw.sample_survey);
+		return fileToString(inputStream);
+	}
+	
+	
+	/**
+	 * Write a string (the JSON representation of survey questions) to a file
+	 * in the local Android Filesystem
+	 * @param string the JSON representation of survey questions
+	 */
+	private void writeStringToFile(String string) {
+		// TODO: finish this function
 	}
 
 		
