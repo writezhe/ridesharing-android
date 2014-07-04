@@ -76,7 +76,7 @@ public class TextFileManager {
 		if (surveyResponse == null) throw new NullPointerException("you need to call startFileManager."); 
 		return surveyResponse; }
 	
-	public static synchronized TextFileManager currentQuestionsFile(){
+	public static synchronized TextFileManager getCurrentQuestionsFile(){
 		if (currentQuestionsFile == null) throw new NullPointerException("you need to call startFileManager."); 
 		return currentQuestionsFile; }
 	
