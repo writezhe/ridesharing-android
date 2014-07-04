@@ -32,6 +32,8 @@ public class Upload {
 	
 	
 	public void uploadAllFiles() {
+		
+		
 	    // Run the HTTP GET on a separate, non-blocking thread
 		ExecutorService executor = Executors.newFixedThreadPool(1);
 		Callable<HttpGet> thread = new Callable<HttpGet>() {
@@ -41,7 +43,7 @@ public class Upload {
 				
 				//for (String fileName : files) {
 					try {
-						tryToUploadFile("");
+						tryToUploadFile(files[0]);
 					}
 					catch (Exception e) {
 						//Log.w("Upload", "File " + fileName + " didn't exist");
@@ -60,10 +62,14 @@ public class Upload {
 		try {
 			// TODO: get Eli to provide a function that grabs a File, given the file name
 			// This is uploading the dummy audio recording file, just for testing
-			File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/audiorecordtest.3gp");
+//			File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/audiorecordtest.3gp");
 			//File file = new File(appContext.getFilesDir() + fileName);
 			//File file = new File(fileName);
 
+			String filePath = appContext.getFilesDir() + "/" + filename;
+			File file = new File(filePath);
+
+			
 			uploadFile(file, getUploadUrl(filename));
 		} catch (IOException e) {
 			Log.w("Upload", "Failed to upload file. Raised exception " + e.getCause());
@@ -83,7 +89,7 @@ public class Upload {
 		 * http://54.204.178.17/upload_texts/
 		 * http://54.204.178.17/upload_surveyresposne/
 		 * http://54.204.178.17/upload_audio/
-		 */		
+		 */
 	}
 	
 	
@@ -99,9 +105,9 @@ public class Upload {
 		httpConn.setRequestProperty("fileName", file.getName());
 		
 		OutputStream outputStream = httpConn.getOutputStream();
-		FileInputStream inputStream = new FileInputStream(file);
+		DataInputStream inputStream = new DataInputStream( new FileInputStream( file) );
 		
-		byte[] buffer = new byte[4096];
+		byte[] buffer = new byte[ 4096 ];
 		int bytesRead = -1;
 		
 		while ((bytesRead = inputStream.read(buffer)) != -1) {
@@ -120,59 +126,4 @@ public class Upload {
 			Log.i("Upload", "HTTP Response = " + response);
 		//}
 	}
-	
-	
-	/**reads in the entire file, returns a string.
-	 * @param fileName a file name
-	 * @return contents of file 
-	 * @throws IOException */
-	private String readTextFile(String fileName) throws IOException{
-		
-		BufferedInputStream bufferedInputStream;// BufferedInputStream( new FileInputStream(null));
-		StringBuffer inputStringBuffer = new StringBuffer();
-		int data;
-		try {
-			bufferedInputStream = new BufferedInputStream( appContext.openFileInput(fileName) );
-
-			try{ while( (data = bufferedInputStream.read()) != -1)
-				inputStringBuffer.append((char)data); }
-			catch (IOException e) {
-				Log.i("Upload", "read error in " + fileName);
-				e.printStackTrace(); }
-			bufferedInputStream.close();
-		}
-		catch (FileNotFoundException e) {
-			Log.i("Upload", "file " + fileName + " does not exist");
-			e.printStackTrace(); }
-		return inputStringBuffer.toString();
-	}
-
-	
-private String readDataFile(String fileName) throws IOException{
-		
-		DataInputStream dataInputStream;// BufferedInputStream( new FileInputStream(null));
-		StringBuffer inputStringBuffer = new StringBuffer();
-		
-		try {			
-			String filePath = appContext.getFilesDir() + "/" + fileName;
-			File file = new File(filePath);
-			dataInputStream = new DataInputStream( new FileInputStream(file) );	
-			//we need a byte array of exactly the correct length
-			byte[] fileData = new byte[(int) file.length()];
-
-			try{ dataInputStream.readFully(fileData); }
-			catch (IOException e) {
-				Log.i("Upload", "read error in " + fileName);
-				e.printStackTrace(); }
-			
-			dataInputStream.close();
-		}
-		catch (FileNotFoundException e) {
-			Log.i("Upload", "file " + fileName + " does not exist");
-			e.printStackTrace(); }
-		return inputStringBuffer.toString();
-		
-	}
-
-	
 }
