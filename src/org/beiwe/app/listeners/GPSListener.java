@@ -1,6 +1,6 @@
 package org.beiwe.app.listeners;
 
-import org.beiwe.app.storage.CSVFileManager;
+import org.beiwe.app.storage.TextFileManager;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -27,8 +27,8 @@ public class GPSListener implements LocationListener {
 	
 	public static String header = "time, latitude, longitude, altitude, accuracy\n";
 	
-	private CSVFileManager GPSFile;
-	private CSVFileManager logFile;
+	private TextFileManager GPSFile;
+	private TextFileManager logFile;
 	
 	private Context appContext;
 	private PackageManager pkgManager;
@@ -53,8 +53,8 @@ public class GPSListener implements LocationListener {
 		 * GPS log. */
 		appContext = applicationContext;
 		pkgManager = appContext.getPackageManager();
-		GPSFile = CSVFileManager.getGPSFile();
-		logFile = CSVFileManager.getDebugLogFile();
+		GPSFile = TextFileManager.getGPSFile();
+		logFile = TextFileManager.getDebugLogFile();
 		
 		trueGPS = pkgManager.hasSystemFeature(PackageManager.FEATURE_LOCATION_GPS);
 		networkGPS = pkgManager.hasSystemFeature(PackageManager.FEATURE_LOCATION_NETWORK);

@@ -1,6 +1,6 @@
 package org.beiwe.app.listeners;
 
-import org.beiwe.app.storage.CSVFileManager;
+import org.beiwe.app.storage.TextFileManager;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -16,8 +16,8 @@ public class AccelerometerListener implements SensorEventListener{
 	private SensorManager accelSensorManager;
 	private Sensor accelSensor;
 	
-	private CSVFileManager accelFile = null;
-	private CSVFileManager logFile = null;
+	private TextFileManager accelFile = null;
+	private TextFileManager logFile = null;
 	
 	private Context appContext;
 	private PackageManager pkgManager;
@@ -36,8 +36,8 @@ public class AccelerometerListener implements SensorEventListener{
 		 * accelerometer log. */
 		appContext = applicationContext;
 		pkgManager = appContext.getPackageManager();
-		logFile = CSVFileManager.getDebugLogFile();
-		accelFile = CSVFileManager.getAccelFile();
+		logFile = TextFileManager.getDebugLogFile();
+		accelFile = TextFileManager.getAccelFile();
 		
 		exists = pkgManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER);
 		

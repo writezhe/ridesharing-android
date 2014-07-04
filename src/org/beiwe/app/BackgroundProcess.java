@@ -2,7 +2,7 @@ package org.beiwe.app;
 
 import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
-import org.beiwe.app.storage.CSVFileManager;
+import org.beiwe.app.storage.TextFileManager;
 
 import android.annotation.TargetApi;
 import android.app.Service;
@@ -22,7 +22,7 @@ import android.util.Log;
 
 public class BackgroundProcess extends Service {
 
-	CSVFileManager logFile = null;
+	TextFileManager logFile = null;
 	Context appContext = null;
 	PackageManager packageManager = null; 	//used to check if sensors exist
 	

@@ -1,7 +1,7 @@
 package org.beiwe.app.survey;
 
 import org.beiwe.app.R;
-import org.beiwe.app.storage.CSVFileManager;
+import org.beiwe.app.storage.TextFileManager;
 
 import android.content.Context;
 import android.util.Log;
@@ -18,7 +18,7 @@ public class AnswerRecorder {
 	 */
 	public static void recordSurveyFirstDisplayed() {
 		// TODO: switch it to SurveyResponseFile()
-		//CSVFileManager.getSurveyResponseFile().newFile();
+		//TextFileManager.getSurveyResponseFile().newFile();
 		
 		String message = "Survey first rendered and displayed to user";
 		appendLineToLogFile(message);
@@ -69,8 +69,8 @@ public class AnswerRecorder {
 		String line = javaTimeCode.toString() + delimiter + message +"\n"; 
 
 		Log.i("AnswerRecorder", line);
-		CSVFileManager.getDebugLogFile().write(line);
-		//CSVFileManager.getSurveyResponseFile().write(line);
+		TextFileManager.getDebugLogFile().write(line);
+		//TextFileManager.getSurveyResponseFile().write(line);
 	}
 
 	

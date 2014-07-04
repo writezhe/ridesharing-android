@@ -39,7 +39,7 @@ public class Upload {
 		Callable<HttpGet> thread = new Callable<HttpGet>() {
 			@Override
 			public HttpGet call() {
-				String[] files = CSVFileManager.getAllFilesSafely();
+				String[] files = TextFileManager.getAllFilesSafely();
 				
 				//for (String fileName : files) {
 					try {

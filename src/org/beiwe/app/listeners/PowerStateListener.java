@@ -1,7 +1,7 @@
 package org.beiwe.app.listeners;
 
 import org.beiwe.app.BackgroundProcess;
-import org.beiwe.app.storage.CSVFileManager;
+import org.beiwe.app.storage.TextFileManager;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -22,8 +22,8 @@ import android.util.Log;
 
 public class PowerStateListener extends BroadcastReceiver {
 	String header = "time, event\n";
-	CSVFileManager logFile = null;
-	CSVFileManager powerStateLog = null;
+	TextFileManager logFile = null;
+	TextFileManager powerStateLog = null;
 	
 	private Boolean checkForSDCardInstall(Context externalContext) throws NameNotFoundException{
 		/** Checks whether the app is installed on the SD card; needs a context passed in 
@@ -48,8 +48,8 @@ public class PowerStateListener extends BroadcastReceiver {
 		//this is the construction for starting a service on reboot.
 		Intent intent_to_start_background_service = new Intent(externalContext, BackgroundProcess.class);
 	    externalContext.startService(intent_to_start_background_service);
-	    logFile = CSVFileManager.getDebugLogFile();
-		powerStateLog = CSVFileManager.getPowerStateFile();
+	    logFile = TextFileManager.getDebugLogFile();
+		powerStateLog = TextFileManager.getPowerStateFile();
 	}
 	
 	private void make_log_statement(String message) {
@@ -84,8 +84,8 @@ public class PowerStateListener extends BroadcastReceiver {
 			make_log_statement("SD card available, background service started."); }
 		
 		//these need to be checked whenever the service was started by the user opening the app. 
-		if (logFile == null) { logFile = CSVFileManager.getDebugLogFile(); }
-		if (powerStateLog == null) { powerStateLog = CSVFileManager.getPowerStateFile(); }
+		if (logFile == null) { logFile = TextFileManager.getDebugLogFile(); }
+		if (powerStateLog == null) { powerStateLog = TextFileManager.getPowerStateFile(); }
 		
 		//make a log of all receipts (for debugging)
 		make_log_statement("the following intent was recieved by the PowerStateListener:" + intent.getAction().toString()+"\n");

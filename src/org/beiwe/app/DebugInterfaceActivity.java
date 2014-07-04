@@ -4,7 +4,7 @@ import org.beiwe.app.listeners.AccelerometerListener;
 import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
-import org.beiwe.app.storage.CSVFileManager;
+import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.storage.Upload;
 import org.beiwe.app.survey.AudioRecorderActivity;
 import org.beiwe.app.survey.SurveyActivity;
@@ -25,7 +25,7 @@ import android.view.View;
 
 public class DebugInterfaceActivity extends Activity {
 	
-	CSVFileManager logFile = null;
+	TextFileManager logFile = null;
 	Context appContext = null;
 	
 	GPSListener aGPSListener = null;
@@ -40,8 +40,8 @@ public class DebugInterfaceActivity extends Activity {
 		appContext = this.getApplicationContext();
 		
 		//start logger
-		CSVFileManager.startFileManager(this.getApplicationContext());
-		logFile = CSVFileManager.getDebugLogFile();
+		TextFileManager.startFileManager(this.getApplicationContext());
+		logFile = TextFileManager.getDebugLogFile();
 		
 		//start background service
 //		Intent backgroundProcess = new Intent(this, BackgroundProcess.class);

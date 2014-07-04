@@ -33,46 +33,53 @@ surveyData
  */
 
 
-public class CSVFileManager {
+public class TextFileManager {
 	
 //TODO: we need to escape all separator values that get dumped into strings 
 //TODO: sanitize inputs for the survey info, coordinate with kevin on that, may be easier to implement serverside.
 //TODO: implement public static header variables for all the classes that will need them, import here
 //TODO: we probably want a static array pointing to all the static objects to make a static X_for_everything functions easier?
 	//Static instances of the individual FileManager objects.
-	private static CSVFileManager debugLogFile = null;
-	private static CSVFileManager GPSFile = null;
-	private static CSVFileManager accelFile = null;
-	private static CSVFileManager powerStateLog = null;
-	private static CSVFileManager callLog = null;
-	private static CSVFileManager textsLog = null;
-	private static CSVFileManager surveyResponse = null;
+	private static TextFileManager debugLogFile = null;
+	private static TextFileManager GPSFile = null;
+	private static TextFileManager accelFile = null;
+	private static TextFileManager powerStateLog = null;
+	private static TextFileManager callLog = null;
+	private static TextFileManager textsLog = null;
+	private static TextFileManager surveyResponse = null;
+	
+	private static TextFileManager currentQuestionsFile = null;
 	
 	//"global" static variables
 	private static Context appContext;
 	
 	//public static getters
-	public static synchronized CSVFileManager getDebugLogFile(){
+	public static synchronized TextFileManager getDebugLogFile(){
 		if (debugLogFile == null) throw new NullPointerException("you need to call startFileManager."); 
 		return debugLogFile; }
-	public static synchronized CSVFileManager getAccelFile(){
+	public static synchronized TextFileManager getAccelFile(){
 		if (accelFile == null) throw new NullPointerException("you need to call startFileManager."); 
 		return accelFile; }
-	public static synchronized CSVFileManager getGPSFile(){
+	public static synchronized TextFileManager getGPSFile(){
 		if (GPSFile == null) throw new NullPointerException("you need to call startFileManager."); 
 		return GPSFile; }
-	public static synchronized CSVFileManager getPowerStateFile(){
+	public static synchronized TextFileManager getPowerStateFile(){
 		if (powerStateLog == null) throw new NullPointerException("you need to call startFileManager."); 
 		return powerStateLog; }
-	public static synchronized CSVFileManager getCallLogFile(){
+	public static synchronized TextFileManager getCallLogFile(){
 		if (callLog == null) throw new NullPointerException("you need to call startFileManager."); 
 		return callLog; }
-	public static synchronized CSVFileManager getTextsLogFile(){
+	public static synchronized TextFileManager getTextsLogFile(){
 		if (textsLog == null) throw new NullPointerException("you need to call startFileManager."); 
 		return textsLog; }
-	public static synchronized CSVFileManager getSurveyResponseFile(){
+	public static synchronized TextFileManager getSurveyResponseFile(){
 		if (surveyResponse == null) throw new NullPointerException("you need to call startFileManager."); 
 		return surveyResponse; }
+	
+	public static synchronized TextFileManager currentQuestionsFile(){
+		if (currentQuestionsFile == null) throw new NullPointerException("you need to call startFileManager."); 
+		return currentQuestionsFile; }
+	
 	
 	//and (finally) the non-static object instance variables
 	private String name = null;
@@ -84,8 +91,8 @@ public class CSVFileManager {
 	######################## CONSTRUCTOR STUFF ######################################
 	###############################################################################*/
 	
-	private CSVFileManager(Context appContext, String name, String header){
-		CSVFileManager.appContext = appContext;
+	private TextFileManager(Context appContext, String name, String header){
+		TextFileManager.appContext = appContext;
 		this.name = name;
 		this.header = header;
 		//TODO: check if on file creation it wants mode private?
@@ -96,7 +103,7 @@ public class CSVFileManager {
 		if (debugLogFile != null || GPSFile != null || accelFile != null ){
 			throw new NullPointerException("You may only start the FileManager once."); }
 		
-		debugLogFile = new CSVFileManager(appContext, "logFile", "THIS LINE IS A LOG FILE HEADER\n");
+		debugLogFile = new TextFileManager(appContext, "logFile", "THIS LINE IS A LOG FILE HEADER\n");
 		debugLogFile.newDebugLogFile();
 		
 		
@@ -105,18 +112,22 @@ public class CSVFileManager {
 //		 * start timestamp, stop timestamp
 //		 * user id #
 		
-		GPSFile = new CSVFileManager(appContext, "gpsFile", GPSListener.header );
+		GPSFile = new TextFileManager(appContext, "gpsFile", GPSListener.header );
 		GPSFile.newFile();
-		accelFile = new CSVFileManager(appContext, "accelFile", AccelerometerListener.header);
+		accelFile = new TextFileManager(appContext, "accelFile", AccelerometerListener.header);
 		accelFile.newFile();
-		surveyResponse = new CSVFileManager(appContext, "surveyData", "generic header 1 2 3\n");
+		surveyResponse = new TextFileManager(appContext, "surveyData", "generic header 1 2 3\n");
 		surveyResponse.newFile();
-		textsLog = new CSVFileManager(appContext, "textsLog", "generic header 1 2 3\n");
+		textsLog = new TextFileManager(appContext, "textsLog", "generic header 1 2 3\n");
 		textsLog.newFile();
-		powerStateLog = new CSVFileManager(appContext, "screenState", "generic header 1 2 3\n");
+		powerStateLog = new TextFileManager(appContext, "screenState", "generic header 1 2 3\n");
 		powerStateLog.newFile();
-		callLog = new CSVFileManager(appContext, "callLog", "generic header 1 2 3\n");
+		callLog = new TextFileManager(appContext, "callLog", "generic header 1 2 3\n");
 		callLog.newFile();
+		
+		//note the empty header
+		currentQuestionsFile = new TextFileManager(appContext, "currentQuestionsFile.json", "");
+		currentQuestionsFile.newFile();
 	}
 	
 	/*###############################################################################
