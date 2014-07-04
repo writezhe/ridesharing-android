@@ -12,6 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.beiwe.app.R;
+import org.beiwe.app.storage.TextFileManager;
 
 import android.content.Context;
 import android.content.res.Resources.NotFoundException;
@@ -49,6 +50,8 @@ public class QuestionsDownloader {
 		// TODO: update the file in the local filesystem if you download a new 
 		// one from the server, even if the download timed out
 		
+		// TODO: decide whether & how to handle the case where you pull a new file,
+		// but you can't JSON-parse it.
 	}
 	
 	
@@ -88,8 +91,7 @@ public class QuestionsDownloader {
 	private String getSurveyQuestionsFromFilesystem() {
 		Log.i("QuestionsDownloader", "Called getSurveyQuestionsFromFilesystem()");
 		
-		// TODO: implement this
-		return fileToString(null);		
+		return TextFileManager.getCurrentQuestionsFile().read();
 	}
 	
 	
@@ -112,7 +114,8 @@ public class QuestionsDownloader {
 	 * @param string the JSON representation of survey questions
 	 */
 	private void writeStringToFile(String string) {
-		// TODO: finish this function
+		TextFileManager.getCurrentQuestionsFile().deleteMeSafely();
+		TextFileManager.getCurrentQuestionsFile().write(string);
 	}
 
 		
