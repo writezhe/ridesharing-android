@@ -114,7 +114,7 @@ public class QuestionsDownloader {
 	 * @param string the JSON representation of survey questions
 	 */
 	private void writeStringToFile(String string) {
-		TextFileManager.getCurrentQuestionsFile().deleteMeSafely();
+		TextFileManager.getCurrentQuestionsFile().deleteSafely();
 		TextFileManager.getCurrentQuestionsFile().write(string);
 	}
 

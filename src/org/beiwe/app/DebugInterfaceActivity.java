@@ -40,7 +40,7 @@ public class DebugInterfaceActivity extends Activity {
 		appContext = this.getApplicationContext();
 		
 		//start logger
-		TextFileManager.startFileManager(this.getApplicationContext());
+		TextFileManager.start(this.getApplicationContext());
 		logFile = TextFileManager.getDebugLogFile();
 		
 		//start background service
@@ -84,7 +84,8 @@ public class DebugInterfaceActivity extends Activity {
 	
 	public void printInternalLog(View view) {
 		Log.i("print log button pressed", "press.");
-		String log = logFile.read();
+//		String log = logFile.read();
+		String log = logFile.getDataString();
 		
 		for( String line : log.split("\n") ) {
 			Log.i( "log file...", line ); }
@@ -92,7 +93,7 @@ public class DebugInterfaceActivity extends Activity {
 
 	public void clearInternalLog(View view) {
 		Log.i("clear log button pressed", "poke.");
-		logFile.deleteMeSafely();
+		logFile.deleteSafely();
 	}
 	
 	public void uploadDataFiles(View view) {
