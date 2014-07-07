@@ -40,7 +40,8 @@ public class QuestionsDownloader {
 			try {
 				// If that failed, try loading questions from the local filesystem
 				return getSurveyQuestionsFromFilesystem();
-			} catch (Exception e2) {
+			}
+			catch (Exception e2) {
 				e2.printStackTrace();
 				// Last resort: load questions that are hard-coded into the app
 				return getSurveyQuestionsFromAppResources();
@@ -52,6 +53,10 @@ public class QuestionsDownloader {
 		
 		// TODO: decide whether & how to handle the case where you pull a new file,
 		// but you can't JSON-parse it.
+		
+		// TODO: handle the case where the user first takes a survey, but there
+		// is no copy on the local filesystem (could be handled by the same code
+		// as above (JSON-parsing error).
 	}
 	
 	
@@ -63,24 +68,33 @@ public class QuestionsDownloader {
 	private String getSurveyQuestionsFromServer() throws NotFoundException, IOException {
 		Log.i("QuestionsDownloader", "Called getSurveyQuestionsFromServer()");
 		
-		URL locationsFileURL;
-		locationsFileURL = new URL(appContext.getResources().getString(R.string.survey_questions_url));
+		// Get the URL of the Survey Questions JSON file
+		String urlString = appContext.getResources().getString(R.string.survey_questions_url);
+		URL questionsFileURL = new URL(urlString);
 		
-		HttpURLConnection connection = (HttpURLConnection) (locationsFileURL.openConnection());
-		connection.setConnectTimeout(4000);
-		connection.connect();		
-		BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		// Set up an HTTP connection
+		HttpURLConnection connection = (HttpURLConnection) (questionsFileURL.openConnection());
+		connection.setConnectTimeout(4000); // Throw TimeoutException after this many milliseconds
+		connection.connect();
 		
+		// Set up a BufferedReader from the HTTP connection
+		InputStreamReader inputReader = new InputStreamReader(connection.getInputStream());
+		BufferedReader reader = new BufferedReader(inputReader);
+		
+		// Set up a StringBuilder (uses less memory than repeatedly appending to a String)
 		StringBuilder builder = new StringBuilder();
 		String aux = "";
 		
+		// Read in the file from the BufferedReader, and append it to the StringBuilder
 		while ((aux = reader.readLine()) != null) {
 			builder.append(aux);
 		}
 		connection.disconnect();
-		
+				
+		// Save the Survey Questions JSON file to the local filesystem
 		String surveyQuestionsFileString = builder.toString();
 		writeStringToFile(surveyQuestionsFileString);
+		
 		return surveyQuestionsFileString;
 	}
 	
