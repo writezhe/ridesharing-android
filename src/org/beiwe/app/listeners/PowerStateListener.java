@@ -6,10 +6,6 @@ import org.beiwe.app.storage.TextFileManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
 
 /** Listens for power state changes.
@@ -18,16 +14,17 @@ import android.util.Log;
 public class PowerStateListener extends BroadcastReceiver {
 	
 	String header = "time, event\n";
-	TextFileManager logFile = null;
-	TextFileManager powerStateLog = null;
+	
+	
+	
 	
 	/** Handles the logging, includes a new line for the CSV files.
 	 * This code is otherwised reused everywhere.*/
 	private void make_log_statement(String message) {
 		Log.i("PowerStateListener", message);
 		Long javaTimeCode = System.currentTimeMillis();
-		logFile.write(javaTimeCode.toString() + "," + message +"\n" ); 
-//		powerStateLog.write(javaTimeCode.toString() + "," + message + "\n");
+		TextFileManager.getDebugLogFile().write(javaTimeCode.toString() + "," + message +"\n" ); 
+		TextFileManager.getPowerStateFile().write(javaTimeCode.toString() + "," + message + "\n");
 	}
 	
 	@Override
@@ -51,6 +48,6 @@ public class PowerStateListener extends BroadcastReceiver {
 		
 		//Order is not guaranteed for the airplane mode change intent, so we have to call the 
 		//BackgroundProcess doAirplaneModeThings().  This function is idempotent and synchronized.
-		if (intent.getAction().equals(Intent.ACTION_AIRPLANE_MODE_CHANGED)) { /*BackgroundProcess.doAirplaneModeThings*/ }
+		if (intent.getAction().equals(Intent.ACTION_AIRPLANE_MODE_CHANGED)) { BackgroundProcess.doAirplaneModeThings(); }
 	}
 }

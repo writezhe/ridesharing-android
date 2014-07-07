@@ -25,7 +25,7 @@ import android.view.View;
 
 public class DebugInterfaceActivity extends Activity {
 	
-	TextFileManager logFile = null;
+//	TextFileManager logFile = null;
 	Context appContext = null;
 	
 	GPSListener aGPSListener = null;
@@ -39,27 +39,13 @@ public class DebugInterfaceActivity extends Activity {
 		setContentView(R.layout.activity_debug_interface);
 		appContext = this.getApplicationContext();
 		
-		//start logger
-		TextFileManager.start(this.getApplicationContext());
-		logFile = TextFileManager.getDebugLogFile();
-		
 		//start background service
-//		Intent backgroundProcess = new Intent(this, BackgroundProcess.class);
-//		appContext.startService(backgroundProcess);
-		
-		//##########################################################
-		// call the start functionality functions here for debugging
-		//##########################################################
-		startPowerStateListener();
-//		startSmsSentLogger();
-		
-//		aGPSListener = new GPSListener(appContext);
-//		aGPSListener.turn_on();
-//		
-//		anAccelerometerListener = new AccelerometerListener(appContext);
-//		Boolean accel = anAccelerometerListener.turn_on();
-//		Log.i("debuging accelerometer:", accel.toString() );
-		
+		//NOTE: the background service is started on a separate Thread (process? don't care)
+		// and if you attempt to grab any item from a FileManager in this pseudo-constructor
+		// the app will almost always crash immediately.  use the following construction to
+		// access a FileManager object: TextFileManager.getDebugLogFile().some_function();
+		Intent backgroundProcess = new Intent(this, BackgroundProcess.class);
+		appContext.startService(backgroundProcess);
 	}
 	
 
@@ -85,7 +71,7 @@ public class DebugInterfaceActivity extends Activity {
 	public void printInternalLog(View view) {
 		Log.i("print log button pressed", "press.");
 //		String log = logFile.read();
-		String log = logFile.getDataString();
+		String log = TextFileManager.getDebugLogFile().getDataString();
 		
 		for( String line : log.split("\n") ) {
 			Log.i( "log file...", line ); }
@@ -93,7 +79,7 @@ public class DebugInterfaceActivity extends Activity {
 
 	public void clearInternalLog(View view) {
 		Log.i("clear log button pressed", "poke.");
-		logFile.deleteSafely();
+		TextFileManager.getDebugLogFile().deleteSafely();
 	}
 	
 	public void uploadDataFiles(View view) {

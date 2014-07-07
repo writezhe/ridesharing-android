@@ -71,9 +71,6 @@
                 <action android:name="android.intent.action.AIRPLANE_MODE" />
                 <!-- action android:name="android.intent.action.USER_PRESENT" /-->
                 <!-- action android:name="android.intent.action.HEADSET_PLUG" /-->
-                <!-- screen on/off must be registered at instantiation, not here -->
-                <!-- action android:name="android.intent.action.ACTION_SCREEN_ON" /-->
-				<!-- action android:name="android.intent.action.ACTION_SCREEN_OFF" /-->
             </intent-filter>
         </receiver>
         

@@ -45,14 +45,15 @@ public class GPSListener implements LocationListener {
 		else { return false; }
 	}
 	
-	public GPSListener (Context applicationContext){
-		/** Listens for GPS updates from the network GPS location provider and the true
-		 * GPS provider, both if possible.  Not activated on instantiation.  Requires an 
-		 * application Context object be passed in in order to interface with location services.
-		 * When activated using the turn_on() function it will log any location updates to the 
-		 * GPS log. */
-		appContext = applicationContext;
-		pkgManager = appContext.getPackageManager();
+	/** Listens for GPS updates from the network GPS location provider and/or the true
+	 * GPS provider, both if possible.  It is NOT activated upon instantiation.  Requires an 
+	 * application Context object be passed in in order to interface with location services.
+	 * When activated using the turn_on() function it will log any location updates to the GPS log.
+	 * @param applicationContext A Context provided an Activity or Service. */
+	
+	public GPSListener (Context appContext){
+		this.appContext = appContext;
+		pkgManager = this.appContext.getPackageManager();
 		GPSFile = TextFileManager.getGPSFile();
 		logFile = TextFileManager.getDebugLogFile();
 		
@@ -61,7 +62,7 @@ public class GPSListener implements LocationListener {
 		enabled = false;
 		Log.i("location services:", "GPS:"+trueGPS.toString()+ " Network:"+networkGPS);
 		
-		try { locationManager = (LocationManager) appContext.getSystemService(Context.LOCATION_SERVICE); }
+		try { locationManager = (LocationManager) this.appContext.getSystemService(Context.LOCATION_SERVICE); }
 		catch (SecurityException e) {
 			Log.i("the LocationManager failed to initiate, SecurityException, see stack trace.", "");
 			e.printStackTrace(); }
@@ -72,10 +73,15 @@ public class GPSListener implements LocationListener {
 	// Idempotent.  When it succeeds, it should return true.
 	// Should return false (and not crash due to sensor errors) if called on a feature that does not work.
 	public synchronized Boolean turn_on(){
+		//TODO: remove or comment out the following  debug print statement
 		//if both DNE, return false.
-		if ( !trueGPS & !networkGPS ) { return false; }
+		if ( !trueGPS & !networkGPS ) {
+			Log.i("GPS", "GPS was told to turn on, but it is not available.");
+			return false; }
 		// if already enabled return true.
-		if ( enabled ) { return true; }
+		if ( enabled ) {
+			Log.i("GPS","GPS was turned on when it was already on.");
+			return true;  }
 		//If the feature exists, request locations from it. (enable if their boolean flag is true.)
 		if ( trueGPS ) {			// parameters: provider, minTime, minDistance, listener);
 			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this); }
@@ -89,6 +95,7 @@ public class GPSListener implements LocationListener {
 	public synchronized void turn_off(){
 		locationManager.removeUpdates(this);
 		enabled = false;
+		Log.i("GPS","gps disabled");
 	}
 	
 	@Override
@@ -118,11 +125,14 @@ public class GPSListener implements LocationListener {
 	public void onProviderEnabled(String arg0) { Log.i("A location provider was enabled.", arg0); }
 	@Override
 	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-		//Called when the provider status changes; when a provider is unable to fetch a location
+//FIXME:  implement the receipt of a status change, make it enable/disable a provider
+		
+		//Called when the provider status changes, when a provider is unable to fetch a location,
 		// or if the provider has recently become available after a period of unavailability.
-		// arg0 is the name of the provider with a changed status
+		// arg0 is the name of the provider that changed status.
 		// arg1 is the status of the provider. 0=out of service, 1=temporarily unavailable, 2=available
 		Log.i("OH GOD WE GOT A STATUSCHANGE FROM THE GPSListener", arg0 + "," + arg1 + "," + arg2.toString() );
 		logFile.write("STATUSCHANGE FROM THE GPSListener" + arg0 + "," + arg1 + "," + arg2.toString());
+
 	}
 }
