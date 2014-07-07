@@ -48,6 +48,7 @@ public class PowerStateListener extends BroadcastReceiver {
 		
 		//Order is not guaranteed for the airplane mode change intent, so we have to call the 
 		//BackgroundProcess doAirplaneModeThings().  This function is idempotent and synchronized.
-		if (intent.getAction().equals(Intent.ACTION_AIRPLANE_MODE_CHANGED)) { BackgroundProcess.doAirplaneModeThings(); }
+		if (intent.getAction().equals(Intent.ACTION_AIRPLANE_MODE_CHANGED)) { /*BackgroundProcess.doAirplaneModeThings(); */ }
+		
 	}
 }
