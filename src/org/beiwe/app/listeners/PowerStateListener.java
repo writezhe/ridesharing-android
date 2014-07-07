@@ -15,9 +15,6 @@ public class PowerStateListener extends BroadcastReceiver {
 	
 	String header = "time, event\n";
 	
-	
-	
-	
 	/** Handles the logging, includes a new line for the CSV files.
 	 * This code is otherwised reused everywhere.*/
 	private void make_log_statement(String message) {

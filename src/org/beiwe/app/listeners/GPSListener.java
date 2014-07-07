@@ -37,8 +37,9 @@ public class GPSListener implements LocationListener {
 	private Boolean trueGPS = null;
 	private Boolean networkGPS = null;
 	private Boolean enabled = null;
+	//does not have an explicit "exists" boolean.  Use check_status() function, it will return false if there is no GPS. 
 	
-	public Boolean check_status(){
+	public synchronized Boolean check_status(){
 		//TODO: make button call this function, debug responses for various location functionality enabled/disabled.
 		// (need to implement something for provider changes first.
 		if (trueGPS || networkGPS) { return enabled; }
@@ -69,33 +70,39 @@ public class GPSListener implements LocationListener {
 		Log.i("LocationListener instatiated", "event...");
 	}
 	
-	//turn_on and turn_off functions:
-	// Idempotent.  When it succeeds, it should return true.
-	// Should return false (and not crash due to sensor errors) if called on a feature that does not work.
-	public synchronized Boolean turn_on(){
-		//TODO: remove or comment out the following  debug print statement
+	/** Turns on GPS providers, provided they are accessible.
+	 * @return 
+	 */
+	private synchronized void turn_on(){
 		//if both DNE, return false.
 		if ( !trueGPS & !networkGPS ) {
 			Log.i("GPS", "GPS was told to turn on, but it is not available.");
-			return false; }
+			return; }
 		// if already enabled return true.
 		if ( enabled ) {
 			Log.i("GPS","GPS was turned on when it was already on.");
-			return true;  }
+			return; }
 		//If the feature exists, request locations from it. (enable if their boolean flag is true.)
 		if ( trueGPS ) {			// parameters: provider, minTime, minDistance, listener);
-			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this); }
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this); 
+			enabled = true; }
 		if ( networkGPS ) {
-			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this); }
-		//set enabled flag, return
-		enabled = true;
-		return true;
+			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this); 
+			enabled = true; }
 	}
 	
-	public synchronized void turn_off(){
+	private synchronized void turn_off(){
+		// pretty confident this cannot fail.
 		locationManager.removeUpdates(this);
 		enabled = false;
-		Log.i("GPS","gps disabled");
+	}
+	
+	/**Checks for state of the GPSListener, turns it on/off accordingly
+	 * @return Boolean.  True if on, false if off.	 */
+	public synchronized Boolean toggle() {
+		if ( enabled ) { this.turn_off(); }
+		else { this.turn_on(); }
+		return enabled;
 	}
 	
 	@Override
@@ -125,7 +132,7 @@ public class GPSListener implements LocationListener {
 	public void onProviderEnabled(String arg0) { Log.i("A location provider was enabled.", arg0); }
 	@Override
 	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-//FIXME:  implement the receipt of a status change, make it enable/disable a provider
+//FIXME:  implement the receipt of a status change, make it enable/disable a provider?  change state accordingly?  ack.
 		
 		//Called when the provider status changes, when a provider is unable to fetch a location,
 		// or if the provider has recently become available after a period of unavailability.
@@ -133,6 +140,5 @@ public class GPSListener implements LocationListener {
 		// arg1 is the status of the provider. 0=out of service, 1=temporarily unavailable, 2=available
 		Log.i("OH GOD WE GOT A STATUSCHANGE FROM THE GPSListener", arg0 + "," + arg1 + "," + arg2.toString() );
 		logFile.write("STATUSCHANGE FROM THE GPSListener" + arg0 + "," + arg1 + "," + arg2.toString());
-
 	}
 }

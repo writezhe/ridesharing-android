@@ -34,49 +34,44 @@ public class AccelerometerListener implements SensorEventListener{
 		 * application Context object be passed in in order to interface device sensors.
 		 * When activated using the turn_on() function it will log any accelerometer updates to the 
 		 * accelerometer log. */
-		appContext = applicationContext;
-		pkgManager = appContext.getPackageManager();
-		logFile = TextFileManager.getDebugLogFile();
-		accelFile = TextFileManager.getAccelFile();
+		this.appContext = applicationContext;
+		this.pkgManager = appContext.getPackageManager();
+		this.logFile = TextFileManager.getDebugLogFile();
+		this.accelFile = TextFileManager.getAccelFile();
 		
-		exists = pkgManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER);
+		this.exists = pkgManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER);
 		
-		if (exists) {
+		if (this.exists) {
 			enabled = false;
-			accelSensorManager = (SensorManager) appContext.getSystemService(Context.SENSOR_SERVICE);
-			accelSensor = accelSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+			this.accelSensorManager = (SensorManager) appContext.getSystemService(Context.SENSOR_SERVICE);
+			this.accelSensor = accelSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
 			if (accelSensorManager == null ){
-				//goto fail
 				Log.i("accelerometer does not exist??", " !!!!!!!!!!!!!!!!!! " );
-				exists = false;
-			}
+				exists = false;	}
 		}
 	}
 	
-
 	
-	//turn_on and turn_off functions:
-	//should be idempotent, and when they succeed should return true.
-	//should return false (and NOT CRASH) if called on a feature that does not exist on the device.
-	public synchronized Boolean turn_on() {
-		/** If an accelerometer exists and is not on, turn it on and return true.
-		 * If it does not exist or is already on, return false. */
-		if (exists & !enabled) {
-			accelSensorManager.registerListener(this, accelSensor, SensorManager.SENSOR_DELAY_NORMAL);
-			enabled = true;
-			return true;}
-		return false;
-	}
+	private synchronized void turn_on() {
+		accelSensorManager.registerListener(this, accelSensor, SensorManager.SENSOR_DELAY_NORMAL);
+		enabled = true;	}
 	
-	public synchronized Boolean turn_off(){
-		/** If an accelerometer exists and is not already on, turn it on and return true.
-		 * If it is on or does not exist return false. */
-		if (exists & enabled){
-			accelSensorManager.unregisterListener(this);
-			enabled = false;
-			return true; }
-		return false;
+	private synchronized void turn_off(){
+		accelSensorManager.unregisterListener(this);
+		enabled = false; }
+	
+	/** If the accelerometer exists, toggle its state
+	 * @return Boolean.  True means it has been turned on, false means it has been turned off. */
+	public synchronized Boolean toggle(){
+		if ( !this.exists ){ return false; }
+		else {
+			if (enabled) {
+				this.turn_off();
+				return enabled; }	
+			else {
+				this.turn_on();
+				return enabled; } }
 	}
 	
 	//NOTE: for the onAccuracyChanged and onSensorChanged we are adding the synchronized keyword.

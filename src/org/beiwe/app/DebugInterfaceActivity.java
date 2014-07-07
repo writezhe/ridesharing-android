@@ -96,6 +96,21 @@ public class DebugInterfaceActivity extends Activity {
 		Intent surveyIntent = new Intent(this, SurveyActivity.class);
 		startActivity(surveyIntent);
 	}
+	
+	public void deleteEverything(View view) {
+		Log.i("Delete Everything button pressed", "poke.");
+		TextFileManager.deleteEverything();
+	}
+	
+	public void toggleAccelerometer(View view) {
+		AccelerometerListener accel = BackgroundProcess.accelerometerListener;
+		Log.i("Toggle Accelerometer button pressed", "Accel state: " + accel.toggle().toString() );
+	}
+	
+	public void toggleGPS(View view) {
+		GPSListener gps = BackgroundProcess.gpsListener;
+		Log.i("Toggle GPS button pressed", "GPS state: " + gps.toggle().toString() );
+	}
 
 	
 	

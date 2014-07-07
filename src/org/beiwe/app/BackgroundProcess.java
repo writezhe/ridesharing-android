@@ -24,18 +24,20 @@ import android.util.Log;
 
 public class BackgroundProcess extends Service {
 
-	TextFileManager logFile = null;
-	Context appContext = null;
-	PackageManager packageManager = null; 	//used to check if sensors exist
+	private TextFileManager logFile = null;
+	private Context appContext = null;
+	private PackageManager packageManager = null; 	//used to check if sensors exist
 	
-	GPSListener gpsListener;
-	AccelerometerListener accelerometerListener;
+	public static GPSListener gpsListener;
+	public static AccelerometerListener accelerometerListener;
 	
 	private void make_log_statement(String message) {
 		Log.i("BackgroundService", message);
 		Long javaTimeCode = System.currentTimeMillis();
 		logFile.write(javaTimeCode.toString() + "," + message +"\n" ); 
 	}
+//	public static AccelerometerListener getAccelerometerListener() { return accelerometerListener; }
+//	public static GPSListener getGPSListener() { return gpsListener; }
 	
 	public void onCreate(){
 		/** onCreate is the constructor for the service, initialize variables here.*/
@@ -53,10 +55,10 @@ public class BackgroundProcess extends Service {
 		startSmsSentLogger();
 		startPowerStateListener();
 								
-		Boolean accelStatus = accelerometerListener.turn_on( );
-		Log.i("accelStatus", accelStatus.toString() );
-		Boolean gpsStatus = gpsListener.turn_on();
-		Log.i("accelStatus", gpsStatus.toString() );
+		Boolean accelStatus = accelerometerListener.toggle( );
+		Log.i("accel Status", accelStatus.toString() );
+		Boolean gpsStatus = gpsListener.toggle();
+		Log.i("GPS Status", gpsStatus.toString() );
 	}
 
 	@Override
@@ -92,11 +94,15 @@ public class BackgroundProcess extends Service {
 	    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
 	        AirplaneModeEnabled = Settings.System.getInt(resolver, Settings.System.AIRPLANE_MODE_ON, 0) != 0; }
 	    else { AirplaneModeEnabled = Settings.Global.getInt(resolver, Settings.Global.AIRPLANE_MODE_ON, 0) != 0; }
-	    
-	    if (AirplaneModeEnabled){ gpsListener.turn_off(); 
-	    	make_log_statement("GPS turned off");}
-	    else { gpsListener.turn_on(); 
-	    make_log_statement("GPS turn on");}
+	    //if airplane mode enabled and gps is off:
+	    if (AirplaneModeEnabled && gpsListener.check_status() ){
+	    	gpsListener.toggle(); 
+	    	make_log_statement("GPS turned off"); }
+	    //if airplane mode disabled and gps is off
+	    if ( !AirplaneModeEnabled && !gpsListener.check_status() ) {
+	    	gpsListener.toggle();
+	    	if ( gpsListener.check_status() ) { make_log_statement("GPS turned on."); }
+	    	else { make_log_statement("GPS failed to turn on"); } }
 	}
 	
 /*###############################################################################

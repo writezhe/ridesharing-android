@@ -38,4 +38,26 @@
         android:text="@string/button_go_to_survey"
         android:onClick="goToSurvey" />
 
+    <Button
+        android:id="@+id/buttonDeleteEverything"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_delete_everything" 
+        android:onClick="deleteEverything" />
+    
+	<Button
+        android:id="@+id/buttonToggleGPS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_toggle_gps" 
+        android:onClick="toggleGPS" />
+    
+	<Button
+        android:id="@+id/buttonToggleAccelerometer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_toggle_accelerometer" 
+        android:onClick="toggleAccelerometer" />
+    
+
 </LinearLayout>
