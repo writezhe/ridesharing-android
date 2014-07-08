@@ -1,15 +1,7 @@
 package org.beiwe.app.storage;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -19,7 +11,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.beiwe.app.R;
 
 import android.content.Context;
-import android.os.Environment;
 import android.util.Log;
 
 public class Upload {
@@ -43,6 +34,8 @@ public class Upload {
 				
 				//for (String fileName : files) {
 					try {
+						//TODO: this works for debugging, but you have to change TextFileManager.fileName to "public" 
+						//tryToUploadFile(TextFileManager.getCurrentQuestionsFile().fileName);
 						tryToUploadFile(files[0]);
 					}
 					catch (Exception e) {
@@ -60,18 +53,14 @@ public class Upload {
 	
 	private void tryToUploadFile(String filename) {
 		try {
-			// TODO: get Eli to provide a function that grabs a File, given the file name
-			// This is uploading the dummy audio recording file, just for testing
-//			File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/audiorecordtest.3gp");
-			//File file = new File(appContext.getFilesDir() + fileName);
-			//File file = new File(fileName);
-
 			String filePath = appContext.getFilesDir() + "/" + filename;
 			File file = new File(filePath);
 
-			
-			uploadFile(file, getUploadUrl(filename));
-		} catch (IOException e) {
+			URL uploadUrl = new URL(getUploadUrl(filename));
+			PostRequestFileUpload postRequest = new PostRequestFileUpload();
+			postRequest.sendPostRequest(file, uploadUrl);
+		}
+		catch (IOException e) {
 			Log.w("Upload", "Failed to upload file. Raised exception " + e.getCause());
 			e.printStackTrace();
 		}
@@ -80,7 +69,7 @@ public class Upload {
 	
 	private String getUploadUrl(String filename) {
 		String url = appContext.getResources().getString(R.string.data_upload_base_url);
-		return url + "upload_gps/";
+		return url + "upload_gps";
 		/* Upload URLs:
 		 * http://54.204.178.17/upload_gps/
 		 * http://54.204.178.17/upload_accel/
@@ -91,39 +80,5 @@ public class Upload {
 		 * http://54.204.178.17/upload_audio/
 		 */
 	}
-	
-	
-	private void uploadFile(File file, String uploadUrl) throws IOException {
-		// Based on: http://www.codejava.net/java-ee/servlet/upload-file-to-servlet-without-using-html-form
-		
-		URL url = new URL(uploadUrl);
-		//URL url = new URL("http://joshzagorsky.com/foobar");
-		HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
-		httpConn.setUseCaches(false);
-		httpConn.setDoOutput(true);
-		httpConn.setRequestMethod("POST");
-		httpConn.setRequestProperty("fileName", file.getName());
-		
-		OutputStream outputStream = httpConn.getOutputStream();
-		DataInputStream inputStream = new DataInputStream( new FileInputStream( file) );
-		
-		byte[] buffer = new byte[ 4096 ];
-		int bytesRead = -1;
-		
-		while ((bytesRead = inputStream.read(buffer)) != -1) {
-			outputStream.write(buffer, 0, bytesRead);
-		}
-		
-		outputStream.close();
-		inputStream.close();
-		
-		// Process HTTP Response
-		int responseCode = httpConn.getResponseCode();
-		Log.i("Upload", "HTTP response code = " + responseCode);
-		//if (responseCode == HttpURLConnection.HTTP_OK) {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(httpConn.getInputStream()));
-			String response = reader.readLine();
-			Log.i("Upload", "HTTP Response = " + response);
-		//}
-	}
+
 }
