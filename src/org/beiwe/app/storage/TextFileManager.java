@@ -207,14 +207,15 @@ public class TextFileManager {
 		return data;
 	}
 	
-	public synchronized void deleteSafely(){
+	// TODO: work out errors thrown and how to handle them
+	public synchronized void deleteSafely() {
 		/**create new instance of file, then delete the old file.*/
 		String old_file_name = this.fileName;
 		this.newFile();
 		try { appContext.deleteFile(old_file_name); }
 		catch (Exception e) {
 			Log.i("TextFileManager", "cannot delete file " + this.fileName );
-			throw e; }
+			e.printStackTrace(); }
 	}
 	
 /*###############################################################################
@@ -226,7 +227,7 @@ public class TextFileManager {
 	
 	/**For Debug Only.
 	 * deletes all files, creates new ones. */
-	public static synchronized void deleteEverything(){
+	public static synchronized void deleteEverything() {
 		//Get complete list of all files, then make new files, then delete all files from the old files list.
 		String[] files = appContext.getFilesDir().list();
 		makeNewFilesForEverything();
@@ -241,7 +242,7 @@ public class TextFileManager {
 			try { appContext.deleteFile(file_name); }
 			catch (Exception e) {
 				Log.i("TextFileManager", "could not delete file " + file_name); 
-				throw e; } }
+				e.printStackTrace(); } }
 	}
 	
 	public synchronized void newDebugLogFile(){
