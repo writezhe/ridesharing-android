@@ -1,10 +1,12 @@
 package org.beiwe.app.survey;
 
 import org.beiwe.app.R;
+import org.json.JSONException;
 
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -45,7 +47,19 @@ public class SurveyActivity extends Activity {
 		
 		// Parse the JSON list of questions and render them as Views
 		JsonParser jsonParser = new JsonParser(getApplicationContext());
-		jsonParser.renderSurveyFromJSON(surveyQuestionsLayout, jsonSurveyString);
+		try {
+			jsonParser.renderSurveyFromJSON(surveyQuestionsLayout, jsonSurveyString);
+		}
+		catch (JSONException e) {
+			// If rendering or parsing failed, display the error widget instead of the survey
+			Log.i("JsonParser", "Failed to parse JSON properly");
+			e.printStackTrace();
+
+			surveyLayout.removeAllViews();
+			View errorWidget = getLayoutInflater().inflate(R.layout.survey_info_textbox, null);
+			surveyLayout.addView(errorWidget);
+		}
+
 
 		// Display the survey instead of the "Loading..." wheel
 		replaceSurveyPageContents(surveyLayout);

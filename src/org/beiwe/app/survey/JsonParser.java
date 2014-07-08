@@ -1,57 +1,40 @@
 package org.beiwe.app.survey;
 
-import org.beiwe.app.R;
 import org.beiwe.app.survey.TextFieldType.Type;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 
 public class JsonParser {
 
-	private Context appContext;
 	private QuestionRenderer renderer;
 	private View errorWidget;
 	
 	
 	// Constructor exists to set up class variables
 	public JsonParser(Context applicationContext) {
-		appContext = applicationContext;
-		renderer = new QuestionRenderer(applicationContext);
-		
-		// Create an error message widget that displays by default
-		LayoutInflater inflater = 
-				(LayoutInflater) appContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		errorWidget = inflater.inflate(R.layout.survey_info_textbox, null);
+		renderer = new QuestionRenderer(applicationContext);		
 	}
 	
 	
 	/**
 	 * Add all survey questions to the provided surveyLayout View object
 	 * @param surveyLayout
+	 * @throws JSONException 
 	 */
-	public void renderSurveyFromJSON(LinearLayout surveyLayout, String jsonSurveyString) {
-		try {
-			JSONObject wholeSurveyObject;
-			wholeSurveyObject = new JSONObject(jsonSurveyString);
-			JSONArray jsonQuestions = wholeSurveyObject.getJSONArray("questions");
-			
-			// Iterate over the array, and add each question to the survey View
-			for (int i = 0; i < jsonQuestions.length(); i++) {
-				View question = renderQuestionFromJSON(jsonQuestions.getJSONObject(i));
-				surveyLayout.addView(question);
-			}
-		}
-		catch (JSONException e) {
-			// If rendering or parsing failed, display the error widget instead
-			Log.i("JsonParser", "Failed to parse JSON properly");
-			e.printStackTrace();
-			surveyLayout.addView(errorWidget);
+	public void renderSurveyFromJSON(LinearLayout surveyLayout, String jsonSurveyString) throws JSONException {
+		JSONObject wholeSurveyObject;
+		wholeSurveyObject = new JSONObject(jsonSurveyString);
+		JSONArray jsonQuestions = wholeSurveyObject.getJSONArray("questions");
+		
+		// Iterate over the array, and add each question to the survey View
+		for (int i = 0; i < jsonQuestions.length(); i++) {
+			View question = renderQuestionFromJSON(jsonQuestions.getJSONObject(i));
+			surveyLayout.addView(question);
 		}
 	}
 		
