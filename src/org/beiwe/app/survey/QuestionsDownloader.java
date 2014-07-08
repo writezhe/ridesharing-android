@@ -74,7 +74,10 @@ public class QuestionsDownloader {
 		
 		// Set up an HTTP connection
 		HttpURLConnection connection = (HttpURLConnection) (questionsFileURL.openConnection());
-		connection.setConnectTimeout(4000); // Throw TimeoutException after this many milliseconds
+
+		// Throw a TimeoutException after this many milliseconds if
+		connection.setConnectTimeout(3000); // The server hasn't accepted the connection
+		connection.setReadTimeout(5000); // This device hasn't received the response
 		connection.connect();
 		
 		// Set up a BufferedReader from the HTTP connection
