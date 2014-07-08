@@ -89,6 +89,9 @@ public class AccelerometerListener implements SensorEventListener{
 		float[] values = arg0.values;
 		
 		String data = "" + arg0.timestamp + ',' + values[0] + ',' + values[1] + ',' + values[2] + '\n';
+		
+		//TODO: get Unix timestamp, not whatever arg0.timestamp returns. See here: http://stackoverflow.com/a/9333605
+		
 //		accelFile.write(data);
 		logFile.write("accel: " + data);
 		//All values are in SI units (m/s^2) 
