@@ -25,8 +25,7 @@ public class JsonParser {
 		renderer = new QuestionRenderer(applicationContext);
 		
 		// Create an error message widget that displays by default
-		LayoutInflater inflater = 
-				(LayoutInflater) appContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		LayoutInflater inflater = (LayoutInflater) appContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		errorWidget = inflater.inflate(R.layout.survey_info_textbox, null);
 	}
 	
@@ -37,6 +36,8 @@ public class JsonParser {
 	 */
 	public void renderSurveyFromJSON(LinearLayout surveyLayout, String jsonSurveyString) {
 		try {
+			LinearLayout questionsLayout = (LinearLayout) surveyLayout.findViewById(R.id.surveyQuestionsLayout);
+
 			JSONObject wholeSurveyObject;
 			wholeSurveyObject = new JSONObject(jsonSurveyString);
 			JSONArray jsonQuestions = wholeSurveyObject.getJSONArray("questions");
@@ -44,13 +45,15 @@ public class JsonParser {
 			// Iterate over the array, and add each question to the survey View
 			for (int i = 0; i < jsonQuestions.length(); i++) {
 				View question = renderQuestionFromJSON(jsonQuestions.getJSONObject(i));
-				surveyLayout.addView(question);
+				questionsLayout.addView(question);
 			}
 		}
 		catch (JSONException e) {
 			// If rendering or parsing failed, display the error widget instead
 			Log.i("JsonParser", "Failed to parse JSON properly");
 			e.printStackTrace();
+		
+			surveyLayout.removeAllViews();
 			surveyLayout.addView(errorWidget);
 		}
 	}

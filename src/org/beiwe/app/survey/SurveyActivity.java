@@ -41,11 +41,10 @@ public class SurveyActivity extends Activity {
 	private void renderSurvey(String jsonSurveyString) {
 		// Get the survey layout objects that we'll add questions to
 		LinearLayout surveyLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.survey_layout, null);
-		LinearLayout surveyQuestionsLayout = (LinearLayout) surveyLayout.findViewById(R.id.surveyQuestionsLayout);
 		
 		// Parse the JSON list of questions and render them as Views
 		JsonParser jsonParser = new JsonParser(getApplicationContext());
-		jsonParser.renderSurveyFromJSON(surveyQuestionsLayout, jsonSurveyString);
+		jsonParser.renderSurveyFromJSON(surveyLayout, jsonSurveyString);
 
 		// Display the survey instead of the "Loading..." wheel
 		replaceSurveyPageContents(surveyLayout);
