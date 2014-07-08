@@ -32,17 +32,20 @@ public class Upload {
 			public HttpGet call() {
 				String[] files = TextFileManager.getAllFilesSafely();
 				
-				//for (String fileName : files) {
+				for (String fileName : files) {
 					try {
+						Log.i("Upload.java", "Trying to upload file: " + fileName);
 						//TODO: this works for debugging, but you have to change TextFileManager.fileName to "public" 
 						//tryToUploadFile(TextFileManager.getCurrentQuestionsFile().fileName);
-						tryToUploadFile(files[0]);
+						tryToUploadFile(fileName);
 					}
 					catch (Exception e) {
+						Log.i("Upload.java", "Failed to upload file: " + fileName);
 						//Log.w("Upload", "File " + fileName + " didn't exist");
 						e.printStackTrace();
 					}
-				//}
+				}
+				Log.i("Upload.java", "Finished upload loop");				
 				
 				return null;
 			}
