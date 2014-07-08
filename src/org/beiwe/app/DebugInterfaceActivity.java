@@ -2,7 +2,6 @@ package org.beiwe.app;
  
 import org.beiwe.app.listeners.AccelerometerListener;
 import org.beiwe.app.listeners.GPSListener;
-import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.storage.Upload;
@@ -10,10 +9,8 @@ import org.beiwe.app.survey.AudioRecorderActivity;
 import org.beiwe.app.survey.SurveyActivity;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -124,11 +121,4 @@ public class DebugInterfaceActivity extends Activity {
 		this.getContentResolver().registerContentObserver(Uri.parse("content://sms/"), true, smsSentLogger);
 	}
 	
-//	well this is interesting, registering these actions in the manifest does not work...
-	private void startPowerStateListener() {
-		final IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
-		filter.addAction(Intent.ACTION_SCREEN_OFF);
-		final BroadcastReceiver powerStateReceiver = new PowerStateListener();
-		registerReceiver(powerStateReceiver, filter);
-	}
 }

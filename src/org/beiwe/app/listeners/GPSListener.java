@@ -40,7 +40,6 @@ public class GPSListener implements LocationListener {
 	//does not have an explicit "exists" boolean.  Use check_status() function, it will return false if there is no GPS. 
 	
 	public synchronized Boolean check_status(){
-		//TODO: make button call this function, debug responses for various location functionality enabled/disabled.
 		// (need to implement something for provider changes first.
 		if (trueGPS || networkGPS) { return enabled; }
 		else { return false; }
@@ -70,9 +69,7 @@ public class GPSListener implements LocationListener {
 		Log.i("LocationListener instatiated", "event...");
 	}
 	
-	/** Turns on GPS providers, provided they are accessible.
-	 * @return 
-	 */
+	/** Turns on GPS providers, provided they are accessible. */
 	private synchronized void turn_on(){
 		//if both DNE, return false.
 		if ( !trueGPS & !networkGPS ) {
@@ -118,8 +115,6 @@ public class GPSListener implements LocationListener {
 //		GPSFile.write(data);
 		logFile.write("GPS: " + data);
 	}
-
-
 	
 /*#################################################################################################
 /*###### we don't require these built-in overrides for any features, they are irrelevant  #########
@@ -132,7 +127,7 @@ public class GPSListener implements LocationListener {
 	public void onProviderEnabled(String arg0) { Log.i("A location provider was enabled.", arg0); }
 	@Override
 	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-//FIXME:  implement the receipt of a status change, make it enable/disable a provider?  change state accordingly?  ack.
+		//FIXME:  implement the receipt of a status change, make it enable/disable a provider?  change state accordingly?  ack.
 		
 		//Called when the provider status changes, when a provider is unable to fetch a location,
 		// or if the provider has recently become available after a period of unavailability.

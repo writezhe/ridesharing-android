@@ -80,11 +80,8 @@ public class AccelerometerListener implements SensorEventListener{
 	
 	@Override
 	public synchronized void onAccuracyChanged(Sensor arg0, int arg1) {
-		// TODO Auto-generated method stub
+		//TODO: consider implementing this (it probably is not needed)
 		Log.i("OH GOD THE ACCELEROMETER HAD AN ACCURACY CHANGE:", arg0.toString() + "\nint value:" + arg1);
-		
-		//Interesting: recieved an onacceracychange event thing with an int value of 3, and then the app crashed.
-		// immediately reran the app (no code changes) and it ran/runs fine.  wtf.
 	}
 
 	@Override

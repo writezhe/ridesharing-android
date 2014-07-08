@@ -13,7 +13,8 @@ import android.util.Log;
  *  @author Josh Zagorsky, Eli Jones, May/June 2014 */
 public class PowerStateListener extends BroadcastReceiver {
 	
-	String header = "time, event\n";
+	public String header = "time, event\n";
+	private BackgroundProcess backgroundProcess;
 	
 	/** Handles the logging, includes a new line for the CSV files.
 	 * This code is otherwised reused everywhere.*/
@@ -21,12 +22,19 @@ public class PowerStateListener extends BroadcastReceiver {
 		Log.i("PowerStateListener", message);
 		Long javaTimeCode = System.currentTimeMillis();
 		TextFileManager.getDebugLogFile().write(javaTimeCode.toString() + "," + message +"\n" ); 
-		TextFileManager.getPowerStateFile().write(javaTimeCode.toString() + "," + message + "\n");
+//		TextFileManager.getPowerStateFile().write(javaTimeCode.toString() + "," + message + "\n");
+	}
+	
+	/** In order to acces the functions of the background Process we need to create a new constructor,
+	 * one that takes a BackgroundProcess. 
+	 * @param backgroundProcess */
+	
+	public void finish_instantiation( BackgroundProcess backgroundProcess ) {
+		this.backgroundProcess = backgroundProcess;
 	}
 	
 	@Override
 	public void onReceive(Context externalContext, Intent intent) {
-
 		//make a log of all receipts (for debugging)
 		make_log_statement("the following intent was recieved by the PowerStateListener:" + intent.getAction().toString()+"\n");
 		
@@ -39,13 +47,16 @@ public class PowerStateListener extends BroadcastReceiver {
 		if (intent.getAction().equals(Intent.ACTION_POWER_DISCONNECTED)) { make_log_statement("Power disconnected"); }
 		
 		// Shutdown/Restart
-		//TODO: investigate why this is not received
 		if (intent.getAction().equals(Intent.ACTION_SHUTDOWN)) { make_log_statement("Device shut down signal received"); }
 		if (intent.getAction().equals(Intent.ACTION_REBOOT)) { make_log_statement("Device reboot signal received"); }
 		
 		//Order is not guaranteed for the airplane mode change intent, so we have to call the 
 		//BackgroundProcess doAirplaneModeThings().  This function is idempotent and synchronized.
-		if (intent.getAction().equals(Intent.ACTION_AIRPLANE_MODE_CHANGED)) { /*BackgroundProcess.doAirplaneModeThings(); */ }
-		
+		if (intent.getAction().equals(Intent.ACTION_AIRPLANE_MODE_CHANGED)) {
+			//FIXME: this is breaking on the call to the background process
+			Log.i("something", "anything");
+			backgroundProcess.doAirplaneModeThings();  
+			Log.i("anything", "something");
+		}
 	}
 }

@@ -13,7 +13,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
+//import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
@@ -26,7 +26,7 @@ public class BackgroundProcess extends Service {
 
 	private TextFileManager logFile = null;
 	private Context appContext = null;
-	private PackageManager packageManager = null; 	//used to check if sensors exist
+//	private PackageManager packageManager = null; 	//used to check if sensors exist
 	
 	public static GPSListener gpsListener;
 	public static AccelerometerListener accelerometerListener;
@@ -36,13 +36,11 @@ public class BackgroundProcess extends Service {
 		Long javaTimeCode = System.currentTimeMillis();
 		logFile.write(javaTimeCode.toString() + "," + message +"\n" ); 
 	}
-//	public static AccelerometerListener getAccelerometerListener() { return accelerometerListener; }
-//	public static GPSListener getGPSListener() { return gpsListener; }
 	
 	public void onCreate(){
 		/** onCreate is the constructor for the service, initialize variables here.*/
 		appContext = this.getApplicationContext();
-		packageManager = this.getPackageManager();
+//		packageManager = this.getPackageManager();
 		
 		TextFileManager.start(appContext);
 		logFile = TextFileManager.getDebugLogFile();
@@ -64,9 +62,8 @@ public class BackgroundProcess extends Service {
 	@Override
 	public void onDestroy() {
 		//this does not appear to run when the service or app are killed...
-		//TODO: research when onDestroy is actually called, insert informative comment
+		//TODO: research when onDestroy is actually called, insert informative comment.
 		make_log_statement("BackgroundService Killed");
-		// TODO: decide if we need to unRegisterContentObserver(SmsSentLogger) in onDestroy() or something
 	}
 	
 	/** Initializes the sms logger. */
@@ -79,8 +76,9 @@ public class BackgroundProcess extends Service {
 //		The the ACTION_SCREEN_ON and ACTION_SCREEN_OFF intents must be registered at initialization.
 		final IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
 		filter.addAction(Intent.ACTION_SCREEN_OFF);
-		final BroadcastReceiver mReceiver = new PowerStateListener();
-		registerReceiver(mReceiver, filter);
+		final PowerStateListener powerStateListener = new PowerStateListener();
+		powerStateListener.finish_instantiation(this);  //TODO: fix this
+		registerReceiver( (BroadcastReceiver) powerStateListener, filter);
 	}
 
 //	@SuppressWarnings("deprecation")
@@ -105,12 +103,12 @@ public class BackgroundProcess extends Service {
 	    	else { make_log_statement("GPS failed to turn on"); } }
 	}
 	
-/*###############################################################################
-################ onStartCommand and onBind, ignore these ########################
-###############################################################################*/	
+	/*###############################################################################
+	################ onStartCommand and onBind, ignore these ########################
+	###############################################################################*/	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId){
-		Log.i("BackgroundService received start command:", ""+startId );
+		Log.i("BackgroundService received start command:", "" + startId );
 		return START_STICKY; }
 	@Override
 	public IBinder onBind(Intent arg0) {
