@@ -13,6 +13,9 @@ import java.net.URL;
 
 import org.beiwe.app.R;
 import org.beiwe.app.storage.TextFileManager;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.res.Resources.NotFoundException;
@@ -33,7 +36,11 @@ public class QuestionsDownloader {
 		
 		try {
 			// Try to download the questions from the server
-			return getSurveyQuestionsFromServer();
+			String surveyQuestions = getSurveyQuestionsFromServer();
+			
+			// If it works, save a copy of those questions
+			writeStringToFile(surveyQuestions);
+			return surveyQuestions;
 		}
 		catch (Exception e) {
 			e.printStackTrace();
@@ -64,8 +71,9 @@ public class QuestionsDownloader {
 	 * Read a file from the server, and return the file as a String 
 	 * @throws NotFoundException 
 	 * @throws IOException 
+	 * @throws JSONException 
 	 */
-	private String getSurveyQuestionsFromServer() throws NotFoundException, IOException {
+	private String getSurveyQuestionsFromServer() throws NotFoundException, IOException, JSONException {
 		Log.i("QuestionsDownloader", "Called getSurveyQuestionsFromServer()");
 		
 		// Get the URL of the Survey Questions JSON file
@@ -93,35 +101,48 @@ public class QuestionsDownloader {
 			builder.append(aux);
 		}
 		connection.disconnect();
-				
-		// Save the Survey Questions JSON file to the local filesystem
-		String surveyQuestionsFileString = builder.toString();
-		writeStringToFile(surveyQuestionsFileString);
 		
-		return surveyQuestionsFileString;
+		// Save the Survey Questions JSON file to the local filesystem
+		String surveyQuestions = builder.toString();
+		
+		if (isValidJson(surveyQuestions)) {
+			return surveyQuestions;
+		}
+		else {
+			throw new JSONException("Invalid JSON");
+		}
 	}
 	
 	
 	/**
 	 * Read a file from the local Android filesystem, and return it as a String
+	 * @throws JSONException 
 	 */
-	private String getSurveyQuestionsFromFilesystem() {
+	private String getSurveyQuestionsFromFilesystem() throws JSONException {
 		Log.i("QuestionsDownloader", "Called getSurveyQuestionsFromFilesystem()");
 		
-		return TextFileManager.getCurrentQuestionsFile().read();
+		String surveyQuestions = TextFileManager.getCurrentQuestionsFile().read();
+
+		if (isValidJson(surveyQuestions)) {
+			return surveyQuestions;
+		}
+		else {
+			throw new JSONException("Invalid JSON");
+		}
 	}
 	
 	
 	/**
 	 * Returns as a String the JSON survey file that's hard-coded into res/raw/
 	 * @return
+	 * @throws JSONException 
 	 */
 	private String getSurveyQuestionsFromAppResources() {
 		Log.i("QuestionsDownloader", "Called getSurveyQuestionsFromAppResources()");
 		
 		InputStream inputStream = 
 				appContext.getResources().openRawResource(R.raw.sample_survey);
-		return fileToString(inputStream);
+		return fileToString(inputStream);		
 	}
 	
 	
@@ -163,7 +184,29 @@ public class QuestionsDownloader {
 			return "";
 		}
 	}
-
+	
+	
+	/**
+	 * Tells you whether a String is valid JSON
+	 * Based on: http://stackoverflow.com/a/10174938
+	 * @param
+	 * @return true if valid JSON; false otherwise
+	 */
+	private boolean isValidJson(String input) {
+		try {
+			new JSONObject(input);
+		}
+		catch (JSONException e) {
+			try {
+				new JSONArray(input);
+			}
+			catch (JSONException e2) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
 	
 	/**
 	 * Get the current survey questions from the server as a JSON file
