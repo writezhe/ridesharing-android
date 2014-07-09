@@ -57,13 +57,6 @@ public class QuestionsDownloader {
 		
 		// TODO: update the file in the local filesystem if you download a new 
 		// one from the server, even if the download timed out
-		
-		// TODO: decide whether & how to handle the case where you pull a new file,
-		// but you can't JSON-parse it.
-		
-		// TODO: handle the case where the user first takes a survey, but there
-		// is no copy on the local filesystem (could be handled by the same code
-		// as above (JSON-parsing error).
 	}
 	
 	
