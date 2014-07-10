@@ -271,6 +271,8 @@ public class QuestionRenderer {
 	 * @param max the highest number on the scale
 	 */
 	private void addNumbersLabelingToSlider(LinearLayout question, int min, int max) {
+		// TODO: implement the ability to use MIN and MAX so that not every scale starts at zero
+		
 		// Replace the numbers label placeholder view (based on http://stackoverflow.com/a/3760027)
 		View numbersLabel = (View) question.findViewById(R.id.numbersPlaceholder);
 		int index = question.indexOfChild(numbersLabel);
@@ -309,7 +311,7 @@ public class QuestionRenderer {
 		// Create one last label (the rightmost one) without a spacer to its right
 		TextView number = (TextView) inflater.inflate(numberResourceID, label, false);
 		label.addView(number);		
-		number.setText("" + max);
+		number.setText("" + (max - 1));
 		
 		// Add the set of numeric labels to the question
 		question.addView(numbersLabel, index);		
