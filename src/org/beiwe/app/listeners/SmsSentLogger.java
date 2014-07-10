@@ -64,6 +64,7 @@ public class SmsSentLogger extends ContentObserver {
 			// TODO: write messages to the appropriate SMS log file
 			// TODO: hash the phone numbers
 			// TODO: figure out what MESSAGE_TYPE means and if it's important: http://stackoverflow.com/a/18873822
+			// TODO: Figure out if when a text is sent, is written as a new line if no network
 		}
 		
 		// TODO: also log incoming SMS messages this way
