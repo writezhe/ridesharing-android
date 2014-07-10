@@ -91,6 +91,9 @@ public class QuestionRenderer {
 
 		setViewId(slider);
 		
+		// Add a label above the slider with numbers that mark points on a scale
+		addNumbersLabelingToSlider(question, 0, numberOfValues);
+		
 		// Create text strings that represent the question and its answer choices
 		String options = "From 0 to " + numberOfValues + "; default " + defaultValue;
 		QuestionDescription questionDescription = 
@@ -260,4 +263,56 @@ public class QuestionRenderer {
 		viewID++;
 	}
 
+	
+	/**
+	 * Adds a numeric scale above a Slider Question
+	 * @param question the Slider Question that needs a number scale
+	 * @param min the lowest number on the scale
+	 * @param max the highest number on the scale
+	 */
+	private void addNumbersLabelingToSlider(LinearLayout question, int min, int max) {
+		// Replace the numbers label placeholder view (based on http://stackoverflow.com/a/3760027)
+		View numbersLabel = (View) question.findViewById(R.id.numbersPlaceholder);
+		int index = question.indexOfChild(numbersLabel);
+		question.removeView(numbersLabel);
+		numbersLabel = inflater.inflate(R.layout.survey_slider_numbers_label, question, false);
+		LinearLayout label = (LinearLayout) numbersLabel.findViewById(R.id.linearLayoutNumbers);
+		
+		/* Decide whether to put 2, 3, 4, or 5 number labels. Pick the highest number of labels
+		 * that can be achieved with each label above an integer value, and even spacing between
+		 * all labels. */		
+		int numberOfLabels = 0;
+		int range = max - min;
+		if ((range - 1) % 4 == 0) {
+			numberOfLabels = 5;
+		}
+		else if ((range - 1) % 3 == 0) {
+			numberOfLabels = 4;
+		}
+		else if ((range - 1) % 2 == 0) {
+			numberOfLabels = 3;
+		}
+		else {
+			numberOfLabels = 2;
+		}
+		
+		// Create labels and spacers
+		int numberResourceID = R.layout.survey_slider_single_number_label;
+		for (int i = 0; i < numberOfLabels - 1; i++) {
+			TextView number = (TextView) inflater.inflate(numberResourceID, label, false);
+			label.addView(number);
+			number.setText("" + (i * (range - 1) / (numberOfLabels - 1) + min));
+			
+			View spacer = (View) inflater.inflate(R.layout.horizontal_spacer, label, false);
+			label.addView(spacer);			
+		}
+		// Create one last label (the rightmost one) without a spacer to its right
+		TextView number = (TextView) inflater.inflate(numberResourceID, label, false);
+		label.addView(number);		
+		number.setText("" + max);
+		
+		// Add the set of numeric labels to the question
+		question.addView(numbersLabel, index);		
+	}
+		
 }

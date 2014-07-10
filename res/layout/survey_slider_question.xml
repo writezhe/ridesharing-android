@@ -13,7 +13,12 @@
 	    android:textSize="20sp"
 	    android:text="@string/question_error_text" >	    
 	</TextView>
-    
+	
+	<View
+	    android:id="@+id/numbersPlaceholder"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content" />
+	
     <SeekBar
         android:id="@+id/slider"
         android:layout_width="match_parent"
