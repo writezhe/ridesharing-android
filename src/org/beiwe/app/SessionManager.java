@@ -45,7 +45,8 @@ public class SessionManager {
     * @param password
     */
     public void createLoginSession(String username, String password){
-        editor.putBoolean(IS_LOGIN, true);
+        // TODO: Hash function goes here!
+    	editor.putBoolean(IS_LOGIN, true);
         editor.putString(KEY_NAME, username);
         editor.putString(KEY_PASSWORD, password);
         editor.commit();

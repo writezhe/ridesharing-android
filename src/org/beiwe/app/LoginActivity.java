@@ -1,12 +1,16 @@
 package org.beiwe.app;
 
+import java.util.HashMap;
+
+import org.beiwe.app.survey.TextFieldKeyboard;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -21,8 +25,8 @@ public class LoginActivity extends Activity {
 
 	private EditText userName;
 	private EditText passWord;
-	private Button login;
 	private SessionManager session;
+	private Context appContext;
 	
 	@Override
 	
@@ -38,35 +42,44 @@ public class LoginActivity extends Activity {
 		setContentView(R.layout.activity_login);
 		
 		// Private variable set up
-		session = new SessionManager(getApplicationContext());
+		appContext = getApplicationContext();
+		session = new SessionManager(appContext);
 		userName = (EditText) findViewById(R.id.editText1);
 		passWord = (EditText) findViewById(R.id.editText2);
-		login = (Button) findViewById(R.id.button1);
 		
-		// Logic for log in starts here
+		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(appContext);
+		textFieldKeyboard.makeKeyboardBehave(userName);
+		textFieldKeyboard.makeKeyboardBehave(passWord);
+	}
+	
+	
+	public void loginSequence(View view) {
 		if (session.isLoggedIn()) {
 			Log.i("LoginActivity", "" + session.isLoggedIn());
-			startActivity(new Intent(this, DebugInterfaceActivity.class) );
-			finish();
+			startActivity(new Intent(appContext, DebugInterfaceActivity.class));
 		} else {
-			login.setOnClickListener(new View.OnClickListener() {
-
-				@Override
-				public void onClick(View v) {
-					// TODO: Hashing mechanism goes here for username password combination
-					String username = userName.getText().toString();
-					String password = passWord.getText().toString();
-					if(username.trim().length() > 0 && password.trim().length() > 0){
-						if(username.equals("test") && password.equals("test")){ // Needs to be hashed
-							session.createLoginSession(username, password);
-							Intent i = new Intent(getApplicationContext(), DebugInterfaceActivity.class);
-							startActivity(i);
-							finish();
-						} 
-						else {Toast.makeText(getApplicationContext(), "Incorrect user-password combination", 5).show();} 
-					} else {Toast.makeText(getApplicationContext(), "Login Failed", 5).show();}
+			// TODO: Hashing mechanism goes here for username password combination
+			String username = userName.getText().toString();
+			String password = passWord.getText().toString();
+			
+			HashMap details = session.getUserDetails();
+			
+			if(username.trim().length() > 0 && password.trim().length() > 0){
+				if(!details.containsKey(username)) {
+					
 				}
-			});
+				if(username.equals("test") && password.equals("test")){ // Needs to be hashed
+					session.createLoginSession(username, password);
+					startActivity(new Intent(appContext, DebugInterfaceActivity.class));
+					finish();
+				} 
+				else {Toast.makeText(appContext, appContext.getResources().getString(R.string.incorrect_user_pass_combo), 5).show();} 
+			} 
+			else {Toast.makeText(appContext, "Login Failed", 5).show();} // In case login completely fails
 		}
+	}
+	
+	public void forgotPassword(View view) {
+		startActivity(new Intent(appContext, ForgotPassword.class));
 	}
 }

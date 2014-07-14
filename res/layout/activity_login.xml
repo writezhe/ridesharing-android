@@ -14,61 +14,54 @@
         android:id="@+id/textView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:text="Please enter a username"
+        android:text="Please enter your username"
+        android:layout_gravity="center"
         android:textAppearance="?android:attr/textAppearanceMedium" />
-
+    
     <EditText
         android:id="@+id/editText1"
-        android:layout_width="226dp"
-        android:layout_height="wrap_content"
-        android:inputType="text"
-        android:hint="Username"
-        tools:ignore="InefficientWeight" />
-            <requestFocus />
-    
-    
-        <TextView
-        android:id="@+id/textView2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:text="Please enter password"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:layout_height="wrap_content"
+        android:hint="Username"
+        android:inputType="text"
+        android:layout_gravity="center"
+        tools:ignore="InefficientWeight" />
+
+    <requestFocus />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Please enter password"
+            android:layout_gravity="center"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <EditText
         android:id="@+id/editText2"
-        android:layout_width="226dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
         android:hint="Password"
+        android:layout_gravity="center"
         tools:ignore="InefficientWeight" />
 
-    <LinearLayout
-        android:id="@+id/submitButtonLayout"
-        android:layout_width="match_parent"
+    <Button
+        android:id="@+id/login_button"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="10dp"
-        android:paddingBottom="50dp"
-        android:orientation="horizontal" >
-        
-        <View 
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
+        android:gravity="fill_horizontal"
+        android:layout_gravity="center"
+        android:text="@string/title_activity_login_string" 
+        android:onClick="loginSequence"/>
 
-        <Button
-            android:id="@+id/button1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Login" />
-     
-        <View 
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
-    
-    </LinearLayout>
+	<Button
+	    android:id="@+id/forgot_password_button"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:gravity="fill_horizontal"
+	    android:layout_gravity="center"
+	    android:text="@string/title_activity_forgot_password" 
+		android:onClick="forgotPassword" />
 
 </LinearLayout>
