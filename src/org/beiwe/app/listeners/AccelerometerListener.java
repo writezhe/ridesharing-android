@@ -11,11 +11,10 @@ import android.hardware.SensorManager;
 import android.util.Log;
 
 public class AccelerometerListener implements SensorEventListener{
-	public static String header = "timestamp, x, y, z\n";
+	public static String header = "timestamp, accuracy, x, y, z\n";
 	
 	private SensorManager accelSensorManager;
 	private Sensor accelSensor;
-	
 	private TextFileManager accelFile = null;
 	private TextFileManager logFile = null;
 	
@@ -25,20 +24,22 @@ public class AccelerometerListener implements SensorEventListener{
 	private Boolean exists = null;
 	private Boolean enabled = null;
 	
+	private String accuracy;
+	
 	public Boolean check_status(){ 
 		if (exists) return enabled;
 		return false; }
 	
+	/**Listens for accelerometer updates.  NOT activated on instantiation.
+	 * Use the turn_on() function to log any accelerometer updates to the 
+	 * accelerometer log.
+	 * @param applicationContext a Context from an activity or service. */
 	public AccelerometerListener(Context applicationContext){
-		/** Listens for accelerometer updates.  Not activated on instantiation.  Requires an 
-		 * application Context object be passed in in order to interface device sensors.
-		 * When activated using the turn_on() function it will log any accelerometer updates to the 
-		 * accelerometer log. */
 		this.appContext = applicationContext;
 		this.pkgManager = appContext.getPackageManager();
 		this.logFile = TextFileManager.getDebugLogFile();
 		this.accelFile = TextFileManager.getAccelFile();
-		
+		this.accuracy = "unknown";
 		this.exists = pkgManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER);
 		
 		if (this.exists) {
@@ -48,20 +49,19 @@ public class AccelerometerListener implements SensorEventListener{
 
 			if (accelSensorManager == null ){
 				Log.i("accelerometer does not exist??", " !!!!!!!!!!!!!!!!!! " );
-				exists = false;	}
-		}
+				exists = false;	} }
 	}
 	
-	
+	/** Use the public toggle() function to enable/disable */ 
 	private synchronized void turn_on() {
 		accelSensorManager.registerListener(this, accelSensor, SensorManager.SENSOR_DELAY_NORMAL);
 		enabled = true;	}
-	
+	/** Use the public toggle() function to enable/disable */
 	private synchronized void turn_off(){
 		accelSensorManager.unregisterListener(this);
 		enabled = false; }
 	
-	/** If the accelerometer exists, toggle its state
+	/** If the accelerometer exists, toggle its state.
 	 * @return Boolean.  True means it has been turned on, false means it has been turned off. */
 	public synchronized Boolean toggle(){
 		if ( !this.exists ){ return false; }
@@ -74,30 +74,20 @@ public class AccelerometerListener implements SensorEventListener{
 				return enabled; } }
 	}
 	
-	//NOTE: for the onAccuracyChanged and onSensorChanged we are adding the synchronized keyword.
-	// It may still be possible to have these trigger so rapidly that order is not preserved
-	// (we have no data on this at all), so the functions need to check current state.
-	
+	/** Update the accuracy, synchronized so very closely timed trigger events do not overlap.
+	 * (only triggered by the system.) */
 	@Override
-	public synchronized void onAccuracyChanged(Sensor arg0, int arg1) {
-		//TODO: consider implementing this (it probably is not needed)
-		Log.i("OH GOD THE ACCELEROMETER HAD AN ACCURACY CHANGE:", arg0.toString() + "\nint value:" + arg1);
-	}
-
+	public synchronized void onAccuracyChanged(Sensor arg0, int arg1) {	accuracy = "" + arg1; }
+	
+	/** On receipt of a sensor change, record it.  Include accuracy. 
+	 * (only ever triggered by the system.) */
 	@Override
 	public synchronized void onSensorChanged(SensorEvent arg0) {
+		Long javaTimeCode = System.currentTimeMillis();
 		float[] values = arg0.values;
+		String data = javaTimeCode.toString() + ',' + accuracy + ',' + values[0] + ',' + values[1] + ',' + values[2] + '\n';
 		
-		String data = "" + arg0.timestamp + ',' + values[0] + ',' + values[1] + ',' + values[2] + '\n';
-		
-		//TODO: get Unix timestamp, not whatever arg0.timestamp returns. See here: http://stackoverflow.com/a/9333605
-		
-//		accelFile.write(data);
+		//accelFile.write(data);
 		logFile.write("accel: " + data);
-		//All values are in SI units (m/s^2) 
-		//values[0]: Acceleration minus Gx on the x-axis 
-		//values[1]: Acceleration minus Gy on the y-axis 
-		//values[2]: Acceleration minus Gz on the z-axis
-		//note on time: the accelerometer returns time with millisecond precision on a nexus 7 tablet.
 	}
 }

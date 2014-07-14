@@ -2,7 +2,6 @@ package org.beiwe.app;
  
 import org.beiwe.app.listeners.AccelerometerListener;
 import org.beiwe.app.listeners.GPSListener;
-import org.beiwe.app.listeners.SmsSentLogger;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.storage.Upload;
 import org.beiwe.app.survey.AudioRecorderActivity;
@@ -11,9 +10,7 @@ import org.beiwe.app.survey.SurveyActivity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -67,9 +64,7 @@ public class DebugInterfaceActivity extends Activity {
 	
 	public void printInternalLog(View view) {
 		Log.i("print log button pressed", "press.");
-//		String log = logFile.read();
-		String log = TextFileManager.getDebugLogFile().getDataString();
-		
+		String log = TextFileManager.getDebugLogFile().read();
 		for( String line : log.split("\n") ) {
 			Log.i( "log file...", line ); }
 	}
@@ -96,6 +91,9 @@ public class DebugInterfaceActivity extends Activity {
 	
 	public void deleteEverything(View view) {
 		Log.i("Delete Everything button pressed", "poke.");
+		for( String file : TextFileManager.getAllFiles() ) {
+			Log.i( "files...", file); }
+		
 		TextFileManager.deleteEverything();
 	}
 	
@@ -109,16 +107,5 @@ public class DebugInterfaceActivity extends Activity {
 		Log.i("Toggle GPS button pressed", "GPS state: " + gps.toggle().toString() );
 	}
 
-	
-	
-//########################################################################################
-//###################### Non-UI Things for debugging ###############################
-//########################################################################################
-	
-	
-	public void startSmsSentLogger() {
-		SmsSentLogger smsSentLogger = new SmsSentLogger(new Handler(), appContext);
-		this.getContentResolver().registerContentObserver(Uri.parse("content://sms/"), true, smsSentLogger);
-	}
 	
 }
