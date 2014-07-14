@@ -10,6 +10,13 @@ import android.content.SharedPreferences.Editor;
 import android.util.Log;
  
 
+/** 
+ * A class used to manage login sessions. Uses SharedPreferences in order to save
+ * username-password combinations.
+ * @author Dori Samet
+ *
+ */
+
 @SuppressLint("CommitPrefEdits")
 public class SessionManager {
     private SharedPreferences pref; 

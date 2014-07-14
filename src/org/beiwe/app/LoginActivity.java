@@ -10,6 +10,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+/**
+ * A class used to log in to the app. Uses a helper class {@link SessionManager.java}
+ * @author Dori Samet
+ *
+ */
+
 @SuppressLint({ "CommitPrefEdits", "ShowToast" })
 public class LoginActivity extends Activity {
 
@@ -57,12 +63,8 @@ public class LoginActivity extends Activity {
 							startActivity(i);
 							finish();
 						} 
-						else { // TODO: Makes this work!
-							Toast.makeText(getApplicationContext(), "Incorrect user-password combination", 5);
-						} 
-					} else { // TODO: This too!
-						Toast.makeText(getApplicationContext(), "Login Failed", 5);
-					}
+						else {Toast.makeText(getApplicationContext(), "Incorrect user-password combination", 5).show();} 
+					} else {Toast.makeText(getApplicationContext(), "Login Failed", 5).show();}
 				}
 			});
 		}
