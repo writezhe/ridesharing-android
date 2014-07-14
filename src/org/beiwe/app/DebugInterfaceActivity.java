@@ -106,6 +106,14 @@ public class DebugInterfaceActivity extends Activity {
 		GPSListener gps = BackgroundProcess.gpsListener;
 		Log.i("Toggle GPS button pressed", "GPS state: " + gps.toggle().toString() );
 	}
+	
+	public void signOut (View view) {
+		SessionManager session = new SessionManager(appContext);
+		session.logoutUser();
+		finish();
+	}
+	
+	
 
 	
 }

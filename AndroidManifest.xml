@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="10"
-        android:targetSdkVersion="19" />
+        android:targetSdkVersion="20" />
 
     <!-- GPS and network-location service -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -23,15 +23,15 @@
     <!-- network and upload -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <!-- starting the background service at boot.  -->
+    <!-- starting the background service at boot. -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    
-    <!-- PERMISSIONS BELOW NOT IMPLEMENTED/USED -->    
+
+    <!-- PERMISSIONS BELOW NOT IMPLEMENTED/USED -->
     <!-- Power management and monitoring, not sure where this would be used... -->
     <uses-permission android:name="android.permission.BATTERY_STATS" />
     <!-- bluetooth proximity -->
-	<uses-permission android:name="android.permission.BLUETOOTH" />
-	
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+
     <!-- only for debug, remove before final product is finished -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
@@ -40,41 +40,32 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        
         <activity
             android:name="org.beiwe.app.DebugInterfaceActivity"
             android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
-        
         <activity
             android:name="org.beiwe.app.survey.AudioRecorderActivity"
             android:label="@string/title_activity_audio_recorder" >
         </activity>
 
-        <receiver android:name="org.beiwe.app.listeners.BootListener">
+        <receiver android:name="org.beiwe.app.listeners.BootListener" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                
             </intent-filter>
-        </receiver>                
-        
-        <receiver android:name="org.beiwe.app.listeners.PowerStateListener">
+        </receiver>
+        <receiver android:name="org.beiwe.app.listeners.PowerStateListener" >
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
                 <action android:name="android.intent.action.ACTION_SHUTDOWN" />
                 <action android:name="android.intent.action.ACTION_REBOOT" />
                 <action android:name="android.intent.action.AIRPLANE_MODE" />
-                <!-- action android:name="android.intent.action.USER_PRESENT" /-->
-                <!-- action android:name="android.intent.action.HEADSET_PLUG" /-->
+                <!-- action android:name="android.intent.action.USER_PRESENT" / -->
+                <!-- action android:name="android.intent.action.HEADSET_PLUG" / -->
             </intent-filter>
         </receiver>
-        
-        <receiver android:name="org.beiwe.app.listeners.SmsReceivedLogger">
+        <receiver android:name="org.beiwe.app.listeners.SmsReceivedLogger" >
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
@@ -88,8 +79,25 @@
 
         <activity
             android:name="org.beiwe.app.survey.SurveyActivity"
-            android:label="@string/title_activity_survey"
-            android:configChanges="orientation" >
+            android:configChanges="orientation"
+            android:label="@string/title_activity_survey" >
+        </activity>
+        <activity
+            android:name="org.beiwe.app.LoginActivity"
+            android:label="@string/title_activity_login" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ForgotPassword"
+            android:label="@string/title_activity_forgot_password" >
+        </activity>
+        <activity
+            android:name=".Register"
+            android:label="@string/title_activity_register" >
         </activity>
     </application>
 
