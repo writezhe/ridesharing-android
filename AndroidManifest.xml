@@ -42,20 +42,20 @@
         android:theme="@style/AppTheme" >
         
         <activity
-            android:name=".DebugInterfaceActivity"
+            android:name="org.beiwe.app.DebugInterfaceActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".survey.AudioRecorderActivity"
+            android:name="org.beiwe.app.survey.AudioRecorderActivity"
             android:label="@string/title_activity_audio_recorder" >
         </activity>
 
-        <receiver android:name=".listeners.BootListener" >
+        <receiver android:name="org.beiwe.app.listeners.BootListener" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".listeners.PowerStateListener" >
+        <receiver android:name="org.beiwe.app.listeners.PowerStateListener" >
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
@@ -66,25 +66,25 @@
                 <!-- action android:name="android.intent.action.HEADSET_PLUG" / -->
             </intent-filter>
         </receiver>
-        <receiver android:name=".listeners.SmsReceivedLogger" >
+        <receiver android:name="org.beiwe.app.listeners.SmsReceivedLogger" >
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
 
         <service
-            android:name=".BackgroundProcess"
+            android:name="org.beiwe.app.BackgroundProcess"
             android:exported="false"
             android:label="BackgroundProcess-thing" >
         </service>
 
         <activity
-            android:name=".survey.SurveyActivity"
+            android:name="org.beiwe.app.survey.SurveyActivity"
             android:configChanges="orientation"
             android:label="@string/title_activity_survey" >
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name="org.beiwe.app.LoginActivity"
             android:label="@string/title_activity_login" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
