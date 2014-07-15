@@ -17,8 +17,9 @@ public class AnswerRecorder {
 	 * the survey first displayed to the user
 	 */
 	public static void recordSurveyFirstDisplayed() {
-		// TODO: switch it to SurveyResponseFile()
-		//TextFileManager.getSurveyResponseFile().newFile();
+		// Create a new data file to record answers for only this survey
+		// TODO: decide if it's possible for a user to take two surveys at once, and if that's a problem
+		TextFileManager.getSurveyResponseFile().newFile();
 		
 		String message = "Survey first rendered and displayed to user";
 		appendLineToLogFile(message);
@@ -69,8 +70,7 @@ public class AnswerRecorder {
 		String line = javaTimeCode.toString() + delimiter + message +"\n"; 
 
 		Log.i("AnswerRecorder", line);
-		TextFileManager.getDebugLogFile().write(line);
-		//TextFileManager.getSurveyResponseFile().write(line);
+		TextFileManager.getSurveyResponseFile().write(line);
 	}
 
 	
