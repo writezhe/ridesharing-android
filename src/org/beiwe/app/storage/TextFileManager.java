@@ -114,7 +114,7 @@ public class TextFileManager {
 		GPSFile = new TextFileManager(appContext, "gpsFile", GPSListener.header, false);
 		accelFile = new TextFileManager(appContext, "accelFile", AccelerometerListener.header, false);
 		surveyResponse = new TextFileManager(appContext, "surveyData", "generic header 1 2 3\n", false);
-		textsLog = new TextFileManager(appContext, "textsLog", "generic header 1 2 3\n", false);
+		textsLog = new TextFileManager(appContext, "textsLog", "timestamp,hashed phone number,sent vs received,message length\n", false);
 		powerStateLog = new TextFileManager(appContext, "screenState", "generic header 1 2 3\n", false);
 		callLog = new TextFileManager(appContext, "callLog", "generic header 1 2 3\n", false);
 		audioSurveyLog = new TextFileManager(appContext, "audioSurveyLog", "generic header 1 2 3\n", false);

@@ -1,5 +1,8 @@
 package org.beiwe.app.listeners;
 
+import org.beiwe.app.storage.EncryptionEngine;
+import org.beiwe.app.storage.TextFileManager;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +29,8 @@ import android.util.Log;
  */
 public class SmsReceivedLogger extends BroadcastReceiver {
 
+	public static String delimiter = ", ";
+
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		if (intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {
@@ -40,12 +45,15 @@ public class SmsReceivedLogger extends BroadcastReceiver {
 						messages[i] = SmsMessage.createFromPdu( (byte[]) pdus[i]);
 						messageFrom = messages[i].getOriginatingAddress();
 						String messageBody = messages[i].getMessageBody();
-						Log.i("SMSLogger", "Message from: " + messageFrom);
-						Log.i("SMSLogger", "Message text: " + messageBody);
+						long timestamp = messages[i].getTimestampMillis();
 						
-						// TODO: Decide what data to pull out of the SMS message (time, phone number, anything else?)
-						// TODO: One-way hash the phone number
-						// TODO: Write the data to the text-message log file
+						String data = "" + timestamp + delimiter;
+						data += EncryptionEngine.hashPhoneNumber(messageFrom) + delimiter;
+						data += "received" + delimiter;
+						data += messageBody.length() + delimiter;
+
+						Log.i("SMSLogger", "data = " + data);
+						TextFileManager.getTextsLogFile().write(data);
 					}
 				}
 				catch (Exception e) {
