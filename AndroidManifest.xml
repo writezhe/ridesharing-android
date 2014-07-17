@@ -83,19 +83,19 @@
             android:label="@string/title_activity_survey" >
         </activity>
         <activity
-            android:name=".org.beiwe.app.ui.LoginActivity"
+            android:name=".ui.LoginActivity"
             android:label="@string/title_activity_login" >
         </activity>
         <activity
-          	android:name=".org.beiwe.app.ui.ForgotPassword"
+          	android:name=".ui.ForgotPassword"
             android:label="@string/title_activity_forgot_password" >
         </activity>
         <activity 
-            android:name=".org.beiwe.app.ui.RegisterActivity"
+            android:name=".ui.RegisterActivity"
             android:label="@string/title_activity_register" >
         </activity>
         <activity
-          android:name=".org.beiwe.app.ui.LoadingActivity"
+          android:name=".ui.LoadingActivity"
             android:label="@string/title_activity_loading" >
             
             <intent-filter>
