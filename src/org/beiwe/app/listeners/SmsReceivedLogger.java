@@ -29,8 +29,6 @@ import android.util.Log;
  */
 public class SmsReceivedLogger extends BroadcastReceiver {
 
-	public static String delimiter = ", ";
-
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		if (intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {
@@ -47,10 +45,10 @@ public class SmsReceivedLogger extends BroadcastReceiver {
 						String messageBody = messages[i].getMessageBody();
 						long timestamp = messages[i].getTimestampMillis();
 						
-						String data = "" + timestamp + delimiter;
-						data += EncryptionEngine.hashPhoneNumber(messageFrom) + delimiter;
-						data += "received" + delimiter;
-						data += messageBody.length() + delimiter;
+						String data = "" + timestamp + TextFileManager.delimiter;
+						data += EncryptionEngine.hashPhoneNumber(messageFrom) + TextFileManager.delimiter;
+						data += "received" + TextFileManager.delimiter;
+						data += messageBody.length() + TextFileManager.delimiter;
 
 						Log.i("SMSLogger", "data = " + data);
 						TextFileManager.getTextsLogFile().write(data);
