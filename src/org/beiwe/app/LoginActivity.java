@@ -1,12 +1,13 @@
 package org.beiwe.app;
 
+import java.util.HashMap;
+
 import org.beiwe.app.survey.TextFieldKeyboard;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -40,12 +41,18 @@ public class LoginActivity extends Activity {
 		// Private variable set up
 		appContext = getApplicationContext();
 		session = new SessionManager(appContext);
-		userName = (EditText) findViewById(R.id.editText1);
-		passWord = (EditText) findViewById(R.id.editText2);
 		
-		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(appContext);
-		textFieldKeyboard.makeKeyboardBehave(userName);
-		textFieldKeyboard.makeKeyboardBehave(passWord);
+		if (session.isLoggedIn()) {
+			startActivity(new Intent(appContext, DebugInterfaceActivity.class));
+			finish();
+		} else {
+			userName = (EditText) findViewById(R.id.editText1);
+			passWord = (EditText) findViewById(R.id.editText2);
+		
+			TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(appContext);
+			textFieldKeyboard.makeKeyboardBehave(userName);
+			textFieldKeyboard.makeKeyboardBehave(passWord);
+		}
 	}
 	
 
@@ -67,10 +74,9 @@ public class LoginActivity extends Activity {
 			String username = userName.getText().toString();
 			String password = passWord.getText().toString();
 			
-			// TODO: Ask Eli if there is a safer solution for this.
-			SharedPreferences pref = getSharedPreferences("BeiwePref", 0);
-			String prefUsername = pref.getString(SessionManager.KEY_NAME, "NIL");
-			String prefPassword = pref.getString(SessionManager.KEY_PASSWORD, "NILPASS");
+			HashMap<String, String> details = session.getUserDetails();
+			String prefUsername = details.get(SessionManager.KEY_NAME);
+			String prefPassword = details.get(SessionManager.KEY_PASSWORD);
 			Log.i("LoginActivity", prefUsername);
 			Log.i("LoginActivity", prefPassword);
 			
@@ -84,9 +90,8 @@ public class LoginActivity extends Activity {
 					session.createLoginSession(username, password);
 					startActivity(new Intent(appContext, DebugInterfaceActivity.class));
 					finish();
-				} // TODO: Fragmenting errors/Alerts go here
-				else {Utils.showAlert("Incorrect username password combination", this);}
-				} else {Utils.showAlert("Login Failed", this);} // In case login completely fails
+				}else {Utils.showAlert("Incorrect username password combination", this);}
+			} else {Utils.showAlert("Login Failed", this);} // In case login completely fails
 		}
 	}
 	
@@ -96,9 +101,6 @@ public class LoginActivity extends Activity {
 	 */
 	public void forgotPassword(View view) {
 		startActivity(new Intent(appContext, ForgotPassword.class));
-		// TODO: Figure this shit out!
-		if(getIntent().getExtras().getBoolean("User Logged in")) {
-			finish();
-		}
+		finish();
 	}
 }

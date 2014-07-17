@@ -73,7 +73,7 @@ public class SessionManager {
         		Intent intent = new Intent(appContext, LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 appContext.startActivity(intent);        	
-        	}else {
+        	} else {
             	Log.i("SessionManager", "First time logged in");
             	Intent intent = new Intent(appContext, RegisterActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -92,6 +92,7 @@ public class SessionManager {
     	HashMap<String, String> user = new HashMap<String, String>();
         user.put(KEY_NAME, pref.getString(KEY_NAME, null));
         user.put(KEY_PASSWORD, pref.getString(KEY_PASSWORD, null));
+        Log.i("SessionManager", user.toString());
         return user;
     }
      
