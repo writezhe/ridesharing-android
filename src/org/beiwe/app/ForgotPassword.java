@@ -9,13 +9,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 /**
- * A class to manage users who forgot their passwords
+ * A class to manage users who forgot their passwords. For future references, this should work very similar to
+ * the register class, and will work with the server.
+ * 
  * @author Dori Samet
  *
  */
@@ -28,7 +30,6 @@ public class ForgotPassword extends Activity {
 	private EditText userId;
 	private EditText password;
 	private EditText passwordRepeat;
-	private Button submit;
 	private SessionManager session;
 	
 	@Override
@@ -41,7 +42,6 @@ public class ForgotPassword extends Activity {
 		userId = (EditText) findViewById(R.id.forgot_password_uid);
 		password = (EditText) findViewById(R.id.forgot_password_password);
 		passwordRepeat = (EditText) findViewById(R.id.forgot_password_password_repeat);
-		submit = (Button) findViewById(R.id.forgot_password_submit_button);
 		session = new SessionManager(appContext);
 		
 		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(appContext);
@@ -49,37 +49,69 @@ public class ForgotPassword extends Activity {
 		textFieldKeyboard.makeKeyboardBehave(userId);
 		textFieldKeyboard.makeKeyboardBehave(password);
 		textFieldKeyboard.makeKeyboardBehave(passwordRepeat);
-
-		submit.setOnClickListener(new View.OnClickListener() {
-			
-			@SuppressLint("ShowToast")
-			@Override
-			public void onClick(View v) {
-				String usernameStr = username.getText().toString();
-				String userIdStr = userId.getText().toString();
-				String passwordStr = password.getText().toString();
-				String passwordRepeatStr = passwordRepeat.getText().toString();
-				
-				HashMap<String, String> details = session.getUserDetails();
-				
-				// Gauntlet begins here 
-				if(usernameStr.trim().length() <= 0 || details.containsKey(usernameStr)) {
-					Toast.makeText(appContext, "Invalid username, try again", 5).show();
-				} else if (userIdStr.trim().length() <= 0) {
-					Toast.makeText(appContext, "Invalid user ID, try again", 5).show();
-				} else if (passwordStr.trim().length() <= 0) {
-					if(details.get(usernameStr) != null && details.get(usernameStr) != passwordStr) {
-						Toast.makeText(appContext, "Invalid password, try again", 5).show();
-					}
-				} else if (!passwordRepeatStr.equals(passwordStr)) {
-					Toast.makeText(appContext, "Passwords mismatch, try again", 5).show();
-				} else {
-					session.createLoginSession(usernameStr, passwordStr);
-					startActivity(new Intent(appContext, DebugInterfaceActivity.class));
-					finish();
-				}
-			}
-		});
 		
+		HashMap<String, String> details = session.getUserDetails();
+		
+		Log.i("ForgotPassword", appContext.getSharedPreferences("BeiwePref", 0).getString(SessionManager.KEY_NAME, "Bobby McGee"));
+		Log.i("ForgotPassword", appContext.getSharedPreferences("BeiwePref", 0).getString(SessionManager.KEY_PASSWORD, "Bobby McGee"));
+		Log.i("ForgotPassword_getDetails", details.get(SessionManager.KEY_NAME));
+
 	}
-}
+	
+	/**
+	 *  This happens when a user presses the submit button.
+	 *  
+	 *  Each time there is an error, such like an incorrect username, the program will throw an alert,
+	 *  informing the user of the error.
+	 *  
+	 *  If the user succeeds in logging in, the activity finishes.
+	 * @param v
+	 */
+	public void forgotPasswordSequence(View v) {
+		// Variable assignments
+		
+		String usernameStr = username.getText().toString();
+		String userIdStr = userId.getText().toString();
+		String passwordStr = password.getText().toString();
+		String passwordRepeatStr = passwordRepeat.getText().toString();
+
+		HashMap<String, String> details = session.getUserDetails();
+		
+		Log.i("ForgotPassword", appContext.getSharedPreferences("BeiwePref", 0).getString(SessionManager.KEY_NAME, "Bobby McGee"));
+		Log.i("ForgotPassword", appContext.getSharedPreferences("BeiwePref", 0).getString(SessionManager.KEY_PASSWORD, "Bobby McGee"));
+		Log.i("ForgotPassword_getDetails", details.get(SessionManager.KEY_PASSWORD));
+
+		// Gauntlet begins here 
+		if(!(details.get(SessionManager.KEY_NAME).equals(usernameStr.trim()))) {
+			Utils.showAlert("Invalid username, try again",  this);
+		} else if (userIdStr.trim().length() <= 0) {
+			Utils.showAlert("Invalid user ID, try again", this);
+		} else if(!(details.get(SessionManager.KEY_NAME).equals(usernameStr.trim()))) {
+			if(details.get(SessionManager.KEY_PASSWORD) != null && details.get(usernameStr) != passwordStr) {
+				Utils.showAlert("Invalid password, try again", this);
+			}
+		} else if (!(passwordRepeatStr.equals(passwordStr))) {
+			Utils.showAlert("Passwords mismatch, try again", this);
+		} else {
+			session.createLoginSession(usernameStr, passwordStr);
+			startActivity(new Intent(appContext, LoginActivity.class));
+			finish();
+		}
+	}
+	
+	/**
+	 * This happens when the user presses "back".
+	 * 
+	 * Moves the user back from this activity to the login activity.
+	 * Will change this logic if I find out how to close an activity from another activity.
+	 */
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	    if (keyCode == KeyEvent.KEYCODE_BACK) {
+	        startActivity(new Intent(appContext, LoginActivity.class));
+	        finish();
+	        return true;
+	    }
+	    return super.onKeyDown(keyCode, event);
+	}
+}	

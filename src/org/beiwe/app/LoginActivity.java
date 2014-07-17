@@ -31,10 +31,7 @@ public class LoginActivity extends Activity {
 	@Override
 	
 	/**
-	 * onCreate method. Logic that goes behind this method -
-	 * IF the session is logged in (AKA shared preferences hold values) - keep the session logged in.
-	 * ELSE The session is not logged in and we should wait for user input.
-	 * Waiting has its own logic that WILL BE CHANGED because we need to hash user-password combos.
+	 * onCreate method. Nothing interesting happens here :)
 	 * 
 	 */
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,42 +41,66 @@ public class LoginActivity extends Activity {
 		// Private variable set up
 		appContext = getApplicationContext();
 		session = new SessionManager(appContext);
-		userName = (EditText) findViewById(R.id.editText1);
-		passWord = (EditText) findViewById(R.id.editText2);
 		
-		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(appContext);
-		textFieldKeyboard.makeKeyboardBehave(userName);
-		textFieldKeyboard.makeKeyboardBehave(passWord);
+		if (session.isLoggedIn()) {
+			startActivity(new Intent(appContext, DebugInterfaceActivity.class));
+			finish();
+		} else {
+			userName = (EditText) findViewById(R.id.editText1);
+			passWord = (EditText) findViewById(R.id.editText2);
+		
+			TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(appContext);
+			textFieldKeyboard.makeKeyboardBehave(userName);
+			textFieldKeyboard.makeKeyboardBehave(passWord);
+		}
 	}
 	
-	
+
+	/**
+	 * Logic that goes behind this method -
+	 * IF the session is logged in (AKA shared preferences hold values) - keep the session logged in.
+	 * ELSE The session is not logged in and we should wait for user input.
+	 * 
+	 * Notice there is a direct access to SharedPreferences.
+	 * @param view
+	 */
 	public void loginSequence(View view) {
 		if (session.isLoggedIn()) {
 			Log.i("LoginActivity", "" + session.isLoggedIn());
 			startActivity(new Intent(appContext, DebugInterfaceActivity.class));
+			finish();
 		} else {
 			// TODO: Hashing mechanism goes here for username password combination
 			String username = userName.getText().toString();
 			String password = passWord.getText().toString();
 			
-			HashMap details = session.getUserDetails();
+			HashMap<String, String> details = session.getUserDetails();
+			String prefUsername = details.get(SessionManager.KEY_NAME);
+			String prefPassword = details.get(SessionManager.KEY_PASSWORD);
+			Log.i("LoginActivity", prefUsername);
+			Log.i("LoginActivity", prefPassword);
 			
+			// Logic begins here
 			if(username.trim().length() > 0 && password.trim().length() > 0){
-				if(!details.containsKey(username)) {
-					
+				if(!username.equals(prefUsername)) {
+					Utils.showAlert("Invalid username", this);
+					Toast.makeText(appContext, "Invalid username", 5).show();
 				}
-				if(username.equals("test") && password.equals("test")){ // Needs to be hashed
+				else if(password.equals(prefPassword)){ 
 					session.createLoginSession(username, password);
 					startActivity(new Intent(appContext, DebugInterfaceActivity.class));
 					finish();
-				} 
-				else {Toast.makeText(appContext, appContext.getResources().getString(R.string.incorrect_user_pass_combo), 5).show();} 
-			} 
-			else {Toast.makeText(appContext, "Login Failed", 5).show();} // In case login completely fails
+				}else {Utils.showAlert("Incorrect username password combination", this);}
+			} else {Utils.showAlert("Login Failed", this);} // In case login completely fails
 		}
 	}
 	
+	/**
+	 * Switch to the forgot password screen, without losing the saved state.
+	 * @param view
+	 */
 	public void forgotPassword(View view) {
 		startActivity(new Intent(appContext, ForgotPassword.class));
+		finish();
 	}
 }

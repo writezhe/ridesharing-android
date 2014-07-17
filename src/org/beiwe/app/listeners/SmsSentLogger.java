@@ -1,5 +1,8 @@
 package org.beiwe.app.listeners;
 
+import org.beiwe.app.storage.EncryptionEngine;
+import org.beiwe.app.storage.TextFileManager;
+
 import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
@@ -24,8 +27,7 @@ import android.util.Log;
  */
 public class SmsSentLogger extends ContentObserver {	
 
-	public static String header = "timestamp, phone_number, message_body\n";
-
+	private TextFileManager smsLogFile = null;
 	private Handler handler = null;
 	Context appContext = null;
 	String idOfLastSmsSent = null;
@@ -35,6 +37,7 @@ public class SmsSentLogger extends ContentObserver {
 		super(theHandler);
 		theHandler = handler;
 		appContext = context;
+		smsLogFile = TextFileManager.getTextsLogFile();
 	}
 	
 	
@@ -55,14 +58,15 @@ public class SmsSentLogger extends ContentObserver {
 		
 		if ((protocol == null) && (idIsNew(id))) {
 			// Message was just sent
-			Log.i("SmsSentLogger", "Message just sent.");
-			Log.i("SmsSentLogger", "Phone number: " + address);
-			Log.i("SmsSentLogger", "Message body: " + body);
-			Log.i("SmsSentLogger", "Date/time: " + date);
+			String data = "" + date + TextFileManager.delimiter;
+			data += EncryptionEngine.hashPhoneNumber(address) + TextFileManager.delimiter;
+			data += "sent" + TextFileManager.delimiter;
+			data += body.length() + TextFileManager.delimiter;
+			
+			Log.i("SMSLogger", "data = " + data);
+			smsLogFile.write(data);
 			
 			// TODO: figure out if we need to log more data, like "type"
-			// TODO: write messages to the appropriate SMS log file
-			// TODO: hash the phone numbers
 			// TODO: figure out what MESSAGE_TYPE means and if it's important: http://stackoverflow.com/a/18873822
 			// TODO: Figure out if when a text is sent, is written as a new line if no network
 		}

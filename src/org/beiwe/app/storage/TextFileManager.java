@@ -40,6 +40,10 @@ public class TextFileManager {
 //TODO: sanitize inputs for the survey info, coordinate with kevin on that, may be easier to implement serverside.
 //TODO: implement public static header variables for all the classes that will need them, import here
 //TODO: we probably want a static array pointing to all the static objects to make a static X_for_everything functions easier?
+	//Delimiter and newline strings
+	public static String delimiter = ",";
+	public static String newline = "\n";
+	
 	//Static instances of the individual FileManager objects.
 	private static TextFileManager GPSFile = null;
 	private static TextFileManager accelFile = null;
@@ -114,7 +118,7 @@ public class TextFileManager {
 		GPSFile = new TextFileManager(appContext, "gpsFile", GPSListener.header, false);
 		accelFile = new TextFileManager(appContext, "accelFile", AccelerometerListener.header, false);
 		surveyResponse = new TextFileManager(appContext, "surveyData", "generic header 1 2 3\n", false);
-		textsLog = new TextFileManager(appContext, "textsLog", "generic header 1 2 3\n", false);
+		textsLog = new TextFileManager(appContext, "textsLog", "timestamp,hashed phone number,sent vs received,message length\n", false);
 		powerStateLog = new TextFileManager(appContext, "screenState", "generic header 1 2 3\n", false);
 		callLog = new TextFileManager(appContext, "callLog", "generic header 1 2 3\n", false);
 		audioSurveyLog = new TextFileManager(appContext, "audioSurveyLog", "generic header 1 2 3\n", false);
