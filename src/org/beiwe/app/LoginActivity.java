@@ -77,6 +77,7 @@ public class LoginActivity extends Activity {
 			// Logic begins here
 			if(username.trim().length() > 0 && password.trim().length() > 0){
 				if(!username.equals(prefUsername)) {
+					Utils.showAlert("Invalid username", this);
 					Toast.makeText(appContext, "Invalid username", 5).show();
 				}
 				else if(password.equals(prefPassword)){ 
@@ -84,9 +85,8 @@ public class LoginActivity extends Activity {
 					startActivity(new Intent(appContext, DebugInterfaceActivity.class));
 					finish();
 				} // TODO: Fragmenting errors/Alerts go here
-				else {Toast.makeText(appContext, appContext.getResources().getString(R.string.incorrect_user_pass_combo), 5).show();} 
-			} 
-			else {Toast.makeText(appContext, "Login Failed", 5).show();} // In case login completely fails
+				else {Utils.showAlert("Incorrect username password combination", this);}
+				} else {Utils.showAlert("Login Failed", this);} // In case login completely fails
 		}
 	}
 	
@@ -96,5 +96,9 @@ public class LoginActivity extends Activity {
 	 */
 	public void forgotPassword(View view) {
 		startActivity(new Intent(appContext, ForgotPassword.class));
+		// TODO: Figure this shit out!
+		if(getIntent().getExtras().getBoolean("User Logged in")) {
+			finish();
+		}
 	}
 }

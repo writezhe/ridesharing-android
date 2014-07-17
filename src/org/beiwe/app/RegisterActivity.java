@@ -2,15 +2,12 @@ package org.beiwe.app;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 
 /**
@@ -57,37 +54,20 @@ public class RegisterActivity extends Activity {
 		String passwordRepeatStr = passwordRepeat.getText().toString();
 
 		// Logic gauntlet begins here
-		// TODO: For each Toast, create a fragment that displays error message
 		if(usernameStr.length() == 0) {
-			Toast.makeText(appContext, "Invalid username", 5).show();
-			showAlert("Invalid username");
+			Utils.showAlert("Invalid username", this);
 		} else if (passwordStr.length() == 0) {
-			Toast.makeText(appContext, "Invalid password", 5).show();
+			Utils.showAlert("Invalid password", this);
 		} else if (passwordRepeatStr.length() == 0 || !passwordRepeatStr.equals(passwordStr)) {
-			Toast.makeText(appContext, "Passwords Mismatch", 5).show();
+			Utils.showAlert("Passwords mismatch", this);
 		} else {
-			// TODO: Hashing mechanism goes here!!
 			
+			// TODO: Hashing mechanism goes here!!
 			Log.i("RegisterActivity", "Attempting to create a login session");
 			session.createLoginSession(usernameStr, passwordStr);
 			Log.i("RegisterActivity", "Registration complete, attempting to start DebugInterfaceActivity");
 			startActivity(new Intent(appContext, DebugInterfaceActivity.class));
 			finish();
 		}
-	}
-
-	private void showAlert(String message) {
-		AlertDialog alert = new AlertDialog.Builder(appContext).create();
-		alert.setTitle("Uh-Oh!");
-		alert.setMessage(message);
-		alert.setButton(AlertDialog.BUTTON_NEUTRAL, "OK", new DialogInterface.OnClickListener() {
-			
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				dialog.dismiss();
-			}
-		});
-		
-		alert.show();
 	}
 }
