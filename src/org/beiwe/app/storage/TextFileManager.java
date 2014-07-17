@@ -86,20 +86,7 @@ public class TextFileManager {
 	######################## CONSTRUCTOR STUFF ######################################
 	###############################################################################*/
 	
-	/** This class has a PRIVATE constructor.  The constructor is only ever called 
-	 * internally, via the static start() function, creating files for data storage. 
-	 * @param appContext A Context.
-	 * @param name The file's name.
-	 * @param header The first line of the file.  Leave empty if you don't want a header, remember to include a new line at the end of the header.
-	 * @param persistent Set this to true for a persistent file */
-	private TextFileManager(Context appContext, String name, String header, Boolean persistent ){
-		TextFileManager.appContext = appContext;
-		this.name = name;
-		this.header = header;
-		this.persistent = persistent;
-		if (persistent) { this.newFile(); }
-	}
-	
+
 	/**Starts the TextFileManager
 	 * This must be called before code attempts to access files using getXXXFile().
 	 * Initializes all TextFileManager object instances.
@@ -122,6 +109,20 @@ public class TextFileManager {
 		powerStateLog = new TextFileManager(appContext, "screenState", "generic header 1 2 3\n", false);
 		callLog = new TextFileManager(appContext, "callLog", "generic header 1 2 3\n", false);
 		audioSurveyLog = new TextFileManager(appContext, "audioSurveyLog", "generic header 1 2 3\n", false);
+	}
+	
+	/** This class has a PRIVATE constructor.  The constructor is only ever called 
+	 * internally, via the static start() function, creating files for data storage. 
+	 * @param appContext A Context.
+	 * @param name The file's name.
+	 * @param header The first line of the file.  Leave empty if you don't want a header, remember to include a new line at the end of the header.
+	 * @param persistent Set this to true for a persistent file */
+	private TextFileManager(Context appContext, String name, String header, Boolean persistent ){
+		TextFileManager.appContext = appContext;
+		this.name = name;
+		this.header = header;
+		this.persistent = persistent;
+		this.newFile();
 	}
 	
 	/*###############################################################################
@@ -149,7 +150,7 @@ public class TextFileManager {
 			outStream.write(data.getBytes());
 			outStream.close(); }
 		catch (Exception e) {
-			Log.i("FileManager", "Write error: " + this.fileName);
+			Log.i("FileManager", "Write error: " + this.name);
 			e.printStackTrace(); }
 	}
 
