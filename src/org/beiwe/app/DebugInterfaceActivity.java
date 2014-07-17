@@ -6,6 +6,7 @@ import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.storage.Upload;
 import org.beiwe.app.survey.AudioRecorderActivity;
 import org.beiwe.app.survey.SurveyActivity;
+import org.beiwe.app.ui.LoginSessionManager;
 
 import android.app.Activity;
 import android.content.Context;
@@ -108,7 +109,7 @@ public class DebugInterfaceActivity extends Activity {
 	}
 	
 	public void signOut (View view) {
-		SessionManager session = new SessionManager(appContext);
+		LoginSessionManager session = new LoginSessionManager(appContext);
 		session.logoutUser();
 		finish();
 	}
