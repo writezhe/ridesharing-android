@@ -27,6 +27,8 @@ import android.util.Log;
  */
 public class SmsSentLogger extends ContentObserver {	
 
+	public static String header = "timestamp,hashed phone number,sent vs received,message length\n";
+
 	private TextFileManager smsLogFile = null;
 	private Handler handler = null;
 	Context appContext = null;
@@ -61,7 +63,7 @@ public class SmsSentLogger extends ContentObserver {
 			String data = "" + date + TextFileManager.delimiter;
 			data += EncryptionEngine.hashPhoneNumber(address) + TextFileManager.delimiter;
 			data += "sent" + TextFileManager.delimiter;
-			data += body.length() + TextFileManager.delimiter;
+			data += body.length() + TextFileManager.delimiter + '\n';
 			
 			Log.i("SMSLogger", "data = " + data);
 			smsLogFile.write(data);

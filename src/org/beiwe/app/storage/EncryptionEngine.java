@@ -20,6 +20,7 @@ public class EncryptionEngine {
 	
 	public static String hashPhoneNumber(String phoneNumber) {
 		// TODO: extract hyphens, remove leading "1" country code, otherwise clean up number input, etc.
+		// TODO: make the hash alphanumeric: http://stackoverflow.com/a/9855338
 		try {
 			return hash(phoneNumber);
 		}

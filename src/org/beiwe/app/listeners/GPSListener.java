@@ -106,11 +106,11 @@ public class GPSListener implements LocationListener {
 	public void onLocationChanged(Location location) {		
 		Long javaTimeCode = System.currentTimeMillis();
 		//order: time, latitude, longitude, altitude, horizontal_accuracy\n
-		String data = javaTimeCode.toString() + ","
-				+ location.getLatitude() + ","
-				+ location.getLongitude() + ","
-				+ location.getAltitude() + ","
-				+ location.getAccuracy() + "\n" ;
+		String data = javaTimeCode.toString() + TextFileManager.delimiter
+				+ location.getLatitude() + TextFileManager.delimiter
+				+ location.getLongitude() + TextFileManager.delimiter
+				+ location.getAltitude() + TextFileManager.delimiter
+				+ location.getAccuracy() + '\n' ;
 		//note, altitude is notoriously inaccurate, getAccuracy only applies to latitude/longitude
 		GPSFile.write(data);
 //		logFile.write("GPS: " + data);

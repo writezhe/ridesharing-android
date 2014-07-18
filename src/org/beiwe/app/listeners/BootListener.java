@@ -18,7 +18,6 @@ import android.util.Log;
  * @author Eli */
 public class BootListener extends BroadcastReceiver {
 	
-	String header = "time, event\n";
 	TextFileManager logFile = null;
 	TextFileManager powerStateLog = null;
 	
@@ -54,8 +53,8 @@ public class BootListener extends BroadcastReceiver {
 	private void make_log_statement(String message) {
 		Log.i("B", message);
 		Long javaTimeCode = System.currentTimeMillis();
-		logFile.write(javaTimeCode.toString() + "," + message + "\n" ); 
-//		powerStateLog.write(javaTimeCode.toString() + + "," + message + "\n");
+//		logFile.write(javaTimeCode.toString() + "," + message + "\n" ); 
+		powerStateLog.write(javaTimeCode.toString() + TextFileManager.delimiter + message + '\n');
 	}
 	
 	@Override
@@ -85,6 +84,6 @@ public class BootListener extends BroadcastReceiver {
 		if (powerStateLog == null) { powerStateLog = TextFileManager.getPowerStateFile(); }
 		
 		//make a log of all receipts (for debugging)
-		make_log_statement("the following intent was recieved by the PowerStateListener:" + intent.getAction().toString()+"\n");
+		make_log_statement("the following intent was recieved by the PowerStateListener:" + intent.getAction().toString());
 	}
 }

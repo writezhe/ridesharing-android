@@ -13,7 +13,7 @@ import android.util.Log;
  *  @author Josh Zagorsky, Eli Jones, May/June 2014 */
 public class PowerStateListener extends BroadcastReceiver {
 	
-	public String header = "time, event\n";
+	public static String header = "time, event\n";
 	private BackgroundProcess backgroundProcess;
 	
 	/** Handles the logging, includes a new line for the CSV files.
@@ -21,8 +21,8 @@ public class PowerStateListener extends BroadcastReceiver {
 	private void make_log_statement(String message) {
 		Log.i("PowerStateListener", message);
 		Long javaTimeCode = System.currentTimeMillis();
-		TextFileManager.getDebugLogFile().write(javaTimeCode.toString() + "," + message +"\n" ); 
-//		TextFileManager.getPowerStateFile().write(javaTimeCode.toString() + "," + message + "\n");
+//		TextFileManager.getDebugLogFile().write(javaTimeCode.toString() + "," + message +"\n" ); 
+		TextFileManager.getPowerStateFile().write(javaTimeCode.toString() + TextFileManager.delimiter + message + '\n');
 	}
 	
 	/** In order to acces the functions of the background Process we need to create a new constructor,

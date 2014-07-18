@@ -13,6 +13,9 @@ import java.util.Set;
 
 import org.beiwe.app.listeners.AccelerometerListener;
 import org.beiwe.app.listeners.GPSListener;
+import org.beiwe.app.listeners.PowerStateListener;
+import org.beiwe.app.listeners.SmsSentLogger;
+import org.beiwe.app.survey.AnswerRecorder;
 
 import android.content.Context;
 import android.util.Log;
@@ -104,9 +107,9 @@ public class TextFileManager {
 		
 		GPSFile = new TextFileManager(appContext, "gpsFile", GPSListener.header, false);
 		accelFile = new TextFileManager(appContext, "accelFile", AccelerometerListener.header, false);
-		surveyResponse = new TextFileManager(appContext, "surveyData", "generic header 1 2 3\n", false);
-		textsLog = new TextFileManager(appContext, "textsLog", "timestamp,hashed phone number,sent vs received,message length\n", false);
-		powerStateLog = new TextFileManager(appContext, "screenState", "generic header 1 2 3\n", false);
+		surveyResponse = new TextFileManager(appContext, "surveyData", AnswerRecorder.header, false);
+		textsLog = new TextFileManager(appContext, "textsLog", SmsSentLogger.header, false);
+		powerStateLog = new TextFileManager(appContext, "screenState", PowerStateListener.header, false);
 		callLog = new TextFileManager(appContext, "callLog", "generic header 1 2 3\n", false);
 		audioSurveyLog = new TextFileManager(appContext, "audioSurveyLog", "generic header 1 2 3\n", false);
 	}
@@ -135,7 +138,7 @@ public class TextFileManager {
 		if ( this.persistent ) { this.fileName = this.name; } 
 		else {
 			String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
-			this.fileName = this.name + "-" + timecode + ".txt"; }
+			this.fileName = this.name + "-" + timecode + ".csv"; }
 		this.write(header);
 	}
 	

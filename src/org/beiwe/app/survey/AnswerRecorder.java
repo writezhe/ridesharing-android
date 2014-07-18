@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 public class AnswerRecorder {
 	
+	public static String header = "timestamp,question id,question type,question text,question answer options,answer\n";
 	private static String delimiter = "" + '\t';
 		
 	
