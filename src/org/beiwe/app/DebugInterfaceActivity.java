@@ -114,7 +114,8 @@ public class DebugInterfaceActivity extends Activity {
 		finish();
 	}
 	
-	
-
+	public void bluetooth (View view){
+		
+	}
 	
 }

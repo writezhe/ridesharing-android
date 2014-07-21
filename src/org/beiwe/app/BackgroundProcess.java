@@ -2,6 +2,7 @@ package org.beiwe.app;
 
 import org.beiwe.app.listeners.AccelerometerListener;
 import org.beiwe.app.listeners.CallLogger;
+import org.beiwe.app.listeners.BluetoothListener;
 import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
@@ -32,6 +33,8 @@ public class BackgroundProcess extends Service {
 	public static GPSListener gpsListener;
 	public static AccelerometerListener accelerometerListener;
 	
+	BluetoothListener bluetooth;
+	
 	private void make_log_statement(String message) {
 		Log.i("BackgroundService", message);
 		Long javaTimeCode = System.currentTimeMillis();
@@ -55,10 +58,13 @@ public class BackgroundProcess extends Service {
 		startCallLogger();
 		startPowerStateListener();
 								
-		Boolean accelStatus = accelerometerListener.toggle( );
-		Log.i("accel Status", accelStatus.toString() );
-		Boolean gpsStatus = gpsListener.toggle();
-		Log.i("GPS Status", gpsStatus.toString() );
+//		Boolean accelStatus = accelerometerListener.toggle( );
+//		Log.i("accel Status", accelStatus.toString() );
+//		Boolean gpsStatus = gpsListener.toggle();
+//		Log.i("GPS Status", gpsStatus.toString() );
+		
+		bluetooth = new Bluetooth();
+		bluetooth.bluetoothInfo();
 	}
 
 	@Override

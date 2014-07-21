@@ -30,12 +30,16 @@
     <!-- PERMISSIONS BELOW NOT IMPLEMENTED/USED -->
     <!-- Power management and monitoring, not sure where this would be used... -->
     <uses-permission android:name="android.permission.BATTERY_STATS" />
+    
     <!-- bluetooth proximity -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
-
+ 	<!-- uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/ -->
+   
     <!-- only for debug, remove before final product is finished -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
+	
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
