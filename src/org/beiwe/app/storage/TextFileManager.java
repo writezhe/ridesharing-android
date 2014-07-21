@@ -55,6 +55,7 @@ public class TextFileManager {
 	private static TextFileManager textsLog = null;
 	private static TextFileManager surveyResponse = null;
 	private static TextFileManager audioSurveyLog = null;
+	private static TextFileManager bluetoothLog = null;
 	
 	private static TextFileManager debugLogFile = null;
 	private static TextFileManager currentQuestions = null;
@@ -74,6 +75,8 @@ public class TextFileManager {
 	public static TextFileManager getCallLogFile(){ if ( callLog == null ) throw new NullPointerException( getter_error ); return callLog; }
 	public static TextFileManager getTextsLogFile(){ if ( textsLog == null ) throw new NullPointerException( getter_error ); return textsLog; }
 	public static TextFileManager getSurveyResponseFile(){ if ( surveyResponse == null ) throw new NullPointerException( getter_error ); return surveyResponse; }
+	public static TextFileManager getBluetoothLogFile(){ if ( bluetoothLog == null ) throw new NullPointerException( getter_error ); return bluetoothLog; }
+
 	//the persistant files
 	public static TextFileManager getCurrentQuestionsFile(){ if ( currentQuestions == null ) throw new NullPointerException( getter_error ); return currentQuestions; }
 	public static TextFileManager getDebugLogFile(){ if ( debugLogFile == null ) throw new NullPointerException( getter_error ); return debugLogFile; }
@@ -112,6 +115,7 @@ public class TextFileManager {
 		powerStateLog = new TextFileManager(appContext, "screenState", PowerStateListener.header, false);
 		callLog = new TextFileManager(appContext, "callLog", "generic header 1 2 3\n", false);
 		audioSurveyLog = new TextFileManager(appContext, "audioSurveyLog", "generic header 1 2 3\n", false);
+		bluetoothLog = new TextFileManager(appContext, "bluetoothLog", "generic header 1 2 3\n", false);
 	}
 	
 	/** This class has a PRIVATE constructor.  The constructor is only ever called 
@@ -145,6 +149,8 @@ public class TextFileManager {
 	/**Takes a string. writes that to the file.
 	 * Prints a stacktrace on a write error.
 	 * @param data a string*/
+	//TODO: make this function add the new line at the end of the string.
+	//TODO: investigate writing strings that make contain non-string-happy characters. (like escapes)
 	public synchronized void write(String data){
 		//write the output, we always want mode append
 		FileOutputStream outStream;
@@ -236,7 +242,8 @@ public class TextFileManager {
 		powerStateLog.newFile();
 		callLog.newFile();
 		textsLog.newFile();
-		audioSurveyLog.newFile(); }
+		audioSurveyLog.newFile(); 
+		bluetoothLog.newFile(); }
 	
 	//FIXME: this function is only public for debugging purposes, getAllFilesSafely() should be used instead.
 	/** Very simple function, exists to make any function that needs to grab all extant files thread-safe.
