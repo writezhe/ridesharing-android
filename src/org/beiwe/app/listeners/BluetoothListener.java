@@ -23,6 +23,7 @@ import android.util.Log;
  * @author elijones
  *
  */
+ 
 public class BluetoothListener extends BroadcastReceiver {
 	private BluetoothAdapter bluetoothAdapter;
 	private Boolean exists;
@@ -48,6 +49,7 @@ public class BluetoothListener extends BroadcastReceiver {
 		this.state_we_want = this.external_state;
 	}
 	
+	//TODO: add check for devices connected, stop disable process if any devices are connected.
 	public Boolean disable() {
 		if (!exists) return false; //esc
 		
