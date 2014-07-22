@@ -1,32 +1,136 @@
 package org.beiwe.app.listeners;
 
-import android.content.BroadcastReceiver;
+import org.beiwe.app.storage.EncryptionEngine;
+import org.beiwe.app.storage.TextFileManager;
+
 import android.content.Context;
-import android.content.Intent;
+import android.database.ContentObserver;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Handler;
+import android.provider.CallLog;
+import android.util.Log;
 
-public class CallLogger extends BroadcastReceiver {
+public class CallLogger extends ContentObserver {
 
-	@Override
-	public void onReceive(Context appContext, Intent intent) {
-		// TODO Auto-generated method stub
-		
+	// Private variables
+	private TextFileManager callLogFile = null;
+	private Handler handler = null;
+	private int idOfLastCall = 0;
+	
+	// Enum - ID number for personal use
+	private String id = android.provider.CallLog.Calls._ID;
+	
+	// Context
+	Context appContext = null;
+	
+	// Columns that interest us - phone number, type of call, date, duration of call
+	String[] fields = {android.provider.CallLog.Calls.NUMBER, 
+			android.provider.CallLog.Calls.TYPE, 
+			android.provider.CallLog.Calls.DATE, 
+			android.provider.CallLog.Calls.DURATION,
+	};
+	
+
+	// Constructor of the call logger object
+	public CallLogger(Handler theHandler, Context context) {
+		super(theHandler);
+		theHandler = handler;
+		appContext = context;
+		callLogFile = TextFileManager.getDebugLogFile(); //TODO: change back to call log file
 	}
 	
-//	 Uri allCalls = Uri.parse("content://call_log/calls");
-//	 Cursor c = managedQuery(allCalls, null, null, null, null);
-	/*
-	 * TODO: 
-	 * 		Saved variables:
-	 * 		- Last date of logged call
-	 * 			
-	 * 		Flow is this:
-	 * 		1. User ends a call (waiting for a phone state IDLE after a another phone state)
-	 * 		2. Logger runs to check if there are any new calls that should be logged in our file
-	 *		3. Logger searches logs all new entries
-	 *		4. Logger saves the current date as a mark
-	 *		5. Repeat
-	 * 
-	 */
-	
 
+	/**
+	 * On change, Looks for the last row, then goes back until reaching the row of the last recorded call,
+	 * Then goes back down until reaching the newest line, and records everything to the log file.
+	 */
+	public void onChange(boolean selfChange) {
+		super.onChange(selfChange);
+		
+		// StringBuilder that will be used when creating the data to be written
+		StringBuilder builder = new StringBuilder();
+		
+		// Database information
+		Uri allCalls = Uri.parse("content://call_log/calls");
+		Cursor cursor = appContext.getContentResolver().query(allCalls, null, null, null, android.provider.CallLog.Calls.DEFAULT_SORT_ORDER);
+		
+		cursor.moveToLast();
+		
+		// Dealing with first time activation case - set idOfLastCall, and then create the log file with column names
+		if (idOfLastCall == 0) { 
+			idOfLastCall = cursor.getInt(cursor.getColumnIndex(id));
+			for (int i = 0; i < fields.length; i++) {
+				builder.append(fields[i] + TextFileManager.delimiter);
+			}
+			formatThenAddToFile(builder);
+			builder.setLength(0);
+		}
+		
+		// Climb until reaching the idOfLastCall row
+		while (idOfLastCall != cursor.getInt(cursor.getColumnIndex(id))) {
+			cursor.moveToPrevious();
+		}
+		
+		// While there exists a next row
+		while(cursor.moveToNext()) {
+			// Append all the values in "fields"
+			for (int i = 0; i < fields.length; i++) {
+				if(i == 0) { // If dealing with a phone, we need to hash it
+					builder.append(EncryptionEngine.hashPhoneNumber(cursor.getString(cursor.getColumnIndex(fields[i]))));
+					builder.append(TextFileManager.delimiter);
+				} else if(i == 1) { // If dealing with a type - we need to translate it to real words
+					int type = cursor.getInt(cursor.getColumnIndex(fields[i]));
+					switch(type) {
+					case CallLog.Calls.OUTGOING_TYPE:
+						builder.append("OUTGOING");
+						break;
+
+					case CallLog.Calls.INCOMING_TYPE:
+						builder.append("INCOMING");
+						break;
+
+					case CallLog.Calls.MISSED_TYPE:
+						builder.append("MISSED");
+						break;
+					}
+					builder.append(TextFileManager.delimiter);
+				}
+				else { // Otherwise just append the string to the builder
+					builder.append(cursor.getString(cursor.getColumnIndex(fields[i])));
+					builder.append(TextFileManager.delimiter);
+				}
+			}
+
+			// Final Formatting before writing into file
+			formatThenAddToFile(builder);
+			
+			String result = builder.toString();
+			Log.i("CallLogger", "Data so far is: " + result);	
+		}
+		
+		// Currently pointing at a null row
+		cursor.moveToLast();
+		
+		// Now we have the last ID!
+		idOfLastCall = cursor.getInt(cursor.getColumnIndex(fields[4]));
+		
+		
+		String result = builder.toString();
+		Log.i("CallLogger", "Final Data is: " + result);
+	}
+	
+	/**
+	 * Formats the stringBuilder that has too many delimiters, then writes it to the csv file as a string.
+	 * 
+	 * @param stringBuilder
+	 * @param logFile
+	 */
+	private void formatThenAddToFile(StringBuilder stringBuilder) {
+		stringBuilder.deleteCharAt(stringBuilder.lastIndexOf(TextFileManager.delimiter));
+		stringBuilder.append("\n");
+		
+		String result = stringBuilder.toString();
+		callLogFile.write(result);
+	}
 }

@@ -11,6 +11,7 @@
     <!-- GPS and network-location service -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <!-- Call Log -->
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
     <!-- texts logging -->
     <uses-permission android:name="android.permission.READ_SMS" />

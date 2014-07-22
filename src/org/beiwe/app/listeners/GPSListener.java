@@ -134,6 +134,6 @@ public class GPSListener implements LocationListener {
 		// arg0 is the name of the provider that changed status.
 		// arg1 is the status of the provider. 0=out of service, 1=temporarily unavailable, 2=available
 		Log.i("OH GOD WE GOT A STATUSCHANGE FROM THE GPSListener", arg0 + "," + arg1 + "," + arg2.toString() );
-		logFile.write("STATUSCHANGE FROM THE GPSListener" + arg0 + "," + arg1 + "," + arg2.toString());
+//		logFile.write("STATUSCHANGE FROM THE GPSListener" + arg0 + "," + arg1 + "," + arg2.toString());
 	}
 }

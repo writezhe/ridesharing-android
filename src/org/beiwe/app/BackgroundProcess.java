@@ -1,6 +1,7 @@
 package org.beiwe.app;
 
 import org.beiwe.app.listeners.AccelerometerListener;
+import org.beiwe.app.listeners.CallLogger;
 import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
@@ -13,13 +14,13 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-//import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
+//import android.content.pm.PackageManager;
  
 
 public class BackgroundProcess extends Service {
@@ -51,6 +52,7 @@ public class BackgroundProcess extends Service {
 		make_log_statement("Things have allocated, starting listeners");
 		
 		startSmsSentLogger();
+		startCallLogger();
 		startPowerStateListener();
 								
 		Boolean accelStatus = accelerometerListener.toggle( );
@@ -70,6 +72,11 @@ public class BackgroundProcess extends Service {
 	public void startSmsSentLogger() {
 		SmsSentLogger smsSentLogger = new SmsSentLogger(new Handler(), appContext);
 		this.getContentResolver().registerContentObserver(Uri.parse("content://sms/"), true, smsSentLogger);	}
+	
+	/** Initializes the call logger. */
+	public void startCallLogger() {
+		CallLogger callLogger = new CallLogger(new Handler(), appContext);
+		this.getContentResolver().registerContentObserver(Uri.parse("content://call_log/calls/"), true, callLogger);	}
 	
 	/** Initializes the PowerStateListener. */
 	private void startPowerStateListener() {
