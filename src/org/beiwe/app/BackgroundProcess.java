@@ -2,6 +2,7 @@ package org.beiwe.app;
 
 import org.beiwe.app.listeners.AccelerometerListener;
 import org.beiwe.app.listeners.CallLogger;
+import org.beiwe.app.listeners.AccelerometerListener;
 import org.beiwe.app.listeners.BluetoothListener;
 import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
@@ -63,7 +64,7 @@ public class BackgroundProcess extends Service {
 //		Boolean gpsStatus = gpsListener.toggle();
 //		Log.i("GPS Status", gpsStatus.toString() );
 		
-		bluetooth = new Bluetooth();
+		bluetooth = new BluetoothListener();
 		bluetooth.bluetoothInfo();
 	}
 
