@@ -48,7 +48,7 @@ public class SmsReceivedLogger extends BroadcastReceiver {
 						String data = "" + timestamp + TextFileManager.delimiter;
 						data += EncryptionEngine.hashPhoneNumber(messageFrom) + TextFileManager.delimiter;
 						data += "received" + TextFileManager.delimiter;
-						data += messageBody.length() + TextFileManager.delimiter + '\n';
+						data += messageBody.length() + '\n';
 
 						Log.i("SMSLogger", "data = " + data);
 						TextFileManager.getTextsLogFile().write(data);
