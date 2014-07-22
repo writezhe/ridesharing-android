@@ -11,9 +11,18 @@ import android.os.Handler;
 import android.provider.CallLog;
 import android.util.Log;
 
+/**
+ * This is the call logger class. The objective of this class it to wait for a change in the phone's log file,
+ * then record the number that was called, the type of call, the date the call was placed, and the duration of
+ * the call. The phone number is hashed according the {@link EncriptionEngine}'s hash method.
+ * 
+ * @author Dor Samet
+ */
+
 public class CallLogger extends ContentObserver {
 
 	// Private variables
+	private TextFileManager debugLogFile = null;
 	private TextFileManager callLogFile = null;
 	private Handler handler = null;
 	private int idOfLastCall = 0;
@@ -37,13 +46,13 @@ public class CallLogger extends ContentObserver {
 		super(theHandler);
 		theHandler = handler;
 		appContext = context;
-		callLogFile = TextFileManager.getDebugLogFile(); //TODO: change back to call log file
+		debugLogFile = TextFileManager.getDebugLogFile(); 
+		callLogFile = TextFileManager.getCallLogFile();
 	}
 	
 
 	/**
-	 * On change, Looks for the last row, then goes back until reaching the row of the last recorded call,
-	 * Then goes back down until reaching the newest line, and records everything to the log file.
+	 * On change, Looks for the last row, then queries the results
 	 */
 	public void onChange(boolean selfChange) {
 		super.onChange(selfChange);
@@ -55,82 +64,104 @@ public class CallLogger extends ContentObserver {
 		Uri allCalls = Uri.parse("content://call_log/calls");
 		Cursor cursor = appContext.getContentResolver().query(allCalls, null, null, null, android.provider.CallLog.Calls.DEFAULT_SORT_ORDER);
 		
+		// Cursor moves to the last row
 		cursor.moveToLast();
 		
 		// Dealing with first time activation case - set idOfLastCall, and then create the log file with column names
 		if (idOfLastCall == 0) { 
-			idOfLastCall = cursor.getInt(cursor.getColumnIndex(id));
-			for (int i = 0; i < fields.length; i++) {
-				builder.append(fields[i] + TextFileManager.delimiter);
-			}
-			formatThenAddToFile(builder);
-			builder.setLength(0);
+			firstTimeRoutine(cursor, builder);
 		}
 		
-		// Climb until reaching the idOfLastCall row
-		while (idOfLastCall != cursor.getInt(cursor.getColumnIndex(id))) {
-			cursor.moveToPrevious();
+		// Query the results from the database
+		queryResults(cursor, builder);
+	}
+	
+	/**
+	 * Writes the header lines to the log file, and resets the string builder.
+	 * 
+	 * @param dbCursor
+	 * @param stringBuilder
+	 */
+	private void firstTimeRoutine(Cursor dbCursor, StringBuilder stringBuilder) {
+		idOfLastCall = dbCursor.getInt(dbCursor.getColumnIndex(id));
+		for (int i = 0; i < fields.length; i++) {
+			stringBuilder.append(fields[i] + TextFileManager.delimiter);
+		}
+		formatThenAddToFile(stringBuilder);
+		stringBuilder.setLength(0);
+		dbCursor.moveToPrevious();		
+	}
+	
+	/**
+	 * Searches for the latest recorded row, then records each row's parameters that interest us.
+	 * The query ends by adding the saved data to the log file
+	 * 
+	 * @param dbCursor
+	 * @param stringBuilder
+	 */
+	private void queryResults(Cursor dbCursor, StringBuilder stringBuilder) {
+		// Climb up the rows until reaching idOfLastCall's row
+		while (idOfLastCall != dbCursor.getInt(dbCursor.getColumnIndex(id))) {
+			dbCursor.moveToPrevious();
 		}
 		
 		// While there exists a next row
-		while(cursor.moveToNext()) {
+		while(dbCursor.moveToNext()) {
 			// Append all the values in "fields"
 			for (int i = 0; i < fields.length; i++) {
 				if(i == 0) { // If dealing with a phone, we need to hash it
-					builder.append(EncryptionEngine.hashPhoneNumber(cursor.getString(cursor.getColumnIndex(fields[i]))));
-					builder.append(TextFileManager.delimiter);
+					stringBuilder.append(EncryptionEngine.hashPhoneNumber(dbCursor.getString(dbCursor.getColumnIndex(fields[i]))));
 				} else if(i == 1) { // If dealing with a type - we need to translate it to real words
-					int type = cursor.getInt(cursor.getColumnIndex(fields[i]));
+					int type = dbCursor.getInt(dbCursor.getColumnIndex(fields[i]));
 					switch(type) {
 					case CallLog.Calls.OUTGOING_TYPE:
-						builder.append("OUTGOING");
+						stringBuilder.append("Outgoing call");
 						break;
 
 					case CallLog.Calls.INCOMING_TYPE:
-						builder.append("INCOMING");
+						stringBuilder.append("Incoming call");
 						break;
 
 					case CallLog.Calls.MISSED_TYPE:
-						builder.append("MISSED");
+						stringBuilder.append("Missed call");
 						break;
 					}
-					builder.append(TextFileManager.delimiter);
-				}
-				else { // Otherwise just append the string to the builder
-					builder.append(cursor.getString(cursor.getColumnIndex(fields[i])));
-					builder.append(TextFileManager.delimiter);
-				}
+				} else { // Otherwise just append the string to the builder
+					stringBuilder.append(dbCursor.getString(dbCursor.getColumnIndex(fields[i])));	}
+				// In each case, add a delimiter
+				stringBuilder.append(TextFileManager.delimiter);
 			}
 
 			// Final Formatting before writing into file
-			formatThenAddToFile(builder);
+			formatThenAddToFile(stringBuilder);
 			
-			String result = builder.toString();
+			// Present the data to log cat
+			String result = stringBuilder.toString();
 			Log.i("CallLogger", "Data so far is: " + result);	
 		}
 		
 		// Currently pointing at a null row
-		cursor.moveToLast();
+		dbCursor.moveToLast();
 		
 		// Now we have the last ID!
-		idOfLastCall = cursor.getInt(cursor.getColumnIndex(fields[4]));
+		idOfLastCall = dbCursor.getInt(dbCursor.getColumnIndex(fields[4]));
 		
-		
-		String result = builder.toString();
+		// Present the data to log cat
+		String result = stringBuilder.toString();
 		Log.i("CallLogger", "Final Data is: " + result);
 	}
-	
+
 	/**
-	 * Formats the stringBuilder that has too many delimiters, then writes it to the csv file as a string.
+	 * Formats the stringBuilder that has too many delimiters, 
+	 * then writes it to the csv file as a string.
 	 * 
 	 * @param stringBuilder
-	 * @param logFile
 	 */
 	private void formatThenAddToFile(StringBuilder stringBuilder) {
 		stringBuilder.deleteCharAt(stringBuilder.lastIndexOf(TextFileManager.delimiter));
 		stringBuilder.append("\n");
 		
 		String result = stringBuilder.toString();
-		callLogFile.write(result);
+		debugLogFile.write(result);
 	}
 }
