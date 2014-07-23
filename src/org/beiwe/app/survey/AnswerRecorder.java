@@ -10,7 +10,6 @@ import android.widget.Toast;
 public class AnswerRecorder {
 	
 	public static String header = "timestamp,question id,question type,question text,question answer options,answer\n";
-	private static String delimiter = "" + '\t';
 		
 	
 	/**
@@ -34,11 +33,11 @@ public class AnswerRecorder {
 	 */
 	public static void recordAnswer(String answer, QuestionDescription questionDescription) {
 		String message = "";
-		message += sanitizeString(questionDescription.getId()) + delimiter;
-		message += sanitizeString(questionDescription.getType()) + delimiter;
-		message += sanitizeString(questionDescription.getText()) + delimiter;
-		message += sanitizeString(questionDescription.getOptions()) + delimiter;
-		message += sanitizeString(answer) + delimiter;
+		message += sanitizeString(questionDescription.getId()) + TextFileManager.delimiter;
+		message += sanitizeString(questionDescription.getType()) + TextFileManager.delimiter;
+		message += sanitizeString(questionDescription.getText()) + TextFileManager.delimiter;
+		message += sanitizeString(questionDescription.getOptions()) + TextFileManager.delimiter;
+		message += sanitizeString(answer);
 		Log.i("AnswerRecorder", message);
 		
 		appendLineToLogFile(message);
@@ -68,7 +67,7 @@ public class AnswerRecorder {
 		/** Handles the logging, includes a new line for the CSV files.
 		 * This code is otherwised reused everywhere.*/
 		Long javaTimeCode = System.currentTimeMillis();
-		String line = javaTimeCode.toString() + delimiter + message +"\n"; 
+		String line = javaTimeCode.toString() + TextFileManager.delimiter + message + "\n"; 
 
 		Log.i("AnswerRecorder", line);
 		TextFileManager.getSurveyResponseFile().write(line);
@@ -83,6 +82,8 @@ public class AnswerRecorder {
 	private static String sanitizeString(String input) {
 		// TODO: fix RegEx so it sanitizes '\t'
 		input = input.replaceAll("[\t\n\r]", "  ");
+		// Replace all commas in the text with semicolons, because commas are the delimiters
+		input = input.replaceAll(",", ";");
 		return input;
 	}
 
