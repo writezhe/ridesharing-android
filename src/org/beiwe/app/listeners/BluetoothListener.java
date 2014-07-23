@@ -52,7 +52,6 @@ public class BluetoothListener extends BroadcastReceiver {
 	//TODO: add check for devices connected, stop disable process if any devices are connected.
 	public Boolean disable() {
 		if (!exists) return false; //esc
-		
 		state_we_want = false;
 		if (external_state == false){ //if the outside world and us agree that it should be off, turn it off
 			this.bluetoothAdapter.disable();
@@ -121,5 +120,9 @@ public class BluetoothListener extends BroadcastReceiver {
 		Log.i("bluetooth", "bluetooth enabled: " + this.bluetoothEnabled() );
 		Log.i("bluetooth", "bluetooth address: " + bluetoothAdapter.getAddress() );
 		Log.i("bluetooth", "bluetooth state: " + this.getState() );
+		
+		bluetoothAdapter.getBondedDevices();
+		bluetoothAdapter.startLeScan(callback):
+			bluetoothAdapter.
 	}
 }
