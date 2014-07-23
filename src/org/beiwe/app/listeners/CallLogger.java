@@ -1,8 +1,6 @@
  package org.beiwe.app.listeners;
  
 
-import java.security.acl.LastOwnerException;
-
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.TextFileManager;
 
