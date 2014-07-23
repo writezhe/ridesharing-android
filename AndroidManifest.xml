@@ -88,17 +88,16 @@
             android:label="@string/title_activity_login" >
         </activity>
         <activity
-          	android:name=".ui.ForgotPassword"
+            android:name=".ui.ForgotPassword"
             android:label="@string/title_activity_forgot_password" >
         </activity>
-        <activity 
+        <activity
             android:name=".ui.RegisterActivity"
             android:label="@string/title_activity_register" >
         </activity>
         <activity
-          android:name=".ui.LoadingActivity"
+            android:name=".ui.LoadingActivity"
             android:label="@string/title_activity_loading" >
-            
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -106,5 +105,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

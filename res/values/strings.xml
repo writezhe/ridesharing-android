@@ -3,7 +3,7 @@
 
     <!--
     Reference strings in Java code using a line like this:
-    appContext.getResources().getString(R.string.name_of_string)
+    appContext.getResources().getString(R.string.name_of_string)
     -->
     <!-- General Strings -->
     <string name="app_name">Beiwe</string>
@@ -60,8 +60,12 @@
     <string name="register_activity_password_verify">Please enter your password again:</string>
     <string name="register_activity_submit">Submit</string>
     <string name="title_activity_loading">LoadingActivity</string>
-    
+
     <!-- Loading Activity Strings -->
     <string name="loading_activity_loading_message">Loading...</string>
+    <string name="survey_notification_title_template">Survey: %1$s</string>
+    <string name="survey_notification_placeholder_text_template">You said %1$s and lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam non enim magna. Morbi dictum, velit vel semper venenatis, magna odio volutpat velit, at ullamcorper nulla lacus sed turpis. Pellentesque vitae metus elit, nec tincidunt tellus. Integer sed nisl sem, ullamcorper ornare lacus. Duis ac mauris sed massa congue volutpat. Donec sed erat sit amet turpis viverra rhoncus sit amet nec magna. Donec lacinia ligula at libero volutpat volutpat nec nec tortor.</string>
+    <string name="action_share">Share</string>
+    <string name="action_reply">Reply</string>
 
 </resources>
