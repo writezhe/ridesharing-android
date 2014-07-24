@@ -101,10 +101,9 @@ public class TextFileManager {
 		if ( started ){ throw new NullPointerException("You may only start the FileManager once."); }
 		else { started = true; }
 		
-		debugLogFile = new TextFileManager(appContext, "logFile", "THIS LINE IS A LOG FILE HEADER\n", true);
-		// TODO: figure out what to do with currentQuestions; it's already created by QuestionsDownloader.java
+		debugLogFile = new TextFileManager(appContext, "logFile.txt", "THIS LINE IS A LOG FILE HEADER\n", true);
 		currentQuestions = new TextFileManager(appContext, "currentQuestionsFile.json", "", true);
-		deviceInfo = new TextFileManager(appContext, "phoneInfo", "", true);
+		deviceInfo = new TextFileManager(appContext, "phoneInfo.txt", "", true);
 		
 		GPSFile = new TextFileManager(appContext, "gpsFile", GPSListener.header, false);
 		accelFile = new TextFileManager(appContext, "accelFile", AccelerometerListener.header, false);
