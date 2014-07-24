@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.beiwe.app.listeners.AccelerometerListener;
+import org.beiwe.app.listeners.CallLogger;
 import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
@@ -109,7 +110,7 @@ public class TextFileManager {
 		accelFile = new TextFileManager(appContext, "accelFile", AccelerometerListener.header, false);
 		textsLog = new TextFileManager(appContext, "textsLog", SmsSentLogger.header, false);
 		powerStateLog = new TextFileManager(appContext, "screenState", PowerStateListener.header, false);
-		callLog = new TextFileManager(appContext, "callLog", "generic header 1 2 3\n", false);
+		callLog = new TextFileManager(appContext, "callLog", CallLogger.header, false);
 		audioSurveyLog = new TextFileManager(appContext, "audioSurveyLog", "generic header 1 2 3\n", false);
 
 		/* Don't create a new surveyResponse file; these should get created when and only when the

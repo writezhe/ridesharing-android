@@ -16,6 +16,8 @@ import android.util.Log;
 
 public class CallLogger extends ContentObserver {
 
+	public static String header = "hashed phone number,call type,date,duration in seconds\n";
+	
 	// Private variables
 	private TextFileManager callLogFile = null;
 	private Handler handler = null;
@@ -40,7 +42,7 @@ public class CallLogger extends ContentObserver {
 		super(theHandler);
 		theHandler = handler;
 		appContext = context;
-		callLogFile = TextFileManager.getDebugLogFile(); //TODO: change back to call log file
+		callLogFile = TextFileManager.getCallLogFile(); //TODO: change back to debug log file for debugging
 	}
 	
 
@@ -67,7 +69,8 @@ public class CallLogger extends ContentObserver {
 			for (int i = 0; i < fields.length; i++) {
 				builder.append(fields[i] + TextFileManager.delimiter);
 			}
-			formatThenAddToFile(builder);
+			// TODO: delete this line, because we only print the header line once
+			//formatThenAddToFile(builder);
 			builder.setLength(0);
 		} else {
 			int currentID = cursor.getInt(cursor.getColumnIndex(id));
