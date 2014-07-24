@@ -15,7 +15,6 @@ import org.beiwe.app.listeners.AccelerometerListener;
 import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
-import org.beiwe.app.survey.AnswerRecorder;
 
 import android.content.Context;
 import android.util.Log;
@@ -102,6 +101,7 @@ public class TextFileManager {
 		else { started = true; }
 		
 		debugLogFile = new TextFileManager(appContext, "logFile", "THIS LINE IS A LOG FILE HEADER\n", true);
+		// TODO: figure out what to do with currentQuestions; it's already created by QuestionsDownloader.java
 		currentQuestions = new TextFileManager(appContext, "currentQuestionsFile.json", "", true);
 		deviceInfo = new TextFileManager(appContext, "phoneInfo", "", true);
 		
