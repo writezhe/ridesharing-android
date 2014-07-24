@@ -107,11 +107,14 @@ public class TextFileManager {
 		
 		GPSFile = new TextFileManager(appContext, "gpsFile", GPSListener.header, false);
 		accelFile = new TextFileManager(appContext, "accelFile", AccelerometerListener.header, false);
-		surveyResponse = new TextFileManager(appContext, "surveyData", AnswerRecorder.header, false);
 		textsLog = new TextFileManager(appContext, "textsLog", SmsSentLogger.header, false);
 		powerStateLog = new TextFileManager(appContext, "screenState", PowerStateListener.header, false);
 		callLog = new TextFileManager(appContext, "callLog", "generic header 1 2 3\n", false);
 		audioSurveyLog = new TextFileManager(appContext, "audioSurveyLog", "generic header 1 2 3\n", false);
+
+		/* Don't create a new surveyResponse file; these should get created when and only when the
+		 * user opens a new survey. TODO: run this by Eli and see if this is the way to do it. */
+		// surveyResponse = new TextFileManager(appContext, "surveyData", AnswerRecorder.header, false);
 	}
 	
 	/** This class has a PRIVATE constructor.  The constructor is only ever called 

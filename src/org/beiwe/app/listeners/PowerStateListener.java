@@ -36,7 +36,7 @@ public class PowerStateListener extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context externalContext, Intent intent) {
 		//make a log of all receipts (for debugging)
-		make_log_statement("the following intent was recieved by the PowerStateListener:" + intent.getAction().toString()+"\n");
+		make_log_statement("the following intent was recieved by the PowerStateListener:" + intent.getAction().toString());
 		
 		// Screen on/off
 		if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) { make_log_statement("Screen turned off"); }
