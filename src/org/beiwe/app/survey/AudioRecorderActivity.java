@@ -1,14 +1,15 @@
 package org.beiwe.app.survey;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.beiwe.app.R;
 
 import android.app.Activity;
+import android.content.Context;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -38,17 +39,19 @@ public class AudioRecorderActivity extends Activity {
     private boolean currentlyRecording = false;
     private boolean currentlyPlaying = false;
 
-    
-    public AudioRecorderActivity() {
-	    mFileName = Environment.getExternalStorageDirectory().getAbsolutePath();
-        mFileName += "/audiorecordtest.3gp";
-    }
-
-    
+        
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
 		setContentView(R.layout.activity_audio_recorder);        
+
+    	Context appContext = getApplicationContext();
+    	File filesDir = appContext.getFilesDir();
+    	String path = filesDir.getAbsolutePath();
+    	mFileName = path;
+	    //mFileName = getApplicationContext().getFilesDir().getPath();
+        mFileName += "/audiorecordtest.mp4";
+        Log.i("AudioRecorderActivity", "Filepath = " + mFileName);
     }
 
     
