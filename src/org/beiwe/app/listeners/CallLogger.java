@@ -1,5 +1,4 @@
- package org.beiwe.app.listeners;
- 
+package org.beiwe.app.listeners;
 
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.TextFileManager;
@@ -13,6 +12,8 @@ import android.provider.CallLog;
 import android.util.Log;
 
 // TODO: What happens to a call that is deleted by the user from the call history
+// TODO: We need to see if any broadcastReceivers need to be instantiated
+// TODO: BootLogger does not require instantiation
 
 public class CallLogger extends ContentObserver {
 

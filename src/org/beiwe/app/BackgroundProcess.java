@@ -24,6 +24,8 @@ import android.provider.Settings;
 import android.util.Log;
 //import android.content.pm.PackageManager;
  
+// TODO: Add a wakelock to this Service
+// TODO: Link is given here http://developer.android.com/reference/android/os/PowerManager.html#newWakeLock(int, java.lang.String)
 
 public class BackgroundProcess extends Service {
 
@@ -91,7 +93,7 @@ public class BackgroundProcess extends Service {
 		final IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
 		filter.addAction(Intent.ACTION_SCREEN_OFF);
 		final PowerStateListener powerStateListener = new PowerStateListener();
-		powerStateListener.finish_instantiation(this);  //TODO: fix this
+		powerStateListener.finish_instantiation(this);  //TODO: fix this, it has to do with airplane mode
 		registerReceiver( (BroadcastReceiver) powerStateListener, filter);
 	}
 
