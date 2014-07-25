@@ -4,7 +4,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import android.telephony.PhoneNumberUtils;
-import android.util.Log;
 
 public class EncryptionEngine {
 	

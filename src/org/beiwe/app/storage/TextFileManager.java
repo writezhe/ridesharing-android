@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.beiwe.app.listeners.AccelerometerListener;
+import org.beiwe.app.listeners.CallLogger;
 import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
@@ -101,16 +102,17 @@ public class TextFileManager {
 		if ( started ){ throw new NullPointerException("You may only start the FileManager once."); }
 		else { started = true; }
 		
-		debugLogFile = new TextFileManager(appContext, "logFile", "THIS LINE IS A LOG FILE HEADER\n", true);
+		debugLogFile = new TextFileManager(appContext, "logFile.txt", "THIS LINE IS A LOG FILE HEADER\n", true);
 		currentQuestions = new TextFileManager(appContext, "currentQuestionsFile.json", "", true);
-		deviceInfo = new TextFileManager(appContext, "phoneInfo", "", true);
+		deviceInfo = new TextFileManager(appContext, "phoneInfo.txt", "", true);
 		
 		GPSFile = new TextFileManager(appContext, "gpsFile", GPSListener.header, false);
 		accelFile = new TextFileManager(appContext, "accelFile", AccelerometerListener.header, false);
-		surveyResponse = new TextFileManager(appContext, "surveyData", AnswerRecorder.header, false);
 		textsLog = new TextFileManager(appContext, "textsLog", SmsSentLogger.header, false);
 		powerStateLog = new TextFileManager(appContext, "screenState", PowerStateListener.header, false);
-		callLog = new TextFileManager(appContext, "callLog", "generic header 1 2 3\n", false);
+		callLog = new TextFileManager(appContext, "callLog", CallLogger.header, false);
+
+		surveyResponse = new TextFileManager(appContext, "surveyData", AnswerRecorder.header, false);
 		audioSurveyLog = new TextFileManager(appContext, "audioSurveyLog", "generic header 1 2 3\n", false);
 	}
 	
