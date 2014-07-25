@@ -2,7 +2,6 @@ package org.beiwe.app;
 
 import org.beiwe.app.listeners.AccelerometerListener;
 import org.beiwe.app.listeners.CallLogger;
-import org.beiwe.app.listeners.AccelerometerListener;
 import org.beiwe.app.listeners.BluetoothListener;
 import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
@@ -37,6 +36,7 @@ public class BackgroundProcess extends Service {
 	public static AccelerometerListener accelerometerListener;
 	
 	BluetoothListener bluetooth;
+	public static BackgroundProcess steve;
 	
 	private void make_log_statement(String message) {
 		Log.i("BackgroundService", message);
@@ -48,7 +48,7 @@ public class BackgroundProcess extends Service {
 		/** onCreate is the constructor for the service, initialize variables here.*/
 		appContext = this.getApplicationContext();
 //		packageManager = this.getPackageManager();
-		
+		steve = this;
 		TextFileManager.start(appContext);
 		logFile = TextFileManager.getDebugLogFile();
 		

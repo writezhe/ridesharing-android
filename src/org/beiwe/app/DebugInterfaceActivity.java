@@ -114,8 +114,12 @@ public class DebugInterfaceActivity extends Activity {
 		finish();
 	}
 	
-	public void bluetooth (View view){
-		
+	public void bluetoothButtonStart (View view){
+		BackgroundProcess.steve.bluetooth.enableBLEScan();
 	}
-	
+
+	public void bluetoothButtonStop (View view){
+		BackgroundProcess.steve.bluetooth.stopScanning();
+	}
+
 }

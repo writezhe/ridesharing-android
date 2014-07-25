@@ -33,14 +33,10 @@
     
     <!-- bluetooth proximity -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
- 	<!-- uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/ -->
-   
+ 	<uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED"/>
     <!-- only for debug, remove before final product is finished -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-	
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <!-- <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED"/> -->
     
     <application
         android:allowBackup="true"
