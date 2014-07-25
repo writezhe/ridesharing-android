@@ -84,7 +84,7 @@ public class BackgroundProcess extends Service {
 		final IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
 		filter.addAction(Intent.ACTION_SCREEN_OFF);
 		final PowerStateListener powerStateListener = new PowerStateListener();
-		powerStateListener.finish_instantiation(this);  //TODO: fix this
+		powerStateListener.finish_instantiation(this);  //TODO: fix this, it has to do with airplane mode
 		registerReceiver( (BroadcastReceiver) powerStateListener, filter);
 	}
 
