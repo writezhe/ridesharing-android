@@ -22,6 +22,7 @@ import android.provider.Settings;
 import android.util.Log;
 //import android.content.pm.PackageManager;
  
+// TODO: Add a wakelock to this Service
 
 public class BackgroundProcess extends Service {
 
