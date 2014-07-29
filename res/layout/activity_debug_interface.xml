@@ -88,6 +88,13 @@
 	    android:layout_height="wrap_content"
 	    android:onClick="bluetoothButtonStop"
 	    android:text="@string/bluetooth_button_stop" />
+	
+	<Button
+	    android:id="@+id/buttonTimer"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:onClick="buttonTimer"
+	    android:text="@string/timer_button" />
 		
 		    
 

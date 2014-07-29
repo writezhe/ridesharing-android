@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.SystemClock;
+import android.util.Log;
 import android.widget.Toast;
 
 public class Timer {
@@ -39,6 +40,7 @@ public class Timer {
 		// http://developer.android.com/reference/android/app/AlarmManager.html#ELAPSED_REALTIME
 		alarmManager = (AlarmManager)( backgroundProcess.getSystemService(Context.ALARM_SERVICE ));
 		alarmManager.set( (int) SystemClock.elapsedRealtime(), SystemClock.elapsedRealtime() + seconds, pendingIntent );
+		Log.i("alarm manager", "alarm started");
 	}
 	
 	public BroadcastReceiver broadcastReceiverCreator(final int milliseconds) {		
@@ -47,7 +49,7 @@ public class Timer {
 			@Override
 			public void onReceive(Context context, Intent intent) {
 				Toast.makeText(context, "Receive broadcast, reseting timer...", 5);
-
+				Log.i("Timer", "toast! toast is broken");
 				alarmManager.set((int) SystemClock.elapsedRealtime(), SystemClock.elapsedRealtime() + milliseconds, pendingIntent);
 				// Double check if SystemClock.elapsedRealtime works if the phone is asleep
 				// Phone is asleep if there is no app holding it active, ergo, if the backgroundservice is active, 
