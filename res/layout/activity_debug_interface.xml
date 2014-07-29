@@ -1,94 +1,96 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical" >
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
 
-    <Button
-        android:id="@+id/buttonPrintInternalLog"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_print_log"
-        android:onClick="printInternalLog" />
+	<LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="fill_parent"
+	    android:orientation="vertical" >
 
-    <Button
-        android:id="@+id/buttonClearInternalLog"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_clear_log"
-        android:onClick="clearInternalLog" />
-    
-    <Button
-        android:id="@+id/buttonUpload"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_upload"
-        android:onClick="uploadDataFiles" />
-    
-    <Button
-        android:id="@+id/buttonGoToAudioRecorder"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_go_to_audio_recorder_activity"
-        android:onClick="goToAudioRecorder" />
+	    <Button
+	        android:id="@+id/buttonClearInternalLog"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="clearInternalLog"
+	        android:text="@string/button_clear_log" />
 
-    <Button
-        android:id="@+id/buttonGoToSurvey"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_go_to_survey"
-        android:onClick="goToSurvey" />
+	    <Button
+	        android:id="@+id/buttonUpload"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="uploadDataFiles"
+	        android:text="@string/button_upload" />
 
-    <Button
-        android:id="@+id/buttonDeleteEverything"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_delete_everything" 
-        android:onClick="deleteEverything" />
-    
-	<Button
-        android:id="@+id/buttonToggleGPS"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_toggle_gps" 
-        android:onClick="toggleGPS" />
-    
-	<Button
-        android:id="@+id/buttonToggleAccelerometer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/button_toggle_accelerometer" 
-        android:onClick="toggleAccelerometer" />
-	
-	<Button
-	    android:id="@+id/Notify"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_gravity="center"
-	    android:gravity="fill_horizontal"
-	    android:text="@string/button_notify"
-	    android:onClick ="notificationSender" />
+	    <Button
+	        android:id="@+id/buttonGoToAudioRecorder"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="goToAudioRecorder"
+	        android:text="@string/button_go_to_audio_recorder_activity" />
 
-	<Button
-	    android:id="@+id/signout"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:text="@string/signout" 
-		android:onClick="signOut" />
+	    <Button
+	        android:id="@+id/buttonGoToSurvey"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="goToSurvey"
+	        android:text="@string/button_go_to_survey" />
 
-	<Button
-	    android:id="@+id/buttonBluetoothStart"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:onClick="bluetoothButtonStart"
-	    android:text="@string/bluetooth_button_start" />
-	
-	<Button
-	    android:id="@+id/buttonBluetoothStop"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:onClick="bluetoothButtonStop"
-	    android:text="@string/bluetooth_button_stop" />
-		
-		    
+	    <Button
+	        android:id="@+id/buttonDeleteEverything"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="deleteEverything"
+	        android:text="@string/button_delete_everything" />
 
-</LinearLayout>
+	    <Button
+	        android:id="@+id/buttonToggleGPS"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="toggleGPS"
+	        android:text="@string/button_toggle_gps" />
+
+	    <Button
+	        android:id="@+id/buttonToggleAccelerometer"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="toggleAccelerometer"
+	        android:text="@string/button_toggle_accelerometer" />
+
+	    <Button
+	        android:id="@+id/Notify"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:gravity="fill_horizontal"
+	        android:onClick="notificationSender"
+	        android:text="@string/button_notify" />
+
+	    <Button
+	        android:id="@+id/signout"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="signOut"
+	        android:text="@string/signout" />
+
+	    <Button
+	        android:id="@+id/buttonBluetoothStart"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="bluetoothButtonStart"
+	        android:text="@string/bluetooth_button_start" />
+
+	    <Button
+	        android:id="@+id/buttonBluetoothStop"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="bluetoothButtonStop"
+	        android:text="@string/bluetooth_button_stop" />
+
+	    <Button
+	        android:id="@+id/buttonPrintInternalLog"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="printInternalLog"
+	        android:text="@string/button_print_log" />
+	</LinearLayout>
+</ScrollView>
