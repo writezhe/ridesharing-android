@@ -128,4 +128,8 @@ public class DebugInterfaceActivity extends Activity {
 	public void bluetoothButtonStop (View view){
 		BackgroundProcess.steve.bluetooth.stopScanning();
 	}
+	
+	public void buttonTimer(View view) {
+		
+	}
 }

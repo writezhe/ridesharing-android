@@ -61,7 +61,7 @@ public class BackgroundProcess extends Service {
 		startSmsSentLogger();
 		startCallLogger();
 		startPowerStateListener();
-								
+		
 //		Boolean accelStatus = accelerometerListener.toggle( );
 //		Log.i("accel Status", accelStatus.toString() );
 //		Boolean gpsStatus = gpsListener.toggle();
