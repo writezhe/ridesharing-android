@@ -1,6 +1,7 @@
 package org.beiwe.app.ui;
 
 import org.beiwe.app.DebugInterfaceActivity;
+import org.beiwe.app.R;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -8,6 +9,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 /**
  * The purpose of this class is to deal with all that has to do with Survey Notifications.
@@ -31,7 +33,9 @@ public class SurveyNotification {
 		builder.setContentTitle("Beiwe");
 		builder.setContentText("There is a new survey ready for you to take");
 		builder.setTicker("Take survey");
+		builder.setSmallIcon(R.drawable.ic_launcher);
 
+		Log.i("SurveyNotification", "Notification built");
 		// The intent that will be passed when clicking the activity
 		// send to the survey activity instead of DebugActivity
 
@@ -48,14 +52,16 @@ public class SurveyNotification {
 
 		builder.setContentIntent(pendingIntent);
 		Notification notification = builder.build();
+		Log.i("SurveyNotification", "Set up intent");
 
 		// Get an instance of the notification manager
 		NotificationManager notificationManager = 
-				(NotificationManager) context.getSystemService(Service.NOTIFICATION_SERVICE);
+				(NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
 		// Terrible naming for the method to post a notification
+		Log.i("SurveyNotification", "Notifying...");
 		notificationManager.notify(
-				1, // If another notification with the same ID pops up, it will be updated. This SHOULD be fine
+				001, // If another notification with the same ID pops up, it will be updated. This SHOULD be fine
 				notification); 
 	}
 }

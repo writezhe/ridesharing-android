@@ -120,6 +120,4 @@ public class DebugInterfaceActivity extends Activity {
 		SurveyNotification.displayNotification(appContext);
 		Log.i("DebugInterfaceActivity", "Notification Displayed");
 	}
-
-	
 }
