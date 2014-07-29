@@ -24,6 +24,7 @@ import android.util.Log;
  
 // TODO: Add a wakelock to this Service
 // TODO: Link is given here http://developer.android.com/reference/android/os/PowerManager.html#newWakeLock(int, java.lang.String)
+// TODO: Add logic that has to do with receiving a notification
 
 public class BackgroundProcess extends Service {
 
