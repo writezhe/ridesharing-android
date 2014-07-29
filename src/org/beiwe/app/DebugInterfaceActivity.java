@@ -120,4 +120,12 @@ public class DebugInterfaceActivity extends Activity {
 		SurveyNotification.displayNotification(appContext);
 		Log.i("DebugInterfaceActivity", "Notification Displayed");
 	}
+	
+	public void bluetoothButtonStart (View view){
+		BackgroundProcess.steve.bluetooth.enableBLEScan();
+	}
+
+	public void bluetoothButtonStop (View view){
+		BackgroundProcess.steve.bluetooth.stopScanning();
+	}
 }

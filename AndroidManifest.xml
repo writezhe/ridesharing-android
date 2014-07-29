@@ -30,14 +30,14 @@
     <!-- PERMISSIONS BELOW NOT IMPLEMENTED/USED -->
     <!-- Power management and monitoring, not sure where this would be used... -->
     <uses-permission android:name="android.permission.BATTERY_STATS" />
+    
     <!-- bluetooth proximity -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
-    <!-- notification service  -->
-    <!--  TODO: Remove this after we get notifications working to see if this is necessary! -->
-	<uses-permission android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"/>
+ 	<uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED"/>
     <!-- only for debug, remove before final product is finished -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
+    
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -73,6 +73,15 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
+        
+        <receiver android:name=".listeners.BluetoothListener" >
+            <intent-filter>
+                <action android:name="android.bluetooth.adapter.action.STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+        
+        
+        
 
         <service
             android:name=".BackgroundProcess"

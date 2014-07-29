@@ -74,6 +74,21 @@
 	    android:layout_height="wrap_content"
 	    android:text="@string/signout" 
 		android:onClick="signOut" />
-	    
+
+	<Button
+	    android:id="@+id/buttonBluetoothStart"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:onClick="bluetoothButtonStart"
+	    android:text="@string/bluetooth_button_start" />
+	
+	<Button
+	    android:id="@+id/buttonBluetoothStop"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:onClick="bluetoothButtonStop"
+	    android:text="@string/bluetooth_button_stop" />
+		
+		    
 
 </LinearLayout>
