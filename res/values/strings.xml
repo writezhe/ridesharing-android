@@ -24,6 +24,7 @@
     <string name="button_go_to_survey">Take Survey</string>
     <string name="button_toggle_gps">Toggle GPS</string>
     <string name="button_toggle_accelerometer">Toggle Accelerometer</string>
+    <string name="button_notify">Notify</string>
     <string name="signout">Sign out</string>
 
     <!-- Error Messages -->

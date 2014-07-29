@@ -7,6 +7,7 @@ import org.beiwe.app.storage.Upload;
 import org.beiwe.app.survey.AudioRecorderActivity;
 import org.beiwe.app.survey.SurveyActivity;
 import org.beiwe.app.ui.LoginSessionManager;
+import org.beiwe.app.ui.SurveyNotification;
 
 import android.app.Activity;
 import android.content.Context;
@@ -33,6 +34,7 @@ public class DebugInterfaceActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_debug_interface);
 		appContext = this.getApplicationContext();
+		
 		
 		//start background service
 		//NOTE: the background service is started on a separate Thread (process? don't care)
@@ -114,7 +116,10 @@ public class DebugInterfaceActivity extends Activity {
 		finish();
 	}
 	
-	
+	public void notificationSender (View view) {
+		SurveyNotification.displayNotification(appContext);
+		Log.i("DebugInterfaceActivity", "Notification Displayed");
+	}
 
 	
 }

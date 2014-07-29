@@ -58,6 +58,15 @@
         android:layout_height="wrap_content"
         android:text="@string/button_toggle_accelerometer" 
         android:onClick="toggleAccelerometer" />
+	
+	<Button
+	    android:id="@+id/Notify"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_gravity="center"
+	    android:gravity="fill_horizontal"
+	    android:text="@string/button_notify"
+	    android:onClick ="notificationSender" />
 
 	<Button
 	    android:id="@+id/signout"

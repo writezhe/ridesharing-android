@@ -32,7 +32,9 @@
     <uses-permission android:name="android.permission.BATTERY_STATS" />
     <!-- bluetooth proximity -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
-
+    <!-- notification service  -->
+    <!--  TODO: Remove this after we get notifications working to see if this is necessary! -->
+	<uses-permission android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"/>
     <!-- only for debug, remove before final product is finished -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
