@@ -7,7 +7,7 @@ import org.beiwe.app.storage.Upload;
 import org.beiwe.app.survey.AudioRecorderActivity;
 import org.beiwe.app.survey.SurveyActivity;
 import org.beiwe.app.ui.LoginSessionManager;
-import org.beiwe.app.ui.SurveyNotification;
+import org.beiwe.app.ui.AppNotifications;
 
 import android.app.Activity;
 import android.content.Context;
@@ -117,7 +117,7 @@ public class DebugInterfaceActivity extends Activity {
 	}
 	
 	public void notificationSender (View view) {
-		SurveyNotification.displayNotification(appContext);
+		AppNotifications.displaySurveyNotification(appContext);
 		Log.i("DebugInterfaceActivity", "Notification Displayed");
 	}
 	

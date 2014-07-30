@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.IntentSender;
 import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
@@ -29,17 +30,23 @@ public class Timer {
 	 * "org.beiwe.app.START_TIMER". This will be registered in the background process, and will start the PendingIntent 
 	 * (an intent waiting for something to call it) in the timer.
 	 */
-	public void regsiterBroadcastReceiver(Integer seconds) {
+	public void alarmSetup(Integer seconds) {
 		seconds *= 1000;
 		broReceiver = broadcastReceiverCreator(seconds);
+		Intent intent = new Intent();
+		intent.putExtra("customTimerFilter", true);
+		intent.setAction("org.beiwe.app");
 		
-		backgroundProcess.registerReceiver(broReceiver, new IntentFilter("org.beiwe.app.START_TIMER")); 
-		pendingIntent = PendingIntent.getBroadcast(appContext, 0, new Intent("org.beiwe.app.START_TIMER"), 0);
+		Log.i("Timer Object", intent.toString() );
+		Log.i("Timer Object", intent.getAction() );
 		
+		backgroundProcess.registerReceiver( broReceiver, new IntentFilter( intent.getAction() ) );
+		
+//		pendingIntent = PendingIntent.getBroadcast(appContext, 0, intent, 0);
 		// These two lines actually wake up the broadcast receiver to check for incoming intents
 		// http://developer.android.com/reference/android/app/AlarmManager.html#ELAPSED_REALTIME
 		alarmManager = (AlarmManager)( backgroundProcess.getSystemService(Context.ALARM_SERVICE ));
-		alarmManager.set( (int) SystemClock.elapsedRealtime(), SystemClock.elapsedRealtime() + seconds, pendingIntent );
+		alarmManager.set( (int) SystemClock.elapsedRealtime(), SystemClock.elapsedRealtime() + seconds, pendingIntent);
 		Log.i("alarm manager", "alarm started");
 	}
 	
@@ -47,13 +54,19 @@ public class Timer {
 		return new BroadcastReceiver() {
 		
 			@Override
-			public void onReceive(Context context, Intent intent) {
-				Toast.makeText(context, "Receive broadcast, reseting timer...", 5);
+			public void onReceive(Context appContext, Intent intent) {
+				Toast.makeText(appContext, "Receive broadcast, reseting timer...", 5);
 				Log.i("Timer", "toast! toast is broken");
+				// This causes the alarm manager to register another alarm for elapsedRealtime() milliseconds later.
 				alarmManager.set((int) SystemClock.elapsedRealtime(), SystemClock.elapsedRealtime() + milliseconds, pendingIntent);
 				// Double check if SystemClock.elapsedRealtime works if the phone is asleep
 				// Phone is asleep if there is no app holding it active, ergo, if the backgroundservice is active, 
 				// phone is NOT asleep (even if screen is turned off).
+				
+				Intent newIntent = new Intent();
+				newIntent.setAction("Example");
+				
+				appContext.sendBroadcast(newIntent);
 			}
 		};
 	}
