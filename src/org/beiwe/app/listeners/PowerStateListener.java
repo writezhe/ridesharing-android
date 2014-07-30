@@ -2,10 +2,13 @@ package org.beiwe.app.listeners;
 
 import org.beiwe.app.BackgroundProcess;
 import org.beiwe.app.storage.TextFileManager;
+import org.beiwe.app.Timer;
+
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.text.format.Time;
 import android.util.Log;
 
 /** Listens for power state changes.
@@ -57,6 +60,10 @@ public class PowerStateListener extends BroadcastReceiver {
 			Log.i("something", "anything");
 			backgroundProcess.doAirplaneModeThings();  
 			Log.i("anything", "something");
+		}
+		
+		if (intent.getAction().equals(Timer.EXAMPLE_ACTION) ){
+			Log.i("powerstatelistener", "recieved example!");
 		}
 	}
 }
