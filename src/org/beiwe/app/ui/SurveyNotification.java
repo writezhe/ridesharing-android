@@ -53,7 +53,6 @@ public class SurveyNotification {
 		builder.setContentIntent(pendingIntent);
 		Notification notification = builder.build();
 		Log.i("SurveyNotification", "Set up intent");
-		notification.flags |= notification.flags = Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL;
 
 		// Get an instance of the notification manager
 		NotificationManager notificationManager = 
