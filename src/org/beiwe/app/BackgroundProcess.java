@@ -22,83 +22,88 @@ import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
 //import android.content.pm.PackageManager;
- 
-// TODO: Add a wakelock to this Service
-// TODO: Link is given here http://developer.android.com/reference/android/os/PowerManager.html#newWakeLock(int, java.lang.String)
+
 // TODO: Add logic that has to do with receiving a notification
 
 public class BackgroundProcess extends Service {
 
 	private TextFileManager logFile = null;
 	private Context appContext = null;
-//	private PackageManager packageManager = null; 	//used to check if sensors exist
-	
+	//	private PackageManager packageManager = null; 	//used to check if sensors exist
+
 	public static GPSListener gpsListener;
 	public static AccelerometerListener accelerometerListener;
-	
+
 	private static Timer timer;
-	
+
 	BluetoothListener bluetooth;
+	// TODO: Work out if accessing the Background process using a static method is necessary 
 	public static BackgroundProcess steve;
-	
+
 	private void make_log_statement(String message) {
 		Log.i("BackgroundService", message);
 		Long javaTimeCode = System.currentTimeMillis();
 		logFile.write(javaTimeCode.toString() + "," + message +"\n" ); 
 	}
-	
-	public void onCreate(){
-		/** onCreate is the constructor for the service, initialize variables here.*/
+
+	@Override
+	/** onCreate is the constructor for the service, initialize variables here.*/
+	public void onCreate(){		
 		appContext = this.getApplicationContext();
-//		packageManager = this.getPackageManager();
+		//		packageManager = this.getPackageManager();
 		steve = this;
 		TextFileManager.start(appContext);
 		logFile = TextFileManager.getDebugLogFile();
-		
+
+		// COMMENT COMMENT COMMENT COMMENT COMMENT COMMENT COMMENT
+		// COMMENT COMMENT COMMENT COMMENT COMMENT COMMENT COMMENT
+		// COMMENT COMMENT COMMENT COMMENT COMMENT COMMENT COMMENT
 		gpsListener = new GPSListener(appContext);
 		accelerometerListener = new AccelerometerListener(appContext);
-		
+
 		timer = new Timer(this);
-		
+
 		make_log_statement("Things have allocated, starting listeners");
-		
+
 		startSmsSentLogger();
 		startCallLogger();
 		startPowerStateListener();
-		
-//		Boolean accelStatus = accelerometerListener.toggle( );
-//		Log.i("accel Status", accelStatus.toString() );
-//		Boolean gpsStatus = gpsListener.toggle();
-//		Log.i("GPS Status", gpsStatus.toString() );
-		
+
+		//		Boolean accelStatus = accelerometerListener.toggle( );
+		//		Log.i("accel Status", accelStatus.toString() );
+		//		Boolean gpsStatus = gpsListener.toggle();
+		//		Log.i("GPS Status", gpsStatus.toString() );
+
 		bluetooth = new BluetoothListener();
-		bluetooth.bluetoothInfo();
-		
-		
-		timer.setupRepeatngAlarm(5000, timer.getExample() );
+		startTimers();
 	}
 
-	@Override
-	public void onDestroy() {
-		//this does not appear to run when the service or app are killed...
-		//TODO: research when onDestroy is actually called, insert informative comment.
-		make_log_statement("BackgroundService Killed");
+	private void startTimers() {
+		// Repeating alarms
+		// FIXME: 5000 is an arbitrary value - still need to figure out what absolute time functions there are
+		timer.setupAlarm(5000, timer.getPowerStateIntent(), true);	// Power State
+		timer.setupAlarm(5000, timer.getGPSIntent(), true ); // GPS
+		timer.setupAlarm(5000, timer.getBluetoothIntent(), true); // Bluetooth
+		timer.setupAlarm(5000, timer.getAccelerometerIntent(), true); // Accelerometer
+
+		// Non-repeating alarms
+		timer.setupAlarm(900000/* Yes, that is actually 15 minutes :P */, timer.getSignoutIntent(), false);
 	}
-	
+
 	/** Initializes the sms logger. */
 	public void startSmsSentLogger() {
 		SmsSentLogger smsSentLogger = new SmsSentLogger(new Handler(), appContext);
 		this.getContentResolver().registerContentObserver(Uri.parse("content://sms/"), true, smsSentLogger);	}
-	
+
 	/** Initializes the call logger. */
 	public void startCallLogger() {
 		CallLogger callLogger = new CallLogger(new Handler(), appContext);
 		this.getContentResolver().registerContentObserver(Uri.parse("content://call_log/calls/"), true, callLogger);	}
-	
+
 	/** Initializes the PowerStateListener. */
 	private void startPowerStateListener() {
-//		The the ACTION_SCREEN_ON and ACTION_SCREEN_OFF intents must be registered at initialization.
-		final IntentFilter filter = timer.getExampleIntentFilter(); 
+		//		The the ACTION_SCREEN_ON and ACTION_SCREEN_OFF intents must be registered at initialization.
+		final IntentFilter filter = timer.getPowerStateIntentFilter(); 
 		filter.addAction(Intent.ACTION_SCREEN_ON);
 		filter.addAction(Intent.ACTION_SCREEN_OFF);
 		final PowerStateListener powerStateListener = new PowerStateListener();
@@ -106,6 +111,11 @@ public class BackgroundProcess extends Service {
 		registerReceiver( (BroadcastReceiver) powerStateListener, filter);
 	}
 
+	/*##############################################################
+	  ###############       Separator Comment       ################
+	  #############################################################*/
+
+	// FIXME: THIS CRASHES THE PROGRAM!!! ABANDON ALL HOPE :(
 	@SuppressWarnings("deprecation")
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 	/** Checks if airplane mode is active, if so it shuts down the GPSListener. */
@@ -114,29 +124,35 @@ public class BackgroundProcess extends Service {
 		Boolean airplaneModeEnabled = null;
 		ContentResolver resolver = appContext.getContentResolver();
 		//API call changed in jelly bean (4.3).
-	    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
-	        airplaneModeEnabled = Settings.System.getInt(resolver, Settings.System.AIRPLANE_MODE_ON, 0) != 0; }
-	    else { airplaneModeEnabled = Settings.Global.getInt(resolver, Settings.Global.AIRPLANE_MODE_ON, 0) != 0; }
-	    //if airplane mode enabled and gps is off:
-	    if (airplaneModeEnabled && gpsListener.check_status() ){
-	    	gpsListener.toggle(); 
-	    	make_log_statement("GPS turned off"); }
-	    //if airplane mode disabled and gps is off
-	    if ( !airplaneModeEnabled && !gpsListener.check_status() ) {
-	    	gpsListener.toggle();
-	    	if ( gpsListener.check_status() ) { make_log_statement("GPS turned on."); }
-	    	else { make_log_statement("GPS failed to turn on"); } }
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+			airplaneModeEnabled = Settings.System.getInt(resolver, Settings.System.AIRPLANE_MODE_ON, 0) != 0; }
+		else { airplaneModeEnabled = Settings.Global.getInt(resolver, Settings.Global.AIRPLANE_MODE_ON, 0) != 0; }
+		//if airplane mode enabled and gps is off:
+		if (airplaneModeEnabled && gpsListener.check_status() ){
+			gpsListener.toggle(); 
+			make_log_statement("GPS turned off"); }
+		//if airplane mode disabled and gps is off
+		if ( !airplaneModeEnabled && !gpsListener.check_status() ) {
+			gpsListener.toggle();
+			if ( gpsListener.check_status() ) { make_log_statement("GPS turned on."); }
+			else { make_log_statement("GPS failed to turn on"); } }
 	}
-	
-	/*###############################################################################
-	################ onStartCommand and onBind, ignore these ########################
-	###############################################################################*/	
+
+	/*##########################################################################################
+	################## onStartCommand, onBind, and onDesroy, ignore these ######################
+	##########################################################################################*/	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId){
-//		Log.i("BackgroundService received start command:", "" + startId );
+		//		Log.i("BackgroundService received start command:", "" + startId );
 		return START_STICKY; }
 	@Override
 	public IBinder onBind(Intent arg0) {
-//		Log.i("BackgroundService has been bound", "");
+		//		Log.i("BackgroundService has been bound", "");
 		return null; }
+	@Override
+	public void onDestroy() {
+		//this does not appear to run when the service or app are killed...
+		//TODO: research when onDestroy is actually called, insert informative comment.
+		make_log_statement("BackgroundService Killed");
+	}
 }

@@ -61,7 +61,9 @@ public class PowerStateListener extends BroadcastReceiver {
 			Log.i("anything", "something");
 		}
 		
-		if (intent.getAction().equals(Timer.EXAMPLE_ACTION) ){
+		// TODO: Record WIFI status
+		
+		if (intent.getAction().equals(Timer.POWER_STATE) ){
 			Log.i("powerstatelistener", "recieved example!");
 		}
 	}
