@@ -6,7 +6,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -18,7 +17,6 @@ public class Timer {
 	
 	private Intent example;
 	public static String EXAMPLE_ACTION = "Example";
-	
 	
 	public IntentFilter getExampleIntentFilter() { return new IntentFilter( example.getAction() ); 	}	
 //	public void sendExampleBroadcast(){ appContext.sendBroadcast(example); }
@@ -35,8 +33,6 @@ public class Timer {
 		Intent newIntent = new Intent();
 		newIntent.setAction(EXAMPLE_ACTION);
 		return newIntent;	}
-	
-
 	
 	/*
 	 * Actions in Android are saved as values in locations. For example ACTION_CALL is actually saved as android.intent.action.CALL.

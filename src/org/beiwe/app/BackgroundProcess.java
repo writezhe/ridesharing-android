@@ -106,7 +106,7 @@ public class BackgroundProcess extends Service {
 		registerReceiver( (BroadcastReceiver) powerStateListener, filter);
 	}
 
-//	@SuppressWarnings("deprecation")
+	@SuppressWarnings("deprecation")
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 	/** Checks if airplane mode is active, if so it shuts down the GPSListener. */
 	public synchronized void doAirplaneModeThings(){
