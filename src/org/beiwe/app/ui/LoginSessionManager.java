@@ -29,7 +29,7 @@ public class LoginSessionManager {
     private static final String IS_LOGIN = "IsLoggedIn";
    
     // Public names for when inspecting the user's details. Used to call from outside the class.
-    public static final String KEY_NAME = "name";
+    public static final String KEY_NAME = "username";
     public static final String KEY_PASSWORD = "password";
      
     /**
@@ -50,7 +50,6 @@ public class LoginSessionManager {
     * @param password
     */
     public void createLoginSession(String username, String password){
-        // TODO: Hash function goes here!
     	editor.putBoolean(IS_LOGIN, true);
         editor.putString(KEY_NAME, username);
         editor.putString(KEY_PASSWORD, password);
@@ -91,9 +90,7 @@ public class LoginSessionManager {
      * @return
      */
     public HashMap<String, String> getUserDetails(){
-    	
-    	// TODO: Eventually this will actually be a hash-hash combination
-    	HashMap<String, String> user = new HashMap<String, String>();
+       	HashMap<String, String> user = new HashMap<String, String>();
         user.put(KEY_NAME, pref.getString(KEY_NAME, null));
         user.put(KEY_PASSWORD, pref.getString(KEY_PASSWORD, null));
         Log.i("SessionManager", user.toString());

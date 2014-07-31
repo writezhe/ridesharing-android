@@ -1,7 +1,12 @@
 package org.beiwe.app.ui;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+
 import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.R;
+import org.beiwe.app.storage.EncryptionEngine;
+import org.beiwe.app.survey.TextFieldKeyboard;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -42,6 +47,11 @@ public class RegisterActivity extends Activity {
 		password = (EditText) findViewById(R.id.password_box);
 		passwordRepeat = (EditText) findViewById(R.id.repeat_password_box);
 		session = new LoginSessionManager(appContext);
+		
+		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(appContext);
+		textFieldKeyboard.makeKeyboardBehave(username);
+		textFieldKeyboard.makeKeyboardBehave(password);
+		textFieldKeyboard.makeKeyboardBehave(passwordRepeat);
 	}
 	
 	/**
@@ -49,9 +59,11 @@ public class RegisterActivity extends Activity {
 	 * Normally there would be interaction with the server, in order to verify the user ID as well as the phone ID.
 	 * Right now it does simple checks to see that the user actually inserted a value
 	 * @param view
+	 * @throws UnsupportedEncodingException 
+	 * @throws NoSuchAlgorithmException 
 	 */
 	@SuppressLint("ShowToast")
-	public void registrationSequence(View view) {
+	public void registrationSequence(View view) throws NoSuchAlgorithmException, UnsupportedEncodingException {
 		String usernameStr = username.getText().toString();
 		String passwordStr = password.getText().toString();
 		String passwordRepeatStr = passwordRepeat.getText().toString();
@@ -64,10 +76,8 @@ public class RegisterActivity extends Activity {
 		} else if (passwordRepeatStr.length() == 0 || !passwordRepeatStr.equals(passwordStr)) {
 			AlertsManager.showAlert("Passwords mismatch", this);
 		} else {
-			
-			// TODO: Hashing mechanism goes here!!
 			Log.i("RegisterActivity", "Attempting to create a login session");
-			session.createLoginSession(usernameStr, passwordStr);
+			session.createLoginSession(usernameStr, EncryptionEngine.hash(passwordStr));
 			Log.i("RegisterActivity", "Registration complete, attempting to start DebugInterfaceActivity");
 			startActivity(new Intent(appContext, DebugInterfaceActivity.class));
 			finish();
