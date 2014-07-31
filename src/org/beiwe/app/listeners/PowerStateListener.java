@@ -8,7 +8,6 @@ import org.beiwe.app.Timer;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.text.format.Time;
 import android.util.Log;
 
 /** Listens for power state changes.

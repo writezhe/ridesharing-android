@@ -9,6 +9,11 @@ import java.io.OutputStream;
 
 import android.util.Log;
 
+
+//THIS FILE IS LIKELY TO BE DEPRECATED AND REMOVED, UNLESS IT ISN'T.  YAAAY.
+// (please delete if you have the urge)
+
+
 public class AudioFileManager {
 
 //private String readDataFile(String fileName, OutputStream outputStream ) throws IOException{
