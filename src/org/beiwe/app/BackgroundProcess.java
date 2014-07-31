@@ -75,14 +75,12 @@ public class BackgroundProcess extends Service {
 		bluetooth.bluetoothInfo();
 		
 		
-		timer.setupRepeatngAlarm(5000, timer.getExample() );
+		startTimers();
 	}
 
-	@Override
-	public void onDestroy() {
-		//this does not appear to run when the service or app are killed...
-		//TODO: research when onDestroy is actually called, insert informative comment.
-		make_log_statement("BackgroundService Killed");
+	private void startTimers() {
+		timer.setupRepeatngAlarm(5000, timer.getExample() );	
+		timer.setupRepeatngAlarm(milliseconds, customIntent);
 	}
 	
 	/** Initializes the sms logger. */
@@ -106,6 +104,11 @@ public class BackgroundProcess extends Service {
 		registerReceiver( (BroadcastReceiver) powerStateListener, filter);
 	}
 
+	/*##############################################################
+	  ###############       Separator Comment       ################
+	  #############################################################*/
+	
+	// FIXME: THIS CRASHES THE PROGRAM!!! ABANDON ALL HOPE :(
 	@SuppressWarnings("deprecation")
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
 	/** Checks if airplane mode is active, if so it shuts down the GPSListener. */
@@ -128,9 +131,9 @@ public class BackgroundProcess extends Service {
 	    	else { make_log_statement("GPS failed to turn on"); } }
 	}
 	
-	/*###############################################################################
-	################ onStartCommand and onBind, ignore these ########################
-	###############################################################################*/	
+	/*##########################################################################################
+	################## onStartCommand, onBind, and onDesroy, ignore these ######################
+	############################################################################################*/	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId){
 //		Log.i("BackgroundService received start command:", "" + startId );
@@ -139,4 +142,10 @@ public class BackgroundProcess extends Service {
 	public IBinder onBind(Intent arg0) {
 //		Log.i("BackgroundService has been bound", "");
 		return null; }
+	@Override
+	public void onDestroy() {
+		//this does not appear to run when the service or app are killed...
+		//TODO: research when onDestroy is actually called, insert informative comment.
+		make_log_statement("BackgroundService Killed");
+	}
 }
