@@ -61,9 +61,9 @@ public class SmsSentLogger extends ContentObserver {
 		// TODO: use MESSAGE_TYPE as the check instead: http://stackoverflow.com/a/9343383
 		if ((protocol == null) && (idIsNew(id))) {
 			// Message was just sent
-			String data = "" + date + TextFileManager.delimiter;
-			data += EncryptionEngine.hashPhoneNumber(address) + TextFileManager.delimiter;
-			data += "sent" + TextFileManager.delimiter;
+			String data = "" + date + TextFileManager.DELIMITER;
+			data += EncryptionEngine.hashPhoneNumber(address) + TextFileManager.DELIMITER;
+			data += "sent" + TextFileManager.DELIMITER;
 			data += body.length() + "\n";
 			
 			Log.i("SMSLogger", "data = " + data);

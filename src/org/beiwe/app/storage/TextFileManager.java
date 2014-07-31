@@ -45,7 +45,7 @@ public class TextFileManager {
 //TODO: implement public static header variables for all the classes that will need them, import here
 //TODO: we probably want a static array pointing to all the static objects to make a static X_for_everything functions easier?
 	//Delimiter and newline strings
-	public static String delimiter = ",";
+	public static String DELIMITER = ",";
 	public static String newline = "\n";
 	
 	//Static instances of the individual FileManager objects.

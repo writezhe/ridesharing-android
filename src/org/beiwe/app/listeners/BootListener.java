@@ -12,7 +12,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.util.Log;
 
-
 /**The BootListener is never actually instantiated elsewhere in the app.  It's job is to sit
  * and wait for either the boot broadcast or the SD (external) applications available.
  * @author Eli */
@@ -34,7 +33,7 @@ public class BootListener extends BroadcastReceiver {
 			// the following line returns true if the app is installed on an SD card.  
 			return (appInfo.flags & ApplicationInfo.FLAG_EXTERNAL_STORAGE) == ApplicationInfo.FLAG_EXTERNAL_STORAGE; }
 		catch (NameNotFoundException e) {
-			Log.i("PowerStateListener", "Things is broken in the check for installation on an SD card.");
+			Log.i("PowerStateListener", "something is broken in the check for installation on an SD card.");
 			throw e; }
 	}
 	
@@ -44,17 +43,12 @@ public class BootListener extends BroadcastReceiver {
 		//this is the construction for starting a service on reboot.
 		Intent intent_to_start_background_service = new Intent(externalContext, BackgroundProcess.class);
 	    externalContext.startService(intent_to_start_background_service);
-	    logFile = TextFileManager.getDebugLogFile();
-		powerStateLog = TextFileManager.getPowerStateFile();
-	}
-
-	/** Handles the logging, includes a new line for the CSV files.
-	 * This code is otherwised reused everywhere.*/
-	private void make_log_statement(String message) {
-		Log.i("B", message);
-		Long javaTimeCode = System.currentTimeMillis();
-//		logFile.write(javaTimeCode.toString() + "," + message + "\n" ); 
-		powerStateLog.write(javaTimeCode.toString() + TextFileManager.delimiter + message + '\n');
+	    Long javaTimeCode = System.currentTimeMillis();
+		try { Thread.sleep(30000); }
+		catch(InterruptedException ex) { Thread.currentThread().interrupt(); }
+		String message = "device reboot, app started.";
+		TextFileManager.getDebugLogFile().write(javaTimeCode.toString() + TextFileManager.DELIMITER + message + "\n" ); 
+		TextFileManager.getPowerStateFile().write(javaTimeCode.toString() + TextFileManager.DELIMITER + message + '\n');
 	}
 	
 	@Override
@@ -68,22 +62,17 @@ public class BootListener extends BroadcastReceiver {
 			//if the app is Not on an sd card, start up the background process/service.
 			try { if ( checkForSDCardInstall(externalContext) ) { return; } }
 			catch (NameNotFoundException e) { e.printStackTrace(); }
-			startBackgroundProcess(externalContext);
-			make_log_statement("Device booted, background service started"); }
+			startBackgroundProcess(externalContext); }
 		
 		if (intent.getAction().equals(Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE)) {
 			/** Almost identical to the boot_completed code, but invert the logic. */
 			//If app is installed on the SD card, start the background process/service.
 			try { if ( !checkForSDCardInstall(externalContext) ) { return; } }
 			catch (NameNotFoundException e) { e.printStackTrace(); }
-			startBackgroundProcess(externalContext);
-			make_log_statement("SD card available, background service started."); }
+			startBackgroundProcess(externalContext); }
 			
 		//these need to be checked whenever the service was started by the user opening the app. 
 		if (logFile == null) { logFile = TextFileManager.getDebugLogFile(); }
 		if (powerStateLog == null) { powerStateLog = TextFileManager.getPowerStateFile(); }
-		
-		//make a log of all receipts (for debugging)
-		make_log_statement("the following intent was recieved by the PowerStateListener:" + intent.getAction().toString());
 	}
 }

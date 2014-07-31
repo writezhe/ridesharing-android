@@ -24,7 +24,7 @@ public class PowerStateListener extends BroadcastReceiver {
 		Log.i("PowerStateListener", message);
 		Long javaTimeCode = System.currentTimeMillis();
 //		TextFileManager.getDebugLogFile().write(javaTimeCode.toString() + "," + message +"\n" ); 
-		TextFileManager.getPowerStateFile().write(javaTimeCode.toString() + TextFileManager.delimiter + message + '\n');
+		TextFileManager.getPowerStateFile().write(javaTimeCode.toString() + TextFileManager.DELIMITER + message + '\n');
 	}
 	
 	/** In order to acces the functions of the background Process we need to create a new constructor,
