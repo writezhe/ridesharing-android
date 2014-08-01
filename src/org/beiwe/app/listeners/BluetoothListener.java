@@ -48,7 +48,6 @@ public class BluetoothListener extends BroadcastReceiver {
 		if (exists) { return bluetoothAdapter.isEnabled(); } 
 		else { return false; } }
 	
-
 	
 	/**BluetoothListener
 	 * The BluetoothListener needs to gracefully handle existence issues.  We only want devices

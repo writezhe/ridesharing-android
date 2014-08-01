@@ -67,7 +67,7 @@ public class GPSListener implements LocationListener {
 	}
 	
 	/** Turns on GPS providers, provided they are accessible. */
-	private synchronized void turn_on(){
+	public synchronized void turn_on(){
 		//if both DNE, return false.
 		if ( !trueGPS & !networkGPS ) {
 			Log.i("GPS", "GPS was told to turn on, but it is not available.");
@@ -85,7 +85,7 @@ public class GPSListener implements LocationListener {
 			enabled = true; }
 	}
 	
-	private synchronized void turn_off(){
+	public synchronized void turn_off(){
 		// pretty confident this cannot fail.
 		locationManager.removeUpdates(this);
 		enabled = false;
