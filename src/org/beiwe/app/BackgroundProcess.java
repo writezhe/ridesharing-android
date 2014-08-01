@@ -1,10 +1,11 @@
 package org.beiwe.app;
 
 import org.beiwe.app.listeners.AccelerometerListener;
-import org.beiwe.app.listeners.CallLogger;
 import org.beiwe.app.listeners.BluetoothListener;
+import org.beiwe.app.listeners.CallLogger;
 import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
+import org.beiwe.app.listeners.SignoutListener;
 import org.beiwe.app.listeners.SmsSentLogger;
 import org.beiwe.app.storage.TextFileManager;
 
@@ -68,6 +69,7 @@ public class BackgroundProcess extends Service {
 		startSmsSentLogger();
 		startCallLogger();
 		startPowerStateListener();
+		startSignoutListener();
 
 		//		Boolean accelStatus = accelerometerListener.toggle( );
 		//		Log.i("accel Status", accelStatus.toString() );
@@ -78,16 +80,24 @@ public class BackgroundProcess extends Service {
 		startTimers();
 	}
 
+	
+
 	private void startTimers() {
 		// Repeating alarms
 		// FIXME: 5000 is an arbitrary value - still need to figure out what absolute time functions there are
 		timer.setupAlarm(5000, timer.getPowerStateIntent(), true);	// Power State
-		timer.setupAlarm(5000, timer.getGPSIntent(), true ); // GPS
-		timer.setupAlarm(5000, timer.getBluetoothIntent(), true); // Bluetooth
-		timer.setupAlarm(5000, timer.getAccelerometerIntent(), true); // Accelerometer
+//		timer.setupAlarm(5000, timer.getGPSIntent(), true ); // GPS
+//		timer.setupAlarm(5000, timer.getBluetoothIntent(), true); // Bluetooth
+//		timer.setupAlarm(5000, timer.getAccelerometerIntent(), true); // Accelerometer
 
 		// Non-repeating alarms
-		timer.setupAlarm(900000/* Yes, that is actually 15 minutes :P */, timer.getSignoutIntent(), false);
+		timer.setupAlarm(5000/* Yes, that is actually 15 minutes :P */, timer.getSignoutIntent(), false);
+	}
+	
+	private void startSignoutListener() {
+		final IntentFilter filter = timer.getSignoutIntentFilter();
+		SignoutListener signoutListener = new SignoutListener(this);
+		registerReceiver(signoutListener, filter);
 	}
 
 	/** Initializes the sms logger. */

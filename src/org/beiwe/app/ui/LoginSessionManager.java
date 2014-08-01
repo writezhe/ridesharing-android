@@ -104,11 +104,11 @@ public class LoginSessionManager {
      * */
     public void logoutUser(){
     	editor.putBoolean(IS_LOGIN, false);
-        editor.commit();
-        Intent intent = new Intent(appContext, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        appContext.startActivity(intent);
+    	editor.commit();
+    	Intent intent = new Intent(appContext, LoadingActivity.class);
+    	intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    	
+    	appContext.startActivity(intent);
     }
      
     /**
