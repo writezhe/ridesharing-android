@@ -85,13 +85,12 @@ public class BackgroundProcess extends Service {
 	private void startTimers() {
 		// Repeating alarms
 		// FIXME: 5000 is an arbitrary value - still need to figure out what absolute time functions there are
-		timer.setupAlarm(5000, timer.getPowerStateOnIntent(), true);	// Power State
-		timer.setupAlarm(5000, timer.getGPSOnIntent(), true ); // GPS
-		timer.setupAlarm(5000, timer.getBluetoothOnIntent(), true); // Bluetooth
-		timer.setupAlarm(5000, timer.getAccelerometerOnIntent(), true); // Accelerometer
+		timer.setupAlarm(5000, Timer.GPSOnIntent, true ); // GPS
+		timer.setupAlarm(5000, Timer.bluetoothOnIntent, true); // Bluetooth
+		timer.setupAlarm(5000, Timer.accelerometerOnIntent, true); // Accelerometer
 
 		// Non-repeating alarms
-		timer.setupAlarm(5000/* Yes, that is actually 15 minutes :P */, timer.getSignoutIntent(), false);
+		timer.setupAlarm(5000/* Yes, that is actually 15 minutes :P */, Timer.signoutIntent, false);
 	}
 	
 	private void startSignoutListener() {
