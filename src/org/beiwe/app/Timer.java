@@ -14,65 +14,67 @@ public class Timer {
 	BroadcastReceiver broadcastReceiver;
 	AlarmManager alarmManager;
 	BackgroundProcess backgroundProcess;
-
-	private Intent signoutIntent = null;
-	private Intent GPSOnIntent = null;
-	private Intent GPSOffIntent = null;
-	private Intent powerStateOnIntent = null;
-	private Intent powerStateOffIntent = null;
-	private Intent accelerometerOnIntent = null;
-	private Intent accelerometerOffIntent = null;
-	private Intent bluetoothOnIntent = null;
-	private Intent bluetoothOffIntent = null;
-
-	// All the intent actions are located here
-	public static final String SIGN_OUT = "Signout";
-	public static final String GPS_ON = "GPS On";
-	public static final String POWER_STATE_ON = "PowerState On";
+	
+	//public strings for matching to messages
+	//TODO: should we move these to the android Strings resource file?
+	public static final String ACCELEROMETER_OFF = "Accelerometer_OFF";
 	public static final String ACCELEROMETER_ON = "Accelerometer On";
+	public static final String BLUETOOTH_OFF = "Bluetooth_OFF";
 	public static final String BLUETOOTH_ON = "Bluetooth On";
 	public static final String GPS_OFF = "GPS_OFF";
+	public static final String GPS_ON = "GPS On";
 	public static final String POWER_STATE_OFF = "PowerState_OFF";
-	public static final String ACCELEROMETER_OFF = "Accelerometer_OFF";
-	public static final String BLUETOOTH_OFF = "Bluetooth_OFF";
+	public static final String POWER_STATE_ON = "PowerState On";
+	public static final String SIGN_OUT = "Signout";
+	
+	// control message intents
+	private Intent signoutIntent = null;
+	private Intent accelerometerOffIntent = null;
+	private Intent accelerometerOnIntent = null;
+	private Intent bluetoothOffIntent = null;
+	private Intent bluetoothOnIntent = null;
+	private Intent GPSOffIntent = null;
+	private Intent GPSOnIntent = null;
+	private Intent powerStateOffIntent = null;
+	private Intent powerStateOnIntent = null;
 	
 	// Intent filters
 	public IntentFilter getSignoutIntentFilter() { return new IntentFilter( signoutIntent.getAction() ); 	}
-	public IntentFilter getGPSIntentOnFilter() { return new IntentFilter( GPSOnIntent.getAction() ); 	}
-	public IntentFilter getGPSIntentOffFilter() { return new IntentFilter( GPSOffIntent.getAction() ); 	}
-	public IntentFilter getPowerStateOnIntentFilter() { return new IntentFilter( powerStateOnIntent.getAction() ); 	}
-	public IntentFilter getPowerStateOffIntentFilter() { return new IntentFilter( powerStateOffIntent.getAction() ); 	}
-	public IntentFilter getAccelerometerOnIntentFilter() { return new IntentFilter( accelerometerOnIntent.getAction() ); 	}
-	public IntentFilter getAccelerometerOffIntentFilter() { return new IntentFilter( accelerometerOffIntent.getAction() ); 	}
-	public IntentFilter getBluetoothOnIntentFilter() { return new IntentFilter( bluetoothOnIntent.getAction() ); 	}
-	public IntentFilter getBluetoothOffIntentFilter() { return new IntentFilter( bluetoothOffIntent.getAction() ); 	}
-
+	public IntentFilter getAccelerometerOffIntentFilter() { return new IntentFilter( accelerometerOffIntent.getAction() ); }
+	public IntentFilter getAccelerometerOnIntentFilter() { return new IntentFilter( accelerometerOnIntent.getAction() ); }
+	public IntentFilter getBluetoothOffIntentFilter() { return new IntentFilter( bluetoothOffIntent.getAction() ); }
+	public IntentFilter getBluetoothOnIntentFilter() { return new IntentFilter( bluetoothOnIntent.getAction() ); }
+	public IntentFilter getGPSIntentOffFilter() { return new IntentFilter( GPSOffIntent.getAction() ); }
+	public IntentFilter getGPSIntentOnFilter() { return new IntentFilter( GPSOnIntent.getAction() ); }
+	public IntentFilter getPowerStateOffIntentFilter() { return new IntentFilter( powerStateOffIntent.getAction() ); }
+	public IntentFilter getPowerStateOnIntentFilter() { return new IntentFilter( powerStateOnIntent.getAction() ); }
+	
 	// Intent getters
 	public Intent getSignoutIntent() { return signoutIntent; }
-	public Intent getGPSOnIntent() { return GPSOnIntent; }
-	public Intent getGPSOffIntent() { return GPSOffIntent; }
-	public Intent getPowerStateOnIntent() { return powerStateOnIntent; }
-	public Intent getPowerStateOffIntent() { return powerStateOffIntent; }
-	public Intent getAccelerometerOnIntent() { return accelerometerOnIntent; }
 	public Intent getAccelerometerOffIntent() { return accelerometerOffIntent; }
-	public Intent getBluetoothOnIntent() { return bluetoothOnIntent; }
+	public Intent getAccelerometerOnIntent() { return accelerometerOnIntent; }
 	public Intent getBluetoothOffIntent() { return bluetoothOffIntent; }
+	public Intent getBluetoothOnIntent() { return bluetoothOnIntent; }
+	public Intent getGPSOffIntent() { return GPSOffIntent; }
+	public Intent getGPSOnIntent() { return GPSOnIntent; }
+	public Intent getPowerStateOffIntent() { return powerStateOffIntent; }
+	public Intent getPowerStateOnIntent() { return powerStateOnIntent; }
 
 	// Constructor
 	public Timer(BackgroundProcess backgroundProcess) {
 		this.backgroundProcess = backgroundProcess;
-		appContext = backgroundProcess.getApplicationContext();
+		this.appContext = backgroundProcess.getApplicationContext();
 		
 		// Setting up custom intents for the filters in the background service
-		signoutIntent = setupCustomIntent(SIGN_OUT);
-		accelerometerOffIntent = setupCustomIntent(ACCELEROMETER_OFF);
-		accelerometerOnIntent = setupCustomIntent(ACCELEROMETER_ON);
-		bluetoothOffIntent = setupCustomIntent(BLUETOOTH_OFF);
-		bluetoothOnIntent = setupCustomIntent(BLUETOOTH_ON);
-		GPSOffIntent = setupCustomIntent(GPS_OFF);
-		GPSOnIntent = setupCustomIntent(GPS_ON);
-		powerStateOffIntent = setupCustomIntent(POWER_STATE_OFF);
-		powerStateOnIntent = setupCustomIntent(POWER_STATE_ON);
+		this.signoutIntent = setupCustomIntent(SIGN_OUT);
+		this.accelerometerOffIntent = setupCustomIntent(ACCELEROMETER_OFF);
+		this.accelerometerOnIntent = setupCustomIntent(ACCELEROMETER_ON);
+		this.bluetoothOffIntent = setupCustomIntent(BLUETOOTH_OFF);
+		this.bluetoothOnIntent = setupCustomIntent(BLUETOOTH_ON);
+		this.GPSOffIntent = setupCustomIntent(GPS_OFF);
+		this.GPSOnIntent = setupCustomIntent(GPS_ON);
+		this.powerStateOffIntent = setupCustomIntent(POWER_STATE_OFF);
+		this.powerStateOnIntent = setupCustomIntent(POWER_STATE_ON);
 	}
 
 	// Setup custom intents to be sent to the listeners running in the background process
@@ -81,12 +83,10 @@ public class Timer {
 		newIntent.setAction(action);
 		return newIntent; }
 
-	/*
-	 * Actions in Android are saved as values in locations. For example ACTION_CALL is actually saved as android.intent.action.CALL.
+	/**Actions in Android are saved as values in locations. For example ACTION_CALL is actually saved as android.intent.action.CALL.
 	 * When using an IntentFilter as an "action filter", we will use this convention, and start the timer using the action 
 	 * "org.beiwe.app.START_TIMER". This will be registered in the background process, and will start the PendingIntent 
-	 * (an intent waiting for something to call it) in the timer.
-	 */
+	 * (an intent waiting for something to call it) in the timer. */
 	public void setupAlarm(int milliseconds, Intent customIntent, boolean repeating) {
 
 		//create the intent, and then the pending intent from it		
