@@ -51,11 +51,11 @@ public class AccelerometerListener implements SensorEventListener{
 	} }
 	
 	/** Use the public toggle() function to enable/disable */ 
-	private synchronized void turn_on() {
+	public synchronized void turn_on() {
 		accelSensorManager.registerListener(this, accelSensor, SensorManager.SENSOR_DELAY_NORMAL);
 		enabled = true;	}
 	/** Use the public toggle() function to enable/disable */
-	private synchronized void turn_off(){
+	public synchronized void turn_off(){
 		accelSensorManager.unregisterListener(this);
 		enabled = false; }
 	

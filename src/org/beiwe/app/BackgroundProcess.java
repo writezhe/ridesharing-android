@@ -22,6 +22,7 @@ import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
 //import android.content.pm.PackageManager;
+import android.widget.Toast;
 
 // TODO: Add logic that has to do with receiving a notification
 
@@ -31,14 +32,15 @@ public class BackgroundProcess extends Service {
 	private Context appContext = null;
 	//	private PackageManager packageManager = null; 	//used to check if sensors exist
 
-	public static GPSListener gpsListener;
-	public static AccelerometerListener accelerometerListener;
+	public GPSListener gpsListener;
+	public AccelerometerListener accelerometerListener;
 
 	private static Timer timer;
-
+	
+	
 	BluetoothListener bluetooth;
 	// TODO: Work out if accessing the Background process using a static method is necessary 
-	public static BackgroundProcess steve;
+	public static BackgroundProcess BackgroundHandle;
 
 	private void make_log_statement(String message) {
 		Log.i("BackgroundService", message);
@@ -51,7 +53,7 @@ public class BackgroundProcess extends Service {
 	public void onCreate(){		
 		appContext = this.getApplicationContext();
 		//		packageManager = this.getPackageManager();
-		steve = this;
+		BackgroundHandle = this;
 		TextFileManager.start(appContext);
 		logFile = TextFileManager.getDebugLogFile();
 
@@ -77,14 +79,15 @@ public class BackgroundProcess extends Service {
 		bluetooth = new BluetoothListener();
 		startTimers();
 	}
-
+	
+	
 	private void startTimers() {
 		// Repeating alarms
 		// FIXME: 5000 is an arbitrary value - still need to figure out what absolute time functions there are
-		timer.setupAlarm(5000, timer.getPowerStateIntent(), true);	// Power State
-		timer.setupAlarm(5000, timer.getGPSIntent(), true ); // GPS
-		timer.setupAlarm(5000, timer.getBluetoothIntent(), true); // Bluetooth
-		timer.setupAlarm(5000, timer.getAccelerometerIntent(), true); // Accelerometer
+		timer.setupAlarm(5000, timer.getPowerStateOnIntent(), true);	// Power State
+		timer.setupAlarm(5000, timer.getGPSOnIntent(), true ); // GPS
+		timer.setupAlarm(5000, timer.getBluetoothOnIntent(), true); // Bluetooth
+		timer.setupAlarm(5000, timer.getAccelerometerOnIntent(), true); // Accelerometer
 
 		// Non-repeating alarms
 		timer.setupAlarm(900000/* Yes, that is actually 15 minutes :P */, timer.getSignoutIntent(), false);
@@ -102,8 +105,8 @@ public class BackgroundProcess extends Service {
 
 	/** Initializes the PowerStateListener. */
 	private void startPowerStateListener() {
-		//		The the ACTION_SCREEN_ON and ACTION_SCREEN_OFF intents must be registered at initialization.
-		final IntentFilter filter = timer.getPowerStateIntentFilter(); 
+		//	The the ACTION_SCREEN_ON and ACTION_SCREEN_OFF intents must be registered at initialization.
+		IntentFilter filter = new IntentFilter(); 
 		filter.addAction(Intent.ACTION_SCREEN_ON);
 		filter.addAction(Intent.ACTION_SCREEN_OFF);
 		final PowerStateListener powerStateListener = new PowerStateListener();
@@ -155,4 +158,37 @@ public class BackgroundProcess extends Service {
 		//TODO: research when onDestroy is actually called, insert informative comment.
 		make_log_statement("BackgroundService Killed");
 	}
+	
+	//TODO: make this a separate class, control receiver
+	BroadcastReceiver steve = new BroadcastReceiver() {
+		BackgroundProcess back = BackgroundProcess.BackgroundHandle; 
+		@Override
+		public void onReceive(Context appContext, Intent intent) {
+			if (intent.getAction().equals( Timer.ACCELEROMETER_OFF ) ) {
+				back.accelerometerListener.turn_on();
+			}
+
+			if (intent.getAction().equals( Timer.ACCELEROMETER_ON ) ) {
+				back.accelerometerListener.turn_off();
+			}
+
+			if (intent.getAction().equals( Timer.BLUETOOTH_OFF ) ) {
+				back.bluetooth.enableBLEScan();
+			}
+
+			if (intent.getAction().equals( Timer.BLUETOOTH_ON ) ) {
+//				back.bluetooth.disableBLEScan();
+			}
+
+			if (intent.getAction().equals( Timer.GPS_OFF ) ) {
+				back.gpsListener.turn_off();
+			}
+
+			if (intent.getAction().equals( Timer.GPS_ON ) ) {
+				back.gpsListener.turn_on();
+			}
+
+		}
+	};
+		
 }

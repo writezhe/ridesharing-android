@@ -16,32 +16,47 @@ public class Timer {
 	BackgroundProcess backgroundProcess;
 
 	private Intent signoutIntent = null;
-	private Intent GPSIntent = null;
-	private Intent powerStateIntent = null;
-	private Intent accelerometerIntent = null;
-	private Intent bluetoothIntent = null;
-
+	private Intent GPSOnIntent = null;
+	private Intent GPSOffIntent = null;
+	private Intent powerStateOnIntent = null;
+	private Intent powerStateOffIntent = null;
+	private Intent accelerometerOnIntent = null;
+	private Intent accelerometerOffIntent = null;
+	private Intent bluetoothOnIntent = null;
+	private Intent bluetoothOffIntent = null;
 
 	// All the intent actions are located here
 	public static final String SIGN_OUT = "Signout";
-	public static final String GPS = "GPS";
-	public static final String POWER_STATE = "PowerState";
-	public static final String ACCELEROMETER = "Accelerometer";
-	public static final String BLUETOOTH = "Bluetooth";
-
+	public static final String GPS_ON = "GPS On";
+	public static final String POWER_STATE_ON = "PowerState On";
+	public static final String ACCELEROMETER_ON = "Accelerometer On";
+	public static final String BLUETOOTH_ON = "Bluetooth On";
+	public static final String GPS_OFF = "GPS_OFF";
+	public static final String POWER_STATE_OFF = "PowerState_OFF";
+	public static final String ACCELEROMETER_OFF = "Accelerometer_OFF";
+	public static final String BLUETOOTH_OFF = "Bluetooth_OFF";
+	
 	// Intent filters
 	public IntentFilter getSignoutIntentFilter() { return new IntentFilter( signoutIntent.getAction() ); 	}
-	public IntentFilter getGPSIntentFilter() { return new IntentFilter( GPSIntent.getAction() ); 	}
-	public IntentFilter getPowerStateIntentFilter() { return new IntentFilter( powerStateIntent.getAction() ); 	}
-	public IntentFilter getAccelerometerIntentFilter() { return new IntentFilter( accelerometerIntent.getAction() ); 	}
-	public IntentFilter getBluetoothIntentFilter() { return new IntentFilter( bluetoothIntent.getAction() ); 	}
+	public IntentFilter getGPSIntentOnFilter() { return new IntentFilter( GPSOnIntent.getAction() ); 	}
+	public IntentFilter getGPSIntentOffFilter() { return new IntentFilter( GPSOffIntent.getAction() ); 	}
+	public IntentFilter getPowerStateOnIntentFilter() { return new IntentFilter( powerStateOnIntent.getAction() ); 	}
+	public IntentFilter getPowerStateOffIntentFilter() { return new IntentFilter( powerStateOffIntent.getAction() ); 	}
+	public IntentFilter getAccelerometerOnIntentFilter() { return new IntentFilter( accelerometerOnIntent.getAction() ); 	}
+	public IntentFilter getAccelerometerOffIntentFilter() { return new IntentFilter( accelerometerOffIntent.getAction() ); 	}
+	public IntentFilter getBluetoothOnIntentFilter() { return new IntentFilter( bluetoothOnIntent.getAction() ); 	}
+	public IntentFilter getBluetoothOffIntentFilter() { return new IntentFilter( bluetoothOffIntent.getAction() ); 	}
 
 	// Intent getters
 	public Intent getSignoutIntent() { return signoutIntent; }
-	public Intent getGPSIntent() { return GPSIntent; }
-	public Intent getPowerStateIntent() { return powerStateIntent; }
-	public Intent getAccelerometerIntent() { return accelerometerIntent; }
-	public Intent getBluetoothIntent() { return bluetoothIntent; }
+	public Intent getGPSOnIntent() { return GPSOnIntent; }
+	public Intent getGPSOffIntent() { return GPSOffIntent; }
+	public Intent getPowerStateOnIntent() { return powerStateOnIntent; }
+	public Intent getPowerStateOffIntent() { return powerStateOffIntent; }
+	public Intent getAccelerometerOnIntent() { return accelerometerOnIntent; }
+	public Intent getAccelerometerOffIntent() { return accelerometerOffIntent; }
+	public Intent getBluetoothOnIntent() { return bluetoothOnIntent; }
+	public Intent getBluetoothOffIntent() { return bluetoothOffIntent; }
 
 	// Constructor
 	public Timer(BackgroundProcess backgroundProcess) {
@@ -50,10 +65,14 @@ public class Timer {
 		
 		// Setting up custom intents for the filters in the background service
 		signoutIntent = setupCustomIntent(SIGN_OUT);
-		GPSIntent = setupCustomIntent(GPS);
-		powerStateIntent = setupCustomIntent(POWER_STATE);
-		accelerometerIntent  = setupCustomIntent(ACCELEROMETER);
-		bluetoothIntent = setupCustomIntent(BLUETOOTH);
+		accelerometerOffIntent = setupCustomIntent(ACCELEROMETER_OFF);
+		accelerometerOnIntent = setupCustomIntent(ACCELEROMETER_ON);
+		bluetoothOffIntent = setupCustomIntent(BLUETOOTH_OFF);
+		bluetoothOnIntent = setupCustomIntent(BLUETOOTH_ON);
+		GPSOffIntent = setupCustomIntent(GPS_OFF);
+		GPSOnIntent = setupCustomIntent(GPS_ON);
+		powerStateOffIntent = setupCustomIntent(POWER_STATE_OFF);
+		powerStateOnIntent = setupCustomIntent(POWER_STATE_ON);
 	}
 
 	// Setup custom intents to be sent to the listeners running in the background process
