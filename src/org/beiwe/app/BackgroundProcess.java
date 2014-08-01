@@ -9,6 +9,7 @@ import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
 import org.beiwe.app.storage.TextFileManager;
+import org.beiwe.app.ui.LoginSessionManager;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
@@ -27,6 +28,7 @@ import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
 //import android.content.pm.PackageManager;
+//import android.content.pm.PackageManager;
 
 // TODO: Add logic that has to do with receiving a notification
 
@@ -34,14 +36,15 @@ public class BackgroundProcess extends Service {
 
 	private TextFileManager logFile = null;
 	private Context appContext = null;
+	private LoginSessionManager sessionManager = null;
 	//	private PackageManager packageManager = null; 	//used to check if sensors exist
 
 	public GPSListener gpsListener;
 	public AccelerometerListener accelerometerListener;
 
 	private static Timer timer;
-	
-	
+
+
 	BluetoothListener bluetooth;
 	// TODO: Work out if accessing the Background process using a static method is necessary 
 	public static BackgroundProcess BackgroundHandle;
@@ -82,28 +85,26 @@ public class BackgroundProcess extends Service {
 
 		bluetooth = new BluetoothListener();
 		startTimers();
+		startControlReceiver();
 	}
 
 	private void startTimers() {
 		// Repeating alarms
 		// FIXME: 5000 is an arbitrary value - still need to figure out what absolute time functions there are
-		timer.setupAlarm(5000, Timer.GPSOnIntent, true ); // GPS
-		timer.setupAlarm(5000, Timer.bluetoothOnIntent, true); // Bluetooth
-		timer.setupAlarm(5000, Timer.accelerometerOnIntent, true); // Accelerometer
+		//		timer.setupAlarm(5000, Timer.GPSOnIntent, true ); // GPS
+		//		timer.setupAlarm(5000, Timer.bluetoothOnIntent, true); // Bluetooth
+		//		timer.setupAlarm(5000, Timer.accelerometerOnIntent, true); // Accelerometer
 
 
 		timer.setupAlarm(5000, Timer.signoutIntent, false); // Automatic Signout
 	}
-	
-	private static boolean isAppInBackground(final Context context) {
-		ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-		List<RunningTaskInfo> tasks = am.getRunningTasks(1);
-		if (!tasks.isEmpty()) {
-			ComponentName topActivity = tasks.get(0).topActivity;
-			if (!topActivity.getPackageName().equals(context.getPackageName())) {
-				return true;
-			}
-		}
+
+	public boolean isForeground(String myPackage){
+		ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+		List< ActivityManager.RunningTaskInfo > runningTaskInfo = manager.getRunningTasks(1); 
+
+		ComponentName componentInfo = runningTaskInfo.get(0).topActivity;
+		if(componentInfo.getPackageName().equals(myPackage)) return true;
 		return false;
 	}
 
@@ -126,6 +127,19 @@ public class BackgroundProcess extends Service {
 		final PowerStateListener powerStateListener = new PowerStateListener();
 		powerStateListener.finish_instantiation(this);  //TODO: fix this, it has to do with airplane mode
 		registerReceiver( (BroadcastReceiver) powerStateListener, filter);
+	}
+
+	/** Initialize control receiver */
+	public void startControlReceiver() {
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(Timer.ACCELEROMETER_OFF);
+		filter.addAction(Timer.ACCELEROMETER_ON);
+		filter.addAction(Timer.BLUETOOTH_OFF);
+		filter.addAction(Timer.BLUETOOTH_ON);
+		filter.addAction(Timer.GPS_OFF);
+		filter.addAction(Timer.GPS_ON);
+		filter.addAction(Timer.SIGN_OUT);
+		registerReceiver(steve, filter);
 	}
 
 	/*##############################################################
@@ -172,12 +186,15 @@ public class BackgroundProcess extends Service {
 		//TODO: research when onDestroy is actually called, insert informative comment.
 		make_log_statement("BackgroundService Killed");
 	}
-	
+
 	//TODO: make this a separate class, control receiver
 	BroadcastReceiver steve = new BroadcastReceiver() {
 		BackgroundProcess back = BackgroundProcess.BackgroundHandle; 
+
 		@Override
 		public void onReceive(Context appContext, Intent intent) {
+			Log.i("BackgroundServie", "Received Broadcast " + intent.toString());
+
 			if (intent.getAction().equals( Timer.ACCELEROMETER_OFF ) ) {
 				back.accelerometerListener.turn_on();
 			}
@@ -191,7 +208,7 @@ public class BackgroundProcess extends Service {
 			}
 
 			if (intent.getAction().equals( Timer.BLUETOOTH_ON ) ) {
-//				back.bluetooth.disableBLEScan();
+				//				back.bluetooth.disableBLEScan();
 			}
 
 			if (intent.getAction().equals( Timer.GPS_OFF ) ) {
@@ -201,12 +218,17 @@ public class BackgroundProcess extends Service {
 			if (intent.getAction().equals( Timer.GPS_ON ) ) {
 				back.gpsListener.turn_on();
 			}
-			
+
 			if (intent.getAction().equals(Timer.SIGN_OUT) ){
-				Log.i("Signout Listener", "Received Signout Message");
-								
+				Log.i("steve", "Received Signout Message");
+				sessionManager = new LoginSessionManager(appContext);
+				if(isForeground("org.beiwe.app")) {
+					sessionManager.logoutUser();
+				} else {
+					sessionManager.logoutUserPassive();
+				}
 			}
-		};
-		
+		}; 
 	};
+
 }

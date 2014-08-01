@@ -6,8 +6,8 @@ import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.storage.Upload;
 import org.beiwe.app.survey.AudioRecorderActivity;
 import org.beiwe.app.survey.SurveyActivity;
-import org.beiwe.app.ui.LoginSessionManager;
 import org.beiwe.app.ui.AppNotifications;
+import org.beiwe.app.ui.LoginSessionManager;
 
 import android.app.Activity;
 import android.content.Context;
@@ -28,13 +28,19 @@ public class DebugInterfaceActivity extends Activity {
 	AccelerometerListener anAccelerometerListener = null;
 	//test variables of our classes
 	
+	private LoginSessionManager sessionManager = null; 
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_debug_interface);
 		appContext = this.getApplicationContext();
-		
+		sessionManager = new LoginSessionManager(appContext);
+		if (!sessionManager.isLoggedIn()) {
+			sessionManager.logoutUser();
+			finish();
+		}
 		
 		//start background service
 		//NOTE: the background service is started on a separate Thread (process? don't care)
@@ -43,6 +49,16 @@ public class DebugInterfaceActivity extends Activity {
 		// access a FileManager object: TextFileManager.getDebugLogFile().some_function();
 		Intent backgroundProcess = new Intent(this, BackgroundProcess.class);
 		appContext.startService(backgroundProcess);
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		sessionManager = new LoginSessionManager(appContext);
+		if (!sessionManager.isLoggedIn()) {
+			sessionManager.logoutUser();
+			finish();
+		}
 	}
 	
 
