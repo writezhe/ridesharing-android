@@ -1,17 +1,21 @@
 package org.beiwe.app;
 
+import java.util.List;
+
 import org.beiwe.app.listeners.AccelerometerListener;
 import org.beiwe.app.listeners.BluetoothListener;
 import org.beiwe.app.listeners.CallLogger;
 import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
-import org.beiwe.app.listeners.SignoutListener;
 import org.beiwe.app.listeners.SmsSentLogger;
 import org.beiwe.app.storage.TextFileManager;
 
 import android.annotation.TargetApi;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -23,7 +27,6 @@ import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
 //import android.content.pm.PackageManager;
-import android.widget.Toast;
 
 // TODO: Add logic that has to do with receiving a notification
 
@@ -71,7 +74,6 @@ public class BackgroundProcess extends Service {
 		startSmsSentLogger();
 		startCallLogger();
 		startPowerStateListener();
-		startSignoutListener();
 
 		//		Boolean accelStatus = accelerometerListener.toggle( );
 		//		Log.i("accel Status", accelStatus.toString() );
@@ -90,13 +92,23 @@ public class BackgroundProcess extends Service {
 		timer.setupAlarm(5000, Timer.accelerometerOnIntent, true); // Accelerometer
 
 		// Non-repeating alarms
+<<<<<<< Updated upstream
 		timer.setupAlarm(5000/* Yes, that is actually 15 minutes :P */, Timer.signoutIntent, false);
+=======
+		timer.setupAlarm(5000, timer.getSignoutIntent(), false); // Automatic Signout
+>>>>>>> Stashed changes
 	}
 	
-	private void startSignoutListener() {
-		final IntentFilter filter = timer.getSignoutIntentFilter();
-		SignoutListener signoutListener = new SignoutListener(this);
-		registerReceiver(signoutListener, filter);
+	private static boolean isAppInBackground(final Context context) {
+	    ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+	    List<RunningTaskInfo> tasks = am.getRunningTasks(1);
+	    if (!tasks.isEmpty()) {
+	      ComponentName topActivity = tasks.get(0).topActivity;
+	      if (!topActivity.getPackageName().equals(context.getPackageName())) {
+	        return true;
+	      }
+	    }
+	    return false;
 	}
 
 	/** Initializes the sms logger. */
@@ -193,8 +205,12 @@ public class BackgroundProcess extends Service {
 			if (intent.getAction().equals( Timer.GPS_ON ) ) {
 				back.gpsListener.turn_on();
 			}
-
-		}
-	};
+			
+			if (intent.getAction().equals(Timer.SIGN_OUT) ){
+				Log.i("Signout Listener", "Received Signout Message");
+								
+			}
+		};
 		
+	};
 }

@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.beiwe.app.DebugInterfaceActivity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -104,11 +105,11 @@ public class LoginSessionManager {
      * */
     public void logoutUser(){
     	editor.putBoolean(IS_LOGIN, false);
-    	editor.commit();
-    	Intent intent = new Intent(appContext, LoadingActivity.class);
-    	intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-    	
-    	appContext.startActivity(intent);
+        editor.commit();
+        Intent intent = new Intent(appContext, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        appContext.startActivity(intent);
     }
      
     /**
@@ -118,4 +119,9 @@ public class LoginSessionManager {
     	Log.i("SessionManager", "" + pref.getBoolean(IS_LOGIN, false));
     	return pref.getBoolean(IS_LOGIN, false);
     }
+
+	public void logoutUserPassive() {
+		editor.putBoolean(IS_LOGIN, false);
+		editor.commit();		
+	}
 }

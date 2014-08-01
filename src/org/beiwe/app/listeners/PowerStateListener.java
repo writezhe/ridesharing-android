@@ -16,7 +16,7 @@ import android.util.Log;
 public class PowerStateListener extends BroadcastReceiver {
 	
 	public static String header = "time, event\n";
-	private BackgroundProcess backgroundProcess = null;
+	private BackgroundProcess backgroundProcess;
 	
 	/** Handles the logging, includes a new line for the CSV files.
 	 * This code is otherwised reused everywhere.*/
@@ -63,5 +63,8 @@ public class PowerStateListener extends BroadcastReceiver {
 		
 		// TODO: Record WIFI status
 		
+		if (intent.getAction().equals(Timer.POWER_STATE_ON) ){
+			Log.i("powerstatelistener", "recieved example!");
+		}
 	}
 }
