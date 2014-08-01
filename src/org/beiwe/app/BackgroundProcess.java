@@ -91,24 +91,20 @@ public class BackgroundProcess extends Service {
 		timer.setupAlarm(5000, Timer.bluetoothOnIntent, true); // Bluetooth
 		timer.setupAlarm(5000, Timer.accelerometerOnIntent, true); // Accelerometer
 
-		// Non-repeating alarms
-<<<<<<< Updated upstream
-		timer.setupAlarm(5000/* Yes, that is actually 15 minutes :P */, Timer.signoutIntent, false);
-=======
-		timer.setupAlarm(5000, timer.getSignoutIntent(), false); // Automatic Signout
->>>>>>> Stashed changes
+
+		timer.setupAlarm(5000, Timer.signoutIntent, false); // Automatic Signout
 	}
 	
 	private static boolean isAppInBackground(final Context context) {
-	    ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-	    List<RunningTaskInfo> tasks = am.getRunningTasks(1);
-	    if (!tasks.isEmpty()) {
-	      ComponentName topActivity = tasks.get(0).topActivity;
-	      if (!topActivity.getPackageName().equals(context.getPackageName())) {
-	        return true;
-	      }
-	    }
-	    return false;
+		ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+		List<RunningTaskInfo> tasks = am.getRunningTasks(1);
+		if (!tasks.isEmpty()) {
+			ComponentName topActivity = tasks.get(0).topActivity;
+			if (!topActivity.getPackageName().equals(context.getPackageName())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/** Initializes the sms logger. */
