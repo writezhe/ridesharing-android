@@ -89,14 +89,11 @@ public class BackgroundProcess extends Service {
 	}
 
 	private void startTimers() {
-		// Repeating alarms
-		// FIXME: 5000 is an arbitrary value - still need to figure out what absolute time functions there are
-		//		timer.setupAlarm(5000, Timer.GPSOnIntent, true ); // GPS
-		//		timer.setupAlarm(5000, Timer.bluetoothOnIntent, true); // Bluetooth
-		//		timer.setupAlarm(5000, Timer.accelerometerOnIntent, true); // Accelerometer
+		timer.setupRepeatingAlarm(5000, Timer.GPSTimerIntent, Timer.GPSOnIntent); // GPS
+		timer.setupRepeatingAlarm(5000, Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent); // Bluetooth
+		timer.setupRepeatingAlarm(5000, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent); // Accelerometer
 
-
-		timer.setupAlarm(5000, Timer.signoutIntent, false); // Automatic Signout
+		timer.setupRepeatingAlarm(5000, Timer.signOutTimerIntent, Timer.signoutIntent); // Automatic Signout
 	}
 
 	public boolean isForeground(String myPackage){

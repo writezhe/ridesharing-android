@@ -16,7 +16,6 @@ import android.widget.Toast;
 public class Timer {
 	private AlarmManager alarmManager;
 	private BackgroundProcess backgroundProcess;
-	private BroadcastReceiver broadcastReceiver;
 	private Context appContext;
 	
 	//public strings for matching to messages
@@ -27,16 +26,29 @@ public class Timer {
 	public static final String BLUETOOTH_ON = "Bluetooth On";
 	public static final String GPS_OFF = "GPS_OFF";
 	public static final String GPS_ON = "GPS On";
+	
 	public static final String SIGN_OUT = "Signout";
+	
+	private static final String SIGN_OUT_TIMER = "Signout timer";
+	private static final String ACCELEROMETER_TIMER = "accelerometer timer";
+	private static final String BLUETOOTH_TIMER = "bluetooth timer";
+	private static final String GPS_TIMER = "gps timer";
 	
 	// Intents
 	public static final Intent signoutIntent = setupIntent( SIGN_OUT );
+	
 	public static final Intent accelerometerOffIntent = setupIntent( ACCELEROMETER_OFF );
 	public static final Intent accelerometerOnIntent = setupIntent( ACCELEROMETER_ON );
 	public static final Intent bluetoothOffIntent = setupIntent( BLUETOOTH_OFF );
 	public static final Intent bluetoothOnIntent = setupIntent( BLUETOOTH_ON );
 	public static final Intent GPSOffIntent = setupIntent( GPS_OFF );
 	public static final Intent GPSOnIntent = setupIntent( GPS_ON);
+	
+	public static final Intent accelerometerTimerIntent = setupIntent( ACCELEROMETER_TIMER );
+	public static final Intent bluetoothTimerIntent = setupIntent( BLUETOOTH_TIMER );
+	public static final Intent GPSTimerIntent = setupIntent( GPS_TIMER );
+	public static final Intent signOutTimerIntent = setupIntent( SIGN_OUT_TIMER );
+	
 	
 	// Intent filters
 	public IntentFilter getSignoutIntentFilter() { return new IntentFilter( signoutIntent.getAction() ); }
@@ -51,6 +63,7 @@ public class Timer {
 	public Timer(BackgroundProcess backgroundProcess) {
 		this.backgroundProcess = backgroundProcess;
 		this.appContext = backgroundProcess.getApplicationContext();
+		this.alarmManager = (AlarmManager)( backgroundProcess.getSystemService( Context.ALARM_SERVICE ));
 	}
 
 	// Setup custom intents to be sent to the listeners running in the background process
@@ -63,39 +76,45 @@ public class Timer {
 	 * When using an IntentFilter as an "action filter", we will use this convention, and start the timer using the action 
 	 * "org.beiwe.app.START_TIMER". This will be registered in the background process, and will start the PendingIntent 
 	 * (an intent waiting for something to call it) in the timer. */
-	public void setupAlarm(int milliseconds, Intent customIntent, boolean repeating) {
-
-		//create the intent, and then the pending intent from it		
-		Intent eliIntentSteve = new Intent();
-		eliIntentSteve.setAction("org.beiwe.app.steve"); // Eli's intent
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, eliIntentSteve, 0);
-		//create and then register the broadcastreceiver with the background process
-		broadcastReceiver = broadcastReceiverCreator(milliseconds, pendingIntent, customIntent, repeating);
-		backgroundProcess.registerReceiver( broadcastReceiver, new IntentFilter( eliIntentSteve.getAction() ) );
-
-		//and then start the alarm manager to actually trigger that intent it X seconds
-
-		// These two lines actually wake up the broadcast receiver to check for incoming intents
-		// http://developer.android.com/reference/android/app/AlarmManager.html#ELAPSED_REALTIME
-		alarmManager = (AlarmManager)( backgroundProcess.getSystemService(Context.ALARM_SERVICE ));
+	public void setupRepeatingAlarm(int milliseconds, Intent timerIntent, Intent intentToBeBroadcast) {
 		long nextTriggerTime = System.currentTimeMillis() + milliseconds;
-		alarmManager.set( AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingIntent); 
-		Log.i("alarm manager", "alarm started");
+		
+		//create a pending intent from the timerIntent, then pass all these intents to the repeatingAlarmReceiver,
+		// then register the returned BroadcastReceiver with the BackgroundProcess, then set the actual alarm. 
+		PendingIntent pendingTimerIntent = PendingIntent.getBroadcast(appContext, 0, timerIntent, 0);
+		
+		//TODO: this BroadcastReceiver was a global variable, changed it to a local variable.  Determine if this is bad...
+		BroadcastReceiver broadcastReceiver = repeatingAlarmReceiver(milliseconds, pendingTimerIntent, intentToBeBroadcast, timerIntent);
+		backgroundProcess.registerReceiver( broadcastReceiver, new IntentFilter( timerIntent.getAction() ) );
+		alarmManager.set( AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingTimerIntent);
+		Log.i("Timer", "repeating alarm started");
 	}
 
 	// TODO: make SetupNonRepeatingAlarm
 	// TODO: make absoluteTimeAlarm (At 14:15, 15:15, etc...)
-
-	public BroadcastReceiver broadcastReceiverCreator(final int milliseconds, final PendingIntent pendingIntent,
-			final Intent customIntent, final boolean repeating) {		
-
+	
+	private BroadcastReceiver repeatingAlarmReceiver
+	(final int milliseconds, final PendingIntent pendingIntent, final Intent sendingIntent, final Intent originalTimerIntent) {		
 		return new BroadcastReceiver() {
 			@Override
-			public void onReceive(Context appContext, Intent intent) {
+			//TODO: I am fairly sure that the receivedIntent will match the originalTimerIntent, test.
+			public void onReceive(Context appContext, Intent receivedIntent) {
 				Toast.makeText(appContext, "Receive broadcast, reseting timer...", Toast.LENGTH_SHORT).show();
 				backgroundProcess.unregisterReceiver(this);
-
-				appContext.sendBroadcast( customIntent );
-				if (repeating) {setupAlarm( milliseconds , customIntent, true); }	}
-		}; }
+				appContext.sendBroadcast( sendingIntent );
+				setupRepeatingAlarm( milliseconds , originalTimerIntent, sendingIntent);
+			} }; }
+	
+	
+	
+	private BroadcastReceiver singleAlarmReceiver
+	(final int milliseconds, final PendingIntent pendingIntent, final Intent sendingIntent) {		
+		return new BroadcastReceiver() {
+			@Override
+			//TODO: I am fairly sure that the receivedIntent will match the originalTimerIntent, test.
+			public void onReceive(Context appContext, Intent receivedIntent) {
+				Toast.makeText(appContext, "Receive broadcast, reseting timer...", Toast.LENGTH_SHORT).show();
+				backgroundProcess.unregisterReceiver(this);
+				appContext.sendBroadcast( sendingIntent );
+			} }; }
 }
