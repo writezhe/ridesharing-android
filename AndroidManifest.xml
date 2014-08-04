@@ -80,6 +80,12 @@
             </intent-filter>
         </receiver>
 		
+        <service
+            android:name=".BackgroundProcess"
+            android:exported="false"
+            android:label="BackgroundProcess-thing" >
+        </service>
+
         <activity
             android:name=".survey.SurveyActivity"
             android:configChanges="orientation"
