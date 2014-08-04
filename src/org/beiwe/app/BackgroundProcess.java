@@ -84,8 +84,8 @@ public class BackgroundProcess extends Service {
 		//		Boolean gpsStatus = gpsListener.toggle();
 		//		Log.i("GPS Status", gpsStatus.toString() );
 
-		startTimers();
-		startControlMessageReceiver();
+//		startTimers();
+//		startControlMessageReceiver();
 	}
 
 	public boolean isForeground(String myPackage){

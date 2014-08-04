@@ -25,8 +25,10 @@ public class MainMenuActivity extends Activity {
 		
 		// Webview initiation
 		
-		WebView webView = (WebView) findViewById(R.id.main_menu_pastResults);
-		webView.loadUrl("http://www.google.com");
+		WebView browser = (WebView) findViewById(R.id.main_menu_pastResults);
+		browser.loadUrl("http://www.google.com");
+		browser.getSettings().setBuiltInZoomControls(true);
+		browser.setInitialScale(1);
 	}
 	
 	public void callHotline(View v) {

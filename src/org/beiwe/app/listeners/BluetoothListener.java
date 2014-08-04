@@ -19,6 +19,9 @@ import android.util.Log;
 	The UI does not allow toggling bluetooth on and off quickly.  It waits for the turning on/off state to finish.
 	There is about a ... half second? lag between the turning on/off state broadcast and the actually on/off broadcast.     
 
+	LG G2 does not interrupt the whole process of turning off and turning on :) There is a lag of about a half a second in
+	between phases
+
 https://developer.android.com/guide/topics/connectivity/bluetooth-le.html
 If you want to declare that your app is available to BLE-capable devices only, include the following in your app's manifest:
 <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
