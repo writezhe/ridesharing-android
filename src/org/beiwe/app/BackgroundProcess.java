@@ -33,10 +33,11 @@ public class BackgroundProcess extends Service {
 	private Context appContext;
 	private LoginSessionManager sessionManager;
 
-	private GPSListener gpsListener;
-	private AccelerometerListener accelerometerListener;
+	// TODO: Make these private after killing DebugInterfaceActivity
+	public GPSListener gpsListener;
+	public AccelerometerListener accelerometerListener;
 	private Timer timer;
-	private BluetoothListener bluetoothListener;
+	public BluetoothListener bluetoothListener;
 	
 	public static BackgroundProcess BackgroundHandle;
 
