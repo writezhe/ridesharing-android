@@ -29,6 +29,7 @@ public class MainMenuActivity extends Activity {
 		browser.loadUrl("http://www.google.com");
 		browser.getSettings().setBuiltInZoomControls(true);
 		browser.setInitialScale(1);
+		browser.getSettings().setJavaScriptEnabled(true);
 	}
 	
 	public void callHotline(View v) {
