@@ -79,7 +79,7 @@ public class LoginSessionManager {
                 appContext.startActivity(intent);        	
         	} else {
             	Log.i("SessionManager", "First time logged in");
-            	Intent intent = new Intent(appContext, MainMenuActivity.class);
+            	Intent intent = new Intent(appContext, RegisterActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 appContext.startActivity(intent);
         	}
