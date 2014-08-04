@@ -13,7 +13,6 @@ import org.beiwe.app.ui.LoginSessionManager;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
-import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -27,75 +26,46 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
-//import android.content.pm.PackageManager;
-//import android.content.pm.PackageManager;
 
-// TODO: Add logic that has to do with receiving a notification
 
 public class BackgroundProcess extends Service {
 
-	private TextFileManager logFile = null;
-	private Context appContext = null;
-	private LoginSessionManager sessionManager = null;
-	//	private PackageManager packageManager = null; 	//used to check if sensors exist
+	private Context appContext;
+	private LoginSessionManager sessionManager;
 
-	public GPSListener gpsListener;
-	public AccelerometerListener accelerometerListener;
-
+	private GPSListener gpsListener;
+	private AccelerometerListener accelerometerListener;
 	private Timer timer;
-
-	BluetoothListener bluetooth;
-	// TODO: Work out if accessing the Background process using a static method is necessary 
+	private BluetoothListener bluetoothListener;
 	
 	public static BackgroundProcess BackgroundHandle;
 
 	private void make_log_statement(String message) {
 		Log.i("BackgroundService", message);
 		Long javaTimeCode = System.currentTimeMillis();
-		logFile.write(javaTimeCode.toString() + "," + message +"\n" ); 
+		TextFileManager.getDebugLogFile().write(javaTimeCode.toString() + "," + message +"\n" ); 
 	}
 
 	@Override
 	/** onCreate is essentially the constructor for the service, initialize variables here.*/
 	public void onCreate(){		
 		appContext = this.getApplicationContext();
-		//		packageManager = this.getPackageManager();
 		BackgroundHandle = this;
 		TextFileManager.start(appContext);
-		logFile = TextFileManager.getDebugLogFile();
-
-		// COMMENT COMMENT COMMENT COMMENT COMMENT COMMENT COMMENT
-		// COMMENT COMMENT COMMENT COMMENT COMMENT COMMENT COMMENT
-		// COMMENT COMMENT COMMENT COMMENT COMMENT COMMENT COMMENT
+		
 		gpsListener = new GPSListener(appContext);
 		accelerometerListener = new AccelerometerListener(appContext);
-
+		bluetoothListener = new BluetoothListener();		
 		timer = new Timer(this);
-
-		make_log_statement("Things have allocated, starting listeners");
 
 		startSmsSentLogger();
 		startCallLogger();
 		startPowerStateListener();
-		startBluetoothListener();
 		
-		//		Boolean accelStatus = accelerometerListener.toggle( );
-		//		Log.i("accel Status", accelStatus.toString() );
-		//		Boolean gpsStatus = gpsListener.toggle();
-		//		Log.i("GPS Status", gpsStatus.toString() );
-
 		startTimers();
 		startControlMessageReceiver();
 	}
-
-	public boolean isForeground(String myPackage){
-		ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
-		List< ActivityManager.RunningTaskInfo > runningTaskInfo = manager.getRunningTasks(1); 
-
-		ComponentName componentInfo = runningTaskInfo.get(0).topActivity;
-		if(componentInfo.getPackageName().equals(myPackage)) return true;
-		return false;
-	}
+	
 	
 	/** Initializes the sms logger. */
 	public void startSmsSentLogger() {
@@ -118,10 +88,6 @@ public class BackgroundProcess extends Service {
 		powerStateListener.finish_instantiation(this);  //TODO: fix this, it has to do with airplane mode
 		registerReceiver( (BroadcastReceiver) powerStateListener, filter);
 	}
-
-	/** Start the BluetoothListener */
-	private void startBluetoothListener (){
-		bluetooth = new BluetoothListener(); }
 	
 	/** Register custom Intents with the control message receiver */
 	public void startControlMessageReceiver() {
@@ -145,9 +111,9 @@ public class BackgroundProcess extends Service {
 		timer.setupRepeatingAlarm(5000, Timer.signOutTimerIntent, Timer.signoutIntent); // Automatic Signout
 	}
 	
-	/*##############################################################
-	  ###############       Separator Comment       ################
-	  #############################################################*/
+/*#############################################################################
+####################       Externally Accessed Functions       ################
+#############################################################################*/
 
 	// FIXME: THIS CRASHES THE PROGRAM!!! ABANDON ALL HOPE :(
 	@SuppressWarnings("deprecation")
@@ -171,37 +137,26 @@ public class BackgroundProcess extends Service {
 			if ( gpsListener.check_status() ) { make_log_statement("GPS turned on."); }
 			else { make_log_statement("GPS failed to turn on"); } }
 	}
+	
+	public boolean isForeground(String myPackage){
+		ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+		List< ActivityManager.RunningTaskInfo > runningTaskInfo = manager.getRunningTasks(1); 
 
-	/*##########################################################################################
-	################## onStartCommand, onBind, and onDesroy, ignore these ######################
-	##########################################################################################*/	
-	@Override
-	public int onStartCommand(Intent intent, int flags, int startId){
-		//		Log.i("BackgroundService received start command:", "" + startId );
-		return START_STICKY; }
-	@Override
-	public IBinder onBind(Intent arg0) {
-		//		Log.i("BackgroundService has been bound", "");
-		return null; }
-	@Override
-	public void onDestroy() {
-		//this does not appear to run when the service or app are killed...
-		//TODO: research when onDestroy is actually called, insert informative comment.
-		make_log_statement("BackgroundService Killed");
+		ComponentName componentInfo = runningTaskInfo.get(0).topActivity;
+		if(componentInfo.getPackageName().equals(myPackage)) return true;
+		return false;
 	}
 	
-	public void togglegps(){
-		Log.i("Something", "anythingeutaoeiungt");
-//		gpsListener.toggle();
-	}
+/*#############################################################################
+####################       Contlrol Message Logic         #####################
+#############################################################################*/
+//TODO: make this a separate class, "control receiver" or something
 	
-	//TODO: make this a separate class, control receiver
 	BroadcastReceiver controlReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context appContext, Intent intent) {
 			BackgroundProcess back = BackgroundProcess.BackgroundHandle; 
-			
-			Log.i("BackgroundService", "Received Broadcast " + intent.toString());
+			Log.i("BackgroundService", "Received Broadcast: " + intent.toString());
 
 			if (intent.getAction().equals( Timer.ACCELEROMETER_OFF ) ) {
 				back.accelerometerListener.turn_on(); }
@@ -210,32 +165,40 @@ public class BackgroundProcess extends Service {
 				back.accelerometerListener.turn_off(); }
 
 			if (intent.getAction().equals( Timer.BLUETOOTH_OFF ) ) {
-				back.bluetooth.disableBLEScan(); }
+				back.bluetoothListener.disableBLEScan(); }
 
 			if (intent.getAction().equals( Timer.BLUETOOTH_ON ) ) {
-				back.bluetooth.enableBLEScan();
-			}
+				back.bluetoothListener.enableBLEScan(); }
 
 			if (intent.getAction().equals( Timer.GPS_OFF ) ) {
-				back.gpsListener.turn_off();
-			}
+				back.gpsListener.turn_off(); }
 
 			if (intent.getAction().equals( Timer.GPS_ON ) ) {
-				back.gpsListener.toggle();
-				back.gpsListener.turn_on();
-			}
+				back.gpsListener.turn_on(); }
 			
 			if (intent.getAction().equals(Timer.SIGN_OUT) ){
 
 				Log.i("BackgroundProcess", "Received Signout Message");
-//				sessionManager = new LoginSessionManager(appContext);
-//				if(isForeground("org.beiwe.app")) {
-//					sessionManager.logoutUser();
-//				} else {
-//					sessionManager.logoutUserPassive();
-//				}
+				sessionManager = new LoginSessionManager(appContext);
+				if( isForeground("org.beiwe.app") ) {
+					sessionManager.logoutUser(); }
+				else { sessionManager.logoutUserPassive(); }
 			}
-		}; 
+		}
 	};
-
+	
+	/*##########################################################################################
+	################# onStartCommand, onBind, and onDesroy (ignore these)# #####################
+	##########################################################################################*/
+	
+	/** The BackgroundService is meant to be all the time, so we return START_STICKY */
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId){ return START_STICKY; }
+	@Override
+	public IBinder onBind(Intent arg0) { return null; }
+	@Override
+	public void onDestroy() {
+		//this does not appear to run when the service or app are killed...
+		//TODO: research when onDestroy is actually called, insert informative comment.
+		make_log_statement("BackgroundService Killed"); }
 }
