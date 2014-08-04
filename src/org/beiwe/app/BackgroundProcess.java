@@ -62,8 +62,8 @@ public class BackgroundProcess extends Service {
 		startCallLogger();
 		startPowerStateListener();
 		
-		startTimers();
-		startControlMessageReceiver();
+		//startTimers();
+		//startControlMessageReceiver();
 	}
 	
 	
