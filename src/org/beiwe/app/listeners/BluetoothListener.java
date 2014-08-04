@@ -77,6 +77,8 @@ public class BluetoothListener extends BroadcastReceiver {
 	}
 	
 	
+	/** Intelligently disables the bluetooth adaptor.
+	 * @return True if bluetooth exists, false if bluetooth does not exist */
 	//TODO: add check for devices connected, stop disable process if any devices are connected.
 	private Boolean disableBluetooth() {
 		if (!exists) return false; //esc
@@ -87,6 +89,8 @@ public class BluetoothListener extends BroadcastReceiver {
 		return false;
 	}
 	
+	/** Intelligently enables the bluetooth adaptor. 
+	 * @return True if bluetooth exists, false if bluetooth does not exist. */
 	private Boolean enableBluetooth() {
 		if (!exists) return false;
 		state_we_want = true;
@@ -98,18 +102,8 @@ public class BluetoothListener extends BroadcastReceiver {
 	}
 	
 	
-	@SuppressLint("NewApi")
-	private LeScanCallback bluetoothCallback = new LeScanCallback() {
-		@Override
-		public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-			String data = new String( device.toString() + "\n"
-					+ "rssi: " + rssi
-					+ "scanRecord: " + scanRecord );
-			Log.i("bluetooth", data);
-			debugLog.write(data);
-		} }; 
-
-		
+	/** Intelligently starts a bluetooth LE scan. */
+	//TODO: is this code actually finished?
 	@SuppressLint("NewApi")
 	public void enableBLEScan(){
 		Log.i("bluetooth", "enabling a scan, current mode: " + bluetoothAdapter.getScanMode() );
@@ -132,11 +126,22 @@ public class BluetoothListener extends BroadcastReceiver {
 		enableBluetooth();
 	}
 	
-	
+	/** Stops the scan, sets the want_bluetooth_scan to zero.
+	 *  Intelligently disables bluetooth.  */
 	@SuppressLint("NewApi")
-	/** Intelligently starts a BLE scan.
+	public void disableBLEScan() {
+//		want_bluetooth_scan = false;
+		set_scan_thing(false);
+		bluetoothAdapter.stopLeScan(bluetoothCallback);
+		this.disableBluetooth();
+		Log.i("bluetooth", "stopped scan maybe?"); }
+	
+	
+	/** Intelligently STARTS a BLE scan.
+	 * 	PRIVATE because this is actually a convenience function, it may be removed.
 	 *  If a scan can start (if bluetooth is on), start scanning.
 	 *  Print some verbose log statements. */
+	@SuppressLint("NewApi")
 	private void startScanning() {
 	//If the bluetooth is actually
 		Log.i("bluetooth", "starting a scan: " + want_bluetooth_scan );
@@ -146,20 +151,29 @@ public class BluetoothListener extends BroadcastReceiver {
 			else { Log.i("bluetooth", "bluetooth LE scan NOT started successfully."); } }
 		else { Log.i("bluetooth", "bluetooth was not enabled."); } }
 
-	
+	/** LeScanCallback is the code that is run when a bluetooth device is sensed by a
+	 * Bluetooth LE scan. */
+	//TODO: currently recording everything, log useful data, format it etc.
 	@SuppressLint("NewApi")
-	/** Stops the scan, sets the want_bluetooth_scan to zero.
-	 *  Intelligently disables bluetooth.  */
-	public void stopScanning() {
-//		want_bluetooth_scan = false;
-		set_scan_thing(false);
-		bluetoothAdapter.stopLeScan(bluetoothCallback);
-		this.disableBluetooth();
-		Log.i("bluetooth", "stopped scan maybe?"); }
+	private LeScanCallback bluetoothCallback = new LeScanCallback() {
+		@Override
+		public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+			String data = new String( device.toString() + "\n"
+					+ "rssi: " + rssi
+					+ "scanRecord: " + scanRecord );
+			Log.i("bluetooth", data);
+			debugLog.write(data);
+		} }; 
+
 	
+		
+/*####################################################################################
+################# the onReceive Stack for bluetooth state messages ###################
+####################################################################################*/
 	
 	@Override
 	//TODO: If android allows toggling bluetooth on-off quickly, add logic to on and off state checking external state for correctness.
+	// SEE COMMENT AT TOP.
 	public synchronized void onReceive(Context context, Intent intent) {
 		String action = intent.getAction();
 		
