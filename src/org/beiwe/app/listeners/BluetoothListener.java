@@ -53,9 +53,8 @@ public class BluetoothListener extends BroadcastReceiver {
 		else { return false; } }
 	
 	
-	/**BluetoothListener
-	 * The BluetoothListener needs to gracefully handle existence issues.  We only want devices
-	 * with Bluetooth Low Energy to ever run our code.  This feature was introduced in JELLY_BEAN_MR2*/
+	/**The BluetoothListener needs to gracefully handle existence issues.  We only want devices
+	 * with Bluetooth Low Energy to ever run our code.  This feature was introduced in JELLY_BEAN_MR2.*/
 	public BluetoothListener(Context appContext) {
 		//false if version of android is too old, or bluetooth adaptor does not support Bluetooth LE
 		this.bluetoothExists = Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2 ||
