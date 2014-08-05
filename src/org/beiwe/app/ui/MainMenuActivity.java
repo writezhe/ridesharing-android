@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 public class MainMenuActivity extends Activity {
@@ -25,10 +26,16 @@ public class MainMenuActivity extends Activity {
 		
 		// Webview initiation
 		
+
+		// Initiating web view to be embedded in the page
 		WebView browser = (WebView) findViewById(R.id.main_menu_pastResults);
-		browser.setInitialScale(1);
-		browser.getSettings().setJavaScriptEnabled(true);
-		browser.setPadding(0, 0, 0, 0);
+		browser.setWebViewClient(new WebViewClient() {
+		    @Override
+		    public boolean shouldOverrideUrlLoading(WebView view, String url) {
+		            view.loadUrl(url);
+		            return true;
+		            }
+		    });
 		browser.loadUrl("http://www.google.com");
 	}
 	
