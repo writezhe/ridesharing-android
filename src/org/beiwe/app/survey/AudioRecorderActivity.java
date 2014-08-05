@@ -22,7 +22,7 @@ import android.widget.Button;
  * http://developer.android.com/guide/topics/media/audio-capture.html
  * 
  * filename
- * type of data: "voice recording" or "accereometer
+ * type of data: "voice recording" or "acceleometer"
  * start timestamp
  * stop timestamp
  * user id #
@@ -31,6 +31,7 @@ import android.widget.Button;
  */
 public class AudioRecorderActivity extends Activity {
     private static final String LOG_TAG = "AudioRecorderActivity";
+    private static String fileDirectory = null;
     private static String mFileName = null;
 
     private MediaRecorder mRecorder = null;
@@ -45,11 +46,7 @@ public class AudioRecorderActivity extends Activity {
         super.onCreate(icicle);
 		setContentView(R.layout.activity_audio_recorder);        
 
-    	Context appContext = getApplicationContext();
-    	File filesDir = appContext.getFilesDir();
-    	String path = filesDir.getAbsolutePath();
-    	mFileName = path;
-	    //mFileName = getApplicationContext().getFilesDir().getPath();
+	    fileDirectory = getApplicationContext().getFilesDir().getAbsolutePath();
         mFileName += "/audiorecordtest.mp4";
         Log.i("AudioRecorderActivity", "Filepath = " + mFileName);
     }
@@ -123,6 +120,15 @@ public class AudioRecorderActivity extends Activity {
     }
 
     
+    private String getAudioFileName() {
+		String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
+		String fileName = fileDirectory + "/audioSample" + "-" + timecode + ".mp4";
+		
+		mFileName = fileName;
+		return fileName;
+    }
+    
+    
     // Start recording from the device's microphone
     private void startRecording() {
     	currentlyRecording = true;
@@ -134,7 +140,7 @@ public class AudioRecorderActivity extends Activity {
         mRecorder.reset();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-        mRecorder.setOutputFile(mFileName);
+        mRecorder.setOutputFile(getAudioFileName());
         mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         mRecorder.setAudioChannels(1);
         mRecorder.setAudioSamplingRate(44100);
