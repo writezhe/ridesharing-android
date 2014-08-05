@@ -16,7 +16,6 @@ public class AccelerometerListener implements SensorEventListener{
 	private SensorManager accelSensorManager;
 	private Sensor accelSensor;
 	private TextFileManager accelFile = null;
-	private TextFileManager logFile = null;
 	
 	private Context appContext;
 	private PackageManager pkgManager;
@@ -37,7 +36,6 @@ public class AccelerometerListener implements SensorEventListener{
 	public AccelerometerListener(Context applicationContext){
 		this.appContext = applicationContext;
 		this.pkgManager = appContext.getPackageManager();
-		this.logFile = TextFileManager.getDebugLogFile();
 		this.accelFile = TextFileManager.getAccelFile();
 		this.accuracy = "unknown";
 		this.exists = pkgManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER);
@@ -47,17 +45,17 @@ public class AccelerometerListener implements SensorEventListener{
 			this.accelSensorManager = (SensorManager) appContext.getSystemService(Context.SENSOR_SERVICE);
 			this.accelSensor = accelSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
-			if (accelSensorManager == null ){
+			if (accelSensorManager == null ){ 
 				Log.i("accelerometer does not exist??", " !!!!!!!!!!!!!!!!!! " );
-				exists = false;	} }
-	}
+				exists = false;	}
+	} }
 	
 	/** Use the public toggle() function to enable/disable */ 
-	private synchronized void turn_on() {
+	public synchronized void turn_on() {
 		accelSensorManager.registerListener(this, accelSensor, SensorManager.SENSOR_DELAY_NORMAL);
 		enabled = true;	}
 	/** Use the public toggle() function to enable/disable */
-	private synchronized void turn_off(){
+	public synchronized void turn_off(){
 		accelSensorManager.unregisterListener(this);
 		enabled = false; }
 	

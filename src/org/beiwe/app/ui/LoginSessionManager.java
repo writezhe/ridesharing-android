@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.beiwe.app.DebugInterfaceActivity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -29,7 +30,7 @@ public class LoginSessionManager {
     private static final String IS_LOGIN = "IsLoggedIn";
    
     // Public names for when inspecting the user's details. Used to call from outside the class.
-    public static final String KEY_NAME = "name";
+    public static final String KEY_NAME = "username";
     public static final String KEY_PASSWORD = "password";
      
     /**
@@ -50,7 +51,6 @@ public class LoginSessionManager {
     * @param password
     */
     public void createLoginSession(String username, String password){
-        // TODO: Hash function goes here!
     	editor.putBoolean(IS_LOGIN, true);
         editor.putString(KEY_NAME, username);
         editor.putString(KEY_PASSWORD, password);
@@ -68,7 +68,7 @@ public class LoginSessionManager {
     public void checkLogin(){
     	Log.i("SessionManager", "Check if already logged in");
     	if(this.isLoggedIn()) {
-    		Intent intent = new Intent(appContext, DebugInterfaceActivity.class);
+    		Intent intent = new Intent(appContext, MainMenuActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             appContext.startActivity(intent);
         } else {
@@ -79,7 +79,7 @@ public class LoginSessionManager {
                 appContext.startActivity(intent);        	
         	} else {
             	Log.i("SessionManager", "First time logged in");
-            	Intent intent = new Intent(appContext, RegisterActivity.class);
+            	Intent intent = new Intent(appContext, MainMenuActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 appContext.startActivity(intent);
         	}
@@ -91,9 +91,7 @@ public class LoginSessionManager {
      * @return
      */
     public HashMap<String, String> getUserDetails(){
-    	
-    	// TODO: Eventually this will actually be a hash-hash combination
-    	HashMap<String, String> user = new HashMap<String, String>();
+       	HashMap<String, String> user = new HashMap<String, String>();
         user.put(KEY_NAME, pref.getString(KEY_NAME, null));
         user.put(KEY_PASSWORD, pref.getString(KEY_PASSWORD, null));
         Log.i("SessionManager", user.toString());
@@ -109,8 +107,8 @@ public class LoginSessionManager {
     	editor.putBoolean(IS_LOGIN, false);
         editor.commit();
         Intent intent = new Intent(appContext, LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         appContext.startActivity(intent);
     }
      
@@ -121,4 +119,9 @@ public class LoginSessionManager {
     	Log.i("SessionManager", "" + pref.getBoolean(IS_LOGIN, false));
     	return pref.getBoolean(IS_LOGIN, false);
     }
+
+	public void logoutUserPassive() {
+		editor.putBoolean(IS_LOGIN, false);
+		editor.commit();		
+	}
 }

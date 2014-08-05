@@ -1,5 +1,4 @@
- package org.beiwe.app.listeners;
- 
+package org.beiwe.app.listeners;
 
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.TextFileManager;
@@ -13,6 +12,8 @@ import android.provider.CallLog;
 import android.util.Log;
 
 // TODO: What happens to a call that is deleted by the user from the call history
+// TODO: We need to see if any broadcastReceivers need to be instantiated
+// TODO: BootLogger does not require instantiation
 
 public class CallLogger extends ContentObserver {
 
@@ -67,7 +68,7 @@ public class CallLogger extends ContentObserver {
 			idOfLastCall = cursor.getInt(cursor.getColumnIndex(id));
 			Log.i("CallLogger", "Last recorded ID" + idOfLastCall);
 			for (int i = 0; i < fields.length; i++) {
-				builder.append(fields[i] + TextFileManager.delimiter);
+				builder.append(fields[i] + TextFileManager.DELIMITER);
 			}
 			// TODO: delete this line, because we only print the header line once
 			//formatThenAddToFile(builder);
@@ -91,7 +92,7 @@ public class CallLogger extends ContentObserver {
 			for (int i = 0; i < fields.length; i++) {
 				if(i == 0) { // If dealing with a phone, we need to hash it
 					builder.append(EncryptionEngine.hashPhoneNumber(cursor.getString(cursor.getColumnIndex(fields[i]))));
-					builder.append(TextFileManager.delimiter);
+					builder.append(TextFileManager.DELIMITER);
 				} else if(i == 1) { // If dealing with a type - we need to translate it to real words
 					int type = cursor.getInt(cursor.getColumnIndex(fields[i]));
 					switch(type) {
@@ -107,11 +108,11 @@ public class CallLogger extends ContentObserver {
 						builder.append("Missed Call");
 						break;
 					}
-					builder.append(TextFileManager.delimiter);
+					builder.append(TextFileManager.DELIMITER);
 				}
 				else { // Otherwise just append the string to the builder
 					builder.append(cursor.getString(cursor.getColumnIndex(fields[i])));
-					builder.append(TextFileManager.delimiter);
+					builder.append(TextFileManager.DELIMITER);
 				}
 			}
  
@@ -143,7 +144,7 @@ public class CallLogger extends ContentObserver {
 	 * @param logFile
  	 */
 	private void formatThenAddToFile(StringBuilder stringBuilder) {
-		stringBuilder.deleteCharAt(stringBuilder.lastIndexOf(TextFileManager.delimiter));
+		stringBuilder.deleteCharAt(stringBuilder.lastIndexOf(TextFileManager.DELIMITER));
 		stringBuilder.append("\n");
 		
 		String result = stringBuilder.toString();

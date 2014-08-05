@@ -1,9 +1,12 @@
 package org.beiwe.app.ui;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.R;
+import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
 import android.annotation.SuppressLint;
@@ -67,16 +70,19 @@ public class LoginActivity extends Activity {
 	 * 
 	 * Notice there is a direct access to SharedPreferences.
 	 * @param view
+	 * @throws UnsupportedEncodingException 
+	 * @throws NoSuchAlgorithmException 
 	 */
-	public void loginSequence(View view) {
+	public void loginSequence(View view) throws NoSuchAlgorithmException, UnsupportedEncodingException {
 		if (session.isLoggedIn()) {
 			Log.i("LoginActivity", "" + session.isLoggedIn());
 			startActivity(new Intent(appContext, DebugInterfaceActivity.class));
 			finish();
 		} else {
-			// TODO: Hashing mechanism goes here for username password combination
+			// Strings that have to do with username and password
 			String username = userName.getText().toString();
 			String password = passWord.getText().toString();
+			String encryptedPassword = EncryptionEngine.hash(password);
 			
 			HashMap<String, String> details = session.getUserDetails();
 			String prefUsername = details.get(LoginSessionManager.KEY_NAME);
@@ -90,12 +96,12 @@ public class LoginActivity extends Activity {
 					AlertsManager.showAlert("Invalid username", this);
 					Toast.makeText(appContext, "Invalid username", 5).show();
 				}
-				else if(password.equals(prefPassword)){ 
-					session.createLoginSession(username, password);
+				else if(encryptedPassword.equals(prefPassword)){ 
+					session.createLoginSession(username, encryptedPassword);
 					startActivity(new Intent(appContext, DebugInterfaceActivity.class));
 					finish();
-				} else {AlertsManager.showAlert("Incorrect username password combination", this);}
-			} else {AlertsManager.showAlert("Login Failed", this);} // In case login completely fails
+				} else { AlertsManager.showAlert("Incorrect username password combination", this);}
+			} else { AlertsManager.showAlert("Login Failed", this); } // In case login completely fails
 		}
 	}
 	

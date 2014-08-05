@@ -33,10 +33,10 @@ public class AnswerRecorder {
 	 */
 	public static void recordAnswer(String answer, QuestionDescription questionDescription) {
 		String message = "";
-		message += sanitizeString(questionDescription.getId()) + TextFileManager.delimiter;
-		message += sanitizeString(questionDescription.getType()) + TextFileManager.delimiter;
-		message += sanitizeString(questionDescription.getText()) + TextFileManager.delimiter;
-		message += sanitizeString(questionDescription.getOptions()) + TextFileManager.delimiter;
+		message += sanitizeString(questionDescription.getId()) + TextFileManager.DELIMITER;
+		message += sanitizeString(questionDescription.getType()) + TextFileManager.DELIMITER;
+		message += sanitizeString(questionDescription.getText()) + TextFileManager.DELIMITER;
+		message += sanitizeString(questionDescription.getOptions()) + TextFileManager.DELIMITER;
 		message += sanitizeString(answer);
 		Log.i("AnswerRecorder", message);
 		
@@ -67,7 +67,7 @@ public class AnswerRecorder {
 		/** Handles the logging, includes a new line for the CSV files.
 		 * This code is otherwised reused everywhere.*/
 		Long javaTimeCode = System.currentTimeMillis();
-		String line = javaTimeCode.toString() + TextFileManager.delimiter + message + "\n"; 
+		String line = javaTimeCode.toString() + TextFileManager.DELIMITER + message + "\n"; 
 
 		Log.i("AnswerRecorder", line);
 		TextFileManager.getSurveyResponseFile().write(line);

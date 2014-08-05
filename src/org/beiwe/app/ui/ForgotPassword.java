@@ -1,8 +1,11 @@
 package org.beiwe.app.ui;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 import org.beiwe.app.R;
+import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
 import android.annotation.SuppressLint;
@@ -65,13 +68,16 @@ public class ForgotPassword extends Activity {
 	 *  
 	 *  If the user succeeds in logging in, the activity finishes.
 	 * @param view
+	 * @throws UnsupportedEncodingException 
+	 * @throws NoSuchAlgorithmException 
 	 */
-	public void forgotPasswordSequence(View view) {
+	public void forgotPasswordSequence(View view) throws NoSuchAlgorithmException, UnsupportedEncodingException {
 		// Variable assignments
 		String usernameStr = username.getText().toString();
 		String userIdStr = userId.getText().toString();
 		String passwordStr = password.getText().toString();
 		String passwordRepeatStr = passwordRepeat.getText().toString();
+		String encryptedPassword = EncryptionEngine.hash(passwordStr);
 
 		// Encapsulated user's details as saved in the SharedPreferences
 		HashMap<String, String> details = session.getUserDetails();
@@ -81,19 +87,19 @@ public class ForgotPassword extends Activity {
 		Log.i("ForgotPassword_getDetails", details.get(LoginSessionManager.KEY_PASSWORD));
 
 		// Cases: username mismatch, userID mismatch, passwords mismatch, and repeat password with actual password mismatch. 
-		if(!(details.get(LoginSessionManager.KEY_NAME).equals(usernameStr.trim()))) {
-			AlertsManager.showAlert("Invalid username, try again",  this);
+		if( ! ( details.get(LoginSessionManager.KEY_NAME ).equals( usernameStr.trim() ) ) ) {
+			AlertsManager.showAlert( "Invalid username, try again",  this );
 		} else if (userIdStr.trim().length() <= 0) {
-			AlertsManager.showAlert("Invalid user ID, try again", this);
-		} else if(!(details.get(LoginSessionManager.KEY_NAME).equals(usernameStr.trim()))) {
-			if(details.get(LoginSessionManager.KEY_PASSWORD) != null && details.get(usernameStr) != passwordStr) {
-				AlertsManager.showAlert("Invalid password, try again", this);
+			AlertsManager.showAlert( "Invalid user ID, try again", this );
+		} else if( ! ( details.get( LoginSessionManager.KEY_NAME ).equals(usernameStr.trim() ) ) ) {
+			if( !details.get( LoginSessionManager.KEY_PASSWORD ).equals( encryptedPassword ) ) {
+				AlertsManager.showAlert( "Invalid password, try again", this );
 			}
-		} else if (!(passwordRepeatStr.equals(passwordStr))) {
-			AlertsManager.showAlert("Passwords mismatch, try again", this);
+		} else if ( ! (passwordRepeatStr.equals( passwordStr) ) ) {
+			AlertsManager.showAlert( "Passwords mismatch, try again", this );
 		} else { // Start new activity
-			session.createLoginSession(usernameStr, passwordStr);
-			startActivity(new Intent(appContext, LoginActivity.class));
+			session.createLoginSession( usernameStr, encryptedPassword );
+			startActivity( new Intent(appContext, LoginActivity.class ) );
 			finish();
 		}
 	}

@@ -6,6 +6,7 @@ import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.storage.Upload;
 import org.beiwe.app.survey.AudioRecorderActivity;
 import org.beiwe.app.survey.SurveyActivity;
+import org.beiwe.app.ui.AppNotifications;
 import org.beiwe.app.ui.LoginSessionManager;
 
 import android.app.Activity;
@@ -27,12 +28,19 @@ public class DebugInterfaceActivity extends Activity {
 	AccelerometerListener anAccelerometerListener = null;
 	//test variables of our classes
 	
+	private LoginSessionManager sessionManager = null; 
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_debug_interface);
 		appContext = this.getApplicationContext();
+		sessionManager = new LoginSessionManager(appContext);
+		if (!sessionManager.isLoggedIn()) {
+			sessionManager.logoutUser();
+			finish();
+		}
 		
 		//start background service
 		//NOTE: the background service is started on a separate Thread (process? don't care)
@@ -41,6 +49,16 @@ public class DebugInterfaceActivity extends Activity {
 		// access a FileManager object: TextFileManager.getDebugLogFile().some_function();
 		Intent backgroundProcess = new Intent(this, BackgroundProcess.class);
 		appContext.startService(backgroundProcess);
+	}
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		sessionManager = new LoginSessionManager(appContext);
+		if (!sessionManager.isLoggedIn()) {
+			sessionManager.logoutUser();
+			finish();
+		}
 	}
 	
 
@@ -99,13 +117,13 @@ public class DebugInterfaceActivity extends Activity {
 	}
 	
 	public void toggleAccelerometer(View view) {
-		AccelerometerListener accel = BackgroundProcess.accelerometerListener;
-		Log.i("Toggle Accelerometer button pressed", "Accel state: " + accel.toggle().toString() );
+		Boolean accel_state = BackgroundProcess.BackgroundHandle.accelerometerListener.toggle();
+		Log.i("Toggle Accelerometer button pressed", "Accel state: " + accel_state.toString() );
 	}
 	
 	public void toggleGPS(View view) {
-		GPSListener gps = BackgroundProcess.gpsListener;
-		Log.i("Toggle GPS button pressed", "GPS state: " + gps.toggle().toString() );
+		Boolean gps_state = BackgroundProcess.BackgroundHandle.gpsListener.toggle();
+		Log.i("Toggle GPS button pressed", "GPS state: " + gps_state.toString() );
 	}
 	
 	public void signOut (View view) {
@@ -114,7 +132,20 @@ public class DebugInterfaceActivity extends Activity {
 		finish();
 	}
 	
+	public void notificationSender (View view) {
+		AppNotifications.displaySurveyNotification(appContext);
+		Log.i("DebugInterfaceActivity", "Notification Displayed");
+	}
 	
+	public void bluetoothButtonStart (View view){
+		BackgroundProcess.BackgroundHandle.bluetoothListener.enableBLEScan();
+	}
 
+	public void bluetoothButtonStop (View view){
+		BackgroundProcess.BackgroundHandle.bluetoothListener.disableBLEScan();
+	}
 	
+	public void buttonTimer(View view) {
+		
+	}
 }

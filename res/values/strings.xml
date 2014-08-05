@@ -3,7 +3,7 @@
 
     <!--
     Reference strings in Java code using a line like this:
-    appContext.getResources().getString(R.string.name_of_string)
+    appContext.getResources().getString(R.string.name_of_string)
     -->
     <!-- General Strings -->
     <string name="app_name">Beiwe</string>
@@ -19,12 +19,16 @@
     <string name="button_record">Record</string>
     <string name="button_delete_everything">Delete Everything</string>
 
-    <!-- Main Menu Strings -->
+    <!-- Debug Menu Strings -->
     <string name="title_activity_survey">SurveyActivity</string>
     <string name="button_go_to_survey">Take Survey</string>
     <string name="button_toggle_gps">Toggle GPS</string>
     <string name="button_toggle_accelerometer">Toggle Accelerometer</string>
+    <string name="button_notify">Notify</string>
     <string name="signout">Sign out</string>
+    <string name="bluetooth_button_start">Start Bluetooth Scan</string>
+    <string name="bluetooth_button_stop">Stop Bluetooth Scan</string>
+    <string name="timer_button">Timer Button?</string>
 
     <!-- Error Messages -->
     <string name="question_error_text">If you are reading this, something broke. Please contact the study administrators, and tell them that there is a bug in the survey!</string>
@@ -67,5 +71,12 @@
     <string name="survey_notification_placeholder_text_template">You said %1$s and lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam non enim magna. Morbi dictum, velit vel semper venenatis, magna odio volutpat velit, at ullamcorper nulla lacus sed turpis. Pellentesque vitae metus elit, nec tincidunt tellus. Integer sed nisl sem, ullamcorper ornare lacus. Duis ac mauris sed massa congue volutpat. Donec sed erat sit amet turpis viverra rhoncus sit amet nec magna. Donec lacinia ligula at libero volutpat volutpat nec nec tortor.</string>
     <string name="action_share">Share</string>
     <string name="action_reply">Reply</string>
+    <string name="title_activity_main_menu">MainMenuActivity</string>
+    
+    <!-- Main menu strings -->
+    <string name="main_menu_sign_out">Sign out</string>
+    <string name="main_menu_take_survey">Take Survey</string>
+    <string name="main_menu_record_message">Record Message</string>
+    <string name="main_menu_call_hotline">Call Hotline</string>
 
 </resources>

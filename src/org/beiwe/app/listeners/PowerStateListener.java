@@ -2,6 +2,8 @@ package org.beiwe.app.listeners;
 
 import org.beiwe.app.BackgroundProcess;
 import org.beiwe.app.storage.TextFileManager;
+import org.beiwe.app.Timer;
+
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -22,7 +24,7 @@ public class PowerStateListener extends BroadcastReceiver {
 		Log.i("PowerStateListener", message);
 		Long javaTimeCode = System.currentTimeMillis();
 //		TextFileManager.getDebugLogFile().write(javaTimeCode.toString() + "," + message +"\n" ); 
-		TextFileManager.getPowerStateFile().write(javaTimeCode.toString() + TextFileManager.delimiter + message + '\n');
+		TextFileManager.getPowerStateFile().write(javaTimeCode.toString() + TextFileManager.DELIMITER + message + '\n');
 	}
 	
 	/** In order to acces the functions of the background Process we need to create a new constructor,
@@ -58,5 +60,7 @@ public class PowerStateListener extends BroadcastReceiver {
 			backgroundProcess.doAirplaneModeThings();  
 			Log.i("anything", "something");
 		}
+		
+		// TODO: Record WIFI status
 	}
 }

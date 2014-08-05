@@ -1,0 +1,58 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="org.beiwe.app.ui.MainMenuActivity" >
+
+    <WebView
+        android:id="@+id/main_menu_pastResults"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/main_menu_voiceRecord"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:id="@+id/main_menu_signOutButton"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/main_menu_voiceRecord"
+        android:layout_marginBottom="20dp"
+        android:onClick="signOutButton"
+        android:text="@string/main_menu_sign_out" />
+
+    <Button
+        android:id="@+id/main_menu_surveyButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/main_menu_voiceRecord"
+        android:layout_alignBottom="@+id/main_menu_voiceRecord"
+        android:layout_alignLeft="@+id/main_menu_pastResults"
+        android:onClick="takeSurvey"
+        android:text="@string/main_menu_take_survey" />
+
+    <Button
+        android:id="@+id/main_menu_voiceRecord"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/main_menu_signOutButton"
+        android:layout_alignRight="@+id/main_menu_pastResults"
+        android:layout_marginBottom="69dp"
+        android:onClick="recordMessage"
+        android:text="@string/main_menu_record_message" />
+
+    <Button
+        android:id="@+id/main_menu_hotline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/main_menu_surveyButton"
+        android:layout_alignTop="@+id/main_menu_signOutButton"
+        android:onClick="callHotline"
+        android:text="@string/main_menu_call_hotline" />
+
+</RelativeLayout>

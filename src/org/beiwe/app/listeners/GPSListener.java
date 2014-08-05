@@ -26,9 +26,7 @@ import android.util.Log;
 public class GPSListener implements LocationListener {
 	
 	public static String header = "time, latitude, longitude, altitude, accuracy\n";
-	
 	private TextFileManager GPSFile;
-	private TextFileManager logFile;
 	
 	private Context appContext;
 	private PackageManager pkgManager;
@@ -55,7 +53,6 @@ public class GPSListener implements LocationListener {
 		this.appContext = appContext;
 		pkgManager = this.appContext.getPackageManager();
 		GPSFile = TextFileManager.getGPSFile();
-		logFile = TextFileManager.getDebugLogFile();
 		
 		trueGPS = pkgManager.hasSystemFeature(PackageManager.FEATURE_LOCATION_GPS);
 		networkGPS = pkgManager.hasSystemFeature(PackageManager.FEATURE_LOCATION_NETWORK);
@@ -70,7 +67,7 @@ public class GPSListener implements LocationListener {
 	}
 	
 	/** Turns on GPS providers, provided they are accessible. */
-	private synchronized void turn_on(){
+	public synchronized void turn_on(){
 		//if both DNE, return false.
 		if ( !trueGPS & !networkGPS ) {
 			Log.i("GPS", "GPS was told to turn on, but it is not available.");
@@ -88,7 +85,7 @@ public class GPSListener implements LocationListener {
 			enabled = true; }
 	}
 	
-	private synchronized void turn_off(){
+	public synchronized void turn_off(){
 		// pretty confident this cannot fail.
 		locationManager.removeUpdates(this);
 		enabled = false;
@@ -106,10 +103,10 @@ public class GPSListener implements LocationListener {
 	public void onLocationChanged(Location location) {		
 		Long javaTimeCode = System.currentTimeMillis();
 		//order: time, latitude, longitude, altitude, horizontal_accuracy\n
-		String data = javaTimeCode.toString() + TextFileManager.delimiter
-				+ location.getLatitude() + TextFileManager.delimiter
-				+ location.getLongitude() + TextFileManager.delimiter
-				+ location.getAltitude() + TextFileManager.delimiter
+		String data = javaTimeCode.toString() + TextFileManager.DELIMITER
+				+ location.getLatitude() + TextFileManager.DELIMITER
+				+ location.getLongitude() + TextFileManager.DELIMITER
+				+ location.getAltitude() + TextFileManager.DELIMITER
 				+ location.getAccuracy() + '\n' ;
 		//note, altitude is notoriously inaccurate, getAccuracy only applies to latitude/longitude
 		GPSFile.write(data);
