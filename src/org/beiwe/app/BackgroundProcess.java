@@ -55,8 +55,8 @@ public class BackgroundProcess extends Service {
 		TextFileManager.start(appContext);
 		
 		gpsListener = new GPSListener(appContext);
-		accelerometerListener = new AccelerometerListener(appContext);
-		bluetoothListener = new BluetoothListener();		
+		accelerometerListener = new AccelerometerListener( appContext );
+		bluetoothListener = new BluetoothListener( this.appContext );		
 		timer = new Timer(this);
 
 		startSmsSentLogger();
@@ -152,7 +152,7 @@ public class BackgroundProcess extends Service {
 ####################       Contlrol Message Logic         #####################
 #############################################################################*/
 //TODO: make this a separate class, "control receiver" or something
-	
+//NOTE: the static BackgroundHandle is only necessary if we move this into a separate class.
 	BroadcastReceiver controlReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context appContext, Intent intent) {
