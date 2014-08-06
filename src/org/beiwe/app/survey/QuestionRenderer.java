@@ -5,6 +5,8 @@ import java.util.Arrays;
 import org.beiwe.app.R;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff.Mode;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -75,7 +77,7 @@ public class QuestionRenderer {
 			String questionText, int numberOfValues, int defaultValue) {
 		
 		LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_slider_question, null);
-		SeekBar slider = (SeekBar) question.findViewById(R.id.slider);
+		SeekBarEditableThumb slider = (SeekBarEditableThumb) question.findViewById(R.id.slider);
 		
 		// Set the text of the question itself
 		TextView questionTextView = (TextView) question.findViewById(R.id.questionText);
@@ -334,16 +336,17 @@ public class QuestionRenderer {
 	 * default value. 
 	 * @param slider
 	 */
-	private void makeSliderInvisibleUntilTouched(SeekBar slider) {
+	private void makeSliderInvisibleUntilTouched(SeekBarEditableThumb slider) {
 		// Before the user has touched the slider, make the "thumb" transparent/ almost invisible
-		slider.getThumb().mutate().setAlpha(50);
+		// TODO: debug this!  It works well on Josh's phone (API 16) and not well on Zags's phone (Android 2.3.6).
+		slider.getSeekBarThumb().mutate().setAlpha(0);
 		
 		slider.setOnTouchListener(new OnTouchListener() {	
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				// When the user touches the slider, make the "thumb" opaque and fully visible
-				SeekBar slider = (SeekBar) v;
-				slider.getThumb().mutate().setAlpha(255);
+				SeekBarEditableThumb slider = (SeekBarEditableThumb) v;
+				slider.getSeekBarThumb().mutate().setAlpha(255);
 				return false;
 			}
 		});
