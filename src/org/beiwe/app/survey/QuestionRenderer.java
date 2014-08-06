@@ -5,8 +5,12 @@ import java.util.Arrays;
 import org.beiwe.app.R;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -101,6 +105,9 @@ public class QuestionRenderer {
 		
 		// Set the slider to listen for and record user input
 		slider.setOnSeekBarChangeListener(inputRecorder.new SliderListener(questionDescription));
+		
+		// Make the slider invisible until it's touched (so there's effectively no default value)
+		makeSliderInvisibleUntilTouched(slider);
 		
 		return question;
 	}
@@ -315,6 +322,31 @@ public class QuestionRenderer {
 		
 		// Add the set of numeric labels to the question
 		question.addView(numbersLabel, index);		
+	}
+	
+	
+	/**
+	 * Make the "thumb" (the round circle/progress knob) of a Slider almost
+	 * invisible until the user touches it.  This way the user is forced to
+	 * answer every slider question; otherwise, we would not be able to tell
+	 * the difference between a user ignoring a slider and a user choosing to
+	 * leave a slider at the default value.  This makes it like there is no
+	 * default value. 
+	 * @param slider
+	 */
+	private void makeSliderInvisibleUntilTouched(SeekBar slider) {
+		// Before the user has touched the slider, make the "thumb" transparent/ almost invisible
+		slider.getThumb().mutate().setAlpha(50);
+		
+		slider.setOnTouchListener(new OnTouchListener() {	
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				// When the user touches the slider, make the "thumb" opaque and fully visible
+				SeekBar slider = (SeekBar) v;
+				slider.getThumb().mutate().setAlpha(255);
+				return false;
+			}
+		});
 	}
 		
 }
