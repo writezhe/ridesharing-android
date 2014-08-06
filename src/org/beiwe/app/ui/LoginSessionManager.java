@@ -39,7 +39,7 @@ public class LoginSessionManager {
      */
 	public LoginSessionManager(Context context){
         this.appContext = context;
-        Log.i("SessionManager", "Attempting to get SharedPreferences");
+//        Log.i("SessionManager", "Attempting to get SharedPreferences");
         pref = appContext.getSharedPreferences(PREF_NAME, PRIVATE_MODE); //Shared Preferences is set to private mode
         editor = pref.edit();
         editor.commit();
@@ -55,8 +55,8 @@ public class LoginSessionManager {
         editor.putString(KEY_NAME, username);
         editor.putString(KEY_PASSWORD, password);
         editor.commit();
-        Log.i("SessionManager", pref.getString(KEY_NAME, "Bobby McGee")); // Saved username
-        Log.i("SessionManager", pref.getString(KEY_PASSWORD, "DefPassword")); // Saved password
+//        Log.i("SessionManager", pref.getString(KEY_NAME, "Bobby McGee")); // Saved username
+//        Log.i("SessionManager", pref.getString(KEY_PASSWORD, "DefPassword")); // Saved password
     }   
      
     /**
@@ -116,7 +116,7 @@ public class LoginSessionManager {
      * Quick check for login. 
      * **/
     public boolean isLoggedIn(){
-    	Log.i("SessionManager", "" + pref.getBoolean(IS_LOGIN, false));
+//    	Log.i("SessionManager", "" + pref.getBoolean(IS_LOGIN, false));
     	return pref.getBoolean(IS_LOGIN, false);
     }
 

@@ -9,7 +9,6 @@ import android.bluetooth.BluetoothAdapter.LeScanCallback;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
 
@@ -38,7 +37,6 @@ public class BluetoothListener extends BroadcastReceiver {
 	
 	//bluetoothExists can be set to false if the device does not meet our needs.
 	private Boolean bluetoothExists;
-	
 	private Boolean scanActive = false;
 	
 	//Stateful variables
@@ -46,24 +44,23 @@ public class BluetoothListener extends BroadcastReceiver {
 	private Boolean internalBluetoothState;
 	//Log file
 	private TextFileManager bluetoothLog;
-	private TextFileManager debugLog;
+//	private TextFileManager debugLog;
 	
 	public Boolean isBluetoothEnabled() { 
 		if (bluetoothExists) { return bluetoothAdapter.isEnabled(); }
 		else { return false; } }
 	
 	
-	/**The BluetoothListener needs to gracefully handle existence issues.  We only want devices
-	 * with Bluetooth Low Energy to ever run our code.  This feature was introduced in JELLY_BEAN_MR2.*/
-	public BluetoothListener(Context appContext) {
-		//false if version of android is too old, or bluetooth adaptor does not support Bluetooth LE
-		this.bluetoothExists = Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2 ||
-		    	!appContext.getPackageManager().hasSystemFeature( PackageManager.FEATURE_BLUETOOTH_LE );
-	    
+	/**The BluetoothListener needs to gracefully handle existence issues - we only want devices
+	 * with Bluetooth Low Energy to ever run our code. BLE/Bluetooth 4.0 was introduced in JELLY_BEAN_MR2,
+	 * so we check for that too, and we check that ANY bluetooth device exists. */
+	public BluetoothListener() {
 		this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-		if (!bluetoothExists || bluetoothAdapter == null ) {  
-			this.bluetoothExists = false; //set to false just to be safe...
+		//We have to check if the BluetoothAdaptor is null, or if the device is not running api 18+  
+		if ( bluetoothAdapter == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2 ) {
+			this.bluetoothExists = false;
 			return; }
+		else { bluetoothExists = true; }
 		
 		//set the external state variable to the state the device was in on instantiation,
 		//and set the internernal state variable to be the same.
@@ -71,7 +68,8 @@ public class BluetoothListener extends BroadcastReceiver {
 		this.internalBluetoothState = this.externalBluetoothState;
 		
 		this.bluetoothLog = TextFileManager.getBluetoothLogFile();
-		this.debugLog = TextFileManager.getDebugLogFile();
+//		this.debugLog = TextFileManager.getDebugLogFile();
+//		Log.i("BluetoothListener", "bluetooth constructor finished");
 	}
 	
 	
@@ -80,7 +78,7 @@ public class BluetoothListener extends BroadcastReceiver {
 	//TODO: add check for devices connected, stop disable process if any devices are connected.
 	private Boolean disableBluetooth() {
 		if (!bluetoothExists) { return false; }
-		
+		Log.i("BluetoothListener", "disable bluetooth.");
 		internalBluetoothState = false;
 		if ( !externalBluetoothState ) { //if the outside world and us agree that it should be off, turn it off
 			this.bluetoothAdapter.disable();
@@ -92,7 +90,7 @@ public class BluetoothListener extends BroadcastReceiver {
 	 * @return True if bluetooth exists, false if bluetooth does not exist. */
 	private Boolean enableBluetooth() {
 		if (!bluetoothExists) { return false; }
-		
+		Log.i("BluetoothListener", "enable bluetooth.");
 		internalBluetoothState = true;
 		if ( !externalBluetoothState ){  //if we want it on and the external world wants it off, turn it on. (we retain state) 
 			this.bluetoothAdapter.enable();
@@ -108,7 +106,7 @@ public class BluetoothListener extends BroadcastReceiver {
 	@SuppressLint("NewApi")
 	public void enableBLEScan(){
 		if (!bluetoothExists) { return; }
-		
+		Log.i("BluetoothListener", "enable BLE scan.");
 		// set the scan variable, enable Bluetooth.
 		scanActive = true;
 		if ( isBluetoothEnabled() ) { tryScanning(); }
@@ -122,6 +120,8 @@ public class BluetoothListener extends BroadcastReceiver {
 	 * Note: we cannot actually guarantee the scan has stopped, that function returns void. */
 	@SuppressLint("NewApi")
 	public void disableBLEScan() {
+		if (!bluetoothExists) { return; }
+		Log.i("BluetoothListener", "disable BLE scan.");
 		scanActive = false;
 		bluetoothAdapter.stopLeScan(bluetoothCallback);
 		this.disableBluetooth(); 
