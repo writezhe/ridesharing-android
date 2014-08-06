@@ -36,11 +36,6 @@ public class DebugInterfaceActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_debug_interface);
 		appContext = this.getApplicationContext();
-		sessionManager = new LoginSessionManager(appContext);
-		if (!sessionManager.isLoggedIn()) {
-			sessionManager.logoutUser();
-			finish();
-		}
 		
 		//start background service
 		//NOTE: the background service is started on a separate Thread (process? don't care)
@@ -51,16 +46,16 @@ public class DebugInterfaceActivity extends Activity {
 		appContext.startService(backgroundProcess);
 	}
 	
-	@Override
-	public void onResume() {
-		super.onResume();
-		sessionManager = new LoginSessionManager(appContext);
-		if (!sessionManager.isLoggedIn()) {
-			sessionManager.logoutUser();
-			finish();
-		}
-	}
-	
+//	@Override
+//	public void onResume() {
+//		super.onResume();
+//		sessionManager = new LoginSessionManager(appContext);
+//		if (!sessionManager.isLoggedIn()) {
+//			sessionManager.logoutUser();
+//			finish();
+//		}
+//	}
+//	
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

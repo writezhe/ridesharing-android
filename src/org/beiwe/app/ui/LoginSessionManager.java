@@ -76,7 +76,7 @@ public class LoginSessionManager {
         	if (!this.isLoggedIn() && pref.contains(KEY_NAME)) {
         		Intent intent = new Intent(appContext, LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                appContext.startActivity(intent);        	
+                appContext.startActivity(intent);      	
         	} else {
             	Log.i("SessionManager", "First time logged in");
             	Intent intent = new Intent(appContext, DebugInterfaceActivity.class);
