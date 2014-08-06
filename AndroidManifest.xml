@@ -86,7 +86,7 @@
 
         <activity
             android:name=".survey.SurveyActivity"
-            android:configChanges="orientation"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_survey" >
         </activity>
         <activity
