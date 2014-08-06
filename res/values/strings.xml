@@ -3,7 +3,7 @@
 
     <!--
     Reference strings in Java code using a line like this:
-    appContext.getResources().getString(R.string.name_of_string)
+    appContext.getResources().getString(R.string.name_of_string)
     -->
     <!-- General Strings -->
     <string name="app_name">Beiwe</string>
@@ -72,11 +72,18 @@
     <string name="action_share">Share</string>
     <string name="action_reply">Reply</string>
     <string name="title_activity_main_menu">MainMenuActivity</string>
-    
+
     <!-- Main menu strings -->
     <string name="main_menu_sign_out">Sign out</string>
     <string name="main_menu_take_survey">Take Survey</string>
     <string name="main_menu_record_message">Record Message</string>
     <string name="main_menu_call_hotline">Call Hotline</string>
+    <string name="title_activity_voice_recording">VoiceRecording</string>
+    
+    <!-- Recording Activity -->
+    <string name="record_activity_error_message">If you\'re seeing this, it means something broke. Please contact the administrator</string>
+    <string name="record_activity_button">Press here to record</string>
+	<string name="record_activity_playback">Play recording</string> 
+    
 
 </resources>
