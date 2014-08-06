@@ -67,6 +67,10 @@ public class BackgroundProcess extends Service {
 		startCallLogger();
 		startPowerStateListener();
 		
+		DeviceInfo register = new DeviceInfo(appContext);
+		
+		Log.i("thingy", register.androidID);
+		Log.i("other thingy", register.bluetoothMAC);
 		//startTimers();
 		//startControlMessageReceiver();
 	}

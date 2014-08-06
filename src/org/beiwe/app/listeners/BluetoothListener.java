@@ -19,8 +19,8 @@ import android.util.Log;
 	The UI does not allow toggling bluetooth on and off quickly.  It waits for the turning on/off state to finish.
 	There is about a ... half second? lag between the turning on/off state broadcast and the actually on/off broadcast.     
 
-	LG G2 does not interrupt the whole process of turning off and turning on :) There is a lag of about a half a second in
-	between phases
+LG G2 does not interrupt the whole process of turning off and turning on :) There is a lag of about a half a second in
+between phases
 
 https://developer.android.com/guide/topics/connectivity/bluetooth-le.html
 If you want to declare that your app is available to BLE-capable devices only, include the following in your app's manifest:
@@ -32,6 +32,7 @@ If you want to declare that your app is available to BLE-capable devices only, i
  * @author elijones */
  
 public class BluetoothListener extends BroadcastReceiver {
+	public static String header = "timestamp, rssi";
 	//Base
 	private BluetoothAdapter bluetoothAdapter;
 	
@@ -46,7 +47,7 @@ public class BluetoothListener extends BroadcastReceiver {
 	private TextFileManager bluetoothLog;
 //	private TextFileManager debugLog;
 	
-	public Boolean isBluetoothEnabled() { 
+	public Boolean isBluetoothEnabled() {
 		if (bluetoothExists) { return bluetoothAdapter.isEnabled(); }
 		else { return false; } }
 	
@@ -80,11 +81,16 @@ public class BluetoothListener extends BroadcastReceiver {
 		if (!bluetoothExists) { return false; }
 		Log.i("BluetoothListener", "disable bluetooth.");
 		internalBluetoothState = false;
+		if ( bluetoothAdapter.getBondedDevices().isEmpty() ) {
+			Log.i("BluetoothListener", "found a bonded bluetooth device, will not be turning off bluetooth.");
+			externalBluetoothState = true; }
+		
 		if ( !externalBluetoothState ) { //if the outside world and us agree that it should be off, turn it off
 			this.bluetoothAdapter.disable();
 			return true; }
 		return false;
 	}
+	
 	
 	/** Intelligently enables the bluetooth adaptor. 
 	 * @return True if bluetooth exists, false if bluetooth does not exist. */
@@ -148,12 +154,15 @@ public class BluetoothListener extends BroadcastReceiver {
 	private LeScanCallback bluetoothCallback = new LeScanCallback() {
 		@Override
 		public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+			Long time = System.currentTimeMillis();
+			
 			String data = new String( "BLUETOOTH LE SCAN DATA: "
 					+ device.toString() + "\n"
 					+ "rssi: " + rssi + ", "
 					+ "scanRecord: " + scanRecord );
 			Log.i("bluetooth", data);
-			bluetoothLog.write(data);
+			
+			bluetoothLog.write( "" + time + "," + rssi);
 		} }; 
 
 		

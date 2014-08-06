@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.beiwe.app.listeners.AccelerometerListener;
+import org.beiwe.app.listeners.BluetoothListener;
 import org.beiwe.app.listeners.CallLogger;
 import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
@@ -114,10 +115,10 @@ public class TextFileManager {
 		textsLog = new TextFileManager(appContext, "textsLog", SmsSentLogger.header, false);
 		powerStateLog = new TextFileManager(appContext, "screenState", PowerStateListener.header, false);
 		callLog = new TextFileManager(appContext, "callLog", CallLogger.header, false);
-
+		
 		surveyResponse = new TextFileManager(appContext, "surveyData", AnswerRecorder.header, false);
 		audioSurveyLog = new TextFileManager(appContext, "audioSurveyLog", "generic header 1 2 3\n", false);
-		bluetoothLog = new TextFileManager(appContext, "bluetoothLog", "generic header 1 2 3\n", false);
+		bluetoothLog = new TextFileManager(appContext, "bluetoothLog", BluetoothListener.header, false);
 	}
 	
 	/** This class has a PRIVATE constructor.  The constructor is only ever called 
