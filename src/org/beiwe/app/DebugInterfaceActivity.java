@@ -141,6 +141,7 @@ public class DebugInterfaceActivity extends Activity {
 	}
 	
 	public void buttonTimer(View view) {
-		
+		BackgroundProcess.BackgroundHandle.startTimers();
+		BackgroundProcess.BackgroundHandle.startControlMessageReceiver();
 	}
 }

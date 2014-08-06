@@ -56,6 +56,7 @@ public class EncryptionEngine {
 	 */
 	private static String standardizePhoneNumber(String rawNumber) {
 		// TODO: check many cases, and see if this works for non-US phone numbers.
+		// TODO: explore Eli's idea of just grabbing the last 10 numeric digits and using those
 		// TODO: If it doesn't, make declaration about false negative phone number matches.
 		String formattedNumber = PhoneNumberUtils.formatNumber(rawNumber);
 

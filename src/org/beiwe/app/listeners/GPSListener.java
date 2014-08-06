@@ -57,13 +57,12 @@ public class GPSListener implements LocationListener {
 		trueGPS = pkgManager.hasSystemFeature(PackageManager.FEATURE_LOCATION_GPS);
 		networkGPS = pkgManager.hasSystemFeature(PackageManager.FEATURE_LOCATION_NETWORK);
 		enabled = false;
-		Log.i("location services:", "GPS:"+trueGPS.toString()+ " Network:"+networkGPS);
+//		Log.i("location services:", "GPS:"+trueGPS.toString()+ " Network:"+networkGPS);
 		
 		try { locationManager = (LocationManager) this.appContext.getSystemService(Context.LOCATION_SERVICE); }
 		catch (SecurityException e) {
 			Log.i("the LocationManager failed to initiate, SecurityException, see stack trace.", "");
 			e.printStackTrace(); }
-		Log.i("LocationListener instatiated", "event...");
 	}
 	
 	/** Turns on GPS providers, provided they are accessible. */

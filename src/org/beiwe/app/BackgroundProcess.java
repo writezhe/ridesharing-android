@@ -20,6 +20,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
@@ -56,7 +57,10 @@ public class BackgroundProcess extends Service {
 		
 		gpsListener = new GPSListener(appContext);
 		accelerometerListener = new AccelerometerListener( appContext );
-		bluetoothListener = new BluetoothListener( this.appContext );		
+		startBluetooth();
+		
+//		bluetoothListener = new BluetoothListener( this.appContext );
+//		bluetoothListener = new BluetoothListener();
 		timer = new Timer(this);
 
 		startSmsSentLogger();
@@ -67,6 +71,15 @@ public class BackgroundProcess extends Service {
 		//startControlMessageReceiver();
 	}
 	
+	
+	/** Initializes the Bluetooth listener 
+	 * Note: Bluetooth needs several checks to make sure that it actually exists,
+	 * checking for Bluetooth LE is unlikely strictly necessary, but it should be done anyway. */
+	public void startBluetooth(){
+		if ( appContext.getPackageManager().hasSystemFeature( PackageManager.FEATURE_BLUETOOTH_LE ) ) {
+			this.bluetoothListener = new BluetoothListener(); }
+		else { this.bluetoothListener = null; }
+	}
 	
 	/** Initializes the sms logger. */
 	public void startSmsSentLogger() {
@@ -104,7 +117,7 @@ public class BackgroundProcess extends Service {
 	}
 	
 	/** create timers that will trigger events throughout the program. */
-	private void startTimers() {
+	public void startTimers() {
 		timer.setupRepeatingAlarm(5000, Timer.GPSTimerIntent, Timer.GPSOnIntent); // GPS
 		timer.setupRepeatingAlarm(5000, Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent); // Bluetooth
 		timer.setupRepeatingAlarm(5000, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent); // Accelerometer
