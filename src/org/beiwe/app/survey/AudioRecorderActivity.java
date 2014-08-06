@@ -1,18 +1,16 @@
 package org.beiwe.app.survey;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.beiwe.app.R;
 
 import android.app.Activity;
-import android.content.Context;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 
 /**
  * Audio Recorder
@@ -39,6 +37,9 @@ public class AudioRecorderActivity extends Activity {
     
     private boolean currentlyRecording = false;
     private boolean currentlyPlaying = false;
+    
+    private ImageButton playButton;
+    private ImageButton recordingButton;
 
         
     @Override
@@ -49,6 +50,10 @@ public class AudioRecorderActivity extends Activity {
 	    fileDirectory = getApplicationContext().getFilesDir().getAbsolutePath();
         mFileName += "/audiorecordtest.mp4";
         Log.i("AudioRecorderActivity", "Filepath = " + mFileName);
+        
+    	playButton = (ImageButton) findViewById(R.id.recording_activity_playback_button);
+    	recordingButton = (ImageButton) findViewById(R.id.recording_activity_recording_button);
+        
     }
 
     
@@ -94,8 +99,7 @@ public class AudioRecorderActivity extends Activity {
     // Start playing back the recording
     private void startPlaying() {
     	currentlyPlaying = true;
-    	Button playButton = (Button) findViewById(R.id.buttonPlay);
-    	playButton.setText("Stop Playing");
+    	playButton.setImageResource(R.drawable.ic_scrubs_stop_recording);
 
     	mPlayer = new MediaPlayer();
         try {
@@ -112,8 +116,7 @@ public class AudioRecorderActivity extends Activity {
     // Stop playing back the recording, and reset the button to "play"
     private void stopPlaying() {
     	currentlyPlaying = false;
-    	Button playButton = (Button) findViewById(R.id.buttonPlay);
-    	playButton.setText("Start Playing");
+    	playButton.setImageResource(R.drawable.ic_scrubs_record_play);
 
     	mPlayer.release();
         mPlayer = null;
@@ -132,8 +135,7 @@ public class AudioRecorderActivity extends Activity {
     // Start recording from the device's microphone
     private void startRecording() {
     	currentlyRecording = true;
-    	Button recordingButton = (Button) findViewById(R.id.buttonRecord);
-    	recordingButton.setText("Stop Recording");
+    	recordingButton.setImageResource(R.drawable.ic_scrubs_stop_recording);
     	
     	//note: AudioEncoder.AAC requires the phone to have api 10+.
         mRecorder = new MediaRecorder();
@@ -160,8 +162,7 @@ public class AudioRecorderActivity extends Activity {
     // Stop recording, and reset the button to "record"
     private void stopRecording() {
     	currentlyRecording = false;
-    	Button recordingButton = (Button) findViewById(R.id.buttonRecord);
-    	recordingButton.setText("Start Recording");
+    	recordingButton.setImageResource(R.drawable.ic_scrubs_record);
 
     	mRecorder.stop();
         mRecorder.release();

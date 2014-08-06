@@ -37,7 +37,7 @@
     <!-- only for debug, remove before final product is finished -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!-- Permissions regarding hotline -->
-    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:allowBackup="true"
@@ -77,7 +77,7 @@
                 <action android:name="android.bluetooth.adapter.action.STATE_CHANGED" />
             </intent-filter>
         </receiver>
-		
+
         <service
             android:name=".BackgroundProcess"
             android:exported="false"
@@ -106,12 +106,17 @@
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".ui.MainMenuActivity"
             android:label="@string/title_activity_main_menu" >
+        </activity>
+        <activity
+            android:name=".VoiceRecording"
+            android:label="@string/title_activity_voice_recording" >
         </activity>
     </application>
 
