@@ -29,8 +29,16 @@ If you want to declare that your app is available to BLE-capable devices only, i
 */
 
 /** BluetoothListener
+ * The BluetoothListener handles the location of nearby patients in the study, but is limited by
+ * the way Android handles Bluetooth interactions.
+ * 
+ * BluetoothListener keeps track of the state of the device's Bluetooth Adaptor, and will
+ * intelligently enable/disable Bluetooth as needed.  It only enables Bluetooth in order to make
+ * a Bluetooth Low Energy scan and record any Bluetooth MAC addresses that show up, and then will
+ * disable Bluetooth.  If the Bluetooth adaptor was already enabled it will not turn Bluetooth off.
+ * 
  * @author elijones */
- 
+
 public class BluetoothListener extends BroadcastReceiver {
 	public static String header = "timestamp, rssi";
 	//Base
@@ -45,10 +53,9 @@ public class BluetoothListener extends BroadcastReceiver {
 	private Boolean internalBluetoothState;
 	//Log file
 	private TextFileManager bluetoothLog;
-//	private TextFileManager debugLog;
 	
 	public Boolean isBluetoothEnabled() {
-		if (bluetoothExists) { return bluetoothAdapter.isEnabled(); }
+		if ( bluetoothExists ) { return bluetoothAdapter.isEnabled(); }
 		else { return false; } }
 	
 	
@@ -69,7 +76,6 @@ public class BluetoothListener extends BroadcastReceiver {
 		this.internalBluetoothState = this.externalBluetoothState;
 		
 		this.bluetoothLog = TextFileManager.getBluetoothLogFile();
-//		this.debugLog = TextFileManager.getDebugLogFile();
 //		Log.i("BluetoothListener", "bluetooth constructor finished");
 	}
 	
