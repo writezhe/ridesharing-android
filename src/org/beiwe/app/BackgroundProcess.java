@@ -40,6 +40,7 @@ public class BackgroundProcess extends Service {
 	private Timer timer;
 	public BluetoothListener bluetoothListener;
 	
+	//TODO: this [stupid hack] should only be necessary for debugging, comment out before production.
 	public static BackgroundProcess BackgroundHandle;
 
 	private void make_log_statement(String message) {
@@ -82,7 +83,7 @@ public class BackgroundProcess extends Service {
 	public void startBluetooth(){
 		if ( appContext.getPackageManager().hasSystemFeature( PackageManager.FEATURE_BLUETOOTH_LE ) ) {
 			this.bluetoothListener = new BluetoothListener(); }
-		else { this.bluetoothListener = null; }
+		else { this.bluetoothListener = null; } 
 	}
 	
 	/** Initializes the sms logger. */
@@ -165,37 +166,33 @@ public class BackgroundProcess extends Service {
 		return false;
 	}
 	
-/*#############################################################################
-####################       Contlrol Message Logic         #####################
-#############################################################################*/
-//TODO: make this a separate class, "control receiver" or something
-//NOTE: the static BackgroundHandle is only necessary if we move this into a separate class.
+	/*#############################################################################
+	####################       Contlrol Message Logic         #####################
+	#############################################################################*/
 	BroadcastReceiver controlReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context appContext, Intent intent) {
-			BackgroundProcess back = BackgroundProcess.BackgroundHandle; 
 			Log.i("BackgroundService", "Received Broadcast: " + intent.toString());
 
 			if (intent.getAction().equals( Timer.ACCELEROMETER_OFF ) ) {
-				back.accelerometerListener.turn_on(); }
+				accelerometerListener.turn_on(); }
 
 			if (intent.getAction().equals( Timer.ACCELEROMETER_ON ) ) {
-				back.accelerometerListener.turn_off(); }
+				accelerometerListener.turn_off(); }
 
 			if (intent.getAction().equals( Timer.BLUETOOTH_OFF ) ) {
-				back.bluetoothListener.disableBLEScan(); }
+				bluetoothListener.disableBLEScan(); }
 
 			if (intent.getAction().equals( Timer.BLUETOOTH_ON ) ) {
-				back.bluetoothListener.enableBLEScan(); }
+				bluetoothListener.enableBLEScan(); }
 
 			if (intent.getAction().equals( Timer.GPS_OFF ) ) {
-				back.gpsListener.turn_off(); }
+				gpsListener.turn_off(); }
 
 			if (intent.getAction().equals( Timer.GPS_ON ) ) {
-				back.gpsListener.turn_on(); }
-			
-			if (intent.getAction().equals(Timer.SIGN_OUT) ){
+				gpsListener.turn_on(); }
 
+			if (intent.getAction().equals(Timer.SIGN_OUT) ) {
 				Log.i("BackgroundProcess", "Received Signout Message");
 				sessionManager = new LoginSessionManager(appContext);
 				if( isForeground("org.beiwe.app") ) {
