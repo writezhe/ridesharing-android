@@ -20,7 +20,9 @@ public class DeviceInfo {
 		androidID = Settings.Secure.getString( appContext.getContentResolver(), Settings.Secure.ANDROID_ID );
 
 		BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-		if ( bluetoothAdapter.getAddress() == null ) { bluetoothMAC = ""; }
+		/* If the BluetoothAdapter is null, or if the BluetoothAdapter.getAddress() returns null 
+		 * (this does happen sometimes!), record an empty string for the Bluetooth Mac address. */
+		if ( bluetoothAdapter == null || bluetoothAdapter.getAddress() == null ) { bluetoothMAC = ""; }
 		else { bluetoothMAC = bluetoothAdapter.getAddress(); }
 	}
 }
