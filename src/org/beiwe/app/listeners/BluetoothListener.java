@@ -46,7 +46,7 @@ public class BluetoothListener extends BroadcastReceiver {
 	
 	//bluetoothExists can be set to false if the device does not meet our needs.
 	private Boolean bluetoothExists;
-	private Boolean scanActive = false;
+	private static Boolean scanActive = false;
 	
 	//Stateful variables
 	private Boolean externalBluetoothState;
@@ -197,7 +197,10 @@ public class BluetoothListener extends BroadcastReceiver {
 			
 			else if ( state == BluetoothAdapter.STATE_ON ) {
 				Log.i("bluetooth", "state change: on" );
-				if ( scanActive ) { tryScanning(); } }
+				if ( scanActive ) { //tryScanning();
+					Log.i("something","anything");
+					enableBLEScan();
+				} }
 			
 			else if ( state == BluetoothAdapter.STATE_TURNING_ON ) {
 				Log.i("bluetooth", "state change: turning on");
