@@ -197,10 +197,7 @@ public class BluetoothListener extends BroadcastReceiver {
 			
 			else if ( state == BluetoothAdapter.STATE_ON ) {
 				Log.i("bluetooth", "state change: on" );
-				if ( scanActive ) { //tryScanning();
-					Log.i("something","anything");
-					enableBLEScan();
-				} }
+				if ( scanActive ) { enableBLEScan(); } }
 			
 			else if ( state == BluetoothAdapter.STATE_TURNING_ON ) {
 				Log.i("bluetooth", "state change: turning on");
