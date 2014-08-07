@@ -17,9 +17,6 @@ import android.util.Log;
  * @author Eli */
 public class BootListener extends BroadcastReceiver {
 	
-	TextFileManager logFile = null;
-	TextFileManager powerStateLog = null;
-	
 	/** Checks whether the app is installed on the SD card; needs a context passed in 
 	 *  Grab a pagkageManager (general info) -> get packageInfo (info about this package) ->
 	 *  ApplicationInfo (information about this application instance).
@@ -40,15 +37,18 @@ public class BootListener extends BroadcastReceiver {
 	/** Does what it says, starts the background service running, also loads log files.
 	 *  called when SDcard available and device startup. */	
 	private void startBackgroundProcess(Context externalContext){
+		//FIXME:  this does start the background service, but Thread.sleep() seems to... stop the wrong thread?
+		Log.i("thing", "trying to start background service");
 		//this is the construction for starting a service on reboot.
 		Intent intent_to_start_background_service = new Intent(externalContext, BackgroundProcess.class);
 	    externalContext.startService(intent_to_start_background_service);
-	    Long javaTimeCode = System.currentTimeMillis();
-		try { Thread.sleep(30000); }
-		catch(InterruptedException ex) { Thread.currentThread().interrupt(); }
-		String message = "device reboot, app started.";
-		TextFileManager.getDebugLogFile().write(javaTimeCode.toString() + TextFileManager.DELIMITER + message + "\n" ); 
-		TextFileManager.getPowerStateFile().write(javaTimeCode.toString() + TextFileManager.DELIMITER + message + '\n');
+//	    Long javaTimeCode = System.currentTimeMillis();
+////	    BackgroundProcess.BackgroundHandle.
+//		try { Thread.sleep(30000); }
+//		catch(InterruptedException ex) { Thread.currentThread().interrupt(); }
+//		String message = "device reboot, app started.";
+//		TextFileManager.getDebugLogFile().write(javaTimeCode.toString() + TextFileManager.DELIMITER + message + "\n" ); 
+//		TextFileManager.getPowerStateFile().write(javaTimeCode.toString() + TextFileManager.DELIMITER + message + '\n');
 	}
 	
 	@Override
@@ -70,9 +70,5 @@ public class BootListener extends BroadcastReceiver {
 			try { if ( !checkForSDCardInstall(externalContext) ) { return; } }
 			catch (NameNotFoundException e) { e.printStackTrace(); }
 			startBackgroundProcess(externalContext); }
-			
-		//these need to be checked whenever the service was started by the user opening the app. 
-		if (logFile == null) { logFile = TextFileManager.getDebugLogFile(); }
-		if (powerStateLog == null) { powerStateLog = TextFileManager.getPowerStateFile(); }
 	}
 }
