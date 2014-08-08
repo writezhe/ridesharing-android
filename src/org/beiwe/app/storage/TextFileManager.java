@@ -106,17 +106,18 @@ public class TextFileManager {
 		if ( started ){ throw new NullPointerException("You may only start the FileManager once."); }
 		else { started = true; }
 		
+		// TODO: fix filenames in accordance with the spec I agreed on with Kevin
 		debugLogFile = new TextFileManager(appContext, "logFile.txt", "THIS LINE IS A LOG FILE HEADER\n", true);
 		currentQuestions = new TextFileManager(appContext, "currentQuestionsFile.json", "", true);
 		deviceInfo = new TextFileManager(appContext, "phoneInfo.txt", "", true);
 		
-		GPSFile = new TextFileManager(appContext, "gpsFile", GPSListener.header, false);
-		accelFile = new TextFileManager(appContext, "accelFile", AccelerometerListener.header, false);
+		GPSFile = new TextFileManager(appContext, "gps", GPSListener.header, false);
+		accelFile = new TextFileManager(appContext, "accel", AccelerometerListener.header, false);
 		textsLog = new TextFileManager(appContext, "textsLog", SmsSentLogger.header, false);
-		powerStateLog = new TextFileManager(appContext, "screenState", PowerStateListener.header, false);
+		powerStateLog = new TextFileManager(appContext, "powerState", PowerStateListener.header, false);
 		callLog = new TextFileManager(appContext, "callLog", CallLogger.header, false);
 		
-		surveyResponse = new TextFileManager(appContext, "surveyData", AnswerRecorder.header, false);
+		surveyResponse = new TextFileManager(appContext, "surveyTimings", AnswerRecorder.header, false);
 		audioSurveyLog = new TextFileManager(appContext, "audioSurveyLog", "generic header 1 2 3\n", false);
 		bluetoothLog = new TextFileManager(appContext, "bluetoothLog", BluetoothListener.header, false);
 	}
@@ -139,13 +140,14 @@ public class TextFileManager {
 	######################## OBJECT INSTANCE FUNCTIONS ##############################
 	###############################################################################*/
 	
-	/** Makes a new file.  Persistant files do not get a time stamp.
+	/** Makes a new file.  Persistent files do not get a time stamp.
 	 * All files get their header written as the first line. */
 	public synchronized void newFile(){
 		if ( this.persistent ) { this.fileName = this.name; } 
 		else {
 			String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
-			this.fileName = this.name + "-" + timecode + ".csv"; }
+			// TODO: replace this with a real user ID
+			this.fileName = "ABCDEF12" + this.name + "-" + timecode + ".csv"; }
 		this.write(header);
 	}
 	
