@@ -339,14 +339,14 @@ public class QuestionRenderer {
 	private void makeSliderInvisibleUntilTouched(SeekBarEditableThumb slider) {
 		// Before the user has touched the slider, make the "thumb" transparent/ almost invisible
 		// TODO: debug this!  It works well on Josh's phone (API 16) and not well on Zags's phone (Android 2.3.6).
-		slider.getSeekBarThumb().mutate().setAlpha(0);
+		slider.markAsUntouched();
 		
 		slider.setOnTouchListener(new OnTouchListener() {	
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				// When the user touches the slider, make the "thumb" opaque and fully visible
 				SeekBarEditableThumb slider = (SeekBarEditableThumb) v;
-				slider.getSeekBarThumb().mutate().setAlpha(255);
+				slider.markAsTouched();
 				return false;
 			}
 		});

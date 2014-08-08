@@ -26,6 +26,7 @@ public class SeekBarEditableThumb extends SeekBar {
 
 	
 	private Drawable compatThumb;
+	private Boolean hasBeenTouched;
 	
 	@Override
 	public void setThumb(Drawable thumb) {
@@ -33,7 +34,28 @@ public class SeekBarEditableThumb extends SeekBar {
 		compatThumb = thumb;
 	}
 	
-	public Drawable getSeekBarThumb() {
-		return compatThumb;
+	/**
+	 * Make the SeekBar's "Thumb" invisible, and mark it as "user hasn't touched this yet"
+	 */
+	public void markAsUntouched() {
+		compatThumb.mutate().setAlpha(0);
+		hasBeenTouched = false;
 	}
+
+	/**
+	 * Make the SeekBar's "Thumb" visible, and mark it as "user has touched this"
+	 */
+	public void markAsTouched() {
+		compatThumb.mutate().setAlpha(255);
+		hasBeenTouched = true;
+	}
+	
+	/**
+	 * Return a Boolean of whether or not the user has touched the SeekBar yet 
+	 * @return
+	 */
+	public Boolean getHasBeenTouched() {
+		return hasBeenTouched;
+	}
+	
 }
