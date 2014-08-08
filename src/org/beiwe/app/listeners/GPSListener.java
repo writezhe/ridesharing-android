@@ -48,7 +48,6 @@ public class GPSListener implements LocationListener {
 	 * application Context object be passed in in order to interface with location services.
 	 * When activated using the turn_on() function it will log any location updates to the GPS log.
 	 * @param applicationContext A Context provided an Activity or Service. */
-	
 	public GPSListener (Context appContext){
 		this.appContext = appContext;
 		pkgManager = this.appContext.getPackageManager();
@@ -106,16 +105,15 @@ public class GPSListener implements LocationListener {
 				+ location.getLatitude() + TextFileManager.DELIMITER
 				+ location.getLongitude() + TextFileManager.DELIMITER
 				+ location.getAltitude() + TextFileManager.DELIMITER
-				+ location.getAccuracy() + '\n' ;
+				+ location.getAccuracy();
 		//note, altitude is notoriously inaccurate, getAccuracy only applies to latitude/longitude
 		GPSFile.write(data);
 //		logFile.write("GPS: " + data);
 	}
 	
-/*#################################################################################################
-/*###### we don't require these built-in overrides for any features, they are irrelevant  #########
-/*###############################################################################################*/
-	
+	/** We do not actually need to implement any of these default overrides
+	 *  When a provider has a change, we do not need to record it, and we do not appear to 
+	 *  have any corner cases where anything breaks.  We should be able to simply ignore these. */	
 	// arg0 for Provider Enabled/Disabled is a string saying "network" or "gps".
 	@Override
 	public void onProviderDisabled(String arg0) { Log.i("A location provider was disabled.", arg0); }
@@ -123,13 +121,9 @@ public class GPSListener implements LocationListener {
 	public void onProviderEnabled(String arg0) { Log.i("A location provider was enabled.", arg0); }
 	@Override
 	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-		//FIXME:  implement the receipt of a status change, make it enable/disable a provider?  change state accordingly?  ack.
-		
 		//Called when the provider status changes, when a provider is unable to fetch a location,
 		// or if the provider has recently become available after a period of unavailability.
 		// arg0 is the name of the provider that changed status.
 		// arg1 is the status of the provider. 0=out of service, 1=temporarily unavailable, 2=available
-		Log.i("OH GOD WE GOT A STATUSCHANGE FROM THE GPSListener", arg0 + "," + arg1 + "," + arg2.toString() );
-//		logFile.write("STATUSCHANGE FROM THE GPSListener" + arg0 + "," + arg1 + "," + arg2.toString());
 	}
 }

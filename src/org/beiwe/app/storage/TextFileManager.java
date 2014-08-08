@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.beiwe.app.listeners.AccelerometerListener;
+import org.beiwe.app.listeners.BluetoothListener;
 import org.beiwe.app.listeners.CallLogger;
 import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
@@ -114,10 +115,10 @@ public class TextFileManager {
 		textsLog = new TextFileManager(appContext, "textsLog", SmsSentLogger.header, false);
 		powerStateLog = new TextFileManager(appContext, "screenState", PowerStateListener.header, false);
 		callLog = new TextFileManager(appContext, "callLog", CallLogger.header, false);
-
+		
 		surveyResponse = new TextFileManager(appContext, "surveyData", AnswerRecorder.header, false);
 		audioSurveyLog = new TextFileManager(appContext, "audioSurveyLog", "generic header 1 2 3\n", false);
-		bluetoothLog = new TextFileManager(appContext, "bluetoothLog", "generic header 1 2 3\n", false);
+		bluetoothLog = new TextFileManager(appContext, "bluetoothLog", BluetoothListener.header, false);
 	}
 	
 	/** This class has a PRIVATE constructor.  The constructor is only ever called 
@@ -148,17 +149,17 @@ public class TextFileManager {
 		this.write(header);
 	}
 	
-	/**Takes a string. writes that to the file.
-	 * Prints a stacktrace on a write error.
+	/** Takes a string. writes that to the file, adds a new line to the string.
+	 * Prints a stacktrace on a write error, but does not crash. 
 	 * @param data a string*/
-	//TODO: make this function add the new line at the end of the string.
 	//TODO: investigate writing strings that make contain non-string-happy characters. (like escapes)
 	public synchronized void write(String data){
 		//write the output, we always want mode append
 		FileOutputStream outStream;
 		try {
 			outStream = appContext.openFileOutput(fileName, Context.MODE_APPEND);
-			outStream.write(data.getBytes());
+			outStream.write( ( data ).getBytes() );
+			outStream.write( "\n".getBytes() );
 			outStream.close(); }
 		catch (Exception e) {
 			Log.i("FileManager", "Write error: " + this.name);

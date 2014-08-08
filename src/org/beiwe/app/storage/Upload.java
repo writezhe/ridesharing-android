@@ -11,19 +11,28 @@ import org.apache.http.client.methods.HttpGet;
 import org.beiwe.app.R;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 public class Upload {
 	
 	private Context appContext;
 	
+	
 	public Upload(Context applicationContext) {
 		this.appContext = applicationContext;
 	}
 	
 	
+	public Boolean getWifiState() {
+		ConnectivityManager connManager = (ConnectivityManager) appContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		return mWifi.isConnected(); 
+	}
+	
+	
 	public void uploadAllFiles() {
-		
 		
 	    // Run the HTTP GET on a separate, non-blocking thread
 		ExecutorService executor = Executors.newFixedThreadPool(1);

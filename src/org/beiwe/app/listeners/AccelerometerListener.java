@@ -83,9 +83,8 @@ public class AccelerometerListener implements SensorEventListener{
 	public synchronized void onSensorChanged(SensorEvent arg0) {
 		Long javaTimeCode = System.currentTimeMillis();
 		float[] values = arg0.values;
-		String data = javaTimeCode.toString() + ',' + accuracy + ',' + values[0] + ',' + values[1] + ',' + values[2] + '\n';
+		String data = javaTimeCode.toString() + ',' + accuracy + ',' + values[0] + ',' + values[1] + ',' + values[2];
 		
 		accelFile.write(data);
-		//logFile.write("accel: " + data);
 	}
 }

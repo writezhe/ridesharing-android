@@ -24,7 +24,7 @@ public class PowerStateListener extends BroadcastReceiver {
 		Log.i("PowerStateListener", message);
 		Long javaTimeCode = System.currentTimeMillis();
 //		TextFileManager.getDebugLogFile().write(javaTimeCode.toString() + "," + message +"\n" ); 
-		TextFileManager.getPowerStateFile().write(javaTimeCode.toString() + TextFileManager.DELIMITER + message + '\n');
+		TextFileManager.getPowerStateFile().write(javaTimeCode.toString() + TextFileManager.DELIMITER + message );
 	}
 	
 	/** In order to acces the functions of the background Process we need to create a new constructor,
@@ -38,7 +38,7 @@ public class PowerStateListener extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context externalContext, Intent intent) {
 		//make a log of all receipts (for debugging)
-		make_log_statement("the following intent was recieved by the PowerStateListener:" + intent.getAction().toString());
+//		make_log_statement("the following intent was recieved by the PowerStateListener:" + intent.getAction().toString());
 		
 		// Screen on/off
 		if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) { make_log_statement("Screen turned off"); }
