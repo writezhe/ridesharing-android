@@ -11,6 +11,9 @@ import android.widget.LinearLayout;
 
 public class SurveyActivity extends Activity {
 	
+	private LinearLayout surveyLayout;
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -40,7 +43,7 @@ public class SurveyActivity extends Activity {
 	 */
 	private void renderSurvey(String jsonSurveyString) {
 		// Get the survey layout objects that we'll add questions to
-		LinearLayout surveyLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.survey_layout, null);
+		surveyLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.survey_layout, null);
 		
 		// Parse the JSON list of questions and render them as Views
 		JsonParser jsonParser = new JsonParser(getApplicationContext());
@@ -75,6 +78,9 @@ public class SurveyActivity extends Activity {
 	 */
 	public void submitButtonPressed(View v) {
 		AnswerRecorder.recordSubmit(getApplicationContext());
+		
+		AnswerGatherer.gatherAllAnswers(surveyLayout);
+		
 		finish();
 	}
 	

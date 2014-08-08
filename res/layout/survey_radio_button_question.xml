@@ -3,6 +3,7 @@
     android:id="@+id/radioButtonQuestion"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:tag="radioButtonQuestion"
     android:orientation="vertical" >
 
 	<TextView
