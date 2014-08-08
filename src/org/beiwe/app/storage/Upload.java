@@ -68,7 +68,7 @@ public class Upload {
 			String filePath = appContext.getFilesDir() + "/" + filename;
 			File file = new File(filePath);
 
-			URL uploadUrl = new URL(getUploadUrl(filename));
+			URL uploadUrl = new URL(appContext.getResources().getString(R.string.data_upload_url));
 			PostRequestFileUpload postRequest = new PostRequestFileUpload();
 			postRequest.sendPostRequest(file, uploadUrl);
 		}
@@ -76,21 +76,6 @@ public class Upload {
 			Log.w("Upload", "Failed to upload file. Raised exception " + e.getCause());
 			e.printStackTrace();
 		}
-	}
-	
-	
-	private String getUploadUrl(String filename) {
-		String url = appContext.getResources().getString(R.string.data_upload_base_url);
-		return url + "upload_gps";
-		/* Upload URLs:
-		 * http://54.204.178.17/upload_gps/
-		 * http://54.204.178.17/upload_accel/
-		 * http://54.204.178.17/upload_powerstate/
-		 * http://54.204.178.17/upload_calls/
-		 * http://54.204.178.17/upload_texts/
-		 * http://54.204.178.17/upload_surveyresposne/
-		 * http://54.204.178.17/upload_audio/
-		 */
 	}
 
 }
