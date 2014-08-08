@@ -83,7 +83,9 @@
     <!-- Recording Activity -->
     <string name="record_activity_error_message">If you\'re seeing this, it means something broke. Please contact the administrator</string>
     <string name="record_activity_button">Press here to record</string>
-	<string name="record_activity_playback">Play recording</string> 
+	<string name="record_activity_playback">Play recording</string>
+	<string name="record_activity_play_button_text">Press to play</string>
+	<string name="record_activity_record_button_text">Press to record</string> 
     
 
 </resources>

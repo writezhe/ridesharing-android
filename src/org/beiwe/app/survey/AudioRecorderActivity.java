@@ -5,12 +5,16 @@ import java.io.IOException;
 import org.beiwe.app.R;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.Button;
+import android.widget.TextView;
 
 /**
  * Audio Recorder
@@ -38,26 +42,45 @@ public class AudioRecorderActivity extends Activity {
     private boolean currentlyRecording = false;
     private boolean currentlyPlaying = false;
     
-    private ImageButton playButton;
-    private ImageButton recordingButton;
+    private Button playButton;
+    private Button recordingButton;
+    
+    private TextView surveyMessage;
 
-        
+    
+    /*/////////////////////////////////////////////////*/
+    /*///////////////Overrides go here/////////////////*/ 
+    /*/////////////////////////////////////////////////*/
+    
+    /**
+     * On create, the activity presents the message to the user, and only a record button.
+     * After recording, the app will present the user with the play button.
+     */
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-		setContentView(R.layout.activity_audio_recorder);        
+        setContentView(R.layout.activity_audio_recorder);        
 
 	    fileDirectory = getApplicationContext().getFilesDir().getAbsolutePath();
-        mFileName += "/audiorecordtest.mp4";
-        Log.i("AudioRecorderActivity", "Filepath = " + mFileName);
         
-    	playButton = (ImageButton) findViewById(R.id.recording_activity_playback_button);
-    	recordingButton = (ImageButton) findViewById(R.id.recording_activity_recording_button);
+    	playButton = (Button) findViewById(R.id.recording_activity_playback_button);
+    	recordingButton = (Button) findViewById(R.id.recording_activity_recording_button);
         
+    	// Each time the screen is flipped, the app checks if it's time to show the play button
+    	checkPlayButtonVisibility(mFileName);
+    	
+    	surveyMessage = (TextView) findViewById(R.id.record_activity_textview);
+    	// TODO: Get a survey message (from server??) and display it to the user instead of the default message
+    	surveyMessage.setText("Lorem ipsum dolor sit amet, et lobortis intellegat mel, " +
+    			"est utinam graeci in. Ei quo appetere moderatius, " +
+    			"in dolorem inimicus assentior has, " +
+    			"te sed summo explicari. Dolores appareat eu mel, ne meliore");
     }
 
-    
-    @Override
+    /**
+     * Makes sure nothing is recording
+     */
+	@Override
     public void onPause() {
         super.onPause();
         if (mRecorder != null) {
@@ -67,8 +90,35 @@ public class AudioRecorderActivity extends Activity {
         if (mPlayer != null) {
         	stopPlaying();
         }
+        
+        // Make mFileName null, so that the play button will turn invisible
+    	mFileName = null;
     }
+	
+	@Override
+	public void onResume() {
+		super.onResume();
+		mFileName = null;
+		checkPlayButtonVisibility(mFileName);
+	}
 
+    /*/////////////////////////////////////////////////*/
+    /*/////////////Button functionalities//////////////*/ 
+    /*/////////////////////////////////////////////////*/
+	
+    /**
+     * Checks if mFileName is null. If it is, then the play button will be invisible. Otherwise,
+     * the button will be visible. 
+     * 
+     * @param mFileName
+     */
+    private void checkPlayButtonVisibility(String mFileName) {
+    	if (mFileName == null) {
+    		playButton.setVisibility(Button.INVISIBLE);
+    	} else {
+    		playButton.setVisibility(Button.VISIBLE) ;
+    	}
+	}
     
     // TODO: add arbitrary recording length limiter, like 2 hours
     // probably make this a timer that calls stopRecording() after a while
@@ -81,6 +131,7 @@ public class AudioRecorderActivity extends Activity {
     	}
     	else {
     		stopRecording();
+    		checkPlayButtonVisibility(mFileName);
     	}
     }
 
@@ -95,17 +146,31 @@ public class AudioRecorderActivity extends Activity {
 		}    	
     }
     
+    /*/////////////////////////////////////////////////*/
+    /*/////Recording and playing functionalities///////*/ 
+    /*/////////////////////////////////////////////////*/
 
     // Start playing back the recording
     private void startPlaying() {
     	currentlyPlaying = true;
-    	playButton.setImageResource(R.drawable.ic_scrubs_stop_recording);
-
+    	
+    	// Toggles button
+    	playButton.setText("Press to stop");
+    	playButton.setBackgroundResource(R.drawable.ic_scrubs_stop_recording);
+    	
+    	// Recording sequence
     	mPlayer = new MediaPlayer();
-        try {
+    	try {
             mPlayer.setDataSource(mFileName);
             mPlayer.prepare();
             mPlayer.start();
+            mPlayer.setOnCompletionListener(new OnCompletionListener() {
+				
+				@Override
+				public void onCompletion(MediaPlayer mp) {
+					stopPlaying();
+				}
+			});
         }
         catch (IOException e) {
             Log.e(LOG_TAG, "prepare() failed");
@@ -116,13 +181,21 @@ public class AudioRecorderActivity extends Activity {
     // Stop playing back the recording, and reset the button to "play"
     private void stopPlaying() {
     	currentlyPlaying = false;
-    	playButton.setImageResource(R.drawable.ic_scrubs_record_play);
+    	
+    	// Toggles button
+    	playButton.setText("Press to play");
+    	playButton.setBackgroundResource(R.drawable.ic_scrubs_record_play);
 
     	mPlayer.release();
         mPlayer = null;
     }
 
-    
+    /**
+     * Creates a new file, and names mFileName to that name. The name consists of the time the recording takes place.
+     * Returns the final file name.
+     * 
+     * @return fileName
+     */
     private String getAudioFileName() {
 		String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
 		String fileName = fileDirectory + "/audioSample" + "-" + timecode + ".mp4";
@@ -135,9 +208,12 @@ public class AudioRecorderActivity extends Activity {
     // Start recording from the device's microphone
     private void startRecording() {
     	currentlyRecording = true;
-    	recordingButton.setImageResource(R.drawable.ic_scrubs_stop_recording);
     	
-    	//note: AudioEncoder.AAC requires the phone to have api 10+.
+    	// Toggles button
+    	recordingButton.setText("Press to stop");
+    	recordingButton.setBackgroundResource(R.drawable.ic_scrubs_stop_recording);
+    	
+    	// Note: AudioEncoder.AAC requires the phone to have api 10+.
         mRecorder = new MediaRecorder();
         mRecorder.reset();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -162,11 +238,28 @@ public class AudioRecorderActivity extends Activity {
     // Stop recording, and reset the button to "record"
     private void stopRecording() {
     	currentlyRecording = false;
-    	recordingButton.setImageResource(R.drawable.ic_scrubs_record);
+    	recordingButton.setText("Press to record");
+    	recordingButton.setBackgroundResource(R.drawable.ic_scrubs_recording_button);
 
     	mRecorder.stop();
         mRecorder.release();
         mRecorder = null;
     }
+    
+    
+    /*/////////////////////////////////////////////////*/
+    /*////////Hotline - consider making static/////////*/ 
+    /*/////////////////////////////////////////////////*/
+    /**
+     * Places a call to the hotline.
+     * 
+     * Note: Consider making this a static function.
+     * @param v
+     */
+    public void callHotline(View v) {
+		Intent callIntent = new Intent(Intent.ACTION_CALL);
+	    callIntent.setData(Uri.parse("tel:123456789"));
+	    startActivity(callIntent);
+	}
     
 }

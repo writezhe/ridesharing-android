@@ -7,56 +7,76 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="#00ffffff"
     tools:context="org.beiwe.app.VoiceRecording" >
-
+    
     <TextView
         android:id="@+id/record_activity_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/record_activity_error_message"
         android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <Space
+    
+    <View 
         android:layout_width="match_parent"
-        android:layout_height="100dp" />
+        android:layout_height="0dp"
+        android:layout_weight="0.1"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="0dp"
+        android:layout_weight="0.34"
+        android:orientation="horizontal" >
 
-        <ImageButton
+        <Button
             android:id="@+id/recording_activity_recording_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="137dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.04"
+            android:background="@drawable/ic_scrubs_recording_button"
             android:contentDescription="@string/record_activity_button"
+            android:gravity="top|center"
             android:onClick="buttonRecordPressed"
-            android:src="@drawable/ic_scrubs_record" />
+            android:paddingTop="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_scrubs_record"
+            android:text="@string/record_activity_record_button_text" />
 
         <View
-            android:id="@+id/view1"
+            android:id="@+id/separator_view"
             android:layout_width="0dp"
-            android:layout_height="60dp"
-            android:layout_weight="0.70" />
+            android:layout_height="match_parent"
+            android:layout_weight="0.10" />
 
-        <ImageButton
+        <Button
             android:id="@+id/recording_activity_playback_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="137dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.03"
+            android:background="@drawable/ic_scrubs_record_play"
             android:contentDescription="@string/record_activity_playback"
+            android:gravity="top|center"
             android:onClick="buttonPlayPressed"
-            android:src="@drawable/ic_scrubs_record_play" />
+            android:paddingTop="10dp"
+            android:scaleType="fitCenter"
+            android:text="@string/record_activity_play_button_text" />
+
     </LinearLayout>
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="50dp" />
-    
+        android:layout_height="50dp"
+        android:layout_weight="0.00000005" />
+
     <Button
         android:id="@+id/record_activity_hotline"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right|end"
+        android:onClick="callHotline"
         android:text="@string/main_menu_call_hotline" />
 
 </LinearLayout>
