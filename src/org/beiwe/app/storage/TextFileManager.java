@@ -147,7 +147,7 @@ public class TextFileManager {
 		else {
 			String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
 			// TODO: replace this with a real user ID
-			this.fileName = "ABCDEF12" + this.name + "-" + timecode + ".csv"; }
+			this.fileName = "ABCDEF12-" + this.name + "-" + timecode + ".csv"; }
 		this.write(header);
 	}
 	
