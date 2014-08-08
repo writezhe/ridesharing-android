@@ -105,7 +105,7 @@ public class GPSListener implements LocationListener {
 				+ location.getLatitude() + TextFileManager.DELIMITER
 				+ location.getLongitude() + TextFileManager.DELIMITER
 				+ location.getAltitude() + TextFileManager.DELIMITER
-				+ location.getAccuracy() + '\n' ;
+				+ location.getAccuracy();
 		//note, altitude is notoriously inaccurate, getAccuracy only applies to latitude/longitude
 		GPSFile.write(data);
 //		logFile.write("GPS: " + data);

@@ -168,7 +168,7 @@ public class BluetoothListener extends BroadcastReceiver {
 					+ "scanRecord: " + scanRecord );
 			Log.i("bluetooth", data);
 			
-			bluetoothLog.write( "" + time + "," + rssi);
+			bluetoothLog.write( "" + time + "," + device.toString() );
 		} }; 
 
 		

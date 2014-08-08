@@ -145,7 +145,6 @@ public class CallLogger extends ContentObserver {
  	 */
 	private void formatThenAddToFile(StringBuilder stringBuilder) {
 		stringBuilder.deleteCharAt(stringBuilder.lastIndexOf(TextFileManager.DELIMITER));
-		stringBuilder.append("\n");
 		
 		String result = stringBuilder.toString();
 		callLogFile.write(result);

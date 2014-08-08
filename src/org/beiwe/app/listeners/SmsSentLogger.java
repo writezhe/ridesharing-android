@@ -64,7 +64,7 @@ public class SmsSentLogger extends ContentObserver {
 			String data = "" + date + TextFileManager.DELIMITER;
 			data += EncryptionEngine.hashPhoneNumber(address) + TextFileManager.DELIMITER;
 			data += "sent" + TextFileManager.DELIMITER;
-			data += body.length() + "\n";
+			data += body.length();
 			
 			Log.i("SMSLogger", "data = " + data);
 			smsLogFile.write(data);
