@@ -1,6 +1,7 @@
 package org.beiwe.app.survey;
 
 import org.beiwe.app.R;
+import org.beiwe.app.storage.TextFileManager;
 
 import android.view.View;
 import android.widget.LinearLayout;
@@ -11,6 +12,7 @@ public class SurveyAnswersRecorder {
 
 
 	public static void gatherAllAnswers(LinearLayout surveyLayout) {
+		TextFileManager.getSurveyAnswersFile().newFile();
 		LinearLayout questionsLayout = (LinearLayout) surveyLayout.findViewById(R.id.surveyQuestionsLayout);
 
 		for (int i = 0; i < questionsLayout.getChildCount(); i++) {
