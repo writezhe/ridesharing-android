@@ -1,6 +1,7 @@
 package org.beiwe.app.survey;
 
 import org.beiwe.app.R;
+import org.beiwe.app.ui.AppNotifications;
 
 import android.app.Activity;
 import android.os.AsyncTask;
@@ -77,6 +78,7 @@ public class SurveyActivity extends Activity {
 	 * @param v
 	 */
 	public void submitButtonPressed(View v) {
+		AppNotifications.dismissNotificatoin(getApplicationContext(), AppNotifications.surveyCode);
 		AnswerRecorder.recordSubmit(getApplicationContext());
 		
 		AnswerGatherer.gatherAllAnswers(surveyLayout);

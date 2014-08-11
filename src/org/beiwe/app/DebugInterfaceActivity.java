@@ -127,11 +127,6 @@ public class DebugInterfaceActivity extends Activity {
 		finish();
 	}
 	
-	public void notificationSender (View view) {
-		AppNotifications.displaySurveyNotification(appContext);
-		Log.i("DebugInterfaceActivity", "Notification Displayed");
-	}
-	
 	public void bluetoothButtonStart (View view){
 		BackgroundProcess.BackgroundHandle.bluetoothListener.enableBLEScan();
 	}
@@ -145,7 +140,17 @@ public class DebugInterfaceActivity extends Activity {
 		BackgroundProcess.BackgroundHandle.startControlMessageReceiver();
 	}
 	
+	public void notificationSender (View view) {
+		AppNotifications.displaySurveyNotification(appContext);
+		Log.i("DebugInterfaceActivity", "Notification Displayed");
+	}
+	
 	public void cancelNotification(View view) {
 		AppNotifications.dismissNotificatoin(appContext, AppNotifications.surveyCode);
+	}
+	
+	public void notificationRecordingSender (View view) {
+		AppNotifications.displayRecordingNotification(appContext);
+		Log.i("DebugInterfaceActivity", "Notification Displayed");
 	}
 }

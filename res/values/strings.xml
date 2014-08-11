@@ -85,7 +85,13 @@
     <string name="record_activity_button">Press here to record</string>
 	<string name="record_activity_playback">Play recording</string>
 	<string name="record_activity_play_button_text">Press to play</string>
-	<string name="record_activity_record_button_text">Press to record</string> 
+	<string name="record_activity_record_button_text">Press to record</string>
+	
+	<!-- Notifications -->
+	<string name="survey_notification_message"> You have a new survey waiting </string>
+	<string name="survey_notification_details"> There is a new survey for you to take. Click here to take it </string>
+	<string name="recording_notification_message">You haven\'t submitted your recording today </string>
+	<string name="recording_notification_details">You have not submitted your recording today. Please do so, by clicking here</string>
     
 
 </resources>

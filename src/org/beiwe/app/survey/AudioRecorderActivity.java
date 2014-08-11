@@ -3,6 +3,7 @@ package org.beiwe.app.survey;
 import java.io.IOException;
 
 import org.beiwe.app.R;
+import org.beiwe.app.ui.AppNotifications;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -127,6 +128,7 @@ public class AudioRecorderActivity extends Activity {
     // When the user presses the "record" button, toggle (start/stop) recording
     public void buttonRecordPressed(View view) {
     	if (!currentlyRecording) {
+    		AppNotifications.dismissNotificatoin(getApplicationContext(), AppNotifications.recordingCode);
     		startRecording();
     	}
     	else {

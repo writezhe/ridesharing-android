@@ -106,6 +106,13 @@
 	        android:layout_height="wrap_content"
 	        android:onClick="cancelNotification"
 	        android:text="Dismiss notification" />
+		
+		<Button
+	        android:id="@+id/buttonRecordingNotif"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="notificationRecordingSender"
+	        android:text="Send Recording Notification" />
 			
 	</LinearLayout>
 </ScrollView>
