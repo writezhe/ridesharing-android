@@ -17,6 +17,7 @@ import org.beiwe.app.listeners.CallLogger;
 import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
+import org.beiwe.app.survey.AnswerGatherer;
 import org.beiwe.app.survey.AnswerRecorder;
 
 import android.content.Context;
@@ -34,7 +35,7 @@ import android.util.Log;
  * The Reason for this construction is to construct a file write system where there is only ever a
  * single pointer to each file type, and that these files are never overwritten, written to asynchronously,
  * or left accidentally empty.
- * The files handled here are the GPSFile, accelFile, powerStateLog, audioSurveyInfo, callLog, textsLog, surveyResponse,
+ * The files handled here are the GPSFile, accelFile, powerStateLog, audioSurveyInfo, callLog, textsLog, surveyTimings,
  * currentQuestuons, deviceData, and debugLogFile.
  * On construction you provide a boolean flag ("persistent").  Persistent files do not get overwritten on application start.
  * To access a file use the following construction: TextFileManager.getXXXFile()
@@ -55,8 +56,10 @@ public class TextFileManager {
 	private static TextFileManager powerStateLog = null;
 	private static TextFileManager callLog = null;
 	private static TextFileManager textsLog = null;
-	private static TextFileManager surveyResponse = null;
 	private static TextFileManager bluetoothLog = null;
+
+	private static TextFileManager surveyTimings = null;
+	private static TextFileManager surveyAnswers = null;
 	
 	private static TextFileManager debugLogFile = null;
 	private static TextFileManager currentQuestions = null;
@@ -74,8 +77,9 @@ public class TextFileManager {
 	public static TextFileManager getPowerStateFile(){ if ( powerStateLog == null ) throw new NullPointerException( getter_error ); return powerStateLog; }
 	public static TextFileManager getCallLogFile(){ if ( callLog == null ) throw new NullPointerException( getter_error ); return callLog; }
 	public static TextFileManager getTextsLogFile(){ if ( textsLog == null ) throw new NullPointerException( getter_error ); return textsLog; }
-	public static TextFileManager getSurveyResponseFile(){ if ( surveyResponse == null ) throw new NullPointerException( getter_error ); return surveyResponse; }
 	public static TextFileManager getBluetoothLogFile(){ if ( bluetoothLog == null ) throw new NullPointerException( getter_error ); return bluetoothLog; }
+	public static TextFileManager getSurveyTimingsFile(){ if ( surveyTimings == null ) throw new NullPointerException( getter_error ); return surveyTimings; }
+	public static TextFileManager getSurveyAnswersFile(){ if ( surveyAnswers == null ) throw new NullPointerException( getter_error ); return surveyAnswers; }
 
 	//the persistant files
 	public static TextFileManager getCurrentQuestionsFile(){ if ( currentQuestions == null ) throw new NullPointerException( getter_error ); return currentQuestions; }
@@ -116,7 +120,8 @@ public class TextFileManager {
 		powerStateLog = new TextFileManager(appContext, "powerState", PowerStateListener.header, false);
 		bluetoothLog = new TextFileManager(appContext, "bluetoothLog", BluetoothListener.header, false);
 		
-		surveyResponse = new TextFileManager(appContext, "surveyTimings", AnswerRecorder.header, false);
+		surveyTimings = new TextFileManager(appContext, "surveyTimings", AnswerRecorder.header, false);
+		surveyAnswers = new TextFileManager(appContext, "surveyAnswers", AnswerGatherer.header, false);
 	}
 	
 	/** This class has a PRIVATE constructor.  The constructor is only ever called 

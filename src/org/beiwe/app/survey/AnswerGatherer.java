@@ -7,6 +7,9 @@ import android.widget.LinearLayout;
 
 public class AnswerGatherer {
 
+	public static String header = "timestamp,question id,question type,question text,question answer options,answer\n";
+
+	
 	public static void gatherAllAnswers(LinearLayout surveyLayout) {
 		LinearLayout questionsLayout = (LinearLayout) surveyLayout.findViewById(R.id.surveyQuestionsLayout);
 
