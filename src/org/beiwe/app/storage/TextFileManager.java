@@ -109,10 +109,11 @@ public class TextFileManager {
 		else { started = true; }
 		
 		// TODO: fix filenames in accordance with the spec I agreed on with Kevin
+		// Persistent files
 		debugLogFile = new TextFileManager(appContext, "logFile.txt", "THIS LINE IS A LOG FILE HEADER\n", true);
 		currentQuestions = new TextFileManager(appContext, "currentQuestionsFile.json", "", true);
-		deviceInfo = new TextFileManager(appContext, "phoneInfo.txt", "", true);
 		
+		// Regularly/periodically-created files
 		GPSFile = new TextFileManager(appContext, "gps", GPSListener.header, false);
 		accelFile = new TextFileManager(appContext, "accel", AccelerometerListener.header, false);
 		textsLog = new TextFileManager(appContext, "textsLog", SmsSentLogger.header, false);
@@ -120,6 +121,9 @@ public class TextFileManager {
 		powerStateLog = new TextFileManager(appContext, "powerState", PowerStateListener.header, false);
 		bluetoothLog = new TextFileManager(appContext, "bluetoothLog", BluetoothListener.header, false);
 		
+		// Files created upon specific events
+		// TODO: don't create unnecessary copies of these files if you can help it
+		deviceInfo = new TextFileManager(appContext, "phoneInfo.txt", "", true); // TODO: make this not persistent, only created upon registration
 		surveyTimings = new TextFileManager(appContext, "surveyTimings", SurveyTimingsRecorder.header, false);
 		surveyAnswers = new TextFileManager(appContext, "surveyAnswers", SurveyAnswersRecorder.header, false);
 	}
