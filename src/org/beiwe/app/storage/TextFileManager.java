@@ -17,8 +17,8 @@ import org.beiwe.app.listeners.CallLogger;
 import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
-import org.beiwe.app.survey.AnswerGatherer;
-import org.beiwe.app.survey.AnswerRecorder;
+import org.beiwe.app.survey.SurveyAnswersRecorder;
+import org.beiwe.app.survey.SurveyTimingsRecorder;
 
 import android.content.Context;
 import android.util.Log;
@@ -120,8 +120,8 @@ public class TextFileManager {
 		powerStateLog = new TextFileManager(appContext, "powerState", PowerStateListener.header, false);
 		bluetoothLog = new TextFileManager(appContext, "bluetoothLog", BluetoothListener.header, false);
 		
-		surveyTimings = new TextFileManager(appContext, "surveyTimings", AnswerRecorder.header, false);
-		surveyAnswers = new TextFileManager(appContext, "surveyAnswers", AnswerGatherer.header, false);
+		surveyTimings = new TextFileManager(appContext, "surveyTimings", SurveyTimingsRecorder.header, false);
+		surveyAnswers = new TextFileManager(appContext, "surveyAnswers", SurveyAnswersRecorder.header, false);
 	}
 	
 	/** This class has a PRIVATE constructor.  The constructor is only ever called 

@@ -7,7 +7,7 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-public class AnswerRecorder {
+public class SurveyTimingsRecorder {
 	
 	public static String header = "timestamp,question id,question type,question text,question answer options,answer\n";
 		
@@ -38,7 +38,7 @@ public class AnswerRecorder {
 		message += sanitizeString(questionDescription.getText()) + TextFileManager.DELIMITER;
 		message += sanitizeString(questionDescription.getOptions()) + TextFileManager.DELIMITER;
 		message += sanitizeString(answer);
-		Log.i("AnswerRecorder", message);
+		Log.i("SurveyTimingsRecorder", message);
 		
 		appendLineToLogFile(message);
 	}
@@ -69,7 +69,7 @@ public class AnswerRecorder {
 		Long javaTimeCode = System.currentTimeMillis();
 		String line = javaTimeCode.toString() + TextFileManager.DELIMITER + message + "\n"; 
 
-		Log.i("AnswerRecorder", line);
+		Log.i("SurveyTimingsRecorder", line);
 		TextFileManager.getSurveyTimingsFile().write(line);
 	}
 
