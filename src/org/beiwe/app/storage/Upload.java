@@ -7,7 +7,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.beiwe.app.R;
 
 import android.content.Context;
@@ -42,12 +42,11 @@ public class Upload {
 	 */
 	public void uploadAllFiles() {
 		
-		// FIXME: is this a GET, not a POST?
-	    // Run the HTTP GET on a separate, non-blocking thread
+	    // Run the HTTP POST on a separate, non-blocking thread
 		ExecutorService executor = Executors.newFixedThreadPool(1);
-		Callable<HttpGet> thread = new Callable<HttpGet>() {
+		Callable<HttpPost> thread = new Callable<HttpPost>() {
 			@Override
-			public HttpGet call() {
+			public HttpPost call() {
 				String[] files = TextFileManager.getAllFilesSafely();
 				
 				for (String fileName : files) {
