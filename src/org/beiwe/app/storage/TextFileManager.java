@@ -145,10 +145,11 @@ public class TextFileManager {
 	/** Makes a new file.  Persistent files do not get a time stamp.
 	 * All files get their header written as the first line. */
 	public synchronized void newFile(){
-		String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
-		// TODO: replace this with a real user ID
-		this.fileName = "ABCDEF12_" + this.name + "_" + timecode + ".csv";
-
+		if ( this.persistent ) { this.fileName = this.name; } 
+		else {
+			String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
+			// TODO: replace this with a real user ID
+			this.fileName = "ABCDEF12_" + this.name + "_" + timecode + ".csv"; }
 		this.write(header);
 	}
 	
