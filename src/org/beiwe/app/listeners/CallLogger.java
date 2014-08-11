@@ -17,7 +17,7 @@ import android.util.Log;
 
 public class CallLogger extends ContentObserver {
 
-	public static String header = "hashed phone number,call type,date,duration in seconds\n";
+	public static String header = "hashed phone number,call type,date,duration in seconds";
 	
 	// Private variables
 	private TextFileManager callLogFile = null;

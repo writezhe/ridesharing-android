@@ -17,7 +17,8 @@ import org.beiwe.app.listeners.CallLogger;
 import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
-import org.beiwe.app.survey.AnswerRecorder;
+import org.beiwe.app.survey.SurveyAnswersRecorder;
+import org.beiwe.app.survey.SurveyTimingsRecorder;
 
 import android.content.Context;
 import android.util.Log;
@@ -34,7 +35,7 @@ import android.util.Log;
  * The Reason for this construction is to construct a file write system where there is only ever a
  * single pointer to each file type, and that these files are never overwritten, written to asynchronously,
  * or left accidentally empty.
- * The files handled here are the GPSFile, accelFile, powerStateLog, audioSurveyInfo, callLog, textsLog, surveyResponse,
+ * The files handled here are the GPSFile, accelFile, powerStateLog, audioSurveyInfo, callLog, textsLog, surveyTimings,
  * currentQuestuons, deviceData, and debugLogFile.
  * On construction you provide a boolean flag ("persistent").  Persistent files do not get overwritten on application start.
  * To access a file use the following construction: TextFileManager.getXXXFile()
@@ -55,8 +56,10 @@ public class TextFileManager {
 	private static TextFileManager powerStateLog = null;
 	private static TextFileManager callLog = null;
 	private static TextFileManager textsLog = null;
-	private static TextFileManager surveyResponse = null;
 	private static TextFileManager bluetoothLog = null;
+
+	private static TextFileManager surveyTimings = null;
+	private static TextFileManager surveyAnswers = null;
 	
 	private static TextFileManager debugLogFile = null;
 	private static TextFileManager currentQuestions = null;
@@ -74,8 +77,9 @@ public class TextFileManager {
 	public static TextFileManager getPowerStateFile(){ if ( powerStateLog == null ) throw new NullPointerException( getter_error ); return powerStateLog; }
 	public static TextFileManager getCallLogFile(){ if ( callLog == null ) throw new NullPointerException( getter_error ); return callLog; }
 	public static TextFileManager getTextsLogFile(){ if ( textsLog == null ) throw new NullPointerException( getter_error ); return textsLog; }
-	public static TextFileManager getSurveyResponseFile(){ if ( surveyResponse == null ) throw new NullPointerException( getter_error ); return surveyResponse; }
 	public static TextFileManager getBluetoothLogFile(){ if ( bluetoothLog == null ) throw new NullPointerException( getter_error ); return bluetoothLog; }
+	public static TextFileManager getSurveyTimingsFile(){ if ( surveyTimings == null ) throw new NullPointerException( getter_error ); return surveyTimings; }
+	public static TextFileManager getSurveyAnswersFile(){ if ( surveyAnswers == null ) throw new NullPointerException( getter_error ); return surveyAnswers; }
 
 	//the persistant files
 	public static TextFileManager getCurrentQuestionsFile(){ if ( currentQuestions == null ) throw new NullPointerException( getter_error ); return currentQuestions; }
@@ -105,10 +109,11 @@ public class TextFileManager {
 		else { started = true; }
 		
 		// TODO: fix filenames in accordance with the spec I agreed on with Kevin
+		// Persistent files
 		debugLogFile = new TextFileManager(appContext, "logFile.txt", "THIS LINE IS A LOG FILE HEADER\n", true);
 		currentQuestions = new TextFileManager(appContext, "currentQuestionsFile.json", "", true);
-		deviceInfo = new TextFileManager(appContext, "phoneInfo.txt", "", true);
 		
+		// Regularly/periodically-created files
 		GPSFile = new TextFileManager(appContext, "gps", GPSListener.header, false);
 		accelFile = new TextFileManager(appContext, "accel", AccelerometerListener.header, false);
 		textsLog = new TextFileManager(appContext, "textsLog", SmsSentLogger.header, false);
@@ -116,7 +121,11 @@ public class TextFileManager {
 		powerStateLog = new TextFileManager(appContext, "powerState", PowerStateListener.header, false);
 		bluetoothLog = new TextFileManager(appContext, "bluetoothLog", BluetoothListener.header, false);
 		
-		surveyResponse = new TextFileManager(appContext, "surveyTimings", AnswerRecorder.header, false);
+		// Files created upon specific events
+		// TODO: don't create unnecessary copies of these files if you can help it
+		deviceInfo = new TextFileManager(appContext, "phoneInfo.txt", "", true); // TODO: make this not persistent, only created upon registration
+		surveyTimings = new TextFileManager(appContext, "surveyTimings", SurveyTimingsRecorder.header, false);
+		surveyAnswers = new TextFileManager(appContext, "surveyAnswers", SurveyAnswersRecorder.header, false);
 	}
 	
 	/** This class has a PRIVATE constructor.  The constructor is only ever called 
@@ -144,7 +153,7 @@ public class TextFileManager {
 		else {
 			String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
 			// TODO: replace this with a real user ID
-			this.fileName = "ABCDEF12-" + this.name + "-" + timecode + ".csv"; }
+			this.fileName = "ABCDEF12_" + this.name + "_" + timecode + ".csv"; }
 		this.write(header);
 	}
 	

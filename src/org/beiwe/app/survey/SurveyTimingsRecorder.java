@@ -7,9 +7,9 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-public class AnswerRecorder {
+public class SurveyTimingsRecorder {
 	
-	public static String header = "timestamp,question id,question type,question text,question answer options,answer\n";
+	public static String header = "timestamp,question id,question type,question text,question answer options,answer";
 		
 	
 	/**
@@ -19,7 +19,7 @@ public class AnswerRecorder {
 	public static void recordSurveyFirstDisplayed() {
 		// Create a new data file to record answers for only this survey
 		// TODO: decide if it's possible for a user to take two surveys at once, and if that's a problem
-		TextFileManager.getSurveyResponseFile().newFile();
+		TextFileManager.getSurveyTimingsFile().newFile();
 		
 		String message = "Survey first rendered and displayed to user";
 		appendLineToLogFile(message);
@@ -38,7 +38,7 @@ public class AnswerRecorder {
 		message += sanitizeString(questionDescription.getText()) + TextFileManager.DELIMITER;
 		message += sanitizeString(questionDescription.getOptions()) + TextFileManager.DELIMITER;
 		message += sanitizeString(answer);
-		Log.i("AnswerRecorder", message);
+		Log.i("SurveyTimingsRecorder", message);
 		
 		appendLineToLogFile(message);
 	}
@@ -67,10 +67,10 @@ public class AnswerRecorder {
 		/** Handles the logging, includes a new line for the CSV files.
 		 * This code is otherwised reused everywhere.*/
 		Long javaTimeCode = System.currentTimeMillis();
-		String line = javaTimeCode.toString() + TextFileManager.DELIMITER + message + "\n"; 
+		String line = javaTimeCode.toString() + TextFileManager.DELIMITER + message; 
 
-		Log.i("AnswerRecorder", line);
-		TextFileManager.getSurveyResponseFile().write(line);
+		Log.i("SurveyTimingsRecorder", line);
+		TextFileManager.getSurveyTimingsFile().write(line);
 	}
 
 	

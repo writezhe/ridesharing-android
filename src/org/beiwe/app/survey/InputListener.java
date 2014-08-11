@@ -44,7 +44,7 @@ public class InputListener {
 		@Override
 		public void onStopTrackingTouch(SeekBar seekBar) {
 			String answer = "" + seekBar.getProgress();
-			AnswerRecorder.recordAnswer(answer, questionDescription);
+			SurveyTimingsRecorder.recordAnswer(answer, questionDescription);
 		}
 		
 	}
@@ -63,12 +63,12 @@ public class InputListener {
 		public void onCheckedChanged(RadioGroup group, int checkedId) {
 			RadioButton selectedButton = (RadioButton) group.findViewById(checkedId);
 			if (selectedButton.isChecked()) {
-				AnswerRecorder.recordAnswer(selectedButton.getText().toString(), questionDescription);
+				SurveyTimingsRecorder.recordAnswer(selectedButton.getText().toString(), questionDescription);
 			}
 			else {
 				/* It should not be possible to un-check a radio button, but if
 				 * that happens, record the answer as an empty string */
-				AnswerRecorder.recordAnswer("", questionDescription);
+				SurveyTimingsRecorder.recordAnswer("", questionDescription);
 			}
 		}
 	}
@@ -113,7 +113,7 @@ public class InputListener {
 				}
 				answersList += "]";
 				
-				AnswerRecorder.recordAnswer(answersList, questionDescription);
+				SurveyTimingsRecorder.recordAnswer(answersList, questionDescription);
 			}
 		}		
 	}
@@ -145,7 +145,7 @@ public class InputListener {
 				if (v instanceof EditText) {
 					EditText textField = (EditText) v;
 					String answer = textField.getText().toString();
-					AnswerRecorder.recordAnswer(answer, questionDescription);
+					SurveyTimingsRecorder.recordAnswer(answer, questionDescription);
 				}
 			}			
 		}

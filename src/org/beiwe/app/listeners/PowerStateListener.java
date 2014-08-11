@@ -15,7 +15,7 @@ import android.util.Log;
  *  @author Josh Zagorsky, Eli Jones, May/June 2014 */
 public class PowerStateListener extends BroadcastReceiver {
 	
-	public static String header = "time, event\n";
+	public static String header = "time, event";
 	private BackgroundProcess backgroundProcess;
 	
 	/** Handles the logging, includes a new line for the CSV files.

@@ -27,7 +27,7 @@ import android.util.Log;
  */
 public class SmsSentLogger extends ContentObserver {	
 
-	public static String header = "timestamp,hashed phone number,sent vs received,message length\n";
+	public static String header = "timestamp,hashed phone number,sent vs received,message length";
 
 	private TextFileManager smsLogFile = null;
 	private Handler handler = null;

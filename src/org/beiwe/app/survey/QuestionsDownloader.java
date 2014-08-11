@@ -111,7 +111,7 @@ public class QuestionsDownloader {
 	 * Read a file from the local Android filesystem, and return it as a String
 	 * @throws JSONException 
 	 */
-	private String getSurveyQuestionsFromFilesystem() throws JSONException {
+	private String getSurveyQuestionsFromFilesystem() throws NullPointerException, JSONException {
 		Log.i("QuestionsDownloader", "Called getSurveyQuestionsFromFilesystem()");
 		
 		String surveyQuestions = TextFileManager.getCurrentQuestionsFile().read();

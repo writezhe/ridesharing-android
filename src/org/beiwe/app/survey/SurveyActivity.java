@@ -54,7 +54,7 @@ public class SurveyActivity extends Activity {
 		replaceSurveyPageContents(surveyLayout);
 		
 		// Record the time that the survey was first visible to the user
-		AnswerRecorder.recordSurveyFirstDisplayed();
+		SurveyTimingsRecorder.recordSurveyFirstDisplayed();
 	}
 	
 	
@@ -79,9 +79,10 @@ public class SurveyActivity extends Activity {
 	 */
 	public void submitButtonPressed(View v) {
 		AppNotifications.dismissNotificatoin(getApplicationContext(), AppNotifications.surveyCode);
-		AnswerRecorder.recordSubmit(getApplicationContext());
+
+		SurveyTimingsRecorder.recordSubmit(getApplicationContext());
 		
-		AnswerGatherer.gatherAllAnswers(surveyLayout);
+		SurveyAnswersRecorder.gatherAllAnswers(surveyLayout);
 		
 		finish();
 	}
