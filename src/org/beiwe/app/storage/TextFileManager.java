@@ -230,7 +230,7 @@ public class TextFileManager {
 	
 	/** Deletes a file.  Exists to make file deletion thread-safe.
 	 * @param fileName */
-	private static synchronized void delete(String fileName){
+	public static synchronized void delete(String fileName){
 		try { appContext.deleteFile(fileName); }
 		catch (Exception e) {
 			Log.i("TextFileManager", "cannot delete file " + fileName );

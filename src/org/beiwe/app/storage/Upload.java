@@ -25,6 +25,10 @@ public class Upload {
 	}
 	
 	
+	/**
+	 * Return TRUE if WiFi is connected; FALSE otherwise
+	 * @return
+	 */
 	public Boolean getWifiState() {
 		ConnectivityManager connManager = (ConnectivityManager) appContext.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
@@ -32,8 +36,13 @@ public class Upload {
 	}
 	
 	
+	/**
+	 * Loop through all files on the phone, and for each one, try to upload it
+	 * to the server. If upload is successful, delete the file's local copy. 
+	 */
 	public void uploadAllFiles() {
 		
+		// FIXME: is this a GET, not a POST?
 	    // Run the HTTP GET on a separate, non-blocking thread
 		ExecutorService executor = Executors.newFixedThreadPool(1);
 		Callable<HttpGet> thread = new Callable<HttpGet>() {
@@ -44,13 +53,10 @@ public class Upload {
 				for (String fileName : files) {
 					try {
 						Log.i("Upload.java", "Trying to upload file: " + fileName);
-						//TODO: this works for debugging, but you have to change TextFileManager.fileName to "public" 
-						//tryToUploadFile(TextFileManager.getCurrentQuestionsFile().fileName);
-						tryToUploadFile(fileName);
+						tryToUploadAndThenDeleteFile(fileName);
 					}
 					catch (Exception e) {
 						Log.i("Upload.java", "Failed to upload file: " + fileName);
-						//Log.w("Upload", "File " + fileName + " didn't exist");
 						e.printStackTrace();
 					}
 				}
@@ -62,19 +68,48 @@ public class Upload {
 		executor.submit(thread);
 	}
 	
+
+	/**
+	 * Try to upload a file to the server, and if successful, delete the local
+	 * (on-phone) copy of the file to save space, keep security, and not have
+	 * to upload it again
+	 * @param filename the short name (not the full path) of the file to upload
+	 */
+	private void tryToUploadAndThenDeleteFile(String filename) {
+		if (tryToUploadFile(filename)) {
+			TextFileManager.delete(filename);
+		}
+	}
 	
-	private void tryToUploadFile(String filename) {
+	
+	/**
+	 * Try to upload a file to the server
+	 * @param filename the short name (not the full path) of the file to upload
+	 * @return TRUE if the server reported "200 OK"; FALSE otherwise
+	 */
+	private Boolean tryToUploadFile(String filename) {
 		try {
+			// Get the filePath, and the file
 			String filePath = appContext.getFilesDir() + "/" + filename;
 			File file = new File(filePath);
 
+			// Try to upload the file via a Multipart POST request
 			URL uploadUrl = new URL(appContext.getResources().getString(R.string.data_upload_url));
 			PostRequestFileUpload postRequest = new PostRequestFileUpload();
-			postRequest.sendPostRequest(file, uploadUrl);
+			if (postRequest.sendPostRequest(file, uploadUrl) == 200) {
+				// If the request was successful (returned "200 OK"), return TRUE
+				return true;
+			}
+			else {
+				// If the request failed (returned something other than 200), return FALSE
+				return false;
+			}
 		}
 		catch (IOException e) {
-			Log.w("Upload", "Failed to upload file. Raised exception " + e.getCause());
+			// If the upload failed for any reason, return FALSE
+			Log.i("Upload", "Failed to upload file " + filename + ". Raised exception " + e.getCause());
 			e.printStackTrace();
+			return false;
 		}
 	}
 
