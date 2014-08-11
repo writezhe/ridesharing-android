@@ -144,4 +144,8 @@ public class DebugInterfaceActivity extends Activity {
 		BackgroundProcess.BackgroundHandle.startTimers();
 		BackgroundProcess.BackgroundHandle.startControlMessageReceiver();
 	}
+	
+	public void cancelNotification(View view) {
+		AppNotifications.dismissNotificatoin(appContext, AppNotifications.surveyCode);
+	}
 }

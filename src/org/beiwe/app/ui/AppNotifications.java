@@ -8,6 +8,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 
 /**
@@ -20,6 +22,9 @@ import android.util.Log;
 
 public class AppNotifications {
 
+	public static final int surveyCode = 001;
+	public static final int recordingCode = 002;
+	
 	/**
 	 * Creates a notification, and displays it to the user. When clicking the notification, the user
 	 * is taken to a new survey
@@ -32,7 +37,7 @@ public class AppNotifications {
 		builder.setContentTitle("Beiwe");
 		builder.setContentText("There is a new survey ready for you to take");
 		builder.setTicker("Take survey");
-		builder.setSmallIcon(R.drawable.ic_launcher);
+		builder.setSmallIcon(R.drawable.survey_icon);
 
 		Log.i("SurveyNotification", "Notification built");
 		// The intent that will be passed when clicking the activity
@@ -51,7 +56,7 @@ public class AppNotifications {
 
 		builder.setContentIntent(pendingIntent);
 		Notification notification = builder.build();
-		notification.flags = Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL;
+		notification.flags = Notification.FLAG_ONGOING_EVENT;
 		Log.i("SurveyNotification", "Set up intent");
 
 		// Get an instance of the notification manager
@@ -61,7 +66,7 @@ public class AppNotifications {
 		// Terrible naming for the method to post a notification
 		Log.i("SurveyNotification", "Notifying...");
 		notificationManager.notify(
-				001, // If another notification with the same ID pops up, it will be updated. This SHOULD be fine
+				surveyCode, // If another notification with the same ID pops up, it will be updated. This SHOULD be fine
 				notification); 
 	}
 	
@@ -85,7 +90,12 @@ public class AppNotifications {
 		
 		notification.flags = Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL;
 		notificationManager.notify(
-				001, // If another notification with the same ID pops up, it will be updated. This SHOULD be fine
+				recordingCode, // If another notification with the same ID pops up, it will be updated. This SHOULD be fine
 				notification); 
+	}
+	
+	public static void dismissNotificatoin(Context context, int appCode) {
+		NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+		notificationManager.cancel(appCode);
 	}
 }
