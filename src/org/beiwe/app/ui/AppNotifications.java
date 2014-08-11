@@ -44,6 +44,8 @@ public class AppNotifications {
 
 		// Terrible naming for the method to post a notification
 		Log.i("SurveyNotification", "Notifying...");
+		notificationManager.cancel(surveyCode);
+		
 		notificationManager.notify(
 				surveyCode, // If another notification with the same ID pops up, it will be updated. This SHOULD be fine
 				surveyNotification); 
@@ -61,6 +63,8 @@ public class AppNotifications {
 		
 		NotificationManager notificationManager = 
 				(NotificationManager) appContext.getSystemService(Context.NOTIFICATION_SERVICE);
+		
+		notificationManager.cancel(recordingCode);
 		
 		notificationManager.notify(
 				recordingCode, // If another notification with the same ID pops up, it will be updated. This SHOULD be fine
