@@ -56,7 +56,6 @@ public class TextFileManager {
 	private static TextFileManager callLog = null;
 	private static TextFileManager textsLog = null;
 	private static TextFileManager surveyResponse = null;
-	private static TextFileManager audioSurveyLog = null;
 	private static TextFileManager bluetoothLog = null;
 	
 	private static TextFileManager debugLogFile = null;
@@ -71,7 +70,6 @@ public class TextFileManager {
 	//public static getters.
 	// These are all simple and nearly identical, so I have squished them into one-liners. 
 	public static TextFileManager getAccelFile(){ if ( accelFile == null ) throw new NullPointerException( getter_error ); return accelFile; }
-	public static TextFileManager getAudioLogFile(){ if ( audioSurveyLog == null ) throw new NullPointerException( getter_error ); return accelFile; }
 	public static TextFileManager getGPSFile(){ if ( GPSFile == null ) throw new NullPointerException( getter_error ); return GPSFile; }
 	public static TextFileManager getPowerStateFile(){ if ( powerStateLog == null ) throw new NullPointerException( getter_error ); return powerStateLog; }
 	public static TextFileManager getCallLogFile(){ if ( callLog == null ) throw new NullPointerException( getter_error ); return callLog; }
@@ -114,12 +112,11 @@ public class TextFileManager {
 		GPSFile = new TextFileManager(appContext, "gps", GPSListener.header, false);
 		accelFile = new TextFileManager(appContext, "accel", AccelerometerListener.header, false);
 		textsLog = new TextFileManager(appContext, "textsLog", SmsSentLogger.header, false);
-		powerStateLog = new TextFileManager(appContext, "powerState", PowerStateListener.header, false);
 		callLog = new TextFileManager(appContext, "callLog", CallLogger.header, false);
+		powerStateLog = new TextFileManager(appContext, "powerState", PowerStateListener.header, false);
+		bluetoothLog = new TextFileManager(appContext, "bluetoothLog", BluetoothListener.header, false);
 		
 		surveyResponse = new TextFileManager(appContext, "surveyTimings", AnswerRecorder.header, false);
-		audioSurveyLog = new TextFileManager(appContext, "audioSurveyLog", "generic header 1 2 3\n", false);
-		bluetoothLog = new TextFileManager(appContext, "bluetoothLog", BluetoothListener.header, false);
 	}
 	
 	/** This class has a PRIVATE constructor.  The constructor is only ever called 
@@ -247,7 +244,6 @@ public class TextFileManager {
 		powerStateLog.newFile();
 		callLog.newFile();
 		textsLog.newFile();
-		audioSurveyLog.newFile(); 
 		bluetoothLog.newFile(); }
 	
 	//FIXME: this function is only public for debugging purposes, getAllFilesSafely() should be used instead.
