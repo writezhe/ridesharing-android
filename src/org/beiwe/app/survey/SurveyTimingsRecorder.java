@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 public class SurveyTimingsRecorder {
 	
-	public static String header = "timestamp,question id,question type,question text,question answer options,answer\n";
+	public static String header = "timestamp,question id,question type,question text,question answer options,answer";
 		
 	
 	/**
@@ -67,7 +67,7 @@ public class SurveyTimingsRecorder {
 		/** Handles the logging, includes a new line for the CSV files.
 		 * This code is otherwised reused everywhere.*/
 		Long javaTimeCode = System.currentTimeMillis();
-		String line = javaTimeCode.toString() + TextFileManager.DELIMITER + message + "\n"; 
+		String line = javaTimeCode.toString() + TextFileManager.DELIMITER + message; 
 
 		Log.i("SurveyTimingsRecorder", line);
 		TextFileManager.getSurveyTimingsFile().write(line);

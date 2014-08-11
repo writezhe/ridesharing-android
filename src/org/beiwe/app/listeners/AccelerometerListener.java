@@ -11,7 +11,7 @@ import android.hardware.SensorManager;
 import android.util.Log;
 
 public class AccelerometerListener implements SensorEventListener{
-	public static String header = "timestamp, accuracy, x, y, z\n";
+	public static String header = "timestamp, accuracy, x, y, z";
 	
 	private SensorManager accelSensorManager;
 	private Sensor accelSensor;

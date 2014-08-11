@@ -7,7 +7,7 @@ import android.widget.LinearLayout;
 
 public class SurveyAnswersRecorder {
 
-	public static String header = "timestamp,question id,question type,question text,question answer options,answer\n";
+	public static String header = "timestamp,question id,question type,question text,question answer options,answer";
 
 
 	public static void gatherAllAnswers(LinearLayout surveyLayout) {
