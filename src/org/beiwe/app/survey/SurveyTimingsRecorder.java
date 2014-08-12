@@ -79,7 +79,7 @@ public class SurveyTimingsRecorder {
 	 * @param input string to be sanitized
 	 * @return String with tabs and newlines removed
 	 */
-	private static String sanitizeString(String input) {
+	public static String sanitizeString(String input) {
 		// TODO: fix RegEx so it sanitizes '\t'
 		input = input.replaceAll("[\t\n\r]", "  ");
 		// Replace all commas in the text with semicolons, because commas are the delimiters
