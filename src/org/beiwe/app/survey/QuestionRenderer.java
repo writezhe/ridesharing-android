@@ -76,7 +76,7 @@ public class QuestionRenderer {
 	public LinearLayout createSliderQuestion(String questionID, 
 			String questionText, int numberOfValues, int defaultValue) {
 		
-		LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_slider_question, null);
+		QuestionLinearLayout question = (QuestionLinearLayout) inflater.inflate(R.layout.survey_slider_question, null);
 		SeekBarEditableThumb slider = (SeekBarEditableThumb) question.findViewById(R.id.slider);
 		
 		// Set the text of the question itself
@@ -101,9 +101,10 @@ public class QuestionRenderer {
 		addNumbersLabelingToSlider(question, 0, numberOfValues);
 		
 		// Create text strings that represent the question and its answer choices
-		String options = "From 0 to " + numberOfValues + "; default " + defaultValue;
+		String options = "From 0 to " + (numberOfValues - 1) + "; default " + defaultValue;
 		QuestionDescription questionDescription = 
 				new QuestionDescription(questionID, "Slider Question", questionText, options);
+		question.setQuestionDescription(questionDescription);
 		
 		// Set the slider to listen for and record user input
 		slider.setOnSeekBarChangeListener(inputRecorder.new SliderListener(questionDescription));
@@ -123,7 +124,7 @@ public class QuestionRenderer {
 	 */
 	public LinearLayout createRadioButtonQuestion(String questionID, String questionText, String[] answers) {
 		
-		LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_radio_button_question, null);
+		QuestionLinearLayout question = (QuestionLinearLayout) inflater.inflate(R.layout.survey_radio_button_question, null);
 		RadioGroup radioGroup = (RadioGroup) question.findViewById(R.id.radioGroup);
 		
 		// Set the text of the question itself
@@ -152,6 +153,7 @@ public class QuestionRenderer {
 		// Create text strings that represent the question and its answer choices
 		QuestionDescription questionDescription = 
 				new QuestionDescription(questionID, "Radio Button Question", questionText, Arrays.toString(answers));
+		question.setQuestionDescription(questionDescription);
 
 		// Set the group of radio buttons to listen for and record user input
 		radioGroup.setOnCheckedChangeListener(inputRecorder.new RadioButtonListener(questionDescription));
@@ -168,7 +170,7 @@ public class QuestionRenderer {
 	 */
 	public LinearLayout createCheckboxQuestion(String questionID, String questionText, String[] options) {
 		
-		LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_checkbox_question, null);
+		QuestionLinearLayout question = (QuestionLinearLayout) inflater.inflate(R.layout.survey_checkbox_question, null);
 		LinearLayout checkboxesList = (LinearLayout) question.findViewById(R.id.checkboxesList);
 		
 		// Set the text of the question itself
@@ -180,6 +182,7 @@ public class QuestionRenderer {
 		// Create text strings that represent the question and its answer choices
 		QuestionDescription questionDescription = 
 				new QuestionDescription(questionID, "Checkbox Question", questionText, Arrays.toString(options));
+		question.setQuestionDescription(questionDescription);
 
 		// Loop through the options strings, and make each one a checkbox option
 		if (options != null) {
@@ -216,7 +219,7 @@ public class QuestionRenderer {
 	public LinearLayout createFreeResponseQuestion(String questionID, 
 			String questionText, TextFieldType.Type inputTextType) {
 		
-		LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_open_response_question, null);
+		QuestionLinearLayout question = (QuestionLinearLayout) inflater.inflate(R.layout.survey_open_response_question, null);
 
 		// Set the text of the question itself
 		TextView questionTextView = (TextView) question.findViewById(R.id.questionText);
@@ -249,6 +252,7 @@ public class QuestionRenderer {
 		String options = "Text-field input type = " + inputTextType.toString();
 		QuestionDescription questionDescription = 
 				new QuestionDescription(questionID, "Open Response Question", questionText, options);
+		question.setQuestionDescription(questionDescription);
 
 		// Set the text field to listen for and record user input
 		editText.setOnFocusChangeListener(inputRecorder.new OpenResponseListener(questionDescription));

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<org.beiwe.app.survey.QuestionLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/sliderQuestion"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -31,5 +31,6 @@
         android:paddingBottom="50dp"
         android:progress="2" >
     </org.beiwe.app.survey.SeekBarEditableThumb>
-
-</LinearLayout>
+    
+    
+</org.beiwe.app.survey.QuestionLinearLayout>

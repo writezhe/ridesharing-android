@@ -11,8 +11,7 @@ import android.widget.RadioGroup;
 
 public class SurveyAnswersRecorder {
 
-	//public static String header = "timestamp,question id,question type,question text,question answer options,answer";
-	public static String header = "question type,answer";
+	public static String header = "question id,question type,question text,question answer options,answer";
 
 
 	public static void gatherAllAnswers(LinearLayout surveyLayout) {
@@ -42,7 +41,7 @@ public class SurveyAnswersRecorder {
 	}
 	
 	private static void getAnswerFromSliderQuestion(View childView) {
-		LinearLayout wholeQuestion = (LinearLayout) childView;
+		QuestionLinearLayout wholeQuestion = (QuestionLinearLayout) childView;
 		SeekBarEditableThumb slider = (SeekBarEditableThumb) wholeQuestion.getChildAt(2);
 		// TODO: figure out why getChildAt() works but findViewById() doesn't. It's weird, because findViewById() works for some IDs!
 		//SeekBarEditableThumb slider = (SeekBarEditableThumb) wholeQuestion.findViewById(R.id.theSlider);
@@ -50,10 +49,10 @@ public class SurveyAnswersRecorder {
 			//Log.i("SurveyAnswersRecorder.java", "slider != null");
 			if (slider.getHasBeenTouched()) {
 				int answer = slider.getProgress();
-				recordAnswer("Slider Question", "" + answer);
+				recordAnswer(wholeQuestion.getQuestionDescription(), "" + answer);
 			}
 			else {
-				recordAnswer("Slider Question", "NO ANSWER SELECTED");
+				recordAnswer(wholeQuestion.getQuestionDescription(), "NO ANSWER SELECTED");
 			}
 		}
 		else {
@@ -62,43 +61,53 @@ public class SurveyAnswersRecorder {
 	}
 	
 	private static void getAnswerFromRadioButtonQuestion(View childView) {
-		LinearLayout wholeQuestion = (LinearLayout) childView;
+		QuestionLinearLayout wholeQuestion = (QuestionLinearLayout) childView;
 		RadioGroup radioGroup = (RadioGroup) wholeQuestion.findViewById(R.id.radioGroup);
 		if (radioGroup != null) {
 			int selectedId = radioGroup.getCheckedRadioButtonId();
 			RadioButton selectedButton = (RadioButton) radioGroup.findViewById(selectedId);
 			if (selectedButton != null) {
 				String selectedAnswer = (String) selectedButton.getText();
-				recordAnswer("Radio Button Question", selectedAnswer);						
+				recordAnswer(wholeQuestion.getQuestionDescription(), selectedAnswer);						
 			}
 			else {
-				recordAnswer("Radio Button Question", "NO ANSWER SELECTED");						
+				recordAnswer(wholeQuestion.getQuestionDescription(), "NO ANSWER SELECTED");						
 			}
 		}		
 	}
 	
 	private static void getAnswerFromCheckboxQuestion(View childView) {
-		LinearLayout wholeQuestion = (LinearLayout) childView;
+		QuestionLinearLayout wholeQuestion = (QuestionLinearLayout) childView;
 		LinearLayout checkboxesList = (LinearLayout) wholeQuestion.findViewById(R.id.checkboxesList);
 		String selectedAnswers = InputListener.getSelectedCheckboxes(checkboxesList);
-		recordAnswer("Checkbox Question", selectedAnswers);
+		recordAnswer(wholeQuestion.getQuestionDescription(), selectedAnswers);
 	}
 	
 	private static void getAnswerFromOpenResponseQuestion(View childView) {
 		try {
-			LinearLayout wholeQuestion = (LinearLayout) childView;
+			QuestionLinearLayout wholeQuestion = (QuestionLinearLayout) childView;
 			LinearLayout textFieldContainer = (LinearLayout) wholeQuestion.findViewById(R.id.textFieldContainer);
 			EditText textField = (EditText) textFieldContainer.getChildAt(0);
-			recordAnswer("Open Response Question", textField.getText().toString());
+			recordAnswer(wholeQuestion.getQuestionDescription(), textField.getText().toString());
 		} catch (Exception e) {
-			recordAnswer("Open Response Question", "ERROR");
-		}		
+			// TODO: figure out how to log errors
+		}
 	}
 	
-	private static void recordAnswer(String questionType, String answer) {
-		String sanitizedAnswer = questionType + TextFileManager.DELIMITER;
-		sanitizedAnswer += SurveyTimingsRecorder.sanitizeString(answer);
-		TextFileManager.getSurveyAnswersFile().write(sanitizedAnswer);
+	private static void recordAnswer(QuestionDescription questionDescription, String answer) {
+		
+		String line = "";
+		line += SurveyTimingsRecorder.sanitizeString(questionDescription.getId());
+		line += TextFileManager.DELIMITER;
+		line += SurveyTimingsRecorder.sanitizeString(questionDescription.getType());
+		line += TextFileManager.DELIMITER;
+		line += SurveyTimingsRecorder.sanitizeString(questionDescription.getText());
+		line += TextFileManager.DELIMITER;
+		line += SurveyTimingsRecorder.sanitizeString(questionDescription.getOptions());
+		line += TextFileManager.DELIMITER;
+		line += SurveyTimingsRecorder.sanitizeString(answer);
+
+		TextFileManager.getSurveyAnswersFile().write(line);
 	}
 
 }
