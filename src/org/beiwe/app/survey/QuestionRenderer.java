@@ -5,20 +5,15 @@ import java.util.Arrays;
 import org.beiwe.app.R;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.PorterDuff.Mode;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 public class QuestionRenderer {
@@ -28,6 +23,7 @@ public class QuestionRenderer {
 	private InputListener inputRecorder;
 	
 	private int viewID;
+	private int questionNumber;
 	
 	public QuestionRenderer(Context applicationContext) {
 		
@@ -36,6 +32,7 @@ public class QuestionRenderer {
 		inputRecorder = new InputListener(appContext);
 		
 		viewID = 100;  // Start from an arbitrary number, in case other Views have low, sequential ID #s
+		questionNumber = 0;
 		
 		/* XML views inflated by an Activity render with the app's default
 		 * style (set in the Manifest.XML), but for some reason, XML views
@@ -82,7 +79,7 @@ public class QuestionRenderer {
 		// Set the text of the question itself
 		TextView questionTextView = (TextView) question.findViewById(R.id.questionText);
 		if (questionText != null) {
-			questionTextView.setText(questionText);
+			questionTextView.setText(getQuestionNumber() + questionText);
 		}
 		
 		// Clean inputs/force them to be usable numbers
@@ -130,7 +127,7 @@ public class QuestionRenderer {
 		// Set the text of the question itself
 		TextView questionTextView = (TextView) question.findViewById(R.id.questionText);
 		if (questionText != null) {
-			questionTextView.setText(questionText);
+			questionTextView.setText(getQuestionNumber() + questionText);
 		}
 		
 		// If the array of answers is null or too short, replace it with an error message
@@ -176,7 +173,7 @@ public class QuestionRenderer {
 		// Set the text of the question itself
 		TextView questionTextView = (TextView) question.findViewById(R.id.questionText);
 		if (questionText != null) {
-			questionTextView.setText(questionText);
+			questionTextView.setText(getQuestionNumber() + questionText);
 		}
 		
 		// Create text strings that represent the question and its answer choices
@@ -224,7 +221,7 @@ public class QuestionRenderer {
 		// Set the text of the question itself
 		TextView questionTextView = (TextView) question.findViewById(R.id.questionText);
 		if (questionText != null) {
-			questionTextView.setText(questionText);
+			questionTextView.setText(getQuestionNumber() + questionText);
 		}
 		
 		EditText editText = null;
@@ -274,6 +271,16 @@ public class QuestionRenderer {
 	private synchronized void setViewId(View view) {
 		view.setId(viewID);
 		viewID++;
+	}
+	
+	
+	/**
+	 * Set the question number (Question 1, Question 2, etc.) and increment it by one
+	 * @return
+	 */
+	private synchronized String getQuestionNumber() {
+		questionNumber++;
+		return questionNumber + ".   ";
 	}
 
 	
