@@ -6,6 +6,9 @@ import java.util.List;
 import org.beiwe.app.R;
 import org.beiwe.app.storage.TextFileManager;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -22,7 +25,7 @@ public class SurveyAnswersRecorder {
 	private static List<Integer> unansweredQuestionNumbers;
 
 
-	public static void gatherAllAnswers(LinearLayout surveyLayout) {
+	public static void gatherAllAnswers(LinearLayout surveyLayout, Context appContext) {
 		LinearLayout questionsLayout = (LinearLayout) surveyLayout.findViewById(R.id.surveyQuestionsLayout);
 		
 		ArrayList<String> fileLines = new ArrayList<String>();
@@ -56,7 +59,31 @@ public class SurveyAnswersRecorder {
 		unansweredQuestions = unansweredQuestions.replaceAll("\\]", "");
 		Log.i("QUESTIONS", "UNANSWERED QUESTIONS = " + unansweredQuestions + " String length = " + unansweredQuestions.length());
 		
+		if (unansweredQuestions.length() > 0) {
+			showUnansweredQuestionsWarning(appContext, unansweredQuestions);
+		}
+		
 		writeLinesToFile(fileLines);
+	}
+
+	
+	private static void showUnansweredQuestionsWarning(Context appContext, String unansweredQuestions) {
+		AlertDialog.Builder alertBuilder = new AlertDialog.Builder(appContext);
+		alertBuilder.setTitle("Unanswered Questions");
+		alertBuilder.setMessage("You did not answer the following questions: " + unansweredQuestions + ". Do you want to submit the survey anyways?");
+		alertBuilder.setPositiveButton("Submit anyways", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO: Deal with this; figure out how to finish() the activity and write the data to a file
+			}
+		});
+		alertBuilder.setNegativeButton("Go back to survey", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO: Deal with this; figure out how to NOT finish() the activity
+			}
+		});
+		alertBuilder.create().show();		
 	}
 	
 	
