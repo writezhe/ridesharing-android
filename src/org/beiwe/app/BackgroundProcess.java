@@ -110,19 +110,19 @@ public class BackgroundProcess extends Service {
 	/** create timers that will trigger events throughout the program, and
 	 * register the custom Intents with the controlMessageReceiver. */
 	public void startTimers() {
-		IntentFilter filter = new IntentFilter();
-//		timer.setupSingularFuzzyAlarm(5000L, Timer.GPSTimerIntent, Timer.GPSOnIntent);
-		filter.addAction(Timer.GPS_TURN_OFF);
-		filter.addAction(Timer.GPS_TURN_ON);
-		timer.setupExactHourlyAlarm(Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
-		filter.addAction(Timer.BLUETOOTH_TURN_OFF);
-		filter.addAction(Timer.BLUETOOTH_TURN_ON);
-//		timer.setupSingularFuzzyAlarm(5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent);
-		filter.addAction(Timer.ACCELEROMETER_TURN_OFF);
-		filter.addAction(Timer.ACCELEROMETER_TURN_ON);
-//		timer.setupRepeatingAlarm(5000, Timer.signOutTimerIntent, Timer.signoutIntent); // Automatic Signout
-//		filter.addAction(Timer.SIGN_OUT);
-		registerReceiver(controlMessageReceiver, filter);
+//		IntentFilter filter = new IntentFilter();
+////		timer.setupSingularFuzzyAlarm(5000L, Timer.GPSTimerIntent, Timer.GPSOnIntent);
+//		filter.addAction(Timer.GPS_TURN_OFF);
+//		filter.addAction(Timer.GPS_TURN_ON);
+//		timer.setupExactHourlyAlarm(Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
+//		filter.addAction(Timer.BLUETOOTH_TURN_OFF);
+//		filter.addAction(Timer.BLUETOOTH_TURN_ON);
+////		timer.setupSingularFuzzyAlarm(5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent);
+//		filter.addAction(Timer.ACCELEROMETER_TURN_OFF);
+//		filter.addAction(Timer.ACCELEROMETER_TURN_ON);
+////		timer.setupRepeatingAlarm(5000, Timer.signOutTimerIntent, Timer.signoutIntent); // Automatic Signout
+////		filter.addAction(Timer.SIGN_OUT);
+//		registerReceiver(controlMessageReceiver, filter);
 	}
 	
 	/*#############################################################################
