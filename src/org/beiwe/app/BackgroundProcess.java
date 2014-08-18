@@ -196,7 +196,6 @@ public class BackgroundProcess extends Service {
 			if (intent.getAction().equals( Timer.GPS_TURN_ON ) ) {
 				gpsListener.turn_on();
 				timer.setupSingularExactAlarm(5000L, Timer.GPSTimerIntent, Timer.GPSOffIntent); }
-
 			
 			if (intent.getAction().equals(Timer.SIGN_OUT) ) {
 				Log.i("BackgroundProcess", "Received Signout Message");
