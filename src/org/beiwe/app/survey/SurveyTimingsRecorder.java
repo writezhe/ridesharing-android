@@ -51,11 +51,7 @@ public class SurveyTimingsRecorder {
 	 */
 	public static void recordSubmit(Context appContext) {
 		String message = "User hit submit";
-		appendLineToLogFile(message);
-		
-		// If successful, pop a Toast telling the user "thanks. success!"
-		String msg = appContext.getResources().getString(R.string.survey_submit_success_message);
-		Toast.makeText(appContext, msg, Toast.LENGTH_LONG).show();
+		appendLineToLogFile(message);		
 	}
 	
 	

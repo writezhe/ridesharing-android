@@ -36,6 +36,7 @@
     <!-- Survey Activity Strings -->
     <string name="survey_submit_button">Submit Answers</string>
     <string name="survey_submit_success_message">Thank you! Your answers have been recorded and saved.</string>
+    <string name="survey_submit_error_message">There has been an error; your answers may not have been recorded and saved</string>
     <string name="data_upload_url">http://beiwe.org/upload</string>
     <string name="survey_questions_url">http://beiwe.org/fetch_survey</string>
     <string name="button_upload">Upload Data Files</string>

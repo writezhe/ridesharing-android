@@ -4,15 +4,19 @@ import org.beiwe.app.R;
 import org.beiwe.app.ui.AppNotifications;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class SurveyActivity extends Activity {
 	
 	private LinearLayout surveyLayout;
+	private SurveyAnswersRecorder answersRecorder;
 	
 	
 	@Override
@@ -77,14 +81,71 @@ public class SurveyActivity extends Activity {
 	 * saves the answers, and takes the user back to the main page.
 	 * @param v
 	 */
-	public void submitButtonPressed(View v) {
+	public void submitButtonPressed(View v) {		
 		AppNotifications.dismissNotificatoin(getApplicationContext(), AppNotifications.surveyCode);
 
 		SurveyTimingsRecorder.recordSubmit(getApplicationContext());
 		
-		SurveyAnswersRecorder.gatherAllAnswers(surveyLayout, getApplicationContext());
+		answersRecorder = new SurveyAnswersRecorder();
+		String unansweredQuestions = answersRecorder.gatherAllAnswers(surveyLayout, getApplicationContext());
+		if (unansweredQuestions.length() > 0) {
+			// If there are unanswered questions, show a warning
+			showUnansweredQuestionsWarning(unansweredQuestions);
+		}
+		else {
+			// If there are no unanswered questions, record the answers and close
+			recordAnswersAndClose();
+		}
+	}
+	
+	
+	/**
+	 * Show a warning pop-up saying "some questions aren't answered; do you 
+	 * want to go back, or submit anyway?"
+	 * @param unansweredQuestions a String of unanswered questions
+	 */
+	private void showUnansweredQuestionsWarning(String unansweredQuestions) {
+		AlertDialog.Builder alertBuilder = new AlertDialog.Builder(SurveyActivity.this);
+		alertBuilder.setTitle("Unanswered Questions");
+		alertBuilder.setMessage("You did not answer the following questions: " + unansweredQuestions + ". Do you want to submit the survey anyways?");
+		alertBuilder.setPositiveButton("Submit anyway", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// If the user clicks "Submit anyway", record the answers and close
+				recordAnswersAndClose();
+			}
+		});
+		alertBuilder.setNegativeButton("Go back to survey", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// If the user clicked "Go back to survey", then close the pop-up and do nothing.
+			}
+		});
+		alertBuilder.create().show();
+	}
+	
+	
+	/**
+	 * Write the Survey answers to a new SurveyAnswers.csv file, and show a
+	 * Toast reporting either success or failure
+	 */
+	private void recordAnswersAndClose() {
+		int messageId = 0;
+
+		// Write the data to a SurveyAnswers file
+		if (answersRecorder.writeLinesToFile()) {
+			messageId = R.string.survey_submit_success_message;
+		}
+		else {
+			messageId = R.string.survey_submit_error_message;
+		}
 		
-		finish();
+		// Show a Toast telling the user either "Thanks, success!" or "Oops, there was an error"
+		String msg = getApplicationContext().getResources().getString(messageId);
+		Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+
+		// Close the Activity
+		finish();		
 	}
 	
 	
