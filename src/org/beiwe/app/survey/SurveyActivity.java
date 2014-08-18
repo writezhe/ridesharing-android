@@ -82,7 +82,7 @@ public class SurveyActivity extends Activity {
 
 		SurveyTimingsRecorder.recordSubmit(getApplicationContext());
 		
-		SurveyAnswersRecorder.gatherAllAnswers(surveyLayout);
+		SurveyAnswersRecorder.gatherAllAnswers(surveyLayout, getApplicationContext());
 		
 		finish();
 	}

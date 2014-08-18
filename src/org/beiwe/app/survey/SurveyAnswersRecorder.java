@@ -1,8 +1,15 @@
 package org.beiwe.app.survey;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.beiwe.app.R;
 import org.beiwe.app.storage.TextFileManager;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -12,11 +19,19 @@ import android.widget.RadioGroup;
 public class SurveyAnswersRecorder {
 
 	public static String header = "question id,question type,question text,question answer options,answer";
+	private static String noAnswer = "NO_ANSWER_SELECTED";
+	private static String errorCode = "ERROR_QUESTION_NOT_RECORDED";
+	
+	private static List<Integer> unansweredQuestionNumbers;
 
 
-	public static void gatherAllAnswers(LinearLayout surveyLayout) {
-		TextFileManager.getSurveyAnswersFile().newFile();
+	public static void gatherAllAnswers(LinearLayout surveyLayout, Context appContext) {
 		LinearLayout questionsLayout = (LinearLayout) surveyLayout.findViewById(R.id.surveyQuestionsLayout);
+		
+		ArrayList<String> fileLines = new ArrayList<String>();
+
+		unansweredQuestionNumbers = new ArrayList<Integer>();
+		int questionNumber = 1;
 
 		for (int i = 0; i < questionsLayout.getChildCount(); i++) {
 			View childView = questionsLayout.getChildAt(i);
@@ -24,77 +39,124 @@ public class SurveyAnswersRecorder {
 			
 			if (questionType.equals("infoTextbox")) {
 				// Do nothing
-			}			
+			}
 			else if (questionType.equals("sliderQuestion")) {
-				getAnswerFromSliderQuestion(childView);
+				fileLines.add(answerFromSliderQuestion(childView, questionNumber++));
 			}
 			else if (questionType.equals("radioButtonQuestion")) {
-				getAnswerFromRadioButtonQuestion(childView);
+				fileLines.add(answerFromRadioButtonQuestion(childView, questionNumber++));
 			}
 			else if (questionType.equals("checkboxQuestion")) {
-				getAnswerFromCheckboxQuestion(childView);
+				fileLines.add(answerFromCheckboxQuestion(childView, questionNumber++));
 			}
 			else if (questionType.equals("openResponseQuestion")) {
-				getAnswerFromOpenResponseQuestion(childView);
+				fileLines.add(answerFromOpenResponseQuestion(childView, questionNumber++));
 			}
 		}
+		
+		String unansweredQuestions = unansweredQuestionNumbers.toString();
+		unansweredQuestions = unansweredQuestions.replaceAll("\\[", "");
+		unansweredQuestions = unansweredQuestions.replaceAll("\\]", "");
+		Log.i("QUESTIONS", "UNANSWERED QUESTIONS = " + unansweredQuestions + " String length = " + unansweredQuestions.length());
+		
+		if (unansweredQuestions.length() > 0) {
+			showUnansweredQuestionsWarning(appContext, unansweredQuestions);
+		}
+		
+		writeLinesToFile(fileLines);
+	}
+
+	
+	private static void showUnansweredQuestionsWarning(Context appContext, String unansweredQuestions) {
+		AlertDialog.Builder alertBuilder = new AlertDialog.Builder(appContext);
+		alertBuilder.setTitle("Unanswered Questions");
+		alertBuilder.setMessage("You did not answer the following questions: " + unansweredQuestions + ". Do you want to submit the survey anyways?");
+		alertBuilder.setPositiveButton("Submit anyways", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO: Deal with this; figure out how to finish() the activity and write the data to a file
+			}
+		});
+		alertBuilder.setNegativeButton("Go back to survey", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				// TODO: Deal with this; figure out how to NOT finish() the activity
+			}
+		});
+		alertBuilder.create().show();		
 	}
 	
-	private static void getAnswerFromSliderQuestion(View childView) {
-		QuestionLinearLayout wholeQuestion = (QuestionLinearLayout) childView;
-		SeekBarEditableThumb slider = (SeekBarEditableThumb) wholeQuestion.getChildAt(2);
-		// TODO: figure out why getChildAt() works but findViewById() doesn't. It's weird, because findViewById() works for some IDs!
-		//SeekBarEditableThumb slider = (SeekBarEditableThumb) wholeQuestion.findViewById(R.id.theSlider);
-		if (slider != null) {
-			//Log.i("SurveyAnswersRecorder.java", "slider != null");
+	
+	private static String answerFromSliderQuestion(View childView, int questionNumber) {
+		try {
+			QuestionLinearLayout wholeQuestion = (QuestionLinearLayout) childView;
+			SeekBarEditableThumb slider = (SeekBarEditableThumb) wholeQuestion.getChildAt(2);
+			// TODO: figure out why getChildAt() works but findViewById() doesn't. It's weird, because findViewById() works for some IDs!
+			//SeekBarEditableThumb slider = (SeekBarEditableThumb) wholeQuestion.findViewById(R.id.theSlider);
 			if (slider.getHasBeenTouched()) {
 				int answer = slider.getProgress();
-				recordAnswer(wholeQuestion.getQuestionDescription(), "" + answer);
+				return answerFileLine(wholeQuestion.getQuestionDescription(), "" + answer);
 			}
 			else {
-				recordAnswer(wholeQuestion.getQuestionDescription(), "NO ANSWER SELECTED");
+				unansweredQuestionNumbers.add(questionNumber);
+				return answerFileLine(wholeQuestion.getQuestionDescription(), noAnswer);
 			}
+		} catch (Exception e) {
+			return errorCode;
 		}
-		else {
-			//Log.i("SurveyAnswersRecorder.java", "slider == null");
-		}		
 	}
 	
-	private static void getAnswerFromRadioButtonQuestion(View childView) {
-		QuestionLinearLayout wholeQuestion = (QuestionLinearLayout) childView;
-		RadioGroup radioGroup = (RadioGroup) wholeQuestion.findViewById(R.id.radioGroup);
-		if (radioGroup != null) {
+	private static String answerFromRadioButtonQuestion(View childView, int questionNumber) throws NullPointerException {
+		try {
+			QuestionLinearLayout wholeQuestion = (QuestionLinearLayout) childView;
+			RadioGroup radioGroup = (RadioGroup) wholeQuestion.findViewById(R.id.radioGroup);
 			int selectedId = radioGroup.getCheckedRadioButtonId();
 			RadioButton selectedButton = (RadioButton) radioGroup.findViewById(selectedId);
 			if (selectedButton != null) {
 				String selectedAnswer = (String) selectedButton.getText();
-				recordAnswer(wholeQuestion.getQuestionDescription(), selectedAnswer);						
+				return answerFileLine(wholeQuestion.getQuestionDescription(), selectedAnswer);						
 			}
 			else {
-				recordAnswer(wholeQuestion.getQuestionDescription(), "NO ANSWER SELECTED");						
+				unansweredQuestionNumbers.add(questionNumber);
+				return answerFileLine(wholeQuestion.getQuestionDescription(), noAnswer);
 			}
-		}		
+		} catch (Exception e) {
+			return errorCode;
+		}
 	}
 	
-	private static void getAnswerFromCheckboxQuestion(View childView) {
-		QuestionLinearLayout wholeQuestion = (QuestionLinearLayout) childView;
-		LinearLayout checkboxesList = (LinearLayout) wholeQuestion.findViewById(R.id.checkboxesList);
-		String selectedAnswers = InputListener.getSelectedCheckboxes(checkboxesList);
-		recordAnswer(wholeQuestion.getQuestionDescription(), selectedAnswers);
+	private static String answerFromCheckboxQuestion(View childView, int questionNumber) throws NullPointerException {
+		try {
+			QuestionLinearLayout wholeQuestion = (QuestionLinearLayout) childView;
+			LinearLayout checkboxesList = (LinearLayout) wholeQuestion.findViewById(R.id.checkboxesList);
+			String selectedAnswers = InputListener.getSelectedCheckboxes(checkboxesList);
+			if (selectedAnswers.equals("[]")) {
+				unansweredQuestionNumbers.add(questionNumber);
+				selectedAnswers = noAnswer;
+			}
+			return answerFileLine(wholeQuestion.getQuestionDescription(), selectedAnswers);
+		} catch (Exception e) {
+			return errorCode;
+		}
 	}
 	
-	private static void getAnswerFromOpenResponseQuestion(View childView) {
+	private static String answerFromOpenResponseQuestion(View childView, int questionNumber) throws NullPointerException {
 		try {
 			QuestionLinearLayout wholeQuestion = (QuestionLinearLayout) childView;
 			LinearLayout textFieldContainer = (LinearLayout) wholeQuestion.findViewById(R.id.textFieldContainer);
 			EditText textField = (EditText) textFieldContainer.getChildAt(0);
-			recordAnswer(wholeQuestion.getQuestionDescription(), textField.getText().toString());
+			String answer = textField.getText().toString();
+			if (answer == null || answer.equals("")) {
+				unansweredQuestionNumbers.add(questionNumber);
+				answer = noAnswer;
+			}
+			return answerFileLine(wholeQuestion.getQuestionDescription(), answer);
 		} catch (Exception e) {
-			// TODO: figure out how to log errors
+			return errorCode;
 		}
 	}
 	
-	private static void recordAnswer(QuestionDescription questionDescription, String answer) {
+	private static String answerFileLine(QuestionDescription questionDescription, String answer) {
 		
 		String line = "";
 		line += SurveyTimingsRecorder.sanitizeString(questionDescription.getId());
@@ -107,7 +169,14 @@ public class SurveyAnswersRecorder {
 		line += TextFileManager.DELIMITER;
 		line += SurveyTimingsRecorder.sanitizeString(answer);
 
-		TextFileManager.getSurveyAnswersFile().write(line);
+		return line;
 	}
 
+	private static void writeLinesToFile(ArrayList<String> fileLines) {
+		TextFileManager.getSurveyAnswersFile().newFile();
+		for (String line : fileLines) {
+			TextFileManager.getSurveyAnswersFile().write(line);
+		}
+	}
+	
 }
