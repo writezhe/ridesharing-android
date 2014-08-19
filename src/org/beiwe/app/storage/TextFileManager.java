@@ -156,18 +156,27 @@ public class TextFileManager {
 		else {
 			String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
 			// TODO: replace this with a real user ID
+			/* Note: if a new file gets created in the same second as an 
+			 * existing file, the names will be the same, and instead of two
+			 * files, there will be one file with a header midway through it.
+			 * BUT this should not happen; we shouldn't be creating new files
+			 * that frequently. */
 			this.fileName = "ABCDEF12_" + this.name + "_" + timecode + ".csv"; }
 		this.write(header);
 	}
 	
 	/** Takes a string. writes that to the file, adds a new line to the string.
-	 * Prints a stacktrace on a write error, but does not crash. 
+	 * Prints a stacktrace on a write error, but does not crash. If there is no
+	 * file, a new file will be created.
 	 * @param data a string*/
 	//TODO: investigate writing strings that make contain non-string-happy characters. (like escapes)
 	public synchronized void write(String data){
 		//write the output, we always want mode append
 		FileOutputStream outStream;
 		try {
+			if (fileName == null) {
+				this.newFile();
+			}
 			outStream = appContext.openFileOutput(fileName, Context.MODE_APPEND);
 			outStream.write( ( data ).getBytes() );
 			outStream.write( "\n".getBytes() );
