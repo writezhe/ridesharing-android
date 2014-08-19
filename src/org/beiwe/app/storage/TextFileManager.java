@@ -111,22 +111,22 @@ public class TextFileManager {
 		
 		// TODO: fix filenames in accordance with the spec I agreed on with Kevin
 		// Persistent files
-		debugLogFile = new TextFileManager(appContext, "logFile.txt", "THIS LINE IS A LOG FILE HEADER\n", true);
-		currentQuestions = new TextFileManager(appContext, "currentQuestionsFile.json", "", true);
+		debugLogFile = new TextFileManager(appContext, "logFile.txt", "THIS LINE IS A LOG FILE HEADER\n", true, true);
+		currentQuestions = new TextFileManager(appContext, "currentQuestionsFile.json", "", true, true);
 		
 		// Regularly/periodically-created files
-		GPSFile = new TextFileManager(appContext, "gps", GPSListener.header, false);
-		accelFile = new TextFileManager(appContext, "accel", AccelerometerListener.header, false);
-		textsLog = new TextFileManager(appContext, "textsLog", SmsSentLogger.header, false);
-		callLog = new TextFileManager(appContext, "callLog", CallLogger.header, false);
-		powerStateLog = new TextFileManager(appContext, "powerState", PowerStateListener.header, false);
-		bluetoothLog = new TextFileManager(appContext, "bluetoothLog", BluetoothListener.header, false);
+		GPSFile = new TextFileManager(appContext, "gps", GPSListener.header, false, true);
+		accelFile = new TextFileManager(appContext, "accel", AccelerometerListener.header, false, true);
+		textsLog = new TextFileManager(appContext, "textsLog", SmsSentLogger.header, false, true);
+		callLog = new TextFileManager(appContext, "callLog", CallLogger.header, false, true);
+		powerStateLog = new TextFileManager(appContext, "powerState", PowerStateListener.header, false, true);
+		bluetoothLog = new TextFileManager(appContext, "bluetoothLog", BluetoothListener.header, false, true);
 		
 		// Files created upon specific events
 		// TODO: don't create unnecessary copies of these files if you can help it
-		deviceInfo = new TextFileManager(appContext, "phoneInfo.txt", "", true); // TODO: make this not persistent, only created upon registration
-		surveyTimings = new TextFileManager(appContext, "surveyTimings", SurveyTimingsRecorder.header, false);
-		surveyAnswers = new TextFileManager(appContext, "surveyAnswers", SurveyAnswersRecorder.header, false);
+		deviceInfo = new TextFileManager(appContext, "phoneInfo.txt", "", true, false); // TODO: make this not persistent, only created upon registration
+		surveyTimings = new TextFileManager(appContext, "surveyTimings", SurveyTimingsRecorder.header, false, false);
+		surveyAnswers = new TextFileManager(appContext, "surveyAnswers", SurveyAnswersRecorder.header, false, false);
 	}
 	
 	/** This class has a PRIVATE constructor.  The constructor is only ever called 
@@ -135,12 +135,14 @@ public class TextFileManager {
 	 * @param name The file's name.
 	 * @param header The first line of the file.  Leave empty if you don't want a header, remember to include a new line at the end of the header.
 	 * @param persistent Set this to true for a persistent file */
-	private TextFileManager(Context appContext, String name, String header, Boolean persistent ){
+	private TextFileManager(Context appContext, String name, String header, Boolean persistent, Boolean createNow ){
 		TextFileManager.appContext = appContext;
 		this.name = name;
 		this.header = header;
 		this.persistent = persistent;
-		this.newFile();
+		if (createNow) {
+			this.newFile();			
+		}
 	}
 	
 	/*###############################################################################
@@ -154,18 +156,27 @@ public class TextFileManager {
 		else {
 			String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
 			// TODO: replace this with a real user ID
+			/* Note: if a new file gets created in the same second as an 
+			 * existing file, the names will be the same, and instead of two
+			 * files, there will be one file with a header midway through it.
+			 * BUT this should not happen; we shouldn't be creating new files
+			 * that frequently. */
 			this.fileName = "ABCDEF12_" + this.name + "_" + timecode + ".csv"; }
 		this.write(header);
 	}
 	
 	/** Takes a string. writes that to the file, adds a new line to the string.
-	 * Prints a stacktrace on a write error, but does not crash. 
+	 * Prints a stacktrace on a write error, but does not crash. If there is no
+	 * file, a new file will be created.
 	 * @param data a string*/
 	//TODO: investigate writing strings that make contain non-string-happy characters. (like escapes)
 	public synchronized void write(String data){
 		//write the output, we always want mode append
 		FileOutputStream outStream;
 		try {
+			if (fileName == null) {
+				this.newFile();
+			}
 			outStream = appContext.openFileOutput(fileName, Context.MODE_APPEND);
 			outStream.write( ( data ).getBytes() );
 			outStream.write( "\n".getBytes() );
@@ -270,10 +281,8 @@ public class TextFileManager {
 		return file_list;
 	}
 	
-	/**
-	 * Returns all data files except for the persistent ones that shouldn't be uploaded
-	 * @return String[] a list of file names
-	 */
+	/** Returns all data files except for the persistent ones that shouldn't be uploaded
+	 * @return String[] a list of file names */
 	public static synchronized String[] getAllUploadableFiles() {
 		Set<String> files = new HashSet<String>();
 		Collections.addAll(files, getAllFiles());
