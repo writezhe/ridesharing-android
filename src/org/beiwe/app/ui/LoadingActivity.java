@@ -36,7 +36,7 @@ public class LoadingActivity extends Activity{
 		session = new LoginSessionManager(appContext);
 		
 		session.checkLogin();
-		// Splash Screen goes here.
+		// TODO: Splash Screen goes here.
 		finish();
 	}
 }
