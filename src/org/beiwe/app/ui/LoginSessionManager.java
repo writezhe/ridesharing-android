@@ -32,6 +32,8 @@ public class LoginSessionManager {
     // Public names for when inspecting the user's details. Used to call from outside the class.
     public static final String KEY_NAME = "username";
     public static final String KEY_PASSWORD = "password";
+	public static final String IS_REGISTERED = "IsRegistered";
+	private static boolean isRegistered = false;
      
     /**
      * This is a constructor method for the session manager class
@@ -39,9 +41,10 @@ public class LoginSessionManager {
      */
 	public LoginSessionManager(Context context){
         this.appContext = context;
-//        Log.i("SessionManager", "Attempting to get SharedPreferences");
+//      Log.i("SessionManager", "Attempting to get SharedPreferences");
         pref = appContext.getSharedPreferences(PREF_NAME, PRIVATE_MODE); //Shared Preferences is set to private mode
         editor = pref.edit();
+        editor.putBoolean("IsRegistered", (isRegistered == true) ? true : false);
         editor.commit();
     }
      
@@ -51,6 +54,8 @@ public class LoginSessionManager {
     * @param password
     */
     public void createLoginSession(String username, String password){
+    	isRegistered = true;
+    	editor.putBoolean(IS_REGISTERED, isRegistered);
     	editor.putBoolean(IS_LOGIN, true);
         editor.putString(KEY_NAME, username);
         editor.putString(KEY_PASSWORD, password);
@@ -67,19 +72,20 @@ public class LoginSessionManager {
      * */
     public void checkLogin(){
     	Log.i("SessionManager", "Check if already logged in");
+    	Log.i("SessionManager", "" + isRegistered());
     	if(this.isLoggedIn()) {
     		Intent intent = new Intent(appContext, DebugInterfaceActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             appContext.startActivity(intent);
         } else {
         	Log.i("SessionManager", "Check if it is not first time login");
-        	if (!this.isLoggedIn() && pref.contains(KEY_NAME)) {
+        	if (this.isRegistered()) {
         		Intent intent = new Intent(appContext, LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 appContext.startActivity(intent);      	
         	} else {
             	Log.i("SessionManager", "First time logged in");
-            	Intent intent = new Intent(appContext, DebugInterfaceActivity.class);
+            	Intent intent = new Intent(appContext, RegisterActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 appContext.startActivity(intent);
         	}
@@ -118,6 +124,10 @@ public class LoginSessionManager {
     public boolean isLoggedIn(){
 //    	Log.i("SessionManager", "" + pref.getBoolean(IS_LOGIN, false));
     	return pref.getBoolean(IS_LOGIN, false);
+    }
+    
+    public boolean isRegistered() {
+    	return pref.getBoolean(IS_REGISTERED, false);
     }
 
 	public void logoutUserPassive() {
