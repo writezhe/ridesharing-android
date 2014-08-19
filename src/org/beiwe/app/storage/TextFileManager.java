@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import org.beiwe.app.listeners.AccelerometerListener;
@@ -81,7 +82,7 @@ public class TextFileManager {
 	public static TextFileManager getSurveyTimingsFile(){ if ( surveyTimings == null ) throw new NullPointerException( getter_error ); return surveyTimings; }
 	public static TextFileManager getSurveyAnswersFile(){ if ( surveyAnswers == null ) throw new NullPointerException( getter_error ); return surveyAnswers; }
 
-	//the persistant files
+	//the persistent files
 	public static TextFileManager getCurrentQuestionsFile(){ if ( currentQuestions == null ) throw new NullPointerException( getter_error ); return currentQuestions; }
 	public static TextFileManager getDebugLogFile(){ if ( debugLogFile == null ) throw new NullPointerException( getter_error ); return debugLogFile; }
 	public static TextFileManager getDeviceInfoFile(){ if ( deviceInfo == null ) throw new NullPointerException( getter_error ); return deviceInfo; }
@@ -261,13 +262,28 @@ public class TextFileManager {
 	 * @return a string array of all files in the app's file directory. */
 	public static synchronized String[] getAllFiles() { return appContext.getFilesDir().list(); }
 	
-	//TODO: remove persistant files (move all persistant files to an internal directory, remove directory from return.
 	/** Returns a list of file names, all files in that list are retired and will not be written to again.
 	 * @return a string array of files*/
 	public static synchronized String[] getAllFilesSafely() {
 		String[] file_list = getAllFiles();
 		makeNewFilesForEverything();
 		return file_list;
+	}
+	
+	/**
+	 * Returns all data files except for the persistent ones that shouldn't be uploaded
+	 * @return String[] a list of file names
+	 */
+	public static synchronized String[] getAllUploadableFiles() {
+		Set<String> files = new HashSet<String>();
+		Collections.addAll(files, getAllFiles());
+		
+		files.remove(TextFileManager.getCurrentQuestionsFile().fileName);
+		files.remove(TextFileManager.getDebugLogFile().fileName);
+		
+		makeNewFilesForEverything();
+		
+		return files.toArray(new String[files.size()]);
 	}
 	
 	/*###############################################################################

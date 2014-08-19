@@ -47,7 +47,7 @@ public class Upload {
 		Callable<HttpPost> thread = new Callable<HttpPost>() {
 			@Override
 			public HttpPost call() {
-				String[] files = TextFileManager.getAllFilesSafely();
+				String[] files = TextFileManager.getAllUploadableFiles();
 				
 				for (String fileName : files) {
 					try {
