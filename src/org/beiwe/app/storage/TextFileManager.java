@@ -123,7 +123,6 @@ public class TextFileManager {
 		bluetoothLog = new TextFileManager(appContext, "bluetoothLog", BluetoothListener.header, false, true);
 		
 		// Files created upon specific events
-		// TODO: don't create unnecessary copies of these files if you can help it
 		deviceInfo = new TextFileManager(appContext, "phoneInfo.txt", "", true, false); // TODO: make this not persistent, only created upon registration
 		surveyTimings = new TextFileManager(appContext, "surveyTimings", SurveyTimingsRecorder.header, false, false);
 		surveyAnswers = new TextFileManager(appContext, "surveyAnswers", SurveyAnswersRecorder.header, false, false);

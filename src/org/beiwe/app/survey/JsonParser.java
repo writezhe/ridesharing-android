@@ -101,9 +101,9 @@ public class JsonParser {
 	private View renderSliderQuestion(JSONObject jsonQuestion) {
 		String questionID = getStringFromJSONObject(jsonQuestion, "question_id");
 		String questionText = getStringFromJSONObject(jsonQuestion, "question_text");
-		int numberOfValues = getIntFromJSONObject(jsonQuestion, "number_of_values");
-		int defaultValue = getIntFromJSONObject(jsonQuestion, "default_value");
-		return renderer.createSliderQuestion(questionID, questionText, numberOfValues, defaultValue);
+		int min = getIntFromJSONObject(jsonQuestion, "min");
+		int max = getIntFromJSONObject(jsonQuestion, "max");
+		return renderer.createSliderQuestion(questionID, questionText, min, max);
 	}
 	
 	

@@ -71,7 +71,7 @@ public class QuestionRenderer {
 	 * @return LinearLayout A slider bar
 	 */
 	public LinearLayout createSliderQuestion(String questionID, 
-			String questionText, int numberOfValues, int defaultValue) {
+			String questionText, int min, int max) {
 		
 		QuestionLinearLayout question = (QuestionLinearLayout) inflater.inflate(R.layout.survey_slider_question, null);
 		SeekBarEditableThumb slider = (SeekBarEditableThumb) question.findViewById(R.id.slider);
@@ -82,23 +82,25 @@ public class QuestionRenderer {
 			questionTextView.setText(getQuestionNumber() + questionText);
 		}
 		
-		// Clean inputs/force them to be usable numbers
-		if (numberOfValues < 2) { numberOfValues = 2; }
-		if (numberOfValues > 100) {	numberOfValues = 100; }
-		if (defaultValue < 0) {	defaultValue = 0; }
-		if (defaultValue > numberOfValues - 1) { defaultValue = numberOfValues - 1; }
+		// The min must be greater than the max, and the range must be at most 100.
+		// If the min and max don't fit that, reset min to 0 and max to 100.
+		if ((min > (max - 1)) || ((max - min) > 100)) {
+			min = 0;
+			max = 100;
+		}
 		
 		// Set the slider's range and default/starting value
-		slider.setMax(numberOfValues - 1);
-		slider.setProgress(defaultValue);
+		slider.setMax(max - min);
+		slider.setProgress(0);
+		slider.setMin(min);
 
 		setViewId(slider);
 		
 		// Add a label above the slider with numbers that mark points on a scale
-		addNumbersLabelingToSlider(question, 0, numberOfValues);
+		addNumbersLabelingToSlider(question, min, max);
 		
 		// Create text strings that represent the question and its answer choices
-		String options = "From 0 to " + (numberOfValues - 1) + "; default " + defaultValue;
+		String options = "min = " + min + "; max = " + max;
 		QuestionDescription questionDescription = 
 				new QuestionDescription(questionID, "Slider Question", questionText, options);
 		question.setQuestionDescription(questionDescription);
@@ -305,13 +307,13 @@ public class QuestionRenderer {
 		 * all labels. */		
 		int numberOfLabels = 0;
 		int range = max - min;
-		if ((range - 1) % 4 == 0) {
+		if (range % 4 == 0) {
 			numberOfLabels = 5;
 		}
-		else if ((range - 1) % 3 == 0) {
+		else if (range % 3 == 0) {
 			numberOfLabels = 4;
 		}
-		else if ((range - 1) % 2 == 0) {
+		else if (range % 2 == 0) {
 			numberOfLabels = 3;
 		}
 		else {
@@ -323,7 +325,7 @@ public class QuestionRenderer {
 		for (int i = 0; i < numberOfLabels - 1; i++) {
 			TextView number = (TextView) inflater.inflate(numberResourceID, label, false);
 			label.addView(number);
-			number.setText("" + (i * (range - 1) / (numberOfLabels - 1) + min));
+			number.setText("" + (min + (i * range) / (numberOfLabels - 1)));
 			
 			View spacer = (View) inflater.inflate(R.layout.horizontal_spacer, label, false);
 			label.addView(spacer);			
@@ -331,7 +333,7 @@ public class QuestionRenderer {
 		// Create one last label (the rightmost one) without a spacer to its right
 		TextView number = (TextView) inflater.inflate(numberResourceID, label, false);
 		label.addView(number);		
-		number.setText("" + (max - 1));
+		number.setText("" + max);
 		
 		// Add the set of numeric labels to the question
 		question.addView(numbersLabel, index);		

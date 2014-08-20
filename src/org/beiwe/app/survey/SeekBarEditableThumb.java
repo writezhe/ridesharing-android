@@ -7,7 +7,7 @@ import android.widget.SeekBar;
 
 /**
  * Based on http://stackoverflow.com/a/19008611
- * @author admin
+ * @author Josh Zagorsky
  *
  */
 public class SeekBarEditableThumb extends SeekBar {
@@ -27,6 +27,7 @@ public class SeekBarEditableThumb extends SeekBar {
 	
 	private Drawable compatThumb;
 	private Boolean hasBeenTouched;
+	private int min;
 	
 	@Override
 	public void setThumb(Drawable thumb) {
@@ -56,6 +57,23 @@ public class SeekBarEditableThumb extends SeekBar {
 	 */
 	public Boolean getHasBeenTouched() {
 		return hasBeenTouched;
+	}
+	
+	
+	/**
+	 * The minimum doesn't have to be zero; the SeekBar can start at another number (even negative)
+	 * @param min
+	 */
+	public void setMin(int min) {
+		this.min = min;
+	}
+	
+	/**
+	 * The minimum doesn't have to be zero; the SeekBar can start at another number (even negative)
+	 * @param min
+	 */
+	public int getMin() {
+		return this.min;
 	}
 	
 }
