@@ -163,6 +163,17 @@ public class TextFileManager {
 		this.write(header);
 	}
 	
+	/** If it's a SurveyAnswers or SurveyTimings file, we want to append the
+	 * Survey ID so that the file name reads like this:
+	 * [USERID]_SurveyAnswers[SURVEYID]_[TIMESTAMP].csv
+	 * @param surveyId */
+	public synchronized void newFile(String surveyId) {
+		String nameHolder = this.name;
+		this.name += surveyId;
+		newFile();
+		this.name = nameHolder;
+	}
+	
 	/** Takes a string. writes that to the file, adds a new line to the string.
 	 * Prints a stacktrace on a write error, but does not crash. If there is no
 	 * file, a new file will be created.

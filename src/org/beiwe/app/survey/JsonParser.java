@@ -34,12 +34,13 @@ public class JsonParser {
 	 * Add all survey questions to the provided surveyLayout View object
 	 * @param surveyLayout
 	 */
-	public void renderSurveyFromJSON(LinearLayout surveyLayout, String jsonSurveyString) {
+	public String renderSurveyFromJSON(LinearLayout surveyLayout, String jsonSurveyString) {
 		try {
 			LinearLayout questionsLayout = (LinearLayout) surveyLayout.findViewById(R.id.surveyQuestionsLayout);
 
 			JSONObject wholeSurveyObject;
 			wholeSurveyObject = new JSONObject(jsonSurveyString);
+			String surveyId = wholeSurveyObject.getString("survey_id");
 			JSONArray jsonQuestions = wholeSurveyObject.getJSONArray("questions");
 			
 			// Iterate over the array, and add each question to the survey View
@@ -47,6 +48,8 @@ public class JsonParser {
 				View question = renderQuestionFromJSON(jsonQuestions.getJSONObject(i));
 				questionsLayout.addView(question);
 			}
+			
+			return surveyId;
 		}
 		catch (JSONException e) {
 			// If rendering or parsing failed, display the error widget instead
@@ -55,6 +58,8 @@ public class JsonParser {
 		
 			surveyLayout.removeAllViews();
 			surveyLayout.addView(errorWidget);
+			
+			return "";
 		}
 	}
 		

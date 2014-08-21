@@ -1,11 +1,9 @@
 package org.beiwe.app.survey;
 
-import org.beiwe.app.R;
 import org.beiwe.app.storage.TextFileManager;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 public class SurveyTimingsRecorder {
 	
@@ -16,10 +14,10 @@ public class SurveyTimingsRecorder {
 	 * Create a new Survey Response file, and record the timestamp of when 
 	 * the survey first displayed to the user
 	 */
-	public static void recordSurveyFirstDisplayed() {
+	public static void recordSurveyFirstDisplayed(String surveyId) {
 		// Create a new data file to record answers for only this survey
 		// TODO: decide if it's possible for a user to take two surveys at once, and if that's a problem
-		TextFileManager.getSurveyTimingsFile().newFile();
+		TextFileManager.getSurveyTimingsFile().newFile(surveyId);
 		
 		String message = "Survey first rendered and displayed to user";
 		appendLineToLogFile(message);

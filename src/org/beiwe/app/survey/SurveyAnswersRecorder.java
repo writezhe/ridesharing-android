@@ -191,9 +191,9 @@ public class SurveyAnswersRecorder {
 	 * Create a new SurveyAnswers file, and write all of the answers to it
 	 * @return TRUE if wrote successfully; FALSE if caught an exception
 	 */
-	public Boolean writeLinesToFile() {
+	public Boolean writeLinesToFile(String surveyId) {
 		try {
-			TextFileManager.getSurveyAnswersFile().newFile();
+			TextFileManager.getSurveyAnswersFile().newFile(surveyId);
 			for (String line : fileLines) {
 				TextFileManager.getSurveyAnswersFile().write(line);
 			}

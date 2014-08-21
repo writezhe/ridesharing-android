@@ -17,6 +17,7 @@ public class SurveyActivity extends Activity {
 	
 	private LinearLayout surveyLayout;
 	private SurveyAnswersRecorder answersRecorder;
+	private String surveyId;
 	
 	
 	@Override
@@ -52,13 +53,13 @@ public class SurveyActivity extends Activity {
 		
 		// Parse the JSON list of questions and render them as Views
 		JsonParser jsonParser = new JsonParser(getApplicationContext());
-		jsonParser.renderSurveyFromJSON(surveyLayout, jsonSurveyString);
+		surveyId = jsonParser.renderSurveyFromJSON(surveyLayout, jsonSurveyString);
 
 		// Display the survey instead of the "Loading..." wheel
 		replaceSurveyPageContents(surveyLayout);
 		
 		// Record the time that the survey was first visible to the user
-		SurveyTimingsRecorder.recordSurveyFirstDisplayed();
+		SurveyTimingsRecorder.recordSurveyFirstDisplayed(surveyId);
 	}
 	
 	
@@ -133,7 +134,7 @@ public class SurveyActivity extends Activity {
 		int messageId = 0;
 
 		// Write the data to a SurveyAnswers file
-		if (answersRecorder.writeLinesToFile()) {
+		if (answersRecorder.writeLinesToFile(surveyId)) {
 			messageId = R.string.survey_submit_success_message;
 		}
 		else {
