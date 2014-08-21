@@ -88,8 +88,7 @@ public class CallLogger extends ContentObserver {
 		int currentID = cursor.getInt(cursor.getColumnIndex(id));
 		Log.i("Call Log", "" + "Current Size is " + currentID);
 		Log.i("Call Log", "Last Known ID is " + lastRecordedID);
-		long currentDate = cursor.getLong(cursor.getColumnIndex(android.provider.CallLog.Calls.DATE));
-
+		long currentDate = cursor.getLong(cursor.getColumnIndex(date));
 
 		// A call was deleted
 		if (currentSize < lastKnownSize) {
@@ -104,13 +103,13 @@ public class CallLogger extends ContentObserver {
 				Log.i("CallLogger", "Current ID is " + currentID);
 				currentID = cursor.getInt(cursor.getColumnIndex(id));
 			}
-			cursor.moveToPrevious();
 
 			// While there exists a next row
-			while(lastRecordingDate != currentDate && !cursor.isBeforeFirst()) {
+			while(!cursor.isBeforeFirst()) {
 				Log.i("Call Logger", "" + (cursor.getInt(cursor.getColumnIndex(id))));
-				if (cursor.getLong(cursor.getColumnIndex(id)) < lastRecordedID) {
+				if (currentID <= lastRecordedID) {
 					cursor.moveToPrevious();
+					currentID = cursor.getInt(cursor.getColumnIndex(id));
 					continue;
 				}
 				StringBuilder callLoggerLine = new StringBuilder();
