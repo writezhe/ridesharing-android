@@ -32,13 +32,13 @@
         android:layout_height="30dp" />
 
     <TextView
-        android:id="@+id/enter_username"
+        android:id="@+id/enter_user_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/register_activity_username" />
+        android:text="@string/register_activity_user_id" />
 
     <EditText
-        android:id="@+id/username_box"
+        android:id="@+id/userID_box"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="text"

@@ -11,19 +11,29 @@
     tools:ignore="HardcodedText,InefficientWeight" >
 
     <TextView
+        android:id="@+id/login_welcoming_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/login_activity_welcoming_message"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="30dp" />
+
+    <TextView
         android:id="@+id/textView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Please enter your username"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:text="Please enter your user ID:" />
 
     <EditText
         android:id="@+id/editText1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:hint="Username"
         android:inputType="text"
         tools:ignore="InefficientWeight" />
 
@@ -34,17 +44,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Please enter password"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:text="Please enter password:" />
 
     <EditText
         android:id="@+id/editText2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:hint="Password"
         android:inputType="textPassword"
         tools:ignore="InefficientWeight" />
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="30dp" />
 
     <Button
         android:id="@+id/login_button"
@@ -63,21 +75,5 @@
         android:gravity="fill_horizontal"
         android:onClick="forgotPassword"
         android:text="@string/title_activity_forgot_password" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" >
-
-        <View
-            android:id="@+id/View01"
-            android:layout_width="wrap_content"
-            android:layout_height="64dp" />
-
-        <View
-            android:id="@+id/view1"
-            android:layout_width="wrap_content"
-            android:layout_height="64dp" />
-    </LinearLayout>
 
 </LinearLayout>

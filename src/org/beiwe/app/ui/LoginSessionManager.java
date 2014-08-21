@@ -29,7 +29,7 @@ public class LoginSessionManager {
     private static final String IS_LOGIN = "IsLoggedIn";
    
     // Public names for when inspecting the user's details. Used to call from outside the class.
-    public static final String KEY_NAME = "username";
+    public static final String KEY_ID = "uid";
     public static final String KEY_PASSWORD = "password";
 	public static final String IS_REGISTERED = "IsRegistered";
 	private static boolean isRegistered = false;
@@ -49,14 +49,14 @@ public class LoginSessionManager {
      
    /**
     * This creates a new login session. Interacts with the SharedPreferences.
-    * @param username
+    * @param userID
     * @param password
     */
-    public void createLoginSession(String username, String password){
+    public void createLoginSession(String userID, String password){
     	isRegistered = true;
     	editor.putBoolean(IS_REGISTERED, isRegistered);
     	editor.putBoolean(IS_LOGIN, true);
-        editor.putString(KEY_NAME, username);
+        editor.putString(KEY_ID, userID);
         editor.putString(KEY_PASSWORD, password);
         editor.commit();
 //        Log.i("SessionManager", pref.getString(KEY_NAME, "Bobby McGee")); // Saved username
@@ -97,7 +97,7 @@ public class LoginSessionManager {
      */
     public HashMap<String, String> getUserDetails(){
        	HashMap<String, String> user = new HashMap<String, String>();
-        user.put(KEY_NAME, pref.getString(KEY_NAME, null));
+        user.put(KEY_ID, pref.getString(KEY_ID, null));
         user.put(KEY_PASSWORD, pref.getString(KEY_PASSWORD, null));
         Log.i("SessionManager", user.toString());
         return user;
