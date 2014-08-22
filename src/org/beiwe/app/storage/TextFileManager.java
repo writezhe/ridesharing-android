@@ -9,7 +9,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import org.beiwe.app.listeners.AccelerometerListener;
@@ -20,8 +19,10 @@ import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
 import org.beiwe.app.survey.SurveyAnswersRecorder;
 import org.beiwe.app.survey.SurveyTimingsRecorder;
+import org.beiwe.app.ui.LoginSessionManager;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 //TODO:  filename should contain...
@@ -159,7 +160,7 @@ public class TextFileManager {
 			 * files, there will be one file with a header midway through it.
 			 * BUT this should not happen; we shouldn't be creating new files
 			 * that frequently. */
-			this.fileName = "ABCDEF12_" + this.name + "_" + timecode + ".csv"; }
+			this.fileName = getUserId() + "_" + this.name + "_" + timecode + ".csv"; }
 		this.write(header);
 	}
 	
@@ -172,6 +173,13 @@ public class TextFileManager {
 		this.name += surveyId;
 		newFile();
 		this.name = nameHolder;
+	}
+	
+	/** Get the user/patient ID that's stored in SharedPreferences
+	 * @return the ID string, or the string "NOID" if it doesn't exist */
+	private synchronized String getUserId() {
+		SharedPreferences pref = appContext.getSharedPreferences(LoginSessionManager.PREF_NAME, LoginSessionManager.PRIVATE_MODE);
+		return pref.getString(LoginSessionManager.KEY_ID, "NULLID");
 	}
 	
 	/** Takes a string. writes that to the file, adds a new line to the string.

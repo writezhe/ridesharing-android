@@ -24,8 +24,8 @@ public class LoginSessionManager {
 	private SharedPreferences pref; 
     private Editor editor;
     private Context appContext;
-    private int PRIVATE_MODE = 0;     
-    private static final String PREF_NAME = "BeiwePref";
+    public static int PRIVATE_MODE = 0;     
+    public static final String PREF_NAME = "BeiwePref";
     private static final String IS_LOGIN = "IsLoggedIn";
    
     // Public names for when inspecting the user's details. Used to call from outside the class.
