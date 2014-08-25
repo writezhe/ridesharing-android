@@ -102,10 +102,10 @@ public class Timer {
 	}
 	public void setupSingularExactAlarm( Long milliseconds, Intent timerIntent, Intent intentToBeBroadcast ) {
 		Long nextTriggerTime = System.currentTimeMillis() + milliseconds;
-		PendingIntent pendingTimerIntent = registerAlarm(intentToBeBroadcast, timerIntent);
+		PendingIntent pendingTimerIntent = registerAlarm( intentToBeBroadcast, timerIntent );
 		/* The alarmManager.setExact(*parameters*) operation makes exact alarms.  They are guaranteed
 		 * to go off at the precise/exact time that you specify. */
-		alarmManager.setExact( AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingTimerIntent);
+		alarmManager.setExact( AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingTimerIntent );
 	}
 	
 	/* setupExactHourlyAlarm creates an Exact Alarm that will go off at a specific hourly offset,
@@ -114,11 +114,13 @@ public class Timer {
 	 * between devices. */
 	//TODO: CURRENTLY DEBUGGING!  THIS DOES NOT SET ANYTHING TO AN HOURLY REPEAT, NEED TO UNCOMMENT LINE OF CODE.
 	public void setupExactHourlyAlarm( Intent timerIntent, Intent intentToBeBroadcast ) {	
+		long currentTime = System.currentTimeMillis();
 		// current unix time (mod) 3,600,000 milliseconds = a next hour boundry, then add the EXACT_TIMER_OFFSET
-		// Long nextTriggerTime = ( System.currentTimeMillis() % (long) 3600000 ) + EXACT_TIMER_OFFSET;
-		Long nextTriggerTime = System.currentTimeMillis() + 5000;
-		PendingIntent pendingTimerIntent = registerAlarm(intentToBeBroadcast, timerIntent);
-		alarmManager.setExact( AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingTimerIntent);
+		Long nextTriggerTime = currentTime - ( currentTime % (long) 3600000 ) + EXACT_TIMER_OFFSET;
+		if (nextTriggerTime < currentTime) { nextTriggerTime += 3600000; }
+//		Long nextTriggerTime = System.currentTimeMillis() + 5000;
+		PendingIntent pendingTimerIntent = registerAlarm( intentToBeBroadcast, timerIntent );
+		alarmManager.setExact( AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingTimerIntent );
 	}
 	
 	/** This function handles the common elements for any alarm creation.
