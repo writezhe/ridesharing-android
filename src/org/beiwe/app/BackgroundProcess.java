@@ -123,7 +123,7 @@ public class BackgroundProcess extends Service {
 //		filter.addAction(Timer.ACCELEROMETER_TURN_ON);
 ////		timer.setupRepeatingAlarm(5000, Timer.signOutTimerIntent, Timer.signoutIntent); // Automatic Signout
 ////		filter.addAction(Timer.SIGN_OUT);
-		registerReceiver(controlMessageReceiver, filter);
+//		registerReceiver(controlMessageReceiver, filter);
 	}
 	
 	/*#############################################################################
