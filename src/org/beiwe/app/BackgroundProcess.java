@@ -68,10 +68,11 @@ public class BackgroundProcess extends Service {
 		startCallLogger();
 		startPowerStateListener();
 		
-		DeviceInfo register = new DeviceInfo(appContext);
+		@SuppressWarnings("unused")  //the constructor hands DeviceInfo a Context, which it uses to grab info.
+		DeviceInfo deviceInfo = new DeviceInfo(appContext);
 		
-		Log.i("thingy", register.androidID);
-		Log.i("other thingy", register.bluetoothMAC);
+		Log.i("androidID", DeviceInfo.androidID);
+		Log.i("bluetoothMAC", DeviceInfo.bluetoothMAC);
 		startTimers();
 	}
 	
@@ -110,19 +111,19 @@ public class BackgroundProcess extends Service {
 	/** create timers that will trigger events throughout the program, and
 	 * register the custom Intents with the controlMessageReceiver. */
 	public void startTimers() {
-//		IntentFilter filter = new IntentFilter();
-////		timer.setupSingularFuzzyAlarm(5000L, Timer.GPSTimerIntent, Timer.GPSOnIntent);
-//		filter.addAction(Timer.GPS_TURN_OFF);
-//		filter.addAction(Timer.GPS_TURN_ON);
-//		timer.setupExactHourlyAlarm(Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
-//		filter.addAction(Timer.BLUETOOTH_TURN_OFF);
-//		filter.addAction(Timer.BLUETOOTH_TURN_ON);
-////		timer.setupSingularFuzzyAlarm(5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent);
-//		filter.addAction(Timer.ACCELEROMETER_TURN_OFF);
-//		filter.addAction(Timer.ACCELEROMETER_TURN_ON);
-////		timer.setupRepeatingAlarm(5000, Timer.signOutTimerIntent, Timer.signoutIntent); // Automatic Signout
-////		filter.addAction(Timer.SIGN_OUT);
-//		registerReceiver(controlMessageReceiver, filter);
+		IntentFilter filter = new IntentFilter();
+//		timer.setupSingularFuzzyAlarm(5000L, Timer.GPSTimerIntent, Timer.GPSOnIntent);
+		filter.addAction(Timer.GPS_TURN_OFF);
+		filter.addAction(Timer.GPS_TURN_ON);
+		timer.setupExactHourlyAlarm(Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
+		filter.addAction(Timer.BLUETOOTH_TURN_OFF);
+		filter.addAction(Timer.BLUETOOTH_TURN_ON);
+//		timer.setupSingularFuzzyAlarm(5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent);
+		filter.addAction(Timer.ACCELEROMETER_TURN_OFF);
+		filter.addAction(Timer.ACCELEROMETER_TURN_ON);
+//		timer.setupRepeatingAlarm(5000, Timer.signOutTimerIntent, Timer.signoutIntent); // Automatic Signout
+//		filter.addAction(Timer.SIGN_OUT);
+		registerReceiver(controlMessageReceiver, filter);
 	}
 	
 	/*#############################################################################
@@ -172,30 +173,31 @@ public class BackgroundProcess extends Service {
 		@Override
 		public void onReceive(Context appContext, Intent intent) {
 			Log.i("BackgroundService", "Received Broadcast: " + intent.toString());
+			TextFileManager.getDebugLogFile().write("");
 			
 			if (intent.getAction().equals( Timer.ACCELEROMETER_TURN_OFF ) ) {
 				accelerometerListener.turn_off();
-				timer.setupSingularExactAlarm(5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent); }
+				timer.setupSingularExactAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent); }
 			
 			if (intent.getAction().equals( Timer.ACCELEROMETER_TURN_ON ) ) {
 				accelerometerListener.turn_on();
-				timer.setupSingularFuzzyAlarm(5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOffIntent); }
+				timer.setupSingularFuzzyAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOffIntent); }
 			
 			if (intent.getAction().equals( Timer.BLUETOOTH_TURN_OFF ) ) {
 				bluetoothListener.disableBLEScan();
-				timer.setupExactHourlyAlarm(Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent); }
+				timer.setupExactHourlyAlarm( Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent); }
 			
 			if (intent.getAction().equals( Timer.BLUETOOTH_TURN_ON ) ) {
 				bluetoothListener.enableBLEScan(); 
-				timer.setupSingularExactAlarm(5000L, Timer.bluetoothTimerIntent, Timer.bluetoothOffIntent); }
+				timer.setupSingularExactAlarm( 5000L, Timer.bluetoothTimerIntent, Timer.bluetoothOffIntent ); }
 			
 			if (intent.getAction().equals( Timer.GPS_TURN_OFF ) ) {
 				gpsListener.turn_off();
-				timer.setupSingularFuzzyAlarm(5000L, Timer.GPSTimerIntent, Timer.GPSOnIntent); }
+				timer.setupSingularFuzzyAlarm( 5000L, Timer.GPSTimerIntent, Timer.GPSOnIntent); }
 			
 			if (intent.getAction().equals( Timer.GPS_TURN_ON ) ) {
 				gpsListener.turn_on();
-				timer.setupSingularExactAlarm(5000L, Timer.GPSTimerIntent, Timer.GPSOffIntent); }
+				timer.setupSingularExactAlarm( 5000L, Timer.GPSTimerIntent, Timer.GPSOffIntent); }
 			
 			if (intent.getAction().equals(Timer.SIGN_OUT) ) {
 				Log.i("BackgroundProcess", "Received Signout Message");
