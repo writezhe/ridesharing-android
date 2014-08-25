@@ -11,32 +11,39 @@ import android.os.Handler;
 import android.provider.CallLog;
 import android.util.Log;
 
-// TODO: What happens to a call that is deleted by the user from the call history
-// TODO: We need to see if any broadcastReceivers need to be instantiated
 // TODO: BootLogger does not require instantiation
 
 public class CallLogger extends ContentObserver {
 
 	public static String header = "hashed phone number,call type,date,duration in seconds";
-	
+
 	// Private variables
 	private TextFileManager callLogFile = null;
 	private Handler handler = null;
-	private int idOfLastCall = 0;
-	
-	// Enum - ID number for personal use
+	private Uri allCalls = Uri.parse("content://call_log/calls");
+
+	// Last recorded values
+	private int lastRecordedID = 0;
+	private int lastKnownSize = 0;
+	private long lastRecordingDate = 0;
+
+	// Fields
 	private String id = android.provider.CallLog.Calls._ID;
-	
+	private String number = android.provider.CallLog.Calls.NUMBER;
+	private String type = android.provider.CallLog.Calls.TYPE; 
+	private String date = android.provider.CallLog.Calls.DATE;
+	private String duration = android.provider.CallLog.Calls.DURATION;
+
 	// Context
 	Context appContext = null;
-	
+
 	// Columns that interest us - phone number, type of call, date, duration of call
 	String[] fields = {android.provider.CallLog.Calls.NUMBER, 
 			android.provider.CallLog.Calls.TYPE, 
 			android.provider.CallLog.Calls.DATE, 
 			android.provider.CallLog.Calls.DURATION
 	};
-	
+
 
 	// Constructor of the call logger object
 	public CallLogger(Handler theHandler, Context context) {
@@ -44,8 +51,21 @@ public class CallLogger extends ContentObserver {
 		theHandler = handler;
 		appContext = context;
 		callLogFile = TextFileManager.getCallLogFile(); //TODO: change back to debug log file for debugging
+
+		// Pull database info
+		Cursor cursor = appContext.getContentResolver().query(allCalls, null, null, null, android.provider.CallLog.Calls.DEFAULT_SORT_ORDER);
+		cursor.moveToFirst();
+
+		// Set lastKnownSize
+		lastKnownSize = cursor.getCount();
+
+		// Record id of last made call
+		lastRecordedID = cursor.getInt(cursor.getColumnIndex(id));
+		
+		// Record last date
+		lastRecordingDate = cursor.getLong(cursor.getColumnIndex(android.provider.CallLog.Calls.DATE));
 	}
-	
+
 
 	/**
 	 * On change, Looks for the last row, then goes back until reaching the row of the last recorded call,
@@ -53,100 +73,74 @@ public class CallLogger extends ContentObserver {
 	 */
 	public void onChange(boolean selfChange) {
 		super.onChange(selfChange);
-		
-		// StringBuilder that will be used when creating the data to be written
-		StringBuilder builder = new StringBuilder();
+
+		// Get the most recent callLogFile
+		callLogFile = TextFileManager.getCallLogFile();
 		
 		// Database information
-		Uri allCalls = Uri.parse("content://call_log/calls");
 		Cursor cursor = appContext.getContentResolver().query(allCalls, null, null, null, android.provider.CallLog.Calls.DEFAULT_SORT_ORDER);
-		
 		cursor.moveToFirst();
-		
-		// Dealing with first time activation case - set idOfLastCall, and then create the log file with column names
-		if (idOfLastCall == 0) { 
-			idOfLastCall = cursor.getInt(cursor.getColumnIndex(id));
-			Log.i("CallLogger", "Last recorded ID" + idOfLastCall);
-			for (int i = 0; i < fields.length; i++) {
-				builder.append(fields[i] + TextFileManager.DELIMITER);
-			}
-			// TODO: delete this line, because we only print the header line once
-			//formatThenAddToFile(builder);
-			builder.setLength(0);
+
+		// Comparison values
+		int currentSize = cursor.getCount();
+		Log.i("Call Log", "" + "Current Size is " + currentSize);
+		Log.i("Call Log", "Last Known Size is " + lastKnownSize);
+		int currentID = cursor.getInt(cursor.getColumnIndex(id));
+		Log.i("Call Log", "" + "Current Size is " + currentID);
+		Log.i("Call Log", "Last Known ID is " + lastRecordedID);
+		long currentDate = cursor.getLong(cursor.getColumnIndex(date));
+
+		// A call was deleted
+		if (currentSize < lastKnownSize) {
+			Log.i("Call Logger", "Last Call deleted, Last Call deleted, Last Call deleted, Last Call deleted");
+		} else if ( currentSize == lastKnownSize && currentID == lastRecordedID ) {
+			Log.i("CallLogger", "Something broke - this doesn't make sense...");
 		} else {
-			int currentID = cursor.getInt(cursor.getColumnIndex(id));
-			Log.i("CallLogger", "Last recorded ID " + idOfLastCall);
-			// Climb until reaching the idOfLastCall row
-			while (currentID != idOfLastCall) {
+			Log.i("CallLogger", "Last recorded ID " + lastRecordedID);
+			// 	Descend until reaching the idOfLastCall row
+			while (currentID != lastRecordedID) {
 				cursor.moveToNext();
 				Log.i("CallLogger", "Current ID is " + currentID);
 				currentID = cursor.getInt(cursor.getColumnIndex(id));
 			}
 
-			cursor.moveToPrevious();
-		}
-		
-		// While there exists a next row
-		while(!cursor.isBeforeFirst()) {
-			// Append all the values in "fields"
-			for (int i = 0; i < fields.length; i++) {
-				if(i == 0) { // If dealing with a phone, we need to hash it
-					builder.append(EncryptionEngine.hashPhoneNumber(cursor.getString(cursor.getColumnIndex(fields[i]))));
-					builder.append(TextFileManager.DELIMITER);
-				} else if(i == 1) { // If dealing with a type - we need to translate it to real words
-					int type = cursor.getInt(cursor.getColumnIndex(fields[i]));
-					switch(type) {
-					case CallLog.Calls.OUTGOING_TYPE:
-						builder.append("Outgoing Call");
-						break;
+			// While there exists a next row
+			while(!cursor.isBeforeFirst()) {
+				Log.i("Call Logger", "" + (cursor.getInt(cursor.getColumnIndex(id))));
+				if (currentID <= lastRecordedID) {
+					cursor.moveToPrevious();
+					currentID = cursor.getInt(cursor.getColumnIndex(id));
+					continue;
+				}
+				StringBuilder callLoggerLine = new StringBuilder();
+				// Add hashed phone number
+				callLoggerLine.append(EncryptionEngine.hashPhoneNumber(cursor.getString(cursor.getColumnIndex(number))));
+				callLoggerLine.append(TextFileManager.DELIMITER);
 
-					case CallLog.Calls.INCOMING_TYPE:
-						builder.append("Incoming Call");
-						break;
- 
-					case CallLog.Calls.MISSED_TYPE:
-						builder.append("Missed Call");
-						break;
-					}
-					builder.append(TextFileManager.DELIMITER);
+				// Add call type
+				int callType = cursor.getInt(cursor.getColumnIndex(type));
+				if (callType == CallLog.Calls.OUTGOING_TYPE) {
+					callLoggerLine.append("Outgoing Call");
+				} else if (callType == CallLog.Calls.INCOMING_TYPE) {
+					callLoggerLine.append("Incoming Call");
+				} else {
+					callLoggerLine.append("Missed Call");
 				}
-				else { // Otherwise just append the string to the builder
-					builder.append(cursor.getString(cursor.getColumnIndex(fields[i])));
-					builder.append(TextFileManager.DELIMITER);
-				}
+				callLoggerLine.append(TextFileManager.DELIMITER);
+
+				// Add date
+				callLoggerLine.append(cursor.getLong(cursor.getColumnIndex(date)));
+				callLoggerLine.append(TextFileManager.DELIMITER);
+				
+				// Add duration
+				callLoggerLine.append(cursor.getInt(cursor.getColumnIndex(duration)));
+
+				Log.i("Call Log", callLoggerLine.toString());
+				callLogFile.write(callLoggerLine.toString());
+				cursor.moveToPrevious();
 			}
- 
-			// Final Formatting before writing into file
-			formatThenAddToFile(builder);
-			
-			String result = builder.toString();
-			Log.i("CallLogger", "Data so far is: " + result);
-			cursor.moveToPrevious();
 		}
-		
-		// Currently pointing at a null row
-		cursor.moveToFirst();
- 		
-		// Now we have the last ID!
-		idOfLastCall = cursor.getInt(cursor.getColumnIndex(id));
-		Log.i("CallLogger", "Last Logged ID: " + idOfLastCall);
-
-		
-		String result = builder.toString();
-		Log.i("CallLogger", "Final Data is: " + result);
- 	}
- 	
-
-	/**
-	 * Formats the stringBuilder that has too many delimiters, then writes it to the csv file as a string.
- 	 * 
-	 * @param stringBuilder
-	 * @param logFile
- 	 */
-	private void formatThenAddToFile(StringBuilder stringBuilder) {
-		stringBuilder.deleteCharAt(stringBuilder.lastIndexOf(TextFileManager.DELIMITER));
-		
-		String result = stringBuilder.toString();
-		callLogFile.write(result);
+		lastKnownSize = currentSize;
+		lastRecordedID = currentID;
 	}
 }

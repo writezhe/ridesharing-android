@@ -28,8 +28,8 @@ import android.widget.Toast;
 @SuppressLint({ "CommitPrefEdits", "ShowToast" })
 public class LoginActivity extends Activity {
 
-	private EditText userName;
-	private EditText passWord;
+	private EditText userID;
+	private EditText password;
 	private LoginSessionManager session;
 	private Context appContext;
 	
@@ -53,12 +53,12 @@ public class LoginActivity extends Activity {
 			startActivity(new Intent(appContext, DebugInterfaceActivity.class));
 			finish();
 		} else {
-			userName = (EditText) findViewById(R.id.editText1);
-			passWord = (EditText) findViewById(R.id.editText2);
+			userID = (EditText) findViewById(R.id.editText1);
+			password = (EditText) findViewById(R.id.editText2);
 		
 			TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(appContext);
-			textFieldKeyboard.makeKeyboardBehave(userName);
-			textFieldKeyboard.makeKeyboardBehave(passWord);
+			textFieldKeyboard.makeKeyboardBehave(userID);
+			textFieldKeyboard.makeKeyboardBehave(password);
 		}
 	}
 	
@@ -80,33 +80,32 @@ public class LoginActivity extends Activity {
 			finish();
 		} else {
 			// Strings that have to do with username and password
-			String username = userName.getText().toString();
-			String password = passWord.getText().toString();
-			String encryptedPassword = EncryptionEngine.hash(password);
+			String userIDString = userID.getText().toString();
+			String passwordString = password.getText().toString();
+			String encryptedPassword = EncryptionEngine.hash(passwordString);
 			
 			HashMap<String, String> details = session.getUserDetails();
-			String prefUsername = details.get(LoginSessionManager.KEY_NAME);
+			String prefUserID = details.get(LoginSessionManager.KEY_ID);
 			String prefPassword = details.get(LoginSessionManager.KEY_PASSWORD);
-			Log.i("LoginActivity", prefUsername);
+			Log.i("LoginActivity", prefUserID);
 			Log.i("LoginActivity", prefPassword);
 			
 			// Logic begins here
-			if(username.trim().length() > 0 && password.trim().length() > 0){
-				if(!username.equals(prefUsername)) {
-					AlertsManager.showAlert("Invalid username", this);
-					Toast.makeText(appContext, "Invalid username", 5).show();
+			if(userIDString.trim().length() > 0 && passwordString.trim().length() > 0){
+				if(!userIDString.equals(prefUserID)) {
+					AlertsManager.showAlert("User ID does not match the one in the system. Try again", this);
 				}
 				else if(encryptedPassword.equals(prefPassword)){ 
-					session.createLoginSession(username, encryptedPassword);
+					session.createLoginSession(userIDString, encryptedPassword);
 					startActivity(new Intent(appContext, DebugInterfaceActivity.class));
 					finish();
-				} else { AlertsManager.showAlert("Incorrect username password combination", this);}
-			} else { AlertsManager.showAlert("Login Failed", this); } // In case login completely fails
+				} else { AlertsManager.showAlert("Incorrect user ID and password combination", this);}
+			} else { AlertsManager.showAlert("Login Failed due to a field being too short", this); } // In case login completely fails
 		}
 	}
 	
 	/**
-	 * Switch to the forgot password screen, without losing the saved state.
+	 * Switch to the forgot password screen.
 	 * @param view
 	 */
 	public void forgotPassword(View view) {

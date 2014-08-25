@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import org.beiwe.app.DebugInterfaceActivity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,13 +24,15 @@ public class LoginSessionManager {
 	private SharedPreferences pref; 
     private Editor editor;
     private Context appContext;
-    private int PRIVATE_MODE = 0;     
-    private static final String PREF_NAME = "BeiwePref";
+    public static int PRIVATE_MODE = 0;     
+    public static final String PREF_NAME = "BeiwePref";
     private static final String IS_LOGIN = "IsLoggedIn";
    
     // Public names for when inspecting the user's details. Used to call from outside the class.
-    public static final String KEY_NAME = "username";
+    public static final String KEY_ID = "uid";
     public static final String KEY_PASSWORD = "password";
+	public static final String IS_REGISTERED = "IsRegistered";
+	private static boolean isRegistered = false;
      
     /**
      * This is a constructor method for the session manager class
@@ -39,20 +40,23 @@ public class LoginSessionManager {
      */
 	public LoginSessionManager(Context context){
         this.appContext = context;
-//        Log.i("SessionManager", "Attempting to get SharedPreferences");
+//      Log.i("SessionManager", "Attempting to get SharedPreferences");
         pref = appContext.getSharedPreferences(PREF_NAME, PRIVATE_MODE); //Shared Preferences is set to private mode
         editor = pref.edit();
+        editor.putBoolean("IsRegistered", (isRegistered == true) ? true : false);
         editor.commit();
     }
      
    /**
     * This creates a new login session. Interacts with the SharedPreferences.
-    * @param username
+    * @param userID
     * @param password
     */
-    public void createLoginSession(String username, String password){
+    public void createLoginSession(String userID, String password){
+    	isRegistered = true;
+    	editor.putBoolean(IS_REGISTERED, isRegistered);
     	editor.putBoolean(IS_LOGIN, true);
-        editor.putString(KEY_NAME, username);
+        editor.putString(KEY_ID, userID);
         editor.putString(KEY_PASSWORD, password);
         editor.commit();
 //        Log.i("SessionManager", pref.getString(KEY_NAME, "Bobby McGee")); // Saved username
@@ -67,19 +71,20 @@ public class LoginSessionManager {
      * */
     public void checkLogin(){
     	Log.i("SessionManager", "Check if already logged in");
+    	Log.i("SessionManager", "" + isRegistered());
     	if(this.isLoggedIn()) {
     		Intent intent = new Intent(appContext, DebugInterfaceActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             appContext.startActivity(intent);
         } else {
         	Log.i("SessionManager", "Check if it is not first time login");
-        	if (!this.isLoggedIn() && pref.contains(KEY_NAME)) {
+        	if (this.isRegistered()) {
         		Intent intent = new Intent(appContext, LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 appContext.startActivity(intent);      	
         	} else {
             	Log.i("SessionManager", "First time logged in");
-            	Intent intent = new Intent(appContext, DebugInterfaceActivity.class);
+            	Intent intent = new Intent(appContext, RegisterActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 appContext.startActivity(intent);
         	}
@@ -92,7 +97,7 @@ public class LoginSessionManager {
      */
     public HashMap<String, String> getUserDetails(){
        	HashMap<String, String> user = new HashMap<String, String>();
-        user.put(KEY_NAME, pref.getString(KEY_NAME, null));
+        user.put(KEY_ID, pref.getString(KEY_ID, null));
         user.put(KEY_PASSWORD, pref.getString(KEY_PASSWORD, null));
         Log.i("SessionManager", user.toString());
         return user;
@@ -118,6 +123,10 @@ public class LoginSessionManager {
     public boolean isLoggedIn(){
 //    	Log.i("SessionManager", "" + pref.getBoolean(IS_LOGIN, false));
     	return pref.getBoolean(IS_LOGIN, false);
+    }
+    
+    public boolean isRegistered() {
+    	return pref.getBoolean(IS_REGISTERED, false);
     }
 
 	public void logoutUserPassive() {

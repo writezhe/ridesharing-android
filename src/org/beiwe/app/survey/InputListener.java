@@ -43,7 +43,14 @@ public class InputListener {
 
 		@Override
 		public void onStopTrackingTouch(SeekBar seekBar) {
-			String answer = "" + seekBar.getProgress();
+			String answer = "";
+			if (seekBar instanceof SeekBarEditableThumb) {
+				SeekBarEditableThumb slider = (SeekBarEditableThumb) seekBar;				
+				answer += slider.getProgress() + slider.getMin();
+			}
+			else {
+				answer += seekBar.getProgress();
+			}
 			SurveyTimingsRecorder.recordAnswer(answer, questionDescription);
 		}
 		

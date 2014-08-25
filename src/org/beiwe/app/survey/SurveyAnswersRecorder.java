@@ -6,10 +6,7 @@ import java.util.List;
 import org.beiwe.app.R;
 import org.beiwe.app.storage.TextFileManager;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -22,15 +19,22 @@ public class SurveyAnswersRecorder {
 	private static String noAnswer = "NO_ANSWER_SELECTED";
 	private static String errorCode = "ERROR_QUESTION_NOT_RECORDED";
 	
-	private static List<Integer> unansweredQuestionNumbers;
+	private ArrayList<String> fileLines;
+	private List<Integer> unansweredQuestionNumbers;
 
-
-	public static void gatherAllAnswers(LinearLayout surveyLayout, Context appContext) {
+	
+	/**
+	 * Get all the answers from the Survey Layout
+	 * @param surveyLayout
+	 * @param appContext
+	 * @return a String that's a list of unanswered questions
+	 */
+	public String gatherAllAnswers(LinearLayout surveyLayout, Context appContext) {
 		LinearLayout questionsLayout = (LinearLayout) surveyLayout.findViewById(R.id.surveyQuestionsLayout);
 		
-		ArrayList<String> fileLines = new ArrayList<String>();
-
+		fileLines = new ArrayList<String>();
 		unansweredQuestionNumbers = new ArrayList<Integer>();
+		
 		int questionNumber = 1;
 
 		for (int i = 0; i < questionsLayout.getChildCount(); i++) {
@@ -57,44 +61,25 @@ public class SurveyAnswersRecorder {
 		String unansweredQuestions = unansweredQuestionNumbers.toString();
 		unansweredQuestions = unansweredQuestions.replaceAll("\\[", "");
 		unansweredQuestions = unansweredQuestions.replaceAll("\\]", "");
-		Log.i("QUESTIONS", "UNANSWERED QUESTIONS = " + unansweredQuestions + " String length = " + unansweredQuestions.length());
 		
-		if (unansweredQuestions.length() > 0) {
-			showUnansweredQuestionsWarning(appContext, unansweredQuestions);
-		}
-		
-		writeLinesToFile(fileLines);
-	}
-
-	
-	private static void showUnansweredQuestionsWarning(Context appContext, String unansweredQuestions) {
-		AlertDialog.Builder alertBuilder = new AlertDialog.Builder(appContext);
-		alertBuilder.setTitle("Unanswered Questions");
-		alertBuilder.setMessage("You did not answer the following questions: " + unansweredQuestions + ". Do you want to submit the survey anyways?");
-		alertBuilder.setPositiveButton("Submit anyways", new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				// TODO: Deal with this; figure out how to finish() the activity and write the data to a file
-			}
-		});
-		alertBuilder.setNegativeButton("Go back to survey", new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				// TODO: Deal with this; figure out how to NOT finish() the activity
-			}
-		});
-		alertBuilder.create().show();		
+		return unansweredQuestions;
 	}
 	
 	
-	private static String answerFromSliderQuestion(View childView, int questionNumber) {
+	/**
+	 * Get the answer from a Slider Question
+	 * @param childView
+	 * @param questionNumber
+	 * @return the answer as a String
+	 */
+	private String answerFromSliderQuestion(View childView, int questionNumber) {
 		try {
 			QuestionLinearLayout wholeQuestion = (QuestionLinearLayout) childView;
 			SeekBarEditableThumb slider = (SeekBarEditableThumb) wholeQuestion.getChildAt(2);
 			// TODO: figure out why getChildAt() works but findViewById() doesn't. It's weird, because findViewById() works for some IDs!
 			//SeekBarEditableThumb slider = (SeekBarEditableThumb) wholeQuestion.findViewById(R.id.theSlider);
 			if (slider.getHasBeenTouched()) {
-				int answer = slider.getProgress();
+				int answer = slider.getProgress() + slider.getMin();
 				return answerFileLine(wholeQuestion.getQuestionDescription(), "" + answer);
 			}
 			else {
@@ -106,7 +91,14 @@ public class SurveyAnswersRecorder {
 		}
 	}
 	
-	private static String answerFromRadioButtonQuestion(View childView, int questionNumber) throws NullPointerException {
+	
+	/**
+	 * Get the answer from a Radio Button Question
+	 * @param childView
+	 * @param questionNumber
+	 * @return the answer as a String
+	 */
+	private String answerFromRadioButtonQuestion(View childView, int questionNumber) {
 		try {
 			QuestionLinearLayout wholeQuestion = (QuestionLinearLayout) childView;
 			RadioGroup radioGroup = (RadioGroup) wholeQuestion.findViewById(R.id.radioGroup);
@@ -125,7 +117,14 @@ public class SurveyAnswersRecorder {
 		}
 	}
 	
-	private static String answerFromCheckboxQuestion(View childView, int questionNumber) throws NullPointerException {
+	
+	/**
+	 * Get the answer from a Checkbox Question
+	 * @param childView
+	 * @param questionNumber
+	 * @return the answer as a String
+	 */
+	private String answerFromCheckboxQuestion(View childView, int questionNumber) {
 		try {
 			QuestionLinearLayout wholeQuestion = (QuestionLinearLayout) childView;
 			LinearLayout checkboxesList = (LinearLayout) wholeQuestion.findViewById(R.id.checkboxesList);
@@ -140,7 +139,14 @@ public class SurveyAnswersRecorder {
 		}
 	}
 	
-	private static String answerFromOpenResponseQuestion(View childView, int questionNumber) throws NullPointerException {
+	
+	/**
+	 * Get the answer from an Open Response question
+	 * @param childView
+	 * @param questionNumber
+	 * @return the answer as a String
+	 */
+	private String answerFromOpenResponseQuestion(View childView, int questionNumber) {
 		try {
 			QuestionLinearLayout wholeQuestion = (QuestionLinearLayout) childView;
 			LinearLayout textFieldContainer = (LinearLayout) wholeQuestion.findViewById(R.id.textFieldContainer);
@@ -156,7 +162,15 @@ public class SurveyAnswersRecorder {
 		}
 	}
 	
-	private static String answerFileLine(QuestionDescription questionDescription, String answer) {
+	
+	/**
+	 * Create a line (that will get written to a CSV file) that includes
+	 * question metadata and the user's answer
+	 * @param questionDescription metadata on the question
+	 * @param answer the user's answer
+	 * @return a String that can be written as a line to a file
+	 */
+	private String answerFileLine(QuestionDescription questionDescription, String answer) {
 		
 		String line = "";
 		line += SurveyTimingsRecorder.sanitizeString(questionDescription.getId());
@@ -172,10 +186,20 @@ public class SurveyAnswersRecorder {
 		return line;
 	}
 
-	private static void writeLinesToFile(ArrayList<String> fileLines) {
-		TextFileManager.getSurveyAnswersFile().newFile();
-		for (String line : fileLines) {
-			TextFileManager.getSurveyAnswersFile().write(line);
+	
+	/**
+	 * Create a new SurveyAnswers file, and write all of the answers to it
+	 * @return TRUE if wrote successfully; FALSE if caught an exception
+	 */
+	public Boolean writeLinesToFile(String surveyId) {
+		try {
+			TextFileManager.getSurveyAnswersFile().newFile(surveyId);
+			for (String line : fileLines) {
+				TextFileManager.getSurveyAnswersFile().write(line);
+			}
+			return true;
+		} catch (Exception e) {
+			return false;
 		}
 	}
 	

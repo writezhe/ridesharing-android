@@ -59,7 +59,10 @@ public class TextFieldKeyboard {
      * @param editText the EditText that the user is currently typing in
      */
     private void setupUiToHideKeyboard(View rootView, final EditText editText) {
-        if(!(rootView instanceof EditText)) {
+    	/* If the user taps on an EditText; keep the keyboard open. If the user
+    	 * taps on a SeekBar (Slider); don't add an OnTouchListener, because
+    	 * that'll overwrite the Slider's existing OnTouchListener. */
+        if(!(rootView instanceof EditText) && !(rootView instanceof SeekBarEditableThumb)) {
             rootView.setOnTouchListener(new OnTouchListener() {
                 public boolean onTouch(View v, MotionEvent event) {
                     hideSoftKeyboard(editText);

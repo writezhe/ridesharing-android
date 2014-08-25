@@ -30,7 +30,6 @@ import android.widget.EditText;
 public class ForgotPassword extends Activity {
 	
 	private Context appContext;
-	private EditText username;
 	private EditText userId;
 	private EditText password;
 	private EditText passwordRepeat;
@@ -46,7 +45,6 @@ public class ForgotPassword extends Activity {
 		
 		// This is the variable assignment section
 		appContext = getApplicationContext();
-		username = (EditText) findViewById(R.id.forgot_password_username);
 		userId = (EditText) findViewById(R.id.forgot_password_uid);
 		password = (EditText) findViewById(R.id.forgot_password_password);
 		passwordRepeat = (EditText) findViewById(R.id.forgot_password_password_repeat);
@@ -54,7 +52,6 @@ public class ForgotPassword extends Activity {
 		
 		// Make keyboard behavior nicely - when clicking outside of the textbox, keyboard disappears
 		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(appContext);
-		textFieldKeyboard.makeKeyboardBehave(username);
 		textFieldKeyboard.makeKeyboardBehave(userId);
 		textFieldKeyboard.makeKeyboardBehave(password);
 		textFieldKeyboard.makeKeyboardBehave(passwordRepeat);
@@ -73,7 +70,6 @@ public class ForgotPassword extends Activity {
 	 */
 	public void forgotPasswordSequence(View view) throws NoSuchAlgorithmException, UnsupportedEncodingException {
 		// Variable assignments
-		String usernameStr = username.getText().toString();
 		String userIdStr = userId.getText().toString();
 		String passwordStr = password.getText().toString();
 		String passwordRepeatStr = passwordRepeat.getText().toString();
@@ -82,23 +78,21 @@ public class ForgotPassword extends Activity {
 		// Encapsulated user's details as saved in the SharedPreferences
 		HashMap<String, String> details = session.getUserDetails();
 		
-		Log.i("ForgotPassword", appContext.getSharedPreferences("BeiwePref", 0).getString(LoginSessionManager.KEY_NAME, "Bobby McGee"));
+		Log.i("ForgotPassword", appContext.getSharedPreferences("BeiwePref", 0).getString(LoginSessionManager.KEY_ID, "Bobby McGee"));
 		Log.i("ForgotPassword", appContext.getSharedPreferences("BeiwePref", 0).getString(LoginSessionManager.KEY_PASSWORD, "Bobby McGee"));
 		Log.i("ForgotPassword_getDetails", details.get(LoginSessionManager.KEY_PASSWORD));
 
 		// Cases: username mismatch, userID mismatch, passwords mismatch, and repeat password with actual password mismatch. 
-		if( ! ( details.get(LoginSessionManager.KEY_NAME ).equals( usernameStr.trim() ) ) ) {
-			AlertsManager.showAlert( "Invalid username, try again",  this );
-		} else if (userIdStr.trim().length() <= 0) {
+		if (userIdStr.trim().length() <= 0) {
 			AlertsManager.showAlert( "Invalid user ID, try again", this );
-		} else if( ! ( details.get( LoginSessionManager.KEY_NAME ).equals(usernameStr.trim() ) ) ) {
+		} else if( ! ( details.get( LoginSessionManager.KEY_ID ).equals(userIdStr.trim() ) ) ) {
 			if( !details.get( LoginSessionManager.KEY_PASSWORD ).equals( encryptedPassword ) ) {
 				AlertsManager.showAlert( "Invalid password, try again", this );
 			}
 		} else if ( ! (passwordRepeatStr.equals( passwordStr) ) ) {
 			AlertsManager.showAlert( "Passwords mismatch, try again", this );
 		} else { // Start new activity
-			session.createLoginSession( usernameStr, encryptedPassword );
+			session.createLoginSession( userIdStr, encryptedPassword );
 			startActivity( new Intent(appContext, LoginActivity.class ) );
 			finish();
 		}

@@ -34,12 +34,13 @@ public class JsonParser {
 	 * Add all survey questions to the provided surveyLayout View object
 	 * @param surveyLayout
 	 */
-	public void renderSurveyFromJSON(LinearLayout surveyLayout, String jsonSurveyString) {
+	public String renderSurveyFromJSON(LinearLayout surveyLayout, String jsonSurveyString) {
 		try {
 			LinearLayout questionsLayout = (LinearLayout) surveyLayout.findViewById(R.id.surveyQuestionsLayout);
 
 			JSONObject wholeSurveyObject;
 			wholeSurveyObject = new JSONObject(jsonSurveyString);
+			String surveyId = wholeSurveyObject.getString("survey_id");
 			JSONArray jsonQuestions = wholeSurveyObject.getJSONArray("questions");
 			
 			// Iterate over the array, and add each question to the survey View
@@ -47,6 +48,8 @@ public class JsonParser {
 				View question = renderQuestionFromJSON(jsonQuestions.getJSONObject(i));
 				questionsLayout.addView(question);
 			}
+			
+			return surveyId;
 		}
 		catch (JSONException e) {
 			// If rendering or parsing failed, display the error widget instead
@@ -55,6 +58,8 @@ public class JsonParser {
 		
 			surveyLayout.removeAllViews();
 			surveyLayout.addView(errorWidget);
+			
+			return "";
 		}
 	}
 		
@@ -101,9 +106,9 @@ public class JsonParser {
 	private View renderSliderQuestion(JSONObject jsonQuestion) {
 		String questionID = getStringFromJSONObject(jsonQuestion, "question_id");
 		String questionText = getStringFromJSONObject(jsonQuestion, "question_text");
-		int numberOfValues = getIntFromJSONObject(jsonQuestion, "number_of_values");
-		int defaultValue = getIntFromJSONObject(jsonQuestion, "default_value");
-		return renderer.createSliderQuestion(questionID, questionText, numberOfValues, defaultValue);
+		int min = getIntFromJSONObject(jsonQuestion, "min");
+		int max = getIntFromJSONObject(jsonQuestion, "max");
+		return renderer.createSliderQuestion(questionID, questionText, min, max);
 	}
 	
 	

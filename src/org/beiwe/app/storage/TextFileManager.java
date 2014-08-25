@@ -19,8 +19,10 @@ import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
 import org.beiwe.app.survey.SurveyAnswersRecorder;
 import org.beiwe.app.survey.SurveyTimingsRecorder;
+import org.beiwe.app.ui.LoginSessionManager;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 //TODO:  filename should contain...
@@ -48,7 +50,6 @@ public class TextFileManager {
 //TODO: we probably want a static array pointing to all the static objects to make a static X_for_everything functions easier?
 	//Delimiter and newline strings
 	public static String DELIMITER = ",";
-	public static String newline = "\n";
 	
 	//Static instances of the individual FileManager objects.
 	private static TextFileManager GPSFile = null;
@@ -81,7 +82,7 @@ public class TextFileManager {
 	public static TextFileManager getSurveyTimingsFile(){ if ( surveyTimings == null ) throw new NullPointerException( getter_error ); return surveyTimings; }
 	public static TextFileManager getSurveyAnswersFile(){ if ( surveyAnswers == null ) throw new NullPointerException( getter_error ); return surveyAnswers; }
 
-	//the persistant files
+	//the persistent files
 	public static TextFileManager getCurrentQuestionsFile(){ if ( currentQuestions == null ) throw new NullPointerException( getter_error ); return currentQuestions; }
 	public static TextFileManager getDebugLogFile(){ if ( debugLogFile == null ) throw new NullPointerException( getter_error ); return debugLogFile; }
 	public static TextFileManager getDeviceInfoFile(){ if ( deviceInfo == null ) throw new NullPointerException( getter_error ); return deviceInfo; }
@@ -110,22 +111,21 @@ public class TextFileManager {
 		
 		// TODO: fix filenames in accordance with the spec I agreed on with Kevin
 		// Persistent files
-		debugLogFile = new TextFileManager(appContext, "logFile.txt", "THIS LINE IS A LOG FILE HEADER\n", true);
-		currentQuestions = new TextFileManager(appContext, "currentQuestionsFile.json", "", true);
+		debugLogFile = new TextFileManager(appContext, "logFile.txt", "THIS LINE IS A LOG FILE HEADER\n", true, true);
+		currentQuestions = new TextFileManager(appContext, "currentQuestionsFile.json", "", true, true);
 		
 		// Regularly/periodically-created files
-		GPSFile = new TextFileManager(appContext, "gps", GPSListener.header, false);
-		accelFile = new TextFileManager(appContext, "accel", AccelerometerListener.header, false);
-		textsLog = new TextFileManager(appContext, "textsLog", SmsSentLogger.header, false);
-		callLog = new TextFileManager(appContext, "callLog", CallLogger.header, false);
-		powerStateLog = new TextFileManager(appContext, "powerState", PowerStateListener.header, false);
-		bluetoothLog = new TextFileManager(appContext, "bluetoothLog", BluetoothListener.header, false);
+		GPSFile = new TextFileManager(appContext, "gps", GPSListener.header, false, true);
+		accelFile = new TextFileManager(appContext, "accel", AccelerometerListener.header, false, true);
+		textsLog = new TextFileManager(appContext, "textsLog", SmsSentLogger.header, false, true);
+		callLog = new TextFileManager(appContext, "callLog", CallLogger.header, false, true);
+		powerStateLog = new TextFileManager(appContext, "powerState", PowerStateListener.header, false, true);
+		bluetoothLog = new TextFileManager(appContext, "bluetoothLog", BluetoothListener.header, false, true);
 		
 		// Files created upon specific events
-		// TODO: don't create unnecessary copies of these files if you can help it
-		deviceInfo = new TextFileManager(appContext, "phoneInfo.txt", "", true); // TODO: make this not persistent, only created upon registration
-		surveyTimings = new TextFileManager(appContext, "surveyTimings", SurveyTimingsRecorder.header, false);
-		surveyAnswers = new TextFileManager(appContext, "surveyAnswers", SurveyAnswersRecorder.header, false);
+		deviceInfo = new TextFileManager(appContext, "phoneInfo.txt", "", false, false); // TODO: make this not persistent, only created upon registration
+		surveyTimings = new TextFileManager(appContext, "surveyTimings", SurveyTimingsRecorder.header, false, false);
+		surveyAnswers = new TextFileManager(appContext, "surveyAnswers", SurveyAnswersRecorder.header, false, false);
 	}
 	
 	/** This class has a PRIVATE constructor.  The constructor is only ever called 
@@ -134,12 +134,14 @@ public class TextFileManager {
 	 * @param name The file's name.
 	 * @param header The first line of the file.  Leave empty if you don't want a header, remember to include a new line at the end of the header.
 	 * @param persistent Set this to true for a persistent file */
-	private TextFileManager(Context appContext, String name, String header, Boolean persistent ){
+	private TextFileManager(Context appContext, String name, String header, Boolean persistent, Boolean createNow ){
 		TextFileManager.appContext = appContext;
 		this.name = name;
 		this.header = header;
 		this.persistent = persistent;
-		this.newFile();
+		if (createNow) {
+			this.newFile();			
+		}
 	}
 	
 	/*###############################################################################
@@ -153,18 +155,45 @@ public class TextFileManager {
 		else {
 			String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
 			// TODO: replace this with a real user ID
-			this.fileName = "ABCDEF12_" + this.name + "_" + timecode + ".csv"; }
+			/* Note: if a new file gets created in the same second as an 
+			 * existing file, the names will be the same, and instead of two
+			 * files, there will be one file with a header midway through it.
+			 * BUT this should not happen; we shouldn't be creating new files
+			 * that frequently. */
+			this.fileName = getUserId() + "_" + this.name + "_" + timecode + ".csv"; }
 		this.write(header);
 	}
 	
+	/** If it's a SurveyAnswers or SurveyTimings file, we want to append the
+	 * Survey ID so that the file name reads like this:
+	 * [USERID]_SurveyAnswers[SURVEYID]_[TIMESTAMP].csv
+	 * @param surveyId */
+	public synchronized void newFile(String surveyId) {
+		String nameHolder = this.name;
+		this.name += surveyId;
+		newFile();
+		this.name = nameHolder;
+	}
+	
+	/** Get the user/patient ID that's stored in SharedPreferences
+	 * @return the ID string, or the string "NULLID" if it doesn't exist */
+	public static String getUserId() {
+		SharedPreferences pref = appContext.getSharedPreferences(LoginSessionManager.PREF_NAME, LoginSessionManager.PRIVATE_MODE);
+		return pref.getString(LoginSessionManager.KEY_ID, "NULLID");
+	}
+	
 	/** Takes a string. writes that to the file, adds a new line to the string.
-	 * Prints a stacktrace on a write error, but does not crash. 
+	 * Prints a stacktrace on a write error, but does not crash. If there is no
+	 * file, a new file will be created.
 	 * @param data a string*/
 	//TODO: investigate writing strings that make contain non-string-happy characters. (like escapes)
 	public synchronized void write(String data){
 		//write the output, we always want mode append
 		FileOutputStream outStream;
 		try {
+			if (fileName == null) {
+				this.newFile();
+			}
 			outStream = appContext.openFileOutput(fileName, Context.MODE_APPEND);
 			outStream.write( ( data ).getBytes() );
 			outStream.write( "\n".getBytes() );
@@ -261,13 +290,26 @@ public class TextFileManager {
 	 * @return a string array of all files in the app's file directory. */
 	public static synchronized String[] getAllFiles() { return appContext.getFilesDir().list(); }
 	
-	//TODO: remove persistant files (move all persistant files to an internal directory, remove directory from return.
 	/** Returns a list of file names, all files in that list are retired and will not be written to again.
 	 * @return a string array of files*/
 	public static synchronized String[] getAllFilesSafely() {
 		String[] file_list = getAllFiles();
 		makeNewFilesForEverything();
 		return file_list;
+	}
+	
+	/** Returns all data files except for the persistent ones that shouldn't be uploaded
+	 * @return String[] a list of file names */
+	public static synchronized String[] getAllUploadableFiles() {
+		Set<String> files = new HashSet<String>();
+		Collections.addAll(files, getAllFiles());
+		
+		files.remove(TextFileManager.getCurrentQuestionsFile().fileName);
+		files.remove(TextFileManager.getDebugLogFile().fileName);
+		
+		makeNewFilesForEverything();
+		
+		return files.toArray(new String[files.size()]);
 	}
 	
 	/*###############################################################################

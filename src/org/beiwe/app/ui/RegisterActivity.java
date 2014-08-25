@@ -28,7 +28,7 @@ import android.widget.EditText;
 public class RegisterActivity extends Activity {
 	
 	private Context appContext;
-	private EditText username;
+	private EditText userID;
 	private EditText password;
 	private EditText passwordRepeat;
 	private LoginSessionManager session;
@@ -43,13 +43,13 @@ public class RegisterActivity extends Activity {
 		
 		// onCreate set variables
 		appContext = getApplicationContext();
-		username = (EditText) findViewById(R.id.username_box);
+		userID = (EditText) findViewById(R.id.userID_box);
 		password = (EditText) findViewById(R.id.password_box);
 		passwordRepeat = (EditText) findViewById(R.id.repeat_password_box);
 		session = new LoginSessionManager(appContext);
 		
 		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(appContext);
-		textFieldKeyboard.makeKeyboardBehave(username);
+		textFieldKeyboard.makeKeyboardBehave(userID);
 		textFieldKeyboard.makeKeyboardBehave(password);
 		textFieldKeyboard.makeKeyboardBehave(passwordRepeat);
 	}
@@ -64,20 +64,21 @@ public class RegisterActivity extends Activity {
 	 */
 	@SuppressLint("ShowToast")
 	public void registrationSequence(View view) throws NoSuchAlgorithmException, UnsupportedEncodingException {
-		String usernameStr = username.getText().toString();
+		String userIDStr = userID.getText().toString();
 		String passwordStr = password.getText().toString();
 		String passwordRepeatStr = passwordRepeat.getText().toString();
 
 		// Logic gauntlet begins here
-		if(usernameStr.length() == 0) {
-			AlertsManager.showAlert("Invalid username", this);
+		// TODO: There needs to be more logic here to prevent false registration
+		if(userIDStr.length() == 0) {
+			AlertsManager.showAlert("Invalid user ID", this);
 		} else if (passwordStr.length() == 0) {
 			AlertsManager.showAlert("Invalid password", this);
 		} else if (passwordRepeatStr.length() == 0 || !passwordRepeatStr.equals(passwordStr)) {
 			AlertsManager.showAlert("Passwords mismatch", this);
 		} else {
 			Log.i("RegisterActivity", "Attempting to create a login session");
-			session.createLoginSession(usernameStr, EncryptionEngine.hash(passwordStr));
+			session.createLoginSession(userIDStr, EncryptionEngine.hash(passwordStr));
 			Log.i("RegisterActivity", "Registration complete, attempting to start DebugInterfaceActivity");
 			startActivity(new Intent(appContext, DebugInterfaceActivity.class));
 			finish();

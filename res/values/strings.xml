@@ -36,6 +36,7 @@
     <!-- Survey Activity Strings -->
     <string name="survey_submit_button">Submit Answers</string>
     <string name="survey_submit_success_message">Thank you! Your answers have been recorded and saved.</string>
+    <string name="survey_submit_error_message">There has been an error; your answers may not have been recorded and saved</string>
     <string name="data_upload_url">http://beiwe.org/upload</string>
     <string name="survey_questions_url">http://beiwe.org/fetch_survey</string>
     <string name="button_upload">Upload Data Files</string>
@@ -48,18 +49,20 @@
     <string name="title_activity_register">Register</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_login_string">Login</string>
+    <string name="login_activity_welcoming_message">Login back to Beiwe</string>
+    
 
     <!-- Forgot Password Activity Strings -->
-    <string name="forgot_password_enter_username">Please enter your username</string>
-    <string name="forgot_password_enter_ID">Please enter your ID</string>
-    <string name="forgot_password_enter_password">Please enter password</string>
-    <string name="forgot_password_repeat_password">Enter password again</string>
+    <string name="forgot_password_title">Reset your password</string>
+    <string name="forgot_password_enter_ID">Please enter your ID:</string>
+    <string name="forgot_password_enter_password">Please enter your new password:</string>
+    <string name="forgot_password_repeat_password">Enter your new password again:</string>
     <string name="forgot_password_submit">Submit</string>
 
     <!-- Registration Activity Strings -->
     <string name="register_activity_welcoming_message">Welcome to the study</string>
     <string name="register_activity_instructions">Please fill out the information below</string>
-    <string name="register_activity_username">Please enter your username:</string>
+    <string name="register_activity_user_id">Please enter your user ID:</string>
     <string name="register_activity_password">Please enter your password:</string>
     <string name="register_activity_password_verify">Please enter your password again:</string>
     <string name="register_activity_submit">Submit</string>
