@@ -6,7 +6,6 @@ import org.beiwe.app.ui.AppNotifications;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,11 +24,13 @@ public class SurveyActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_survey);
 		
-		// Show that the survey is "Loading..."
+		/* Show that the survey is "Loading..." (This was more important when the
+		 * survey had to be downloaded from the server while the user waited) */
 		showSurveyLoadingSpinner();
 		
-		// Now try to download the most recent version of the survey
-		new GetUpToDateSurvey().execute(" ");
+		// Display the survey
+		QuestionsDownloader downloader = new QuestionsDownloader(getApplicationContext());
+		renderSurvey(downloader.getJsonSurveyString());
 	}
 	
 	
@@ -150,23 +151,4 @@ public class SurveyActivity extends Activity {
 	}
 	
 	
-	/**
-	 * Gets the most up-to-date version of the survey; does it on a separate,
-	 * non-blocking thread, because it's a slow network request
-	 */
-	class GetUpToDateSurvey extends AsyncTask<String, String, String> {
-
-		@Override
-		protected String doInBackground(String... params) {
-			QuestionsDownloader downloader = new QuestionsDownloader(getApplicationContext());
-			return downloader.getJsonSurveyString();
-		}
-		
-		@Override
-		protected void onPostExecute(String result) {
-			super.onPostExecute(result);
-			renderSurvey(result);
-		}
-	}
-
 }

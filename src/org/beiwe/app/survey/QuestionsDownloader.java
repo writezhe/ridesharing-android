@@ -2,12 +2,7 @@ package org.beiwe.app.survey;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
-import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -19,6 +14,7 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.res.Resources.NotFoundException;
+import android.os.AsyncTask;
 import android.util.Log;
 
 public class QuestionsDownloader {
@@ -30,34 +26,22 @@ public class QuestionsDownloader {
 	}
 	
 	
+	public void downloadJsonQuestions() {
+		new GetUpToDateSurvey().execute(" ");
+	}
+
+
 	public String getJsonSurveyString() {
-		
-		Log.i("QuestionsDownloader", "Called getJsonSurveyString()");
-		
 		try {
-			// Try to download the questions from the server
-			String surveyQuestions = getSurveyQuestionsFromServer();
-			
-			// If it works, save a copy of those questions
-			writeStringToFile(surveyQuestions);
-			return surveyQuestions;
+			// Try loading the questions.json file from the local filesystem
+			return getSurveyQuestionsFromFilesystem();
 		}
-		catch (Exception e) {
-			e.printStackTrace();
-			try {
-				// If that failed, try loading questions from the local filesystem
-				return getSurveyQuestionsFromFilesystem();
-			}
-			catch (Exception e2) {
-				/* If the app hasn't downloaded questions.json and saved it to
-				 * the filesystem, return an empty String, which will break the
-				 * JSON parser and display an error message instead of the survey */
-				return "";
-			}
+		catch (Exception e2) {
+			/* If the app hasn't downloaded questions.json and saved it to
+			 * the filesystem, return an empty String, which will break the
+			 * JSON parser and display an error message instead of the survey */
+			return "";
 		}
-		
-		// TODO: update the file in the local filesystem if you download a new 
-		// one from the server, even if the download timed out
 	}
 	
 	
@@ -160,21 +144,28 @@ public class QuestionsDownloader {
 	
 	
 	/**
-	 * Get the current survey questions from the server as a JSON file
-	 * @throws Exception
+	 * Gets the most up-to-date version of the survey; does it on a separate,
+	 * non-blocking thread, because it's a slow network request
 	 */
-	/*private void updateSurveyQuestions() throws Exception {
-	    // Run the HTTP GET on a separate, non-blocking thread
-		ExecutorService executor = Executors.newFixedThreadPool(1);
-		Callable<HttpGet> thread = new Callable<HttpGet>() {
-			@Override
-			public HttpGet call() throws Exception {
-				// Copy the survey questions from the server
-				getSurveyQuestionsFromServer();
+	class GetUpToDateSurvey extends AsyncTask<String, String, String> {
+
+		@Override
+		protected String doInBackground(String... params) {
+			try {
+				return getSurveyQuestionsFromServer();
+			} catch (Exception e) {
+				Log.i("QUESTIONSDOWNLOADER", "getSurveyQuestionsFromServer() failed with exception " + e);
 				return null;
 			}
-		};
-		executor.submit(thread);
-	}*/
-	
+		}
+		
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+			if (result != null) {
+				writeStringToFile(result);
+			}
+		}
+	}
+
 }
