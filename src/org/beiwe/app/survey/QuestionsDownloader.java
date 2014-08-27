@@ -49,9 +49,10 @@ public class QuestionsDownloader {
 				return getSurveyQuestionsFromFilesystem();
 			}
 			catch (Exception e2) {
-				e2.printStackTrace();
-				// Last resort: load questions that are hard-coded into the app
-				return getSurveyQuestionsFromAppResources();
+				/* If the app hasn't downloaded questions.json and saved it to
+				 * the filesystem, return an empty String, which will break the
+				 * JSON parser and display an error message instead of the survey */
+				return "";
 			}
 		}
 		
@@ -122,20 +123,6 @@ public class QuestionsDownloader {
 		else {
 			throw new JSONException("Invalid JSON");
 		}
-	}
-	
-	
-	/**
-	 * Returns as a String the JSON survey file that's hard-coded into res/raw/
-	 * @return
-	 * @throws JSONException 
-	 */
-	private String getSurveyQuestionsFromAppResources() {
-		Log.i("QuestionsDownloader", "Called getSurveyQuestionsFromAppResources()");
-		
-		InputStream inputStream = 
-				appContext.getResources().openRawResource(R.raw.sample_survey);
-		return fileToString(inputStream);		
 	}
 	
 	
