@@ -44,21 +44,79 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+
+		<!-- ACTIVITIES -->
+
         <activity
             android:name=".DebugInterfaceActivity"
-            android:label="@string/app_name" >
-        </activity>
+            android:label="@string/app_name" />
+        
         <activity
             android:name=".survey.AudioRecorderActivity"
-            android:label="@string/title_activity_audio_recorder" >
-        </activity>
+            android:label="@string/title_activity_audio_recorder" />
+        
+        <activity
+            android:name=".survey.SurveyActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_activity_survey" />
+        
+        <activity
+            android:name=".ui.LoginActivity"
+            android:label="@string/title_activity_login" />
+        
+        <activity
+            android:name=".ui.ForgotPassword"
+            android:label="@string/title_activity_forgot_password" />
+        
+        <activity
+            android:name=".ui.RegisterActivity"
+            android:label="@string/title_activity_register" />
+        
+        <activity
+            android:name=".ui.MainMenuActivity"
+            android:label="@string/title_activity_main_menu" />
+        
+        <activity
+            android:name=".VoiceRecording"
+            android:label="@string/title_activity_voice_recording" />
 
+        <activity
+            android:name=".ui.LoadingActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+		<!-- SERVICE -->
+		
+        <service
+            android:name=".BackgroundProcess"
+            android:exported="false"
+            android:label="BackgroundProcess-thing" />
+        
+        <!-- RECEIVERS -->
+        
         <receiver android:name=".listeners.BootListener" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".listeners.PowerStateListener" >
+       	
+        <receiver android:name=".listeners.SmsReceivedLogger" >
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+        
+        <receiver android:name=".listeners.BluetoothListener" >
+            <intent-filter>
+                <action android:name="android.bluetooth.adapter.action.STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+        
+		<receiver android:name=".listeners.PowerStateListener" >
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
@@ -67,57 +125,7 @@
                 <action android:name="android.intent.action.AIRPLANE_MODE" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".listeners.SmsReceivedLogger" >
-            <intent-filter>
-                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
-            </intent-filter>
-        </receiver>
-        <receiver android:name=".listeners.BluetoothListener" >
-            <intent-filter>
-                <action android:name="android.bluetooth.adapter.action.STATE_CHANGED" />
-            </intent-filter>
-        </receiver>
-
-        <service
-            android:name=".BackgroundProcess"
-            android:exported="false"
-            android:label="BackgroundProcess-thing" >
-        </service>
-
-        <activity
-            android:name=".survey.SurveyActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/title_activity_survey" >
-        </activity>
-        <activity
-            android:name=".ui.LoginActivity"
-            android:label="@string/title_activity_login" >
-        </activity>
-        <activity
-            android:name=".ui.ForgotPassword"
-            android:label="@string/title_activity_forgot_password" >
-        </activity>
-        <activity
-            android:name=".ui.RegisterActivity"
-            android:label="@string/title_activity_register" >
-        </activity>
-        <activity
-            android:name=".ui.LoadingActivity"
-            android:label="@string/app_name" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".ui.MainMenuActivity"
-            android:label="@string/title_activity_main_menu" >
-        </activity>
-        <activity
-            android:name=".VoiceRecording"
-            android:label="@string/title_activity_voice_recording" >
-        </activity>
+        
     </application>
 
 </manifest>
