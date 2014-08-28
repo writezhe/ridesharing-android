@@ -36,7 +36,7 @@ public class MainMenuActivity extends Activity {
 		            return true;
 		            }
 		    });
-		browser.loadUrl("http://www.google.com");
+		browser.loadUrl("beiwe.org/graph");
 	}
 	
 	public void callHotline(View v) {
