@@ -71,11 +71,11 @@ public class LoginSessionManager {
      * */
     public void checkLogin(){
     	Class debug = DebugInterfaceActivity.class;
-    	// Class mainMenu = MainMenuActivity.class;
+    	// Class debug = MainMenuActivity.class;
     	Log.i("SessionManager", "Check if already logged in");
     	Log.i("SessionManager", "" + isRegistered());
     	if(this.isLoggedIn()) {
-    		Intent intent = new Intent(appContext, DebugInterfaceActivity.class);
+    		Intent intent = new Intent(appContext, debug);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             appContext.startActivity(intent);
         } else {
@@ -86,7 +86,7 @@ public class LoginSessionManager {
                 appContext.startActivity(intent);      	
         	} else {
             	Log.i("SessionManager", "First time logged in");
-            	Intent intent = new Intent(appContext, MainMenuActivity.class);
+            	Intent intent = new Intent(appContext, debug);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 appContext.startActivity(intent);
         	}
