@@ -193,11 +193,11 @@ public class BackgroundProcess extends Service {
 			
 			if (intent.getAction().equals( Timer.GPS_TURN_OFF ) ) {
 				gpsListener.turn_off();
-				timer.setupSingularFuzzyAlarm( 5000L, Timer.GPSTimerIntent, Timer.GPSOnIntent); }
+				timer.setupSingularFuzzyAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOnIntent); }
 			
 			if (intent.getAction().equals( Timer.GPS_TURN_ON ) ) {
 				gpsListener.turn_on();
-				timer.setupSingularExactAlarm( 5000L, Timer.GPSTimerIntent, Timer.GPSOffIntent); }
+				timer.setupSingularExactAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOffIntent); }
 			
 			if (intent.getAction().equals(Timer.SIGN_OUT) ) {
 				Log.i("BackgroundProcess", "Received Signout Message");

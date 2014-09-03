@@ -26,28 +26,21 @@ public class Timer {
 	public static final String BLUETOOTH_TURN_ON = "Bluetooth On";
 	public static final String GPS_TURN_OFF = "GPS OFF";
 	public static final String GPS_TURN_ON = "GPS On";
-	
 	public static final String SIGN_OUT = "Signout";
-	
-	private static final String SIGN_OUT_TIMER = "Signout timer";
-	private static final String ACCELEROMETER_TIMER = "accelerometer timer";
-	private static final String BLUETOOTH_TIMER = "bluetooth timer";
-	private static final String GPS_TIMER = "GPS timer";
 	
 	// Intents
 	public static final Intent signoutIntent = setupIntent( SIGN_OUT );
-	
 	public static final Intent accelerometerOffIntent = setupIntent( ACCELEROMETER_TURN_OFF );
 	public static final Intent accelerometerOnIntent = setupIntent( ACCELEROMETER_TURN_ON );
 	public static final Intent bluetoothOffIntent = setupIntent( BLUETOOTH_TURN_OFF );
 	public static final Intent bluetoothOnIntent = setupIntent( BLUETOOTH_TURN_ON );
-	public static final Intent GPSOffIntent = setupIntent( GPS_TURN_OFF );
-	public static final Intent GPSOnIntent = setupIntent( GPS_TURN_ON);
+	public static final Intent gpsOffIntent = setupIntent( GPS_TURN_OFF );
+	public static final Intent gpsOnIntent = setupIntent( GPS_TURN_ON);
 	
-	public static final Intent accelerometerTimerIntent = setupIntent( ACCELEROMETER_TIMER );
-	public static final Intent bluetoothTimerIntent = setupIntent( BLUETOOTH_TIMER );
-	public static final Intent GPSTimerIntent = setupIntent( GPS_TIMER );
-	public static final Intent signOutTimerIntent = setupIntent( SIGN_OUT_TIMER );
+	public static final Intent accelerometerTimerIntent = setupIntent( "Accelerometer Timer" );
+	public static final Intent bluetoothTimerIntent = setupIntent( "Bluetooth Timer" );
+	public static final Intent GPSTimerIntent = setupIntent( "GPS Timer" );
+	public static final Intent signOutTimerIntent = setupIntent( "Signout Timer" );
 	
 	
 	// Intent filters
@@ -56,8 +49,8 @@ public class Timer {
 	public IntentFilter getAccelerometerOnIntentFilter() { return new IntentFilter( accelerometerOnIntent.getAction() ); }
 	public IntentFilter getBluetoothOffIntentFilter() { return new IntentFilter( bluetoothOffIntent.getAction() ); }
 	public IntentFilter getBluetoothOnIntentFilter() { return new IntentFilter( bluetoothOnIntent.getAction() ); }
-	public IntentFilter getGPSIntentOffFilter() { return new IntentFilter( GPSOffIntent.getAction() ); }
-	public IntentFilter getGPSIntentOnFilter() { return new IntentFilter( GPSOnIntent.getAction() ); }
+	public IntentFilter getGPSIntentOffFilter() { return new IntentFilter( gpsOffIntent.getAction() ); }
+	public IntentFilter getGPSIntentOnFilter() { return new IntentFilter( gpsOnIntent.getAction() ); }
 	
 	private final static long EXACT_TIMER_OFFSET = 2856000;
 	
