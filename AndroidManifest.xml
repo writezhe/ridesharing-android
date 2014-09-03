@@ -117,7 +117,7 @@
         </receiver>
         
 		<receiver android:name=".listeners.PowerStateListener" >
-            <intent-filter>
+        	<intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
                 <action android:name="android.intent.action.ACTION_SHUTDOWN" />
