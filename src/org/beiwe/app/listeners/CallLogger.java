@@ -33,6 +33,9 @@ public class CallLogger extends ContentObserver {
 	private String type = android.provider.CallLog.Calls.TYPE; 
 	private String date = android.provider.CallLog.Calls.DATE;
 	private String duration = android.provider.CallLog.Calls.DURATION;
+	
+	// Cursor field
+	private Cursor dbQuery;
 
 	// Context
 	Context appContext = null;
@@ -53,17 +56,21 @@ public class CallLogger extends ContentObserver {
 		callLogFile = TextFileManager.getCallLogFile(); //TODO: change back to debug log file for debugging
 
 		// Pull database info
-		Cursor cursor = appContext.getContentResolver().query(allCalls, null, null, null, android.provider.CallLog.Calls.DEFAULT_SORT_ORDER);
-		cursor.moveToFirst();
+		dbQuery = appContext.getContentResolver().query(allCalls, null, null, null, android.provider.CallLog.Calls.DEFAULT_SORT_ORDER);
+		dbQuery.moveToFirst();
 
 		// Set lastKnownSize
-		lastKnownSize = cursor.getCount();
-
-		// Record id of last made call
-		lastRecordedID = cursor.getInt(cursor.getColumnIndex(id));
+		lastKnownSize = dbQuery.getCount();
+		Log.i("CallLogger", "" + lastKnownSize);
 		
-		// Record last date
-		lastRecordingDate = cursor.getLong(cursor.getColumnIndex(android.provider.CallLog.Calls.DATE));
+		if (lastKnownSize != 0) {
+
+			// Record id of last made call
+			lastRecordedID = dbQuery.getInt(dbQuery.getColumnIndex(id));
+
+			// Record last date
+			lastRecordingDate = dbQuery.getLong(dbQuery.getColumnIndex(android.provider.CallLog.Calls.DATE));
+		}
 	}
 
 
@@ -73,22 +80,30 @@ public class CallLogger extends ContentObserver {
 	 */
 	public void onChange(boolean selfChange) {
 		super.onChange(selfChange);
-
 		// Get the most recent callLogFile
 		callLogFile = TextFileManager.getCallLogFile();
 		
 		// Database information
-		Cursor cursor = appContext.getContentResolver().query(allCalls, null, null, null, android.provider.CallLog.Calls.DEFAULT_SORT_ORDER);
-		cursor.moveToFirst();
-
-		// Comparison values
-		int currentSize = cursor.getCount();
+		dbQuery = appContext.getContentResolver().query(allCalls, null, null, null, android.provider.CallLog.Calls.DEFAULT_SORT_ORDER);
+		dbQuery.moveToFirst();
+		
+		int currentSize = dbQuery.getCount();
 		Log.i("Call Log", "" + "Current Size is " + currentSize);
 		Log.i("Call Log", "Last Known Size is " + lastKnownSize);
-		int currentID = cursor.getInt(cursor.getColumnIndex(id));
+
+		if (lastKnownSize == 0) {
+			// Record id of last made call
+			lastRecordedID = dbQuery.getInt(dbQuery.getColumnIndex(id));
+
+			// Record last date
+			lastRecordingDate = dbQuery.getLong(dbQuery.getColumnIndex(android.provider.CallLog.Calls.DATE));
+		}
+		
+		// Comparison values
+		int currentID = dbQuery.getInt(dbQuery.getColumnIndex(id));
 		Log.i("Call Log", "" + "Current Size is " + currentID);
 		Log.i("Call Log", "Last Known ID is " + lastRecordedID);
-		long currentDate = cursor.getLong(cursor.getColumnIndex(date));
+		long currentDate = dbQuery.getLong(dbQuery.getColumnIndex(date));
 
 		// A call was deleted
 		if (currentSize < lastKnownSize) {
@@ -99,26 +114,26 @@ public class CallLogger extends ContentObserver {
 			Log.i("CallLogger", "Last recorded ID " + lastRecordedID);
 			// 	Descend until reaching the idOfLastCall row
 			while (currentID != lastRecordedID) {
-				cursor.moveToNext();
+				dbQuery.moveToNext();
 				Log.i("CallLogger", "Current ID is " + currentID);
-				currentID = cursor.getInt(cursor.getColumnIndex(id));
+				currentID = dbQuery.getInt(dbQuery.getColumnIndex(id));
 			}
 
 			// While there exists a next row
-			while(!cursor.isBeforeFirst()) {
-				Log.i("Call Logger", "" + (cursor.getInt(cursor.getColumnIndex(id))));
+			while(!dbQuery.isBeforeFirst()) {
+				Log.i("Call Logger", "" + (dbQuery.getInt(dbQuery.getColumnIndex(id))));
 				if (currentID <= lastRecordedID) {
-					cursor.moveToPrevious();
-					currentID = cursor.getInt(cursor.getColumnIndex(id));
+					dbQuery.moveToPrevious();
+					currentID = dbQuery.getInt(dbQuery.getColumnIndex(id));
 					continue;
 				}
 				StringBuilder callLoggerLine = new StringBuilder();
 				// Add hashed phone number
-				callLoggerLine.append(EncryptionEngine.hashPhoneNumber(cursor.getString(cursor.getColumnIndex(number))));
+				callLoggerLine.append(EncryptionEngine.hashPhoneNumber(dbQuery.getString(dbQuery.getColumnIndex(number))));
 				callLoggerLine.append(TextFileManager.DELIMITER);
 
 				// Add call type
-				int callType = cursor.getInt(cursor.getColumnIndex(type));
+				int callType = dbQuery.getInt(dbQuery.getColumnIndex(type));
 				if (callType == CallLog.Calls.OUTGOING_TYPE) {
 					callLoggerLine.append("Outgoing Call");
 				} else if (callType == CallLog.Calls.INCOMING_TYPE) {
@@ -129,15 +144,15 @@ public class CallLogger extends ContentObserver {
 				callLoggerLine.append(TextFileManager.DELIMITER);
 
 				// Add date
-				callLoggerLine.append(cursor.getLong(cursor.getColumnIndex(date)));
+				callLoggerLine.append(dbQuery.getLong(dbQuery.getColumnIndex(date)));
 				callLoggerLine.append(TextFileManager.DELIMITER);
 				
 				// Add duration
-				callLoggerLine.append(cursor.getInt(cursor.getColumnIndex(duration)));
+				callLoggerLine.append(dbQuery.getInt(dbQuery.getColumnIndex(duration)));
 
 				Log.i("Call Log", callLoggerLine.toString());
 				callLogFile.write(callLoggerLine.toString());
-				cursor.moveToPrevious();
+				dbQuery.moveToPrevious();
 			}
 		}
 		lastKnownSize = currentSize;
