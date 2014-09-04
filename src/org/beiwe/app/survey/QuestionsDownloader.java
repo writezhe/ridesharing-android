@@ -1,12 +1,9 @@
 package org.beiwe.app.survey;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import org.beiwe.app.R;
+import org.beiwe.app.storage.FileDownloader;
 import org.beiwe.app.storage.TextFileManager;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,7 +38,7 @@ public class QuestionsDownloader {
 				// If loading from the filesystem didn't work, try loading from the server
 				String jsonString = getSurveyQuestionsFromServer();
 				// If you get questions from the server, write them to the filesystem
-				writeStringToFile(jsonString);
+				FileDownloader.writeStringToFile(jsonString, TextFileManager.getCurrentQuestionsFile());
 				return jsonString;
 			}
 			catch (Exception e2) {
@@ -65,32 +62,8 @@ public class QuestionsDownloader {
 		
 		// Get the URL of the Survey Questions JSON file
 		String urlString = appContext.getResources().getString(R.string.survey_questions_url);
-		URL questionsFileURL = new URL(urlString);
 		
-		// Set up an HTTP connection
-		HttpURLConnection connection = (HttpURLConnection) (questionsFileURL.openConnection());
-
-		// Throw a TimeoutException after this many milliseconds if
-		connection.setConnectTimeout(3000); // The server hasn't accepted the connection
-		connection.setReadTimeout(5000); // This device hasn't received the response
-		connection.connect();
-		
-		// Set up a BufferedReader from the HTTP connection
-		InputStreamReader inputReader = new InputStreamReader(connection.getInputStream());
-		BufferedReader reader = new BufferedReader(inputReader);
-		
-		// Set up a StringBuilder (uses less memory than repeatedly appending to a String)
-		StringBuilder builder = new StringBuilder();
-		String aux = "";
-		
-		// Read in the file from the BufferedReader, and append it to the StringBuilder
-		while ((aux = reader.readLine()) != null) {
-			builder.append(aux);
-		}
-		connection.disconnect();
-		
-		// Save the Survey Questions JSON file to the local filesystem
-		String surveyQuestions = builder.toString();
+		String surveyQuestions = FileDownloader.downloadFileFromURL(urlString);
 		
 		if (isValidJson(surveyQuestions)) {
 			return surveyQuestions;
@@ -118,17 +91,6 @@ public class QuestionsDownloader {
 		}
 	}
 	
-	
-	/**
-	 * Write a string (the JSON representation of survey questions) to a file
-	 * in the local Android Filesystem
-	 * @param string the JSON representation of survey questions
-	 */
-	private void writeStringToFile(String string) {
-		TextFileManager.getCurrentQuestionsFile().deleteSafely();
-		TextFileManager.getCurrentQuestionsFile().write(string);
-	}
-
 	
 	/**
 	 * Tells you whether a String is valid JSON
@@ -172,7 +134,7 @@ public class QuestionsDownloader {
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
 			if (result != null) {
-				writeStringToFile(result);
+				FileDownloader.writeStringToFile(result, TextFileManager.getCurrentQuestionsFile());
 			}
 		}
 	}
