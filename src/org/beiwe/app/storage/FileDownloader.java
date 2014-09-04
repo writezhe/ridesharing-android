@@ -6,9 +6,19 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import android.util.Log;
+
 public class FileDownloader {
 
-		
+	public static void downloadFileToFile(String urlString, TextFileManager file) {
+		try {
+			writeStringToFile(downloadFileFromURL(urlString), file);
+		} catch (IOException e) {
+			Log.i("FileDownloader", "downloadFile or writeStringToFile failed with exception " + e);
+		}
+	}
+	
+	
 	public static String downloadFileFromURL(String urlString) throws IOException {
 		URL fileURL = new URL(urlString);
 		
