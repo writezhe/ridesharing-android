@@ -66,6 +66,8 @@ public class TextFileManager {
 	private static TextFileManager currentQuestions = null;
 	private static TextFileManager deviceInfo = null;
 	
+	private static TextFileManager keyFile = null;
+	
 	//"global" static variables
 	private static Context appContext;
 	private static boolean started = false; 
@@ -81,11 +83,11 @@ public class TextFileManager {
 	public static TextFileManager getBluetoothLogFile(){ if ( bluetoothLog == null ) throw new NullPointerException( getter_error ); return bluetoothLog; }
 	public static TextFileManager getSurveyTimingsFile(){ if ( surveyTimings == null ) throw new NullPointerException( getter_error ); return surveyTimings; }
 	public static TextFileManager getSurveyAnswersFile(){ if ( surveyAnswers == null ) throw new NullPointerException( getter_error ); return surveyAnswers; }
-
 	//the persistent files
 	public static TextFileManager getCurrentQuestionsFile(){ if ( currentQuestions == null ) throw new NullPointerException( getter_error ); return currentQuestions; }
 	public static TextFileManager getDebugLogFile(){ if ( debugLogFile == null ) throw new NullPointerException( getter_error ); return debugLogFile; }
 	public static TextFileManager getDeviceInfoFile(){ if ( deviceInfo == null ) throw new NullPointerException( getter_error ); return deviceInfo; }
+	public static TextFileManager getKeyFile() { if ( keyFile == null ) throw new NullPointerException( getter_error ); return surveyAnswers; }
 	
 	//and (finally) the non-static object instance variables
 	private String name = null;
@@ -126,6 +128,9 @@ public class TextFileManager {
 		deviceInfo = new TextFileManager(appContext, "phoneInfo", "", false, false); // TODO: make this not persistent, only created upon registration
 		surveyTimings = new TextFileManager(appContext, "surveyTimings", SurveyTimingsRecorder.header, false, false);
 		surveyAnswers = new TextFileManager(appContext, "surveyAnswers", SurveyAnswersRecorder.header, false, false);
+		
+		//the key file for encryption (it is persistent and never written to)
+		keyFile = new TextFileManager(appContext, "keyFile", "", true, false);
 	}
 	
 	/** This class has a PRIVATE constructor.  The constructor is only ever called 
