@@ -13,13 +13,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
-/**
- * The purpose of this class is to deal with all that has to do with Survey Notifications.
+/**The purpose of this class is to deal with all that has to do with Survey Notifications.
  * This is a STATIC method, and is called from the background process
  * 
- * @author Dor Samet
- *
- */
+ * @author Dor Samet */
 
 public class AppNotifications {
 
@@ -32,7 +29,6 @@ public class AppNotifications {
 	 * Note: the notification can only be dismissed through submitting the survey
 	 * @param appContext
 	 */
-	
 	public static void displaySurveyNotification(Context appContext) {
 		Notification surveyNotification = setupNotification(appContext, surveyCode, R.drawable.survey_icon);
 		surveyNotification.flags = Notification.FLAG_ONGOING_EVENT;
@@ -48,7 +44,7 @@ public class AppNotifications {
 		
 		notificationManager.notify(
 				surveyCode, // If another notification with the same ID pops up, it will be updated. This SHOULD be fine
-				surveyNotification); 
+				surveyNotification);
 	}
 	
 	/**
