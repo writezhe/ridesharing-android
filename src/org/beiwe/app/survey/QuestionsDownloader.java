@@ -36,11 +36,20 @@ public class QuestionsDownloader {
 			// Try loading the questions.json file from the local filesystem
 			return getSurveyQuestionsFromFilesystem();
 		}
-		catch (Exception e2) {
-			/* If the app hasn't downloaded questions.json and saved it to
-			 * the filesystem, return an empty String, which will break the
-			 * JSON parser and display an error message instead of the survey */
-			return "";
+		catch (Exception e1) {
+			try {
+				// If loading from the filesystem didn't work, try loading from the server
+				String jsonString = getSurveyQuestionsFromServer();
+				// If you get questions from the server, write them to the filesystem
+				writeStringToFile(jsonString);
+				return jsonString;
+			}
+			catch (Exception e2) {
+				/* If the app hasn't downloaded questions.json and saved it to
+				 * the filesystem, return an empty String, which will break the
+				 * JSON parser and display an error message instead of the survey */
+				return "";
+			}
 		}
 	}
 	

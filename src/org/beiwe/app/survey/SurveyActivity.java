@@ -6,6 +6,7 @@ import org.beiwe.app.ui.AppNotifications;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,8 +30,7 @@ public class SurveyActivity extends Activity {
 		showSurveyLoadingSpinner();
 		
 		// Display the survey
-		QuestionsDownloader downloader = new QuestionsDownloader(getApplicationContext());
-		renderSurvey(downloader.getJsonSurveyString());
+		new DisplaySurvey().execute(" ");
 	}
 	
 	
@@ -42,8 +42,30 @@ public class SurveyActivity extends Activity {
 		View loadingSpinner = getLayoutInflater().inflate(R.layout.survey_loading_spinner, null);
 		replaceSurveyPageContents(loadingSpinner);
 	}
+
 	
 	
+	/**
+	 * Gets the survey questions and renders them; does it on a separate,
+	 * non-blocking thread, because it may try to download them from the server
+	 * in a slow network operation
+	 */
+	class DisplaySurvey extends AsyncTask<String, String, String> {
+		@Override
+		protected String doInBackground(String... params) {
+			QuestionsDownloader downloader = new QuestionsDownloader(getApplicationContext());
+			return downloader.getJsonSurveyString();
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+			renderSurvey(result);
+		}
+	}
+
+	
+
 	/**
 	 * Display, in the survey's spot in the Activity/page, the survey itself
 	 * @param jsonSurveyString the JSON file, as a string, used to render the survey questions
