@@ -36,6 +36,7 @@ public class MainMenuActivity extends Activity {
 		            return true;
 		            }
 		    });
+		browser.getSettings().setJavaScriptEnabled(true);
 		browser.loadUrl("beiwe.org/graph");
 	}
 	

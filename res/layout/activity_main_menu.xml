@@ -12,28 +12,12 @@
     <WebView
         android:id="@+id/main_menu_pastResults"
         android:layout_width="match_parent"
-        android:layout_height="312dp" />
+        android:layout_height="0dp"
+        android:layout_weight="0.60" />
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.5" >
-
-        <Button
-            android:id="@+id/main_menu_surveyButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="takeSurvey"
-            android:text="@string/main_menu_take_survey" />
-
-        <Button
-            android:id="@+id/main_menu_voiceRecord"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:onClick="recordMessage"
-            android:text="@string/main_menu_record_message" />
+        android:layout_height="44dp" >
 
         <Button
             android:id="@+id/main_menu_hotline"
@@ -53,7 +37,6 @@
             android:layout_alignParentLeft="true"
             android:onClick="signOutButton"
             android:text="@string/main_menu_sign_out" />
-
     </RelativeLayout>
 
 </LinearLayout>
