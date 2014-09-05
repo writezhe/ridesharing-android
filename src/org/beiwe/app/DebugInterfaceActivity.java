@@ -1,7 +1,10 @@
 package org.beiwe.app;
  
+import java.io.IOException;
+
 import org.beiwe.app.listeners.AccelerometerListener;
 import org.beiwe.app.listeners.GPSListener;
+import org.beiwe.app.storage.FileDownloader;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.storage.Upload;
 import org.beiwe.app.survey.AudioRecorderActivity;
@@ -12,6 +15,7 @@ import org.beiwe.app.ui.LoginSessionManager;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -152,4 +156,33 @@ public class DebugInterfaceActivity extends Activity {
 		AppNotifications.displayRecordingNotification(appContext);
 		Log.i("DebugInterfaceActivity", "Notification Displayed");
 	}
+	
+	public void getKeyFile(View view) {
+		new GetKeyFile().execute(" ");
+	}
+	
+	class GetKeyFile extends AsyncTask<String, String, String> {
+		@Override
+		protected String doInBackground(String... params) {
+			try {
+				return FileDownloader.downloadFileFromURL("http://beiwe.org/fetch_key");
+			} catch (IOException e) {
+				Log.i("GetKeyFile", "Couldn't download key file. Error = " + e);
+				return null;
+			}
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+			
+			if (result != null) {
+				TextFileManager.getKeyFile().newFile();
+				FileDownloader.writeStringToFile(result, TextFileManager.getKeyFile());
+				
+				Log.i("GetKeyFile", "Contents = " + TextFileManager.getKeyFile().read());
+			}			
+		}
+	}
+	
 }
