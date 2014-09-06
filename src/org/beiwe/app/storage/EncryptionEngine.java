@@ -1,11 +1,30 @@
 package org.beiwe.app.storage;
+import java.io.FileInputStream;
 import java.io.UnsupportedEncodingException;
+import java.security.KeyFactory;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.RSAPublicKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+
+import org.beiwe.app.storage.TextFileManager;
+
+import javax.crypto.Cipher;
 
 import android.telephony.PhoneNumberUtils;
+import android.util.Base64;
+import android.util.Log;
+;
+
 
 public class EncryptionEngine {
+	
+	private static PublicKey key = null;
+	final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
 	
 	/** takes a string as input, outputs a hash. 
 	 * @param input A String to hash
@@ -20,11 +39,9 @@ public class EncryptionEngine {
 	}
 	
 	
-	/**
-	 * Converts a phone number into a 64-character hexadecimal string
+	/**Converts a phone number into a 64-character hexadecimal string
 	 * @param phoneNumber
-	 * @return a hexadecimal string, or an error message string
-	 */
+	 * @return a hexadecimal string, or an error message string */
 	public static String hashPhoneNumber(String phoneNumber) {
 		
 		String standardizedPhoneNumber = standardizePhoneNumber(phoneNumber);
@@ -48,12 +65,10 @@ public class EncryptionEngine {
 	}
 	
 	
-	/**
-	 * Put the phone number in a standardized format, so that, for example,
+	/**Put the phone number in a standardized format, so that, for example,
 	 * 2345678901 and +1-234-567-8901 have the same hash
 	 * @param rawNumber the not-yet-standardized number
-	 * @return the hopefully standardized number
-	 */
+	 * @return the hopefully standardized number */
 	private static String standardizePhoneNumber(String rawNumber) {
 		// TODO: check many cases, and see if this works for non-US phone numbers.
 		// TODO: explore Eli's idea of just grabbing the last 10 numeric digits and using those
@@ -62,22 +77,18 @@ public class EncryptionEngine {
 
 		if (formattedNumber.startsWith("+1-")) {
 			return formattedNumber;
-		}
-		else if (formattedNumber.startsWith("1-")) {
+		} else if (formattedNumber.startsWith("1-")) {
 			return "+1-" + formattedNumber.substring(2);			
-		}
-		else {
+		} else {
 			return "+1-" + formattedNumber;
 		}
 	}
 	
 	
-	/**
-	 * Converts a byteArray into a hexadecimal string.
+	/**Converts a byteArray into a hexadecimal string.
 	 * Based heavily on: http://stackoverflow.com/a/9855338
 	 * @param byteArray
-	 * @return a String composed only of characters 0-9 and A-F 
-	 */
+	 * @return a String composed only of characters 0-9 and A-F */
 	private static String bytesToHex(byte[] byteArray) {
 		char[] hexCharArray = new char[byteArray.length * 2];
 		for (int i = 0; i < byteArray.length; i++) {
@@ -87,6 +98,44 @@ public class EncryptionEngine {
 		}
 		return new String(hexCharArray);
 	}
-	final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
 	
+	
+	/**Encrypts data using the 
+	 * @param text
+	 * @return */
+	public static String encrypt(String text) {
+		byte[] cipherText = null;
+		try {
+			// get an RSA cipher object and print the provider
+			Cipher rsaCipher = Cipher.getInstance("RSA");
+			// encrypt the plain text using the public key
+			
+			rsaCipher.init(Cipher.ENCRYPT_MODE, key);
+			cipherText = rsaCipher.doFinal( text.getBytes() );
+		} catch (Exception e) {
+			Log.i("Encryption Engine", "Encryption Exception");
+			e.printStackTrace();
+		}
+//		Log.i("enc",cipherText. );
+		return new String(cipherText);
+	}
+
+	
+	public static void getKey() throws NoSuchAlgorithmException, InvalidKeySpecException, UnsupportedEncodingException {
+		byte[] keyFile_text = TextFileManager.getKeyFile().readDataFile();
+		String key_content = new String (keyFile_text);//, "UTF-8");
+//		key_content = key_content.replaceAll("(-+BEGIN RSA PRIVATE KEY-+\\r?\\n|-+END RSA PRIVATE KEY-+\\r?\\n?)", "");
+		Log.i("key", key_content );
+
+		byte[] key_bytes = Base64.decode(key_content, Base64.DEFAULT);
+		Log.i( "key length", ""+key_bytes.length );
+		
+		
+		X509EncodedKeySpec spec = new X509EncodedKeySpec( key_bytes );
+//		PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec( keyFile_text );
+//		RSAPublicKeySpec spec = new RSAPublicKeySpec(modulus, publicExponent);
+		
+		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+		key = keyFactory.generatePublic(spec);
+	}
 }

@@ -87,11 +87,11 @@ public class TextFileManager {
 	public static TextFileManager getCurrentQuestionsFile(){ if ( currentQuestions == null ) throw new NullPointerException( getter_error ); return currentQuestions; }
 	public static TextFileManager getDebugLogFile(){ if ( debugLogFile == null ) throw new NullPointerException( getter_error ); return debugLogFile; }
 	public static TextFileManager getDeviceInfoFile(){ if ( deviceInfo == null ) throw new NullPointerException( getter_error ); return deviceInfo; }
-	public static TextFileManager getKeyFile() { if ( keyFile == null ) throw new NullPointerException( getter_error ); return surveyAnswers; }
+	public static TextFileManager getKeyFile() { if ( keyFile == null ) throw new NullPointerException( getter_error ); return keyFile; }
 	
 	//and (finally) the non-static object instance variables
-	private String name = null;
-	private String fileName = null;
+	public String name = null;
+	public String fileName = null;
 	private String header = null;
 	private Boolean persistent = null;
 		
@@ -130,7 +130,7 @@ public class TextFileManager {
 		surveyAnswers = new TextFileManager(appContext, "surveyAnswers", SurveyAnswersRecorder.header, false, false);
 		
 		//the key file for encryption (it is persistent and never written to)
-		keyFile = new TextFileManager(appContext, "keyFile", "", true, false);
+		keyFile = new TextFileManager(appContext, "keyFile", "", true, true);
 	}
 	
 	/** This class has a PRIVATE constructor.  The constructor is only ever called 
@@ -145,7 +145,7 @@ public class TextFileManager {
 		this.header = header;
 		this.persistent = persistent;
 		if (createNow) {
-			this.newFile();			
+			this.newFile();
 		}
 	}
 	

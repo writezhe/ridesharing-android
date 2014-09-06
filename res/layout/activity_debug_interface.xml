@@ -120,6 +120,13 @@
 		    android:layout_height="wrap_content"
 		    android:onClick="getKeyFile"
 		    android:text="Get key file" />
+
+		<Button
+	        android:id="@+id/testEncryption"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="testEncrypt"
+	        android:text="ENCRYPT!~!!!" />
 			
 	</LinearLayout>
 </ScrollView>

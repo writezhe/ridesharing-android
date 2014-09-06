@@ -17,7 +17,21 @@ public class FileDownloader {
 			Log.i("FileDownloader", "downloadFile or writeStringToFile failed with exception " + e);
 		}
 	}
-	
+//	
+//	
+//	class DownloadAndWrite extends AsyncTask<String, String, String> {
+//		@Override
+//		protected String doInBackground(String... params) {
+//			return downloadFileFromURL(urlString);
+//		}
+//
+//		@Override
+//		protected void onPostExecute(String result) {
+//			super.onPostExecute(result);
+//			renderSurvey(result);
+//		}
+//	}
+
 	
 	public static String downloadFileFromURL(String urlString) throws IOException {
 		URL fileURL = new URL(urlString);
