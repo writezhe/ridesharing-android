@@ -100,41 +100,43 @@ public class EncryptionEngine {
 	}
 	
 	
-	/**Encrypts data using the 
+	/**Encrypts data using the RSA cipher, makes 
 	 * @param text
 	 * @return */
 	public static String encrypt(String text) {
-		byte[] cipherText = null;
+//		if (key == null) { get_key(); }
+		
+		byte[] encryptedText = null;
 		try {
-			// get an RSA cipher object and print the provider
 			Cipher rsaCipher = Cipher.getInstance("RSA");
-			// encrypt the plain text using the public key
 			
 			rsaCipher.init(Cipher.ENCRYPT_MODE, key);
-			cipherText = rsaCipher.doFinal( text.getBytes() );
+			encryptedText = rsaCipher.doFinal( text.getBytes() );
 		} catch (Exception e) {
 			Log.i("Encryption Engine", "Encryption Exception");
 			e.printStackTrace();
 		}
 //		Log.i("enc",cipherText. );
-		return new String(cipherText);
+		return new String(encryptedText);
 	}
 
 	
-	public static void getKey() throws NoSuchAlgorithmException, InvalidKeySpecException, UnsupportedEncodingException {
-		byte[] keyFile_text = TextFileManager.getKeyFile().readDataFile();
-		String key_content = new String (keyFile_text);//, "UTF-8");
+	public static void readKey() throws NoSuchAlgorithmException, InvalidKeySpecException, UnsupportedEncodingException {
+//		byte[] keyFile_text = TextFileManager.getKeyFile().readDataFile();
+//		String key_content = new String (keyFile_text);//, "UTF-8");
 //		key_content = key_content.replaceAll("(-+BEGIN RSA PRIVATE KEY-+\\r?\\n|-+END RSA PRIVATE KEY-+\\r?\\n?)", "");
-		Log.i("key", key_content );
-
-		byte[] key_bytes = Base64.decode(key_content, Base64.DEFAULT);
-		Log.i( "key length", ""+key_bytes.length );
 		
+		String key_content = TextFileManager.getKeyFile().read();
+		byte[] key_bytes = Base64.decode(key_content, Base64.DEFAULT);
+		
+		Log.i("key", key_content );
+		Log.i( "key length", "" + key_bytes.length );
 		
 		X509EncodedKeySpec spec = new X509EncodedKeySpec( key_bytes );
 //		PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec( keyFile_text );
 //		RSAPublicKeySpec spec = new RSAPublicKeySpec(modulus, publicExponent);
 		
+		//a KeyFactory... creates keys.
 		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 		key = keyFactory.generatePublic(spec);
 	}

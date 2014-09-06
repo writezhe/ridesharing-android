@@ -200,7 +200,7 @@ public class DebugInterfaceActivity extends Activity {
 		Log.i("reading keyFile", data );
 		
 		try {
-			EncryptionEngine.getKey();
+			EncryptionEngine.readKey();
 		} catch (NoSuchAlgorithmException e) {
 			Log.i("encrypting error", "NoSuchAlgorithmException" );
 			e.printStackTrace();
