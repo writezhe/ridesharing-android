@@ -44,12 +44,14 @@ public class MainMenuActivity extends Activity {
 		browser.setInitialScale(200);
 		
 		// Http starts here
-		LoginSessionManager sessionManager = new LoginSessionManager(appContext);
-		HashMap userDetails = sessionManager.getUserDetails();
-		String postData = "patientID=" + userDetails.get(LoginSessionManager.KEY_ID)
-				+ "&pwd=" + userDetails.get(LoginSessionManager.KEY_PASSWORD);
+//		LoginSessionManager sessionManager = new LoginSessionManager(appContext);
+//		HashMap userDetails = sessionManager.getUserDetails();
+//		String postData = "patientID=" + userDetails.get(LoginSessionManager.KEY_ID)
+//				+ "&pwd=" + userDetails.get(LoginSessionManager.KEY_PASSWORD);
+//		
+//		browser.postUrl("http://beiwe.org/graph", EncodingUtils.getBytes(postData, "BASE64"));
 		
-		browser.postUrl("http://beiwe.org/graph", EncodingUtils.getBytes(postData, "BASE64"));
+		browser.loadUrl("http://beiwe.org/graph");
 	}
 	
 	public void callHotline(View v) {
