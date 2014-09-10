@@ -1,24 +1,24 @@
 package org.beiwe.app.storage;
-import java.io.FileInputStream;
 import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.RSAPublicKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
 import org.beiwe.app.storage.TextFileManager;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import android.telephony.PhoneNumberUtils;
 import android.util.Base64;
 import android.util.Log;
-;
+
 
 
 public class EncryptionEngine {
@@ -92,52 +92,58 @@ public class EncryptionEngine {
 	private static String bytesToHex(byte[] byteArray) {
 		char[] hexCharArray = new char[byteArray.length * 2];
 		for (int i = 0; i < byteArray.length; i++) {
-			int v = byteArray[i] & 0xFF;
-			hexCharArray[i * 2] = hexArray[v >>> 4];
-			hexCharArray[i * 2 + 1] = hexArray[v & 0x0F];
+			int value = byteArray[i] & 0xFF;
+			hexCharArray[i * 2] = hexArray[value >>> 4];
+			hexCharArray[i * 2 + 1] = hexArray[value & 0x0F];
 		}
 		return new String(hexCharArray);
 	}
 	
 	
-	/**Encrypts data using the RSA cipher, makes 
-	 * @param text
-	 * @return */
+	/**Encrypts data using the RSA cipher and the public half of an RSA key pairing provided by the server. 
+	 * @param text to be encrypted
+	 * @return a hex string of the encrypted data. */
 	public static String encrypt(String text) {
-//		if (key == null) { get_key(); }
+		if (key == null) { EncryptionEngine.readKey(); }
 		
 		byte[] encryptedText = null;
-		try {
-			Cipher rsaCipher = Cipher.getInstance("RSA");
-			
-			rsaCipher.init(Cipher.ENCRYPT_MODE, key);
-			encryptedText = rsaCipher.doFinal( text.getBytes() );
-		} catch (Exception e) {
-			Log.i("Encryption Engine", "Encryption Exception");
-			e.printStackTrace();
-		}
-//		Log.i("enc",cipherText. );
-		return new String(encryptedText);
-	}
-
-	
-	public static void readKey() throws NoSuchAlgorithmException, InvalidKeySpecException, UnsupportedEncodingException {
-//		byte[] keyFile_text = TextFileManager.getKeyFile().readDataFile();
-//		String key_content = new String (keyFile_text);//, "UTF-8");
-//		key_content = key_content.replaceAll("(-+BEGIN RSA PRIVATE KEY-+\\r?\\n|-+END RSA PRIVATE KEY-+\\r?\\n?)", "");
+		Cipher rsaCipher = null;
 		
+		try { rsaCipher = Cipher.getInstance("RSA"); }
+		catch (NoSuchAlgorithmException e) { Log.e("Encryption Engine", "THIS DEVICE DOES NOT SUPPORT RSA?"); }
+		catch (NoSuchPaddingException e) { Log.e("Encryption Engine", "Something went wrong, go research Padding Exceptions. (NoSuchPaddingException) "); }
+		finally { Log.e("Encryption Engine", "encryption is about to fail"); }
+		
+		try { rsaCipher.init(Cipher.ENCRYPT_MODE, key);	}
+		catch (InvalidKeyException e) { Log.e("Encryption Engine", "The key is not a valid public RSA key."); }
+		
+		try {  encryptedText = rsaCipher.doFinal( text.getBytes() ); }
+		catch (IllegalBlockSizeException e) { Log.e("Encryption Engine", "The key is malformed."); }
+		catch (BadPaddingException e) { Log.e("Encryption Engine", "Something went wrong, go research Padding Exceptions. (BadPaddingException)"); }
+		finally { Log.e("Encryption Engine", "Encryption has failed."); }
+
+		return  bytesToHex( encryptedText );
+	}
+	
+	/**Looks for the public key file and imports it.
+	 * Spews out human readable errors to the Log if something seems wrong. */
+	public static void readKey() {
 		String key_content = TextFileManager.getKeyFile().read();
 		byte[] key_bytes = Base64.decode(key_content, Base64.DEFAULT);
 		
-		Log.i("key", key_content );
-		Log.i( "key length", "" + key_bytes.length );
+//		Log.i(" key ", key_content );
+//		Log.i( "key length", "" + key_bytes.length );
 		
-		X509EncodedKeySpec spec = new X509EncodedKeySpec( key_bytes );
-//		PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec( keyFile_text );
-//		RSAPublicKeySpec spec = new RSAPublicKeySpec(modulus, publicExponent);
+		X509EncodedKeySpec x509EncodedKey = new X509EncodedKeySpec( key_bytes );
 		
-		//a KeyFactory... creates keys.
-		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-		key = keyFactory.generatePublic(spec);
+		try {
+			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+			key = keyFactory.generatePublic( x509EncodedKey );
+		} catch (NoSuchAlgorithmException e1) {
+			Log.e("Encryption Engine", "ENCRYPTION HAS FAILED BECAUSE RSA IS NOT SUPPORTED?  AN ENCRYPT OPERATION IS ABOUT TO FAIL.");
+			e1.printStackTrace();
+		} catch (InvalidKeySpecException e2) {
+			Log.e("Encryption Engine", "The provided RSA public key is NOT VALID.\nBEFORE doing anything else check that the key is the PUBLIC half of an RSA key pairing." );
+		}
 	}
 }
