@@ -197,48 +197,20 @@ public class DebugInterfaceActivity extends Activity {
 		
 		write_public();
 		String data = TextFileManager.getKeyFile().read();
-		Log.i("reading keyFile", data );
+		Log.i("reading keyFile:", data );
 		
-		try {
-			EncryptionEngine.readKey();
-		} catch (NoSuchAlgorithmException e) {
-			Log.i("encrypting error", "NoSuchAlgorithmException" );
-			e.printStackTrace();
-		} catch (InvalidKeySpecException e) {
-			Log.i("encrypting error", "InvalidKeySpecException" );
-			e.printStackTrace();
-		} catch (UnsupportedEncodingException e) {
-			Log.i("encrypting error", "UnsupportedEncodingException");
-			e.printStackTrace();
-		}
-		
+		EncryptionEngine.readKey();
+
 		Log.i("something", "anything");
 
-		String encrypted = EncryptionEngine.encrypt("test encrypt");
+		String encrypted = EncryptionEngine.encrypt("ThIs Is a TeSt");
 		Log.i("test encrypt", encrypted );
 		Log.i("test encrypt - length", "" + encrypted.length() );
-		
-		try {
-			Log.i("hex string", String.format("%040x", new BigInteger(1, encrypted.getBytes("UTF-8") ) ) );
-		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 	}
 	
 	
 	void write_public() {
 		TextFileManager.getKeyFile().deleteSafely();
-//		TextFileManager.getKeyFile().write("-----BEGIN PUBLIC KEY-----");
-//		TextFileManager.getKeyFile().write("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApTiH9gI0zXimSSX+lIsP");
-//		TextFileManager.getKeyFile().write("VvsRDKj5+ebBKAxUJ/laWkfz59yDmfw9TkuLPRfU5cI4GWN/3kzyVdP72bt8p7ZU");
-//		TextFileManager.getKeyFile().write("1LpL/WsSrRb3mzDXZtUnEnfKMTL2NvXUG/qJJyI0wzTmTNaY/hN4aKhITTBjX2Lo");
-//		TextFileManager.getKeyFile().write("+8REtHuijxvaVVThbwlEg+Hmk5611f/BoHC29jHI1O6j4t+PdlO+2h+jBYthL7C0");
-//		TextFileManager.getKeyFile().write("+Tfu74s0o3CLonCGNik8sLsZ6hps1sz0Gwn4f4ehLe7OwGviv4svZZAhufJebyPF");
-//		TextFileManager.getKeyFile().write("NaIbWiO8bQN7ev8rEwnT9ROsBZvZ1AzoUYtewBxauBgpF8/NdvgcNqkILKbIFvsc");
-//		TextFileManager.getKeyFile().write("awIDAQAB");
-//		TextFileManager.getKeyFile().write("-----END PUBLIC KEY-----");
 		TextFileManager.getKeyFile().write("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApTiH9gI0zXimSSX+lIsPVvsRDKj5+ebBKAxUJ/laWkfz59yDmfw9TkuLPRfU5cI4GWN/3kzyVdP72bt8p7ZU1LpL/WsSrRb3mzDXZtUnEnfKMTL2NvXUG/qJJyI0wzTmTNaY/hN4aKhITTBjX2Lo+8REtHuijxvaVVThbwlEg+Hmk5611f/BoHC29jHI1O6j4t+PdlO+2h+jBYthL7C0+Tfu74s0o3CLonCGNik8sLsZ6hps1sz0Gwn4f4ehLe7OwGviv4svZZAhufJebyPFNaIbWiO8bQN7ev8rEwnT9ROsBZvZ1AzoUYtewBxauBgpF8/NdvgcNqkILKbIFvscawIDAQAB");
 	}
 }
