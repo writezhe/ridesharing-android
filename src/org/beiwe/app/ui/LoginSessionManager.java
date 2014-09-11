@@ -36,7 +36,7 @@ public class LoginSessionManager {
      
     /**
      * This is a constructor method for the session manager class
-     * @param context from LoginActivity
+     * @param context
      */
 	public LoginSessionManager(Context context){
         this.appContext = context;
@@ -53,8 +53,10 @@ public class LoginSessionManager {
     * @param password
     */
     public void createLoginSession(String userID, String password){
-    	isRegistered = true;
-    	editor.putBoolean(IS_REGISTERED, isRegistered);
+    	if (!isRegistered()) {
+        	isRegistered = true;
+        	editor.putBoolean(IS_REGISTERED, isRegistered);
+    	}
     	editor.putBoolean(IS_LOGIN, true);
         editor.putString(KEY_ID, userID);
         editor.putString(KEY_PASSWORD, password);
@@ -71,8 +73,8 @@ public class LoginSessionManager {
      * */
     public void checkLogin(){
 //    	Class debug = RegisterActivity.class;
-    	Class debug = DebugInterfaceActivity.class;
-//    	Class debug = MainMenuActivity.class;
+//    	Class debug = DebugInterfaceActivity.class;
+    	Class debug = MainMenuActivity.class;
     	Log.i("SessionManager", "Check if already logged in");
     	Log.i("SessionManager", "" + isRegistered());
     	if(this.isLoggedIn()) {
@@ -96,7 +98,8 @@ public class LoginSessionManager {
      
     /**
      * A way of encapsulating SharedPreferences and the user's details stored in them.
-     * @return
+     * 
+     * @return user details
      */
     public HashMap<String, String> getUserDetails(){
        	HashMap<String, String> user = new HashMap<String, String>();
@@ -122,7 +125,8 @@ public class LoginSessionManager {
      
     /**
      * Quick check for login. 
-     * **/
+     *
+     **/
     public boolean isLoggedIn(){
 //    	Log.i("SessionManager", "" + pref.getBoolean(IS_LOGIN, false));
     	return pref.getBoolean(IS_LOGIN, false);

@@ -9,11 +9,47 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="org.beiwe.app.ui.MainMenuActivity" >
 
-    <WebView
-        android:id="@+id/main_menu_pastResults"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.60"/>
+        android:layout_height="wrap_content"
+        android:layout_weight="0.54"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/main_menu_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Welcome to Beiwe"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_gravity="center" />
+
+        <View
+            android:id="@+id/Placeholder1"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp" />
+
+        <Button
+            android:id="@+id/graph"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="View previous answers on graph"
+            android:layout_gravity="center"
+            android:onClick="graphResults" />
+
+        <View
+            android:id="@+id/Placeholder2"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp" />
+
+        <Button
+            android:id="@+id/audio_recorder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Record something"
+            android:layout_gravity="center"
+            android:onClick="recordMessage" />
+
+    </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"

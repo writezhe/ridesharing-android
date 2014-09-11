@@ -3,7 +3,7 @@
 
     <!--
     Reference strings in Java code using a line like this:
-    appContext.getResources().getString(R.string.name_of_string)
+    appContext.getResources().getString(R.string.name_of_string)
     -->
     <!-- General Strings -->
     <string name="app_name">Beiwe</string>
@@ -50,7 +50,6 @@
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_login_string">Login</string>
     <string name="login_activity_welcoming_message">Login back to Beiwe</string>
-    
 
     <!-- Forgot Password Activity Strings -->
     <string name="forgot_password_title">Reset your password</string>
@@ -81,20 +80,19 @@
     <string name="main_menu_take_survey">Take Survey</string>
     <string name="main_menu_record_message">Record Message</string>
     <string name="main_menu_call_hotline">Call Hotline</string>
-    <string name="title_activity_voice_recording">VoiceRecording</string>
-    
+
     <!-- Recording Activity -->
     <string name="record_activity_error_message">If you\'re seeing this, it means something broke. Please contact the administrator</string>
     <string name="record_activity_button">Press here to record</string>
-	<string name="record_activity_playback">Play recording</string>
-	<string name="record_activity_play_button_text">Press to play</string>
-	<string name="record_activity_record_button_text">Press to record</string>
-	
-	<!-- Notifications -->
-	<string name="survey_notification_message"> You have a new survey waiting </string>
-	<string name="survey_notification_details"> There is a new survey for you to take. Click here to take it </string>
-	<string name="recording_notification_message">You haven\'t submitted your recording today </string>
-	<string name="recording_notification_details">You have not submitted your recording today. Please do so, by clicking here</string>
-    
+    <string name="record_activity_playback">Play recording</string>
+    <string name="record_activity_play_button_text">Press to play</string>
+    <string name="record_activity_record_button_text">Press to record</string>
+
+    <!-- Notifications -->
+    <string name="survey_notification_message"> You have a new survey waiting </string>
+    <string name="survey_notification_details"> There is a new survey for you to take. Click here to take it </string>
+    <string name="recording_notification_message">You haven\'t submitted your recording today </string>
+    <string name="recording_notification_details">You have not submitted your recording today. Please do so, by clicking here</string>
+    <string name="title_activity_graph">GraphActivity</string>
 
 </resources>

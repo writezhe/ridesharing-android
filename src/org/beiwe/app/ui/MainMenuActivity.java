@@ -3,7 +3,9 @@ package org.beiwe.app.ui;
 import java.util.HashMap;
 
 import org.apache.http.util.EncodingUtils;
+import org.beiwe.app.GraphActivity;
 import org.beiwe.app.R;
+import org.beiwe.app.survey.AudioRecorderActivity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,10 +17,14 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
-
+/**
+ * The main menu activity of the app. Currently displays 4 buttons - Audio Recording, Graph, Hotline, and Sign out
+ * @author user
+ *
+ */
 public class MainMenuActivity extends Activity {
 
-	private Context appContext;
+	private Context appContext;	 
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -27,51 +33,38 @@ public class MainMenuActivity extends Activity {
 
 		// Context declaration
 		appContext = getApplicationContext();
-		
-		// Instantiating web view to be embedded in the page
-		WebView browser = (WebView) findViewById(R.id.main_menu_pastResults);
-		WebSettings browserSettings = browser.getSettings();
-		browser.setWebViewClient(new WebViewClient() {
-		    @Override
-		    public boolean shouldOverrideUrlLoading(WebView view, String url) {
-		            view.loadUrl(url);
-		            return true;
-		            }
-		    });
-		
-		// Enable Javascript to display the graph, as well as initial scale
-		browserSettings.setJavaScriptEnabled(true);
-		browser.setInitialScale(200);
-		
-		// Http starts here
-//		LoginSessionManager sessionManager = new LoginSessionManager(appContext);
-//		HashMap userDetails = sessionManager.getUserDetails();
-//		String postData = "patientID=" + userDetails.get(LoginSessionManager.KEY_ID)
-//				+ "&pwd=" + userDetails.get(LoginSessionManager.KEY_PASSWORD);
-//		
-//		browser.postUrl("http://beiwe.org/graph", EncodingUtils.getBytes(postData, "BASE64"));
-		
-		browser.loadUrl("http://beiwe.org/graph");
 	}
 	
+	/**
+	 * Calls the hotline
+	 * @param v
+	 */
 	public void callHotline(View v) {
 		Intent callIntent = new Intent(Intent.ACTION_CALL);
 	    // TODO: What is the hotline number?
 		callIntent.setData(Uri.parse("tel:123456789"));
 	    startActivity(callIntent);
 	}
-	
+
+
+	/* ***********************************************************************
+	 *****                   Activity transfer intents                ********
+	 *********************************************************************** */
 	public void signOutButton(View v) {
 		Intent signOutIntent = new Intent(appContext, LoadingActivity.class);
-	    startActivity(signOutIntent);
+	    LoginSessionManager session = new LoginSessionManager(appContext);
+	    session.logoutUser();
+		startActivity(signOutIntent);
 	    finish();
 	}
 	
-	public void takeSurvey(View v) {
-		Toast.makeText(appContext, "Placeholder", Toast.LENGTH_SHORT).show();
+	public void graphResults(View v) {
+		Intent graphIntent = new Intent(appContext, GraphActivity.class);
+		startActivity(graphIntent);
 	}
 	
 	public void recordMessage(View v) {
-		Toast.makeText(appContext, "Placeholder", Toast.LENGTH_SHORT).show();
+		Intent audioRecordingIntent = new Intent(appContext, AudioRecorderActivity.class);
+		startActivity(audioRecordingIntent);
 	}
 }
