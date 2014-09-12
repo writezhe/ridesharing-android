@@ -101,7 +101,8 @@ public class RegisterActivity extends Activity {
 		// dns lookup errors
 		// I'm a teapot errors?
 	}
-
+	
+	// TODO: Dori. Get rid of this once Josh finishes his code
 	private Integer pushDataToServer(String userID, String password) {		
 		int responseCode = (Integer) null;
 		
