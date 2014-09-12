@@ -31,13 +31,36 @@ public class EncryptionEngine {
 	 * @return a UTF-8 String of the hash result.
 	 * @throws NoSuchAlgorithmException
 	 * @throws UnsupportedEncodingException	 */
-	public static String hash (String input) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+	public static String test_hash (String input) throws NoSuchAlgorithmException, UnsupportedEncodingException {
 		/** takes a string as input, outputs a hash. */
 		MessageDigest hasher = MessageDigest.getInstance("SHA-256"); //make a hasher (verb?) object, include the hash algorithm name.
 		hasher.update( input.getBytes("UTF-8") ); //pass the hash object data (the string passed in)
 		return new String( hasher.digest(), "UTF-8") ; //return the "digest", the computed hash.
 	}
 	
+	//TODO: Everyone. Test this unto the ends of the earth.
+	/** takes a string as input, outputs a hash. 
+	 * @param input A String to hash
+	 * @return a UTF-8 String of the hash result. */
+	public static String hash (String input) {
+		/** takes a string as input, outputs a hash. */
+		MessageDigest hash = null;
+		String return_data = null;
+		try {
+			hash = MessageDigest.getInstance("SHA-256");
+			hash.update( input.getBytes("UTF-8") );
+			return_data = new String( hash.digest(), "UTF-8" );
+		} catch (NoSuchAlgorithmException e) {
+			Log.e("Hashing function", "NoSuchAlgorithmException");
+			System.exit(1);
+			e.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			Log.e("Hashing function", "UnsupportedEncodingException");
+			e.printStackTrace();
+			System.exit(2);
+		}
+		return return_data;
+	}
 	
 	/**Converts a phone number into a 64-character hexadecimal string
 	 * @param phoneNumber
