@@ -98,7 +98,7 @@ public class RegisterActivity extends Activity {
 		}
 	}
 	
-	private int pushDataToServer(String userID, String password) throws IOException {		
+	private int pushDataToServer(String userID, String password) throws IOException, NoSuchAlgorithmException {		
 		// Getting IDs
 		String droidID = DeviceInfo.getAndroidID();
 		String bluetoothMAC = DeviceInfo.getBlootoothMAC();

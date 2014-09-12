@@ -6,6 +6,7 @@ import java.security.NoSuchAlgorithmException;
 
 import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
+import org.beiwe.app.storage.EncryptionEngine;
 
 import android.app.Activity;
 import android.content.Context;
@@ -56,8 +57,7 @@ public class LoadingActivity extends Activity{
 	private boolean isAbleToHash() {
 		// Check for existence of libraries:
 		try {
-			MessageDigest hasher = MessageDigest.getInstance("SHA-256");
-			hasher.update("testtesttest".getBytes("UTF-8"));
+			EncryptionEngine.test_hash("input");
 			return true;
 		} catch (NoSuchAlgorithmException noSuchAlgorithm) {
 			Log.i("LoadingActivity", "Cannot run the hasher due to unsupported encryption engine - exiting app");
