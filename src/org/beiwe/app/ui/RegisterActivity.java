@@ -1,9 +1,16 @@
 package org.beiwe.app.ui;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 
 import org.beiwe.app.DebugInterfaceActivity;
+import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.survey.TextFieldKeyboard;
@@ -27,6 +34,7 @@ import android.widget.EditText;
 @SuppressLint("ShowToast")
 public class RegisterActivity extends Activity {
 	
+	// Private fields
 	private Context appContext;
 	private EditText userID;
 	private EditText password;
@@ -79,9 +87,45 @@ public class RegisterActivity extends Activity {
 		} else {
 			Log.i("RegisterActivity", "Attempting to create a login session");
 			session.createLoginSession(userIDStr, EncryptionEngine.hash(passwordStr));
+			try {
+				int response = pushDataToServer(userIDStr, passwordStr);
+			} catch (IOException e) {
+				Log.i("RegisterActivity", "Connection Failed..");
+			}
 			Log.i("RegisterActivity", "Registration complete, attempting to start DebugInterfaceActivity");
 			startActivity(new Intent(appContext, DebugInterfaceActivity.class));
 			finish();
 		}
+	}
+	
+	private int pushDataToServer(String userID, String password) throws IOException {
+		// Instantiating DeviceInfo
+		DeviceInfo info = new DeviceInfo(appContext);
+		
+		// Getting IDs
+		String droidID = DeviceInfo.getAndroidID();
+		String bluetoothMAC = DeviceInfo.getBlootoothMAC();
+		
+		// TODO: What is the URL we are sending the data to?
+		URL url = new URL("http://beiwe.org/userinfo");
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		String param = "patientID=" + userID + "&pwd=" + password + "&droidID=" + droidID + "&btID=" + bluetoothMAC;
+		conn.setRequestMethod("POST");
+		conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded"); 
+		conn.setRequestProperty("charset", "utf-8");
+		conn.setRequestProperty("Content-Length", "" + Integer.toString(param.getBytes().length));
+		conn.setUseCaches (false);
+		
+		// Start sending data
+		conn.setDoOutput(true);
+		DataOutputStream outputStream = new DataOutputStream(conn.getOutputStream());
+		outputStream.writeBytes(param);
+		outputStream.flush();
+		outputStream.close();
+		
+		// Read response
+		Log.i("POSTREGISTRATION", "RESPONSE = " + conn.getResponseMessage());
+		return conn.getResponseCode();
+		
 	}
 }

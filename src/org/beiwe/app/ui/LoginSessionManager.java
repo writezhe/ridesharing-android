@@ -32,7 +32,6 @@ public class LoginSessionManager {
     public static final String KEY_ID = "uid";
     public static final String KEY_PASSWORD = "password";
 	public static final String IS_REGISTERED = "IsRegistered";
-	private static boolean isRegistered = false;
      
     /**
      * This is a constructor method for the session manager class
@@ -43,7 +42,8 @@ public class LoginSessionManager {
 //      Log.i("SessionManager", "Attempting to get SharedPreferences");
         pref = appContext.getSharedPreferences(PREF_NAME, PRIVATE_MODE); //Shared Preferences is set to private mode
         editor = pref.edit();
-        editor.putBoolean("IsRegistered", (isRegistered == true) ? true : false);
+        boolean isRegistered = pref.getBoolean(IS_REGISTERED, false);
+        editor.putBoolean	(IS_REGISTERED, (isRegistered == true) ? true : false);
         editor.commit();
     }
      
@@ -54,15 +54,12 @@ public class LoginSessionManager {
     */
     public void createLoginSession(String userID, String password){
     	if (!isRegistered()) {
-        	isRegistered = true;
-        	editor.putBoolean(IS_REGISTERED, isRegistered);
+        	editor.putBoolean(IS_REGISTERED, true);
     	}
     	editor.putBoolean(IS_LOGIN, true);
         editor.putString(KEY_ID, userID);
         editor.putString(KEY_PASSWORD, password);
         editor.commit();
-//        Log.i("SessionManager", pref.getString(KEY_NAME, "Bobby McGee")); // Saved username
-//        Log.i("SessionManager", pref.getString(KEY_PASSWORD, "DefPassword")); // Saved password
     }   
      
     /**
@@ -72,9 +69,9 @@ public class LoginSessionManager {
      * the user's first time, therefore will start with {@link RegisterActivity}.
      * */
     public void checkLogin(){
-//    	Class debug = RegisterActivity.class;
+    	Class debug = RegisterActivity.class;
 //    	Class debug = DebugInterfaceActivity.class;
-    	Class debug = MainMenuActivity.class;
+//    	Class debug = MainMenuActivity.class;
     	Log.i("SessionManager", "Check if already logged in");
     	Log.i("SessionManager", "" + isRegistered());
     	if(this.isLoggedIn()) {

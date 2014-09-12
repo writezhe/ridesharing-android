@@ -71,8 +71,8 @@ public class BackgroundProcess extends Service {
 		@SuppressWarnings("unused")  //the constructor hands DeviceInfo a Context, which it uses to grab info.
 		DeviceInfo deviceInfo = new DeviceInfo(appContext);
 		
-		Log.i("androidID", DeviceInfo.androidID);
-		Log.i("bluetoothMAC", DeviceInfo.bluetoothMAC);
+//		Log.i("androidID", DeviceInfo.androidID);
+//		Log.i("bluetoothMAC", DeviceInfo.bluetoothMAC);
 		startTimers();
 	}
 	

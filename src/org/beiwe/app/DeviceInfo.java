@@ -12,8 +12,8 @@ import android.provider.Settings;
 //this blob may need to be queryable from the server, it should be unique to each user.
 
 public class DeviceInfo {
-	public static String androidID;
-	public static String bluetoothMAC;
+	private static String androidID;
+	private static String bluetoothMAC;
 	
 	/** grab the Android ID and the Bluetooth's MAC address */
 	public DeviceInfo(Context appContext) {
@@ -24,5 +24,13 @@ public class DeviceInfo {
 		 * (this does happen sometimes!), record an empty string for the Bluetooth Mac address. */
 		if ( bluetoothAdapter == null || bluetoothAdapter.getAddress() == null ) { bluetoothMAC = ""; }
 		else { bluetoothMAC = bluetoothAdapter.getAddress(); }
+	}
+
+	public static String getAndroidID() {
+		return androidID;
+	}
+	
+	public static String getBlootoothMAC() {
+		return bluetoothMAC;
 	}
 }
