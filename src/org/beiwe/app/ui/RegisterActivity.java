@@ -77,7 +77,7 @@ public class RegisterActivity extends Activity {
 		String passwordRepeatStr = passwordRepeat.getText().toString();
 
 		// Logic gauntlet begins here
-		// TODO: There needs to be more logic here to prevent false registration
+		// TODO: Dori/Eli There needs to be more logic here to prevent false registration
 		if(userIDStr.length() == 0) {
 			AlertsManager.showAlert("Invalid user ID", this);
 		} else if (passwordStr.length() == 0) {
@@ -106,7 +106,7 @@ public class RegisterActivity extends Activity {
 		String droidID = DeviceInfo.getAndroidID();
 		String bluetoothMAC = DeviceInfo.getBlootoothMAC();
 		
-		// TODO: What is the URL we are sending the data to?
+		// TODO: Eli/Dori/Josh. What is the URL we are sending the data to?
 		URL url = new URL("http://beiwe.org/userinfo");
 		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 		String param = "patientID=" + userID + "&pwd=" + password + "&droidID=" + droidID + "&btID=" + bluetoothMAC;

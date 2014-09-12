@@ -38,7 +38,7 @@ public class InputListener {
 
 		@Override
 		public void onStartTrackingTouch(SeekBar seekBar) {
-			// TODO: Start tracking touch if JP wants
+			// TODO: Josh? Start tracking touch if JP wants
 		}
 
 		@Override
@@ -115,7 +115,7 @@ public class InputListener {
 		public void onFocusChange(View v, boolean hasFocus) {
 			if (hasFocus) {
 				// The user just selected the input box
-				// TODO: figure out if JP wants us to record this event
+				// TODO: Josh. figure out if JP wants us to record this event.
 
 				// Set the EditText so that if the user taps outside, the keyboard disappears
 				if (v instanceof EditText) {

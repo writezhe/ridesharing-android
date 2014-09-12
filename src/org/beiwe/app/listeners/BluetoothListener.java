@@ -82,7 +82,6 @@ public class BluetoothListener extends BroadcastReceiver {
 	
 	/** Intelligently disables the bluetooth adaptor.
 	 * @return True if bluetooth exists, false if bluetooth does not exist */
-	//TODO: add check for devices connected, stop disable process if any devices are connected.
 	private Boolean disableBluetooth() {
 		if (!bluetoothExists) { return false; }
 		Log.i("BluetoothListener", "disable bluetooth.");
@@ -155,7 +154,7 @@ public class BluetoothListener extends BroadcastReceiver {
 	
 	/** LeScanCallback is code that is run when a Bluetooth LE scan returns some data.
 	*   We take the returned data and log it. */
-	//TODO: currently recording everything, log useful data, format it etc.
+	//TODO: Eli.  Currently recording everything, log useful data, format it etc.
 	@SuppressLint("NewApi")
 	private LeScanCallback bluetoothCallback = new LeScanCallback() {
 		@Override
@@ -177,7 +176,7 @@ public class BluetoothListener extends BroadcastReceiver {
 ####################################################################################*/
 	
 	@Override
-	//TODO: If android allows toggling bluetooth on-off quickly, add logic to on and off state checking external state for correctness.
+	//TODO: Everyone. If android allows toggling bluetooth on-off quickly, add logic to on and off state checking external state for correctness.
 	// SEE COMMENT AT TOP.
 	/** The onReceive method for the BluetoothListener listens for Bluetooth State changes.
 	 * The Bluetooth adaptor can be in any of 4 states: on, off, turning on, and turning off. 

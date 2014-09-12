@@ -11,8 +11,6 @@ import android.os.Handler;
 import android.provider.CallLog;
 import android.util.Log;
 
-// TODO: BootLogger does not require instantiation
-
 public class CallLogger extends ContentObserver {
 
 	public static String header = "hashed phone number,call type,date,duration in seconds";
@@ -53,7 +51,7 @@ public class CallLogger extends ContentObserver {
 		super(theHandler);
 		theHandler = handler;
 		appContext = context;
-		callLogFile = TextFileManager.getCallLogFile(); //TODO: change back to debug log file for debugging
+		callLogFile = TextFileManager.getCallLogFile();
 
 		// Pull database info
 		dbQuery = appContext.getContentResolver().query(allCalls, null, null, null, android.provider.CallLog.Calls.DEFAULT_SORT_ORDER);

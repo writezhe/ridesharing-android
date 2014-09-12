@@ -70,9 +70,9 @@ public class EncryptionEngine {
 	 * @param rawNumber the not-yet-standardized number
 	 * @return the hopefully standardized number */
 	private static String standardizePhoneNumber(String rawNumber) {
-		// TODO: check many cases, and see if this works for non-US phone numbers.
-		// TODO: explore Eli's idea of just grabbing the last 10 numeric digits and using those
-		// TODO: If it doesn't, make declaration about false negative phone number matches.
+		// TODO: Eli/Josh. check many cases, and see if this works for non-US phone numbers.
+		// TODO: Josh/Eli. explore Eli's idea of just grabbing the last 10 numeric digits and using those
+		// TODO: Josh/Eli? If it doesn't, make declaration about false negative phone number matches.
 		String formattedNumber = PhoneNumberUtils.formatNumber(rawNumber);
 
 		if (formattedNumber.startsWith("+1-")) {

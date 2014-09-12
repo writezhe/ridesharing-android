@@ -34,13 +34,13 @@ public class BackgroundProcess extends Service {
 	private Context appContext;
 	private LoginSessionManager sessionManager;
 	
-	// TODO: Make these private after killing DebugInterfaceActivity
+	// TODO: Eli. Make these private after killing DebugInterfaceActivity
 	public GPSListener gpsListener;
 	public AccelerometerListener accelerometerListener;
 	private Timer timer;
 	public BluetoothListener bluetoothListener;
 	
-	//TODO: this [stupid hack] should only be necessary for debugging, comment out before production.
+	//TODO: Eli. this [stupid hack] should only be necessary for debugging, comment out before production.
 	public static BackgroundProcess BackgroundHandle;
 	
 	private void make_log_statement(String message) {
@@ -104,7 +104,7 @@ public class BackgroundProcess extends Service {
 		filter.addAction(Intent.ACTION_SCREEN_ON);
 		filter.addAction(Intent.ACTION_SCREEN_OFF);
 		PowerStateListener powerStateListener = new PowerStateListener();
-		powerStateListener.finish_instantiation(this);  //TODO: fix this, it has to do with airplane mode
+		powerStateListener.finish_instantiation(this);  //FIXME:  Eli. fix this, it has to do with airplane mode
 		registerReceiver( (BroadcastReceiver) powerStateListener, filter);
 	}
 	
@@ -130,7 +130,7 @@ public class BackgroundProcess extends Service {
 	####################       Externally Accessed Functions       ################
 	#############################################################################*/
 	
-	// FIXME: THIS CRASHES THE PROGRAM!!! ABANDON ALL HOPE :(
+	// FIXME: Eli. THIS CRASHES THE PROGRAM!!! ABANDON ALL HOPE :(
 	@SuppressWarnings( "deprecation" )
 	@TargetApi( Build.VERSION_CODES.JELLY_BEAN_MR1 )
 	/** Checks if airplane mode is active, if so it shuts down the GPSListener. */
@@ -221,6 +221,6 @@ public class BackgroundProcess extends Service {
 	@Override
 	public void onDestroy() {
 		//this does not appear to run when the service or app are killed...
-		//TODO: research when onDestroy is actually called, insert informative comment.
+		//TODO: Eli. research when onDestroy is actually called, insert informative comment.
 		make_log_statement("BackgroundService Killed"); }
 }

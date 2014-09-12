@@ -41,7 +41,7 @@ public class MainMenuActivity extends Activity {
 	 */
 	public void callHotline(View v) {
 		Intent callIntent = new Intent(Intent.ACTION_CALL);
-	    // TODO: What is the hotline number?
+	    // TODO: Josh? What is the hotline number?
 		callIntent.setData(Uri.parse("tel:123456789"));
 	    startActivity(callIntent);
 	}

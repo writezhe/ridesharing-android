@@ -58,7 +58,7 @@ public class SmsSentLogger extends ContentObserver {
 		String body = cursor.getString(cursor.getColumnIndex("body"));
 		String date = cursor.getString(cursor.getColumnIndex("date"));
 		
-		// TODO: use MESSAGE_TYPE as the check instead: http://stackoverflow.com/a/9343383
+		// TODO: Josh. use MESSAGE_TYPE as the check instead: http://stackoverflow.com/a/9343383
 		if ((protocol == null) && (idIsNew(id))) {
 			// Message was just sent
 			String data = "" + date + TextFileManager.DELIMITER;
@@ -69,13 +69,13 @@ public class SmsSentLogger extends ContentObserver {
 			Log.i("SMSLogger", "data = " + data);
 			smsLogFile.write(data);
 			
-			// TODO: figure out if we need to log more data, like "type": http://stackoverflow.com/questions/1976252/how-to-use-sms-content-provider-where-are-the-docs
-			// TODO: figure out what MESSAGE_TYPE means and if it's important: http://stackoverflow.com/a/18873822
-			// TODO: Figure out if when a text is sent, is written as a new line if no network
+			// TODO: Josh. figure out if we need to log more data, like "type": http://stackoverflow.com/questions/1976252/how-to-use-sms-content-provider-where-are-the-docs
+			// TODO: Josh. figure out what MESSAGE_TYPE means and if it's important: http://stackoverflow.com/a/18873822
+			// TODO: Josh. Figure out if when a text is sent, is written as a new line if no network.
 		}
 		
-		// TODO: also log incoming SMS messages this way
-		// TODO: check how MMS messages are handled
+		// TODO: Josh. also log incoming SMS messages this way
+		// TODO: Josh. check how MMS messages are handled
 	}
 	
 	

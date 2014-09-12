@@ -16,7 +16,7 @@ public class SurveyTimingsRecorder {
 	 */
 	public static void recordSurveyFirstDisplayed(String surveyId) {
 		// Create a new data file to record answers for only this survey
-		// TODO: decide if it's possible for a user to take two surveys at once, and if that's a problem
+		// TODO: Josh? decide if it's possible for a user to take two surveys at once, and if that's a problem
 		TextFileManager.getSurveyTimingsFile().newFile(surveyId);
 		
 		String message = "Survey first rendered and displayed to user";
@@ -74,7 +74,7 @@ public class SurveyTimingsRecorder {
 	 * @return String with tabs and newlines removed
 	 */
 	public static String sanitizeString(String input) {
-		// TODO: fix RegEx so it sanitizes '\t'
+		// TODO: Eli/Josh. fix RegEx so it sanitizes '\t'
 		input = input.replaceAll("[\t\n\r]", "  ");
 		// Replace all commas in the text with semicolons, because commas are the delimiters
 		input = input.replaceAll(",", ";");

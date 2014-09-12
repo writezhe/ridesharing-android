@@ -19,7 +19,7 @@ public class Timer {
 	private Context appContext;
 	
 	//public strings for matching to messages
-	//TODO: should we move these to the android Strings resource file?
+	//TODO: Eli/Dori should we move these to the android Strings resource file?
 	public static final String ACCELEROMETER_TURN_OFF = "Accelerometer OFF";
 	public static final String ACCELEROMETER_TURN_ON = "Accelerometer On";
 	public static final String BLUETOOTH_TURN_OFF = "Bluetooth OFF";
@@ -105,7 +105,7 @@ public class Timer {
 	 * based on the EXACT_TIMER_OFFSET defined above.
 	 * setupExactHourlyAlarm is used for the Bluetooth timer, because the trigger needs to be synchronized
 	 * between devices. */
-	//TODO: CURRENTLY DEBUGGING!  THIS DOES NOT SET ANYTHING TO AN HOURLY REPEAT, NEED TO UNCOMMENT LINE OF CODE.
+	//TODO: Eli.  CURRENTLY DEBUGGING!  THIS DOES NOT SET ANYTHING TO AN HOURLY REPEAT, NEED TO UNCOMMENT LINE OF CODE.
 	public void setupExactHourlyAlarm( Intent timerIntent, Intent intentToBeBroadcast ) {	
 		long currentTime = System.currentTimeMillis();
 		// current unix time (mod) 3,600,000 milliseconds = a next hour boundry, then add the EXACT_TIMER_OFFSET
@@ -121,8 +121,6 @@ public class Timer {
 	 * @param timerIntent registers the alarm under the correct alarm label.
 	 * @return a PendingIntent of the timerIntent, which is needed to set an alarm.	 */
 	private PendingIntent registerAlarm( Intent intentToBeBroadcast, Intent timerIntent) {
-		//FIXME: these are magic numbers, determine correct flags to pass in
-		// http://developer.android.com/reference/android/app/PendingIntent.html
 		PendingIntent pendingTimerIntent = PendingIntent.getBroadcast(appContext, 0, timerIntent, PendingIntent.FLAG_ONE_SHOT);
 		BroadcastReceiver broadcastReceiver = alarmReceiver(intentToBeBroadcast);
 		backgroundProcess.registerReceiver( broadcastReceiver, new IntentFilter( timerIntent.getAction() ) );

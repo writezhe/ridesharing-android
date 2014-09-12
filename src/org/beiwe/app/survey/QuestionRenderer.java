@@ -259,8 +259,8 @@ public class QuestionRenderer {
 		LinearLayout textFieldContainer = (LinearLayout) question.findViewById(R.id.textFieldContainer);
 		textFieldContainer.addView(editText);
 		
-		// TODO: on press carriage return, move to next question
-		// TODO: add date and time pickers as input types: http://stackoverflow.com/a/14933515
+		// TODO: Josh. on press carriage return, move to next question
+		// TODO: Josh. add date and time pickers as input types: http://stackoverflow.com/a/14933515
 		
 		return question;
 	}
@@ -293,7 +293,7 @@ public class QuestionRenderer {
 	 * @param max the highest number on the scale
 	 */
 	private void addNumbersLabelingToSlider(LinearLayout question, int min, int max) {
-		// TODO: implement the ability to use MIN and MAX so that not every scale starts at zero
+		// TODO: Josh. implement the ability to use MIN and MAX so that not every scale starts at zero
 		
 		// Replace the numbers label placeholder view (based on http://stackoverflow.com/a/3760027)
 		View numbersLabel = (View) question.findViewById(R.id.numbersPlaceholder);
@@ -351,7 +351,7 @@ public class QuestionRenderer {
 	 */
 	private void makeSliderInvisibleUntilTouched(SeekBarEditableThumb slider) {
 		// Before the user has touched the slider, make the "thumb" transparent/ almost invisible
-		// TODO: debug this!  It works well on Josh's phone (API 16) and not well on Zags's phone (Android 2.3.6).
+		// TODO: Josh. debug this!  It works well on Josh's phone (API 16) and not well on Zags's phone (Android 2.3.6).
 		slider.markAsUntouched();
 		
 		slider.setOnTouchListener(new OnTouchListener() {	

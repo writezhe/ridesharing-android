@@ -72,7 +72,7 @@ public class AudioRecorderActivity extends Activity {
     	checkPlayButtonVisibility(mFileName);
     	
     	surveyMessage = (TextView) findViewById(R.id.record_activity_textview);
-    	// TODO: Get a survey message (from server??) and display it to the user instead of the default message
+    	// TODO: Dori/Josh. Get a survey message (from server??) and display it to the user instead of the default message
     	surveyMessage.setText("Lorem ipsum dolor sit amet, et lobortis intellegat mel, " +
     			"est utinam graeci in. Ei quo appetere moderatius, " +
     			"in dolorem inimicus assentior has, " +
@@ -122,9 +122,9 @@ public class AudioRecorderActivity extends Activity {
     	}
 	}
     
-    // TODO: add arbitrary recording length limiter, like 2 hours
+    // TODO: Eli/Josh add arbitrary recording length limiter, like 2 hours
     // probably make this a timer that calls stopRecording() after a while
-    // TODO: add UI text saying "the recording can't be longer than X"
+    // TODO: Josh. add UI text saying "the recording can't be longer than X"
     
     // When the user presses the "record" button, toggle (start/stop) recording
     public void buttonRecordPressed(View view) {

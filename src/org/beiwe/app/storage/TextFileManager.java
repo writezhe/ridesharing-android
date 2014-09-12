@@ -25,9 +25,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
-//TODO:  filename should contain...
-// type of data: "voice recording" or "accelerometer", then a dash, then a start timestamp, then a userID number
-
 /**
  * The (Text)FileManager.
  * The FileManager is implemented as a Singleton.  More accurately the static object contains several
@@ -44,10 +41,8 @@ import android.util.Log;
  * @author Eli */
 public class TextFileManager {
 	
-//TODO: we need to escape all separator values that get dumped into strings 
-//TODO: sanitize inputs for the survey info, coordinate with kevin on that, may be easier to implement serverside.
-//TODO: implement public static header variables for all the classes that will need them, import here
-//TODO: we probably want a static array pointing to all the static objects to make a static X_for_everything functions easier?
+	//TODO: Eli/Josh. We need to escape all separator values that get dumped into strings. 
+
 	//Delimiter and newline strings
 	public static String DELIMITER = ",";
 	
@@ -107,11 +102,11 @@ public class TextFileManager {
 	 * @param appContext a Context, provided by the app. */
 	public static synchronized void start(Context appContext){
 		//if already started, flip out.
-		//TODO: test this?  consider removing the pointer exception and just exiting
+		//TODO: Eli. test this?  consider removing the pointer exception and just exiting
 		if ( started ){ throw new NullPointerException("You may only start the FileManager once."); }
 		else { started = true; }
 		
-		// TODO: fix filenames in accordance with the spec I agreed on with Kevin
+		// TODO: Eli/Josh.  make sure file names are to-spec
 		// Persistent files
 		debugLogFile = new TextFileManager(appContext, "logFile.txt", "THIS LINE IS A LOG FILE HEADER\n", true, true);
 		currentQuestions = new TextFileManager(appContext, "currentQuestionsFile.json", "", true, true);
@@ -125,7 +120,7 @@ public class TextFileManager {
 		bluetoothLog = new TextFileManager(appContext, "bluetoothLog", BluetoothListener.header, false, true);
 		
 		// Files created upon specific events
-		deviceInfo = new TextFileManager(appContext, "phoneInfo", "", false, false); // TODO: make this not persistent, only created upon registration
+		deviceInfo = new TextFileManager(appContext, "phoneInfo", "", false, false);
 		surveyTimings = new TextFileManager(appContext, "surveyTimings", SurveyTimingsRecorder.header, false, false);
 		surveyAnswers = new TextFileManager(appContext, "surveyAnswers", SurveyAnswersRecorder.header, false, false);
 		
@@ -159,7 +154,7 @@ public class TextFileManager {
 		if ( this.persistent ) { this.fileName = this.name; } 
 		else {
 			String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
-			// TODO: replace this with a real user ID
+			// TODO: Eli. replace this with a real user ID.
 			/* Note: if a new file gets created in the same second as an 
 			 * existing file, the names will be the same, and instead of two
 			 * files, there will be one file with a header midway through it.
@@ -191,7 +186,7 @@ public class TextFileManager {
 	 * Prints a stacktrace on a write error, but does not crash. If there is no
 	 * file, a new file will be created.
 	 * @param data a string*/
-	//TODO: investigate writing strings that make contain non-string-happy characters. (like escapes)
+	//TODO: Eli. investigate writing strings that make contain non-string-happy characters. (like escapes)
 	public synchronized void write(String data){
 		//write the output, we always want mode append
 		FileOutputStream outStream;
@@ -289,7 +284,7 @@ public class TextFileManager {
 		textsLog.newFile();
 		bluetoothLog.newFile(); }
 	
-	//FIXME: this function is only public for debugging purposes, getAllFilesSafely() should be used instead.
+	//TODO: Eli. this function is/was originally only public for debugging purposes, getAllFilesSafely() should be used instead?
 	/** Very simple function, exists to make any function that needs to grab all extant files thread-safe.
 	 * DO NOT USE THIS FUNCTION, USE getAllFilesSafely() INSTEAD.
 	 * @return a string array of all files in the app's file directory. */
