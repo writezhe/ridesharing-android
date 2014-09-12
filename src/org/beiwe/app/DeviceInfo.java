@@ -1,8 +1,14 @@
 package org.beiwe.app;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+
+import org.beiwe.app.storage.EncryptionEngine;
+
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.provider.Settings;
+import android.util.Log;
 //IMEI: phone SIM identifier.
 //android uuid
 
@@ -26,11 +32,11 @@ public class DeviceInfo {
 		else { bluetoothMAC = bluetoothAdapter.getAddress(); }
 	}
 
-	public static String getAndroidID() {
-		return androidID;
+	public static String getAndroidID() throws NoSuchAlgorithmException, UnsupportedEncodingException {
+		return EncryptionEngine.hash(androidID);
 	}
 	
-	public static String getBlootoothMAC() {
-		return bluetoothMAC;
+	public static String getBlootoothMAC() throws NoSuchAlgorithmException, UnsupportedEncodingException {
+		return EncryptionEngine.hash(bluetoothMAC);
 	}
 }
