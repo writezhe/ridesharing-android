@@ -56,6 +56,7 @@ public class LoadingActivity extends Activity{
 
 	private boolean isAbleToHash() {
 		// Check for existence of libraries:
+		// TODO: Eli. Make a function that tests Encryption
 		try {
 			EncryptionEngine.test_hash("input");
 			return true;
