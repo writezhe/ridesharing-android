@@ -1,5 +1,6 @@
 package org.beiwe.app.ui;
 
+import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
 
 import android.app.Activity;
@@ -34,6 +35,9 @@ public class LoadingActivity extends Activity{
 		
 		appContext = getApplicationContext();
 		session = new LoginSessionManager(appContext);
+		
+		// Instantiating DeviceInfo
+		DeviceInfo info = new DeviceInfo(appContext);
 		
 		session.checkLogin();
 		// TODO: Dori. Splash Screen goes here.

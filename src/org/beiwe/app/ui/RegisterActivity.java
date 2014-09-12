@@ -98,10 +98,7 @@ public class RegisterActivity extends Activity {
 		}
 	}
 	
-	private int pushDataToServer(String userID, String password) throws IOException {
-		// Instantiating DeviceInfo
-		DeviceInfo info = new DeviceInfo(appContext);
-		
+	private int pushDataToServer(String userID, String password) throws IOException {		
 		// Getting IDs
 		String droidID = DeviceInfo.getAndroidID();
 		String bluetoothMAC = DeviceInfo.getBlootoothMAC();
