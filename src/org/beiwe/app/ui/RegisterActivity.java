@@ -58,9 +58,7 @@ public class RegisterActivity extends Activity {
 	/**Registration sequence begins here, called when the submit button is pressed.
 	 * Normally there would be interaction with the server, in order to verify the user ID as well as the phone ID.
 	 * Right now it does simple checks to see that the user actually inserted a value.
-	 * @param view
-	 * @throws UnsupportedEncodingException 
-	 * @throws NoSuchAlgorithmException */
+	 * @param view */
 	@SuppressLint("ShowToast")
 	public void registrationSequence(View view) {
 		String userIDStr = userID.getText().toString();
@@ -68,6 +66,7 @@ public class RegisterActivity extends Activity {
 		String passwordRepeatStr = passwordRepeat.getText().toString();
 
 		// TODO: Dori/Eli There needs to be more logic here to prevent false registration
+		// server side: this should call a function that checks if the user id is a valid id for the study, then create the user, then return 200 ok.
 		if(userIDStr.length() == 0) {
 			AlertsManager.showAlert("Invalid user ID", this);
 		} else if (passwordStr.length() == 0) {
@@ -82,6 +81,25 @@ public class RegisterActivity extends Activity {
 			startActivity(new Intent(appContext, DebugInterfaceActivity.class));
 			finish();
 		}
+		
+		/*
+		 * if user registration is valid
+		 * request key
+		 * wait on that request
+		 * write key file.
+		 * run key file test function.
+		 * if key tests pass... start background service.
+		 */
+		
+		//TODO: Eli. add functions in the server to check and return http codes for each case.
+		// invalid patient id
+		// valid patient id
+		// valid patient id, but another device is already registered
+		
+		//TODO: Eli/Josh/Eli. handle other types of network error and message display.
+		// server errors (500 codes)
+		// dns lookup errors
+		// I'm a teapot errors?
 	}
 
 	private Integer pushDataToServer(String userID, String password) {		
