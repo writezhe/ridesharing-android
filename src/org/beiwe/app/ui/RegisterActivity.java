@@ -1,9 +1,7 @@
 package org.beiwe.app.ui;
 
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -25,12 +23,9 @@ import android.view.View;
 import android.widget.EditText;
 
 
-/**
- * Activity used to log a user in to the application for the first time. This activity should only be called on ONCE,
+/**Activity used to log a user in to the application for the first time. This activity should only be called on ONCE,
  * as once the user is logged in, data is saved on the phone.
- * @author Dori Samet
- *
- */
+ * @author Dori Samet */
 @SuppressLint("ShowToast")
 public class RegisterActivity extends Activity {
 	
@@ -40,10 +35,8 @@ public class RegisterActivity extends Activity {
 	private EditText password;
 	private EditText passwordRepeat;
 	private LoginSessionManager session;
-
-	/**
-	 * Users will go into this activity first to register information on the phone and on the server.
-	 */
+	
+	/** Users will go into this activity first to register information on the phone and on the server. */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -62,21 +55,18 @@ public class RegisterActivity extends Activity {
 		textFieldKeyboard.makeKeyboardBehave(passwordRepeat);
 	}
 	
-	/**
-	 * Registration sequence begins here when the submit button is pressed.
+	/**Registration sequence begins here, called when the submit button is pressed.
 	 * Normally there would be interaction with the server, in order to verify the user ID as well as the phone ID.
-	 * Right now it does simple checks to see that the user actually inserted a value
+	 * Right now it does simple checks to see that the user actually inserted a value.
 	 * @param view
 	 * @throws UnsupportedEncodingException 
-	 * @throws NoSuchAlgorithmException 
-	 */
+	 * @throws NoSuchAlgorithmException */
 	@SuppressLint("ShowToast")
-	public void registrationSequence(View view) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+	public void registrationSequence(View view) {
 		String userIDStr = userID.getText().toString();
 		String passwordStr = password.getText().toString();
 		String passwordRepeatStr = passwordRepeat.getText().toString();
 
-		// Logic gauntlet begins here
 		// TODO: Dori/Eli There needs to be more logic here to prevent false registration
 		if(userIDStr.length() == 0) {
 			AlertsManager.showAlert("Invalid user ID", this);

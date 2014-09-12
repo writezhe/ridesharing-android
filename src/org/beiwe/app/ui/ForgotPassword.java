@@ -68,7 +68,7 @@ public class ForgotPassword extends Activity {
 	 * @throws UnsupportedEncodingException 
 	 * @throws NoSuchAlgorithmException 
 	 */
-	public void forgotPasswordSequence(View view) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+	public void forgotPasswordSequence(View view) {
 		// Variable assignments
 		String userIdStr = userId.getText().toString();
 		String passwordStr = password.getText().toString();

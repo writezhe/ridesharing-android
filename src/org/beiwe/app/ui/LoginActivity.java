@@ -73,7 +73,7 @@ public class LoginActivity extends Activity {
 	 * @throws UnsupportedEncodingException 
 	 * @throws NoSuchAlgorithmException 
 	 */
-	public void loginSequence(View view) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+	public void loginSequence(View view) {
 		if (session.isLoggedIn()) {
 			Log.i("LoginActivity", "" + session.isLoggedIn());
 			startActivity(new Intent(appContext, DebugInterfaceActivity.class));
