@@ -11,6 +11,7 @@ import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
 import org.beiwe.app.storage.EncryptionEngine;
+import org.beiwe.app.storage.PostRequestFileUpload;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
 import android.annotation.SuppressLint;
@@ -76,12 +77,12 @@ public class RegisterActivity extends Activity {
 		} else {
 			Log.i("RegisterActivity", "Attempting to create a login session");
 			session.createLoginSession(userIDStr, EncryptionEngine.hash(passwordStr));
-			int response = pushDataToServer(userIDStr, passwordStr);
+			pushDataToServer(userIDStr, passwordStr);
 			Log.i("RegisterActivity", "Registration complete, attempting to start DebugInterfaceActivity");
 			startActivity(new Intent(appContext, DebugInterfaceActivity.class));
 			finish();
 		}
-		
+
 		/*
 		 * if user registration is valid
 		 * request key
@@ -90,55 +91,32 @@ public class RegisterActivity extends Activity {
 		 * run key file test function.
 		 * if key tests pass... start background service.
 		 */
-		
+
 		//TODO: Eli. add functions in the server to check and return http codes for each case.
 		// invalid patient id
 		// valid patient id
 		// valid patient id, but another device is already registered
-		
+
 		//TODO: Eli/Josh/Eli. handle other types of network error and message display.
 		// server errors (500 codes)
 		// dns lookup errors
 		// I'm a teapot errors?
 	}
-	
-	// TODO: Dori. Get rid of this once Josh finishes his code
-	private Integer pushDataToServer(String userID, String password) {		
-		int responseCode = (Integer) null;
-		
-		try {// Getting IDs
+
+	private void pushDataToServer(String userID, String password) {		
+		StringBuilder stringBuilder = new StringBuilder();
+		try {
 			String droidID = DeviceInfo.getAndroidID();
 			String bluetoothMAC = DeviceInfo.getBlootoothMAC();
-
-			// TODO: Eli/Dori/Josh. What is the URL we are sending the data to?
-			URL url = new URL("http://beiwe.org/userinfo");
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			String param = "patientID=" + userID + "&pwd=" + password + "&droidID=" + droidID + "&btID=" + bluetoothMAC;
-			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded"); 
-			conn.setRequestProperty("charset", "utf-8");
-			conn.setRequestProperty("Content-Length", "" + Integer.toString(param.getBytes().length));
-			conn.setUseCaches (false);
-
-			// Start sending data
-			conn.setDoOutput(true);
-			DataOutputStream outputStream = new DataOutputStream(conn.getOutputStream());
-			outputStream.writeBytes(param);
-			outputStream.flush();
-			outputStream.close();
-
-			// Read response
-			Log.i("POSTREGISTRATION", "RESPONSE = " + conn.getResponseMessage());
-			responseCode = conn.getResponseCode();
-		} catch (IOException e1) {
-			Log.e("RegisterActivity", "IOException Thrown");
+			stringBuilder.append("&droidID=" + droidID + "&btID=" + bluetoothMAC);
+		} catch (NoSuchAlgorithmException e1) {
 			e1.printStackTrace();
-			System.exit(1);
-		} catch (NoSuchAlgorithmException e2) {
-			Log.e("RegisterActivity", "NoSuchAlgorithmException Thrown");
+		} catch (UnsupportedEncodingException e2) {
 			e2.printStackTrace();
-			System.exit(1);
 		}
-		return responseCode;
+		String url = "http://beiwe.org/userinfo";
+		String param = "patientID=" + userID + "&pwd=" + password + stringBuilder.toString();
+
+		new AsyncPostSender().execute(param, url);
 	}
 }

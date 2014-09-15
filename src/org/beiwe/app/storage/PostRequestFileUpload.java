@@ -26,7 +26,7 @@ public class PostRequestFileUpload {
 	 * @return HTTP Response code as int
 	 * @throws IOException
 	 */
-	public int sendPostRequest(File file, URL uploadUrl) throws IOException {
+	public static int sendPostRequest(File file, URL uploadUrl) throws IOException {
 		
 		// Create a new HttpURLConnection and set its parameters
 		HttpURLConnection connection = (HttpURLConnection) uploadUrl.openConnection();
@@ -73,7 +73,7 @@ public class PostRequestFileUpload {
 	}
 	
 	
-	public int sendPostRequest(String parameters, URL uploadUrl) throws IOException {
+	public static int sendPostRequest(String parameters, URL uploadUrl) throws IOException {
 		
 		// Create a new HttpURLConnection and set its parameters
 		HttpURLConnection connection = (HttpURLConnection) uploadUrl.openConnection();
