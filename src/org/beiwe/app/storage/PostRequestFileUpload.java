@@ -71,4 +71,29 @@ public class PostRequestFileUpload {
 		Log.i("POSTREQUESTFILEUPLOAD", "RESPONSE = " + connection.getResponseMessage());
 		return connection.getResponseCode();
 	}
+	
+	
+	public int sendPostRequest(String parameters, URL uploadUrl) throws IOException {
+		
+		// Create a new HttpURLConnection and set its parameters
+		HttpURLConnection connection = (HttpURLConnection) uploadUrl.openConnection();
+		connection.setUseCaches(false);
+		connection.setDoOutput(true);
+		connection.setRequestMethod("POST");
+		connection.setRequestProperty("Connection", "Keep-Alive");
+		connection.setRequestProperty("Cache-Control", "no-cache");
+		
+		// Create the POST request as a DataOutputStream to the HttpURLConnection
+		DataOutputStream request = new DataOutputStream(connection.getOutputStream());
+		
+		// Write the data to the POST request 
+		request.writeBytes(parameters);
+		request.flush();
+		request.close();
+		
+		// Get HTTP Response
+		Log.i("POSTREQUESTFILEUPLOAD", "RESPONSE = " + connection.getResponseMessage());
+		return connection.getResponseCode();	
+	}
+
 }
