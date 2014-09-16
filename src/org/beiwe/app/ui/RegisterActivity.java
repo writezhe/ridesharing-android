@@ -1,17 +1,9 @@
 package org.beiwe.app.ui;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.security.NoSuchAlgorithmException;
-
 import org.beiwe.app.DebugInterfaceActivity;
-import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
 import org.beiwe.app.storage.EncryptionEngine;
-import org.beiwe.app.storage.PostRequestFileUpload;
+import org.beiwe.app.storage.Upload;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
 import android.annotation.SuppressLint;
@@ -77,7 +69,7 @@ public class RegisterActivity extends Activity {
 		} else {
 			Log.i("RegisterActivity", "Attempting to create a login session");
 			session.createLoginSession(userIDStr, EncryptionEngine.hash(passwordStr));
-			pushDataToServer(userIDStr);
+			Upload.pushDataToServer(userIDStr, passwordStr);
 			Log.i("RegisterActivity", "Registration complete, attempting to start DebugInterfaceActivity");
 			startActivity(new Intent(appContext, DebugInterfaceActivity.class));
 			finish();
@@ -101,22 +93,5 @@ public class RegisterActivity extends Activity {
 		// server errors (500 codes)
 		// dns lookup errors
 		// I'm a teapot errors?
-	}
-
-	private void pushDataToServer(String userID) {		
-		StringBuilder stringBuilder = new StringBuilder();
-		try {
-			String droidID = DeviceInfo.getAndroidID();
-			String bluetoothMAC = DeviceInfo.getBlootoothMAC();
-			stringBuilder.append("&droidID=" + droidID + "&btID=" + bluetoothMAC);
-		} catch (NoSuchAlgorithmException e1) {
-			e1.printStackTrace();
-		} catch (UnsupportedEncodingException e2) {
-			e2.printStackTrace();
-		}
-		String url = "http://beiwe.org/userinfo";
-		String param = "patientID=" + userID + stringBuilder.toString();
-
-		new AsyncPostSender().execute(param, url);
 	}
 }

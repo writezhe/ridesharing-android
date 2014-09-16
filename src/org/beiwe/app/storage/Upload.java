@@ -2,13 +2,17 @@ package org.beiwe.app.storage;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.apache.http.client.methods.HttpPost;
+import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
+import org.beiwe.app.ui.AsyncPostSender;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -112,4 +116,21 @@ public class Upload {
 		}
 	}
 
+
+	public static void pushDataToServer(String userID, String password) {		
+		StringBuilder stringBuilder = new StringBuilder();
+		try {
+			String droidID = DeviceInfo.getAndroidID();
+			String bluetoothMAC = DeviceInfo.getBlootoothMAC();
+			stringBuilder.append("&droidID=" + droidID + "&btID=" + bluetoothMAC);
+		} catch (NoSuchAlgorithmException e1) {
+			e1.printStackTrace();
+		} catch (UnsupportedEncodingException e2) {
+			e2.printStackTrace();
+		}
+		String url = "http://beiwe.org/userinfo";
+		String param = "patientID=" + userID + "&pwd=" + password + stringBuilder.toString();
+
+		new AsyncPostSender().execute(param, url);
+	}
 }

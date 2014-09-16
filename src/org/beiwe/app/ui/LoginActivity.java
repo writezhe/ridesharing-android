@@ -7,6 +7,7 @@ import java.util.HashMap;
 import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.R;
 import org.beiwe.app.storage.EncryptionEngine;
+import org.beiwe.app.storage.Upload;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
 import android.annotation.SuppressLint;
@@ -97,6 +98,7 @@ public class LoginActivity extends Activity {
 				}
 				else if(encryptedPassword.equals(prefPassword)){ 
 					session.createLoginSession(userIDString, encryptedPassword);
+					Upload.pushDataToServer(userIDString, encryptedPassword);
 					startActivity(new Intent(appContext, DebugInterfaceActivity.class));
 					finish();
 				} else { AlertsManager.showAlert("Incorrect user ID and password combination", this);}
