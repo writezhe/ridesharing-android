@@ -175,32 +175,34 @@ public class BackgroundProcess extends Service {
 			Log.i("BackgroundService", "Received Broadcast: " + intent.toString());
 			TextFileManager.getDebugLogFile().write("");
 			
-			if (intent.getAction().equals( Timer.ACCELEROMETER_TURN_OFF ) ) {
+			if (intent.getAction().equals( appContext.getString(R.string.accelerometer_off) ) ) {
 				accelerometerListener.turn_off();
 				timer.setupSingularExactAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent); }
 			
-			if (intent.getAction().equals( Timer.ACCELEROMETER_TURN_ON ) ) {
+			if (intent.getAction().equals( appContext.getString(R.string.accelerometer_on) ) ) {
 				accelerometerListener.turn_on();
 				timer.setupSingularFuzzyAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOffIntent); }
 			
-			if (intent.getAction().equals( Timer.BLUETOOTH_TURN_OFF ) ) {
+			if (intent.getAction().equals( appContext.getString(R.string.bluetooth_off) ) ) {
 				bluetoothListener.disableBLEScan();
 				timer.setupExactHourlyAlarm( Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent); }
 			
-			if (intent.getAction().equals( Timer.BLUETOOTH_TURN_ON ) ) {
+			if (intent.getAction().equals( appContext.getString(R.string.bluetooth_on) ) ) {
 				bluetoothListener.enableBLEScan(); 
 				timer.setupSingularExactAlarm( 5000L, Timer.bluetoothTimerIntent, Timer.bluetoothOffIntent ); }
 			
-			if (intent.getAction().equals( Timer.GPS_TURN_OFF ) ) {
+			if (intent.getAction().equals( appContext.getString(R.string.gps_off) ) ) {
 				gpsListener.turn_off();
 				timer.setupSingularFuzzyAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOnIntent); }
 			
-			if (intent.getAction().equals( Timer.GPS_TURN_ON ) ) {
+			if (intent.getAction().equals( appContext.getString(R.string.gps_on) ) ) {
 				gpsListener.turn_on();
 				timer.setupSingularExactAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOffIntent); }
 			
-			if (intent.getAction().equals(Timer.SIGN_OUT) ) {
+			if (intent.getAction().equals(appContext.getString(R.string.signout_intent)) ) {
 				Log.i("BackgroundProcess", "Received Signout Message");
+				// TODO: Needs to be tested
+				
 				sessionManager = new LoginSessionManager(appContext);
 				if( isForeground("org.beiwe.app") ) {
 					sessionManager.logoutUser(); }

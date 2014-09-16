@@ -83,8 +83,10 @@
     <!-- Main menu strings -->
     <string name="main_menu_sign_out">Sign out</string>
     <string name="main_menu_take_survey">Take Survey</string>
-    <string name="main_menu_record_message">Record Message</string>
+    <string name="main_menu_record_message">Record something</string>
     <string name="main_menu_call_hotline">Call Hotline</string>
+    <string name="main_menu_view_graph">View previous answers on graph</string>
+    
 
     <!-- Recording Activity -->
     <string name="record_activity_error_message">If you\'re seeing this, it means something broke. Please contact the administrator</string>

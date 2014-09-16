@@ -19,7 +19,7 @@
             android:id="@+id/main_menu_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Welcome to Beiwe"
+            android:text="@+string/register_activity_welcoming_message"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_gravity="center" />
 
@@ -32,7 +32,7 @@
             android:id="@+id/graph"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="View previous answers on graph"
+            android:text="@+string/main_menu_view_graph"
             android:layout_gravity="center"
             android:onClick="graphResults" />
 
@@ -45,7 +45,7 @@
             android:id="@+id/audio_recorder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Record something"
+            android:text="@+string/main_menu_record_message"
             android:layout_gravity="center"
             android:onClick="recordMessage" />
 
