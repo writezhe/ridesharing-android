@@ -49,7 +49,7 @@ public class EncryptionEngine {
 		try {
 			hash = MessageDigest.getInstance("SHA-256");
 			hash.update( input.getBytes("UTF-8") );
-			return_data = new String( hash.digest(), "UTF-8" );
+			return_data = new String( hash.digest(), "UTF-16" );
 		} catch (NoSuchAlgorithmException e) {
 			Log.e("Hashing function", "NoSuchAlgorithmException");
 			System.exit(1);
@@ -59,10 +59,8 @@ public class EncryptionEngine {
 			e.printStackTrace();
 			System.exit(2);
 		}
-		// TODO: Eli - determine if UTF-8 to ascii conversion will be a problem for Python
-		Log.i("Hash", "" + return_data.length());
-//		return bytesToHex(return_data.getBytes());
-		return return_data;
+		Log.i("Hash", "" + return_data);
+		return bytesToHex(return_data.getBytes());
 	}
 	
 	/**Converts a phone number into a 64-character hexadecimal string
