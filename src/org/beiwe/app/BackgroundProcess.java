@@ -201,7 +201,7 @@ public class BackgroundProcess extends Service {
 			
 			if (intent.getAction().equals(appContext.getString(R.string.signout_intent)) ) {
 				Log.i("BackgroundProcess", "Received Signout Message");
-				// TODO: Needs to be tested
+				// TODO: Dori. Needs to be tested
 				
 				sessionManager = new LoginSessionManager(appContext);
 				if( isForeground("org.beiwe.app") ) {

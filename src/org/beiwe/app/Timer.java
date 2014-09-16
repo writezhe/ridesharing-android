@@ -17,17 +17,7 @@ public class Timer {
 	private AlarmManager alarmManager;
 	private BackgroundProcess backgroundProcess;
 	private Context appContext;
-	
-	//public strings for matching to messages
-	//TODO: Eli/Dori should we move these to the android Strings resource file? Deprecate
-//	public static final String ACCELEROMETER_TURN_OFF = "Accelerometer OFF";
-//	public static final String ACCELEROMETER_TURN_ON = "Accelerometer On";
-//	public static final String BLUETOOTH_TURN_OFF = "Bluetooth OFF";
-//	public static final String BLUETOOTH_TURN_ON = "Bluetooth On";
-//	public static final String GPS_TURN_OFF = "GPS OFF";
-//	public static final String GPS_TURN_ON = "GPS On";
-//	public static final String SIGN_OUT = "Signout";
-	
+
 	// Intents - Fixed by Dori ;)
 	public static Intent signoutIntent;
 	public static Intent accelerometerOffIntent;
