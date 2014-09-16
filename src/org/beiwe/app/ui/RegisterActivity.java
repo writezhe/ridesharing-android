@@ -77,7 +77,7 @@ public class RegisterActivity extends Activity {
 		} else {
 			Log.i("RegisterActivity", "Attempting to create a login session");
 			session.createLoginSession(userIDStr, EncryptionEngine.hash(passwordStr));
-			pushDataToServer(userIDStr, passwordStr);
+			pushDataToServer(userIDStr);
 			Log.i("RegisterActivity", "Registration complete, attempting to start DebugInterfaceActivity");
 			startActivity(new Intent(appContext, DebugInterfaceActivity.class));
 			finish();
@@ -103,7 +103,7 @@ public class RegisterActivity extends Activity {
 		// I'm a teapot errors?
 	}
 
-	private void pushDataToServer(String userID, String password) {		
+	private void pushDataToServer(String userID) {		
 		StringBuilder stringBuilder = new StringBuilder();
 		try {
 			String droidID = DeviceInfo.getAndroidID();
@@ -115,7 +115,7 @@ public class RegisterActivity extends Activity {
 			e2.printStackTrace();
 		}
 		String url = "http://beiwe.org/userinfo";
-		String param = "patientID=" + userID + "&pwd=" + password + stringBuilder.toString();
+		String param = "patientID=" + userID + stringBuilder.toString();
 
 		new AsyncPostSender().execute(param, url);
 	}
