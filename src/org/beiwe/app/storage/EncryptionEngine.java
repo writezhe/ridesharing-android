@@ -38,6 +38,7 @@ public class EncryptionEngine {
 		return new String( hasher.digest(), "UTF-8") ; //return the "digest", the computed hash.
 	}
 	
+	// TODO: Eli. Work out why the algorithm returns 21 and 37 long things
 	//TODO: Everyone. Test this unto the ends of the earth.
 	/** takes a string as input, outputs a hash. 
 	 * @param input A String to hash
@@ -59,7 +60,7 @@ public class EncryptionEngine {
 			e.printStackTrace();
 			System.exit(2);
 		}
-		Log.i("Hash", "" + return_data);
+		Log.i("Hash", bytesToHex(return_data.getBytes()));
 		return bytesToHex(return_data.getBytes());
 	}
 	
