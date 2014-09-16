@@ -60,7 +60,9 @@ public class EncryptionEngine {
 			System.exit(2);
 		}
 		// TODO: Eli - determine if UTF-8 to ascii conversion will be a problem for Python
-		return bytesToHex(return_data.getBytes());
+		Log.i("Hash", "" + return_data.length());
+//		return bytesToHex(return_data.getBytes());
+		return return_data;
 	}
 	
 	/**Converts a phone number into a 64-character hexadecimal string
