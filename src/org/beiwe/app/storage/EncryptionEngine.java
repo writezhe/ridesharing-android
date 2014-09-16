@@ -49,7 +49,7 @@ public class EncryptionEngine {
 		try {
 			hash = MessageDigest.getInstance("SHA-256");
 			hash.update( input.getBytes("UTF-8") );
-			return_data = new String( hash.digest(), "UTF-16" );
+			return_data = new String( hash.digest(), "UTF-8" );
 		} catch (NoSuchAlgorithmException e) {
 			Log.e("Hashing function", "NoSuchAlgorithmException");
 			System.exit(1);
