@@ -16,31 +16,32 @@ import android.util.Log;
 public class Timer {
 	private AlarmManager alarmManager;
 	private BackgroundProcess backgroundProcess;
-	private Context appContext;
+	private static Context appContext;
 	
 	//public strings for matching to messages
-	//TODO: Eli/Dori should we move these to the android Strings resource file?
-	public static final String ACCELEROMETER_TURN_OFF = "Accelerometer OFF";
-	public static final String ACCELEROMETER_TURN_ON = "Accelerometer On";
-	public static final String BLUETOOTH_TURN_OFF = "Bluetooth OFF";
-	public static final String BLUETOOTH_TURN_ON = "Bluetooth On";
-	public static final String GPS_TURN_OFF = "GPS OFF";
-	public static final String GPS_TURN_ON = "GPS On";
-	public static final String SIGN_OUT = "Signout";
+	//TODO: Eli/Dori should we move these to the android Strings resource file? Deprecate
+//	public static final String ACCELEROMETER_TURN_OFF = "Accelerometer OFF";
+//	public static final String ACCELEROMETER_TURN_ON = "Accelerometer On";
+//	public static final String BLUETOOTH_TURN_OFF = "Bluetooth OFF";
+//	public static final String BLUETOOTH_TURN_ON = "Bluetooth On";
+//	public static final String GPS_TURN_OFF = "GPS OFF";
+//	public static final String GPS_TURN_ON = "GPS On";
+//	public static final String SIGN_OUT = "Signout";
 	
 	// Intents
-	public static final Intent signoutIntent = setupIntent( SIGN_OUT );
-	public static final Intent accelerometerOffIntent = setupIntent( ACCELEROMETER_TURN_OFF );
-	public static final Intent accelerometerOnIntent = setupIntent( ACCELEROMETER_TURN_ON );
-	public static final Intent bluetoothOffIntent = setupIntent( BLUETOOTH_TURN_OFF );
-	public static final Intent bluetoothOnIntent = setupIntent( BLUETOOTH_TURN_ON );
-	public static final Intent gpsOffIntent = setupIntent( GPS_TURN_OFF );
-	public static final Intent gpsOnIntent = setupIntent( GPS_TURN_ON);
+	// TODO: Eli/Dori Test that this fully works!!
+	public static final Intent signoutIntent = setupIntent( appContext.getString(R.string.signout_intent));
+	public static final Intent accelerometerOffIntent = setupIntent( appContext.getString(R.string.accelerometer_off) );
+	public static final Intent accelerometerOnIntent = setupIntent( appContext.getString(R.string.accelerometer_on) );
+	public static final Intent bluetoothOffIntent = setupIntent( appContext.getString(R.string.bluetooth_off) );
+	public static final Intent bluetoothOnIntent = setupIntent( appContext.getString(R.string.accelerometer_on) );
+	public static final Intent gpsOffIntent = setupIntent( appContext.getString(R.string.gps_off) );
+	public static final Intent gpsOnIntent = setupIntent( appContext.getString(R.string.gps_on));
 	
-	public static final Intent accelerometerTimerIntent = setupIntent( "Accelerometer Timer" );
-	public static final Intent bluetoothTimerIntent = setupIntent( "Bluetooth Timer" );
-	public static final Intent GPSTimerIntent = setupIntent( "GPS Timer" );
-	public static final Intent signOutTimerIntent = setupIntent( "Signout Timer" );
+	public static final Intent accelerometerTimerIntent = setupIntent( appContext.getString(R.string.action_accelerometer_timer) );
+	public static final Intent bluetoothTimerIntent = setupIntent( appContext.getString(R.string.action_bluetooth_timer) );
+	public static final Intent GPSTimerIntent = setupIntent( appContext.getString(R.string.action_gps_timer) );
+	public static final Intent signOutTimerIntent = setupIntent( appContext.getString(R.string.action_signout_timer) );
 	
 	
 	// Intent filters
