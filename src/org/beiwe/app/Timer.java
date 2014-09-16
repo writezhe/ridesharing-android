@@ -16,7 +16,7 @@ import android.util.Log;
 public class Timer {
 	private AlarmManager alarmManager;
 	private BackgroundProcess backgroundProcess;
-	private static Context appContext;
+	private Context appContext;
 	
 	//public strings for matching to messages
 	//TODO: Eli/Dori should we move these to the android Strings resource file? Deprecate
@@ -28,20 +28,20 @@ public class Timer {
 //	public static final String GPS_TURN_ON = "GPS On";
 //	public static final String SIGN_OUT = "Signout";
 	
-	// Intents
-	// TODO: Eli/Dori Test that this fully works!!
-	public static final Intent signoutIntent = setupIntent( appContext.getString(R.string.signout_intent));
-	public static final Intent accelerometerOffIntent = setupIntent( appContext.getString(R.string.accelerometer_off) );
-	public static final Intent accelerometerOnIntent = setupIntent( appContext.getString(R.string.accelerometer_on) );
-	public static final Intent bluetoothOffIntent = setupIntent( appContext.getString(R.string.bluetooth_off) );
-	public static final Intent bluetoothOnIntent = setupIntent( appContext.getString(R.string.accelerometer_on) );
-	public static final Intent gpsOffIntent = setupIntent( appContext.getString(R.string.gps_off) );
-	public static final Intent gpsOnIntent = setupIntent( appContext.getString(R.string.gps_on));
+	// Intents - Fixed by Dori ;)
+	public static Intent signoutIntent;
+	public static Intent accelerometerOffIntent;
+	public static Intent accelerometerOnIntent;
+	public static Intent bluetoothOffIntent;
+	public static Intent bluetoothOnIntent;
+	public static Intent gpsOffIntent;
+	public static Intent gpsOnIntent;
 	
-	public static final Intent accelerometerTimerIntent = setupIntent( appContext.getString(R.string.action_accelerometer_timer) );
-	public static final Intent bluetoothTimerIntent = setupIntent( appContext.getString(R.string.action_bluetooth_timer) );
-	public static final Intent GPSTimerIntent = setupIntent( appContext.getString(R.string.action_gps_timer) );
-	public static final Intent signOutTimerIntent = setupIntent( appContext.getString(R.string.action_signout_timer) );
+	// Timer intents - Also fixed by Dori ;)
+	public static Intent accelerometerTimerIntent;
+	public static Intent bluetoothTimerIntent;
+	public static Intent GPSTimerIntent;
+	public static Intent signOutTimerIntent;
 	
 	
 	// Intent filters
@@ -58,8 +58,27 @@ public class Timer {
 	// Constructor
 	public Timer( BackgroundProcess backgroundProcess ) {
 		this.backgroundProcess = backgroundProcess;
-		this.appContext = backgroundProcess.getApplicationContext();
-		this.alarmManager = (AlarmManager)( backgroundProcess.getSystemService( Context.ALARM_SERVICE ));
+		appContext = backgroundProcess.getApplicationContext();
+		alarmManager = (AlarmManager)( backgroundProcess.getSystemService( Context.ALARM_SERVICE ));
+		
+		// Set up intent on/off intents
+		signoutIntent = setupIntent( appContext.getString(R.string.signout_intent) );
+		accelerometerOffIntent = setupIntent( appContext.getString(R.string.accelerometer_off) );
+		accelerometerOnIntent = setupIntent( appContext.getString(R.string.accelerometer_on) );
+		bluetoothOffIntent = setupIntent( appContext.getString(R.string.bluetooth_off) );
+		bluetoothOnIntent = setupIntent( appContext.getString(R.string.accelerometer_on) );
+		gpsOffIntent = setupIntent( appContext.getString(R.string.gps_off) );
+		gpsOnIntent = setupIntent( appContext.getString(R.string.gps_on));
+		
+		Log.i("Timer", signoutIntent.toString()); // POC
+		
+		// Set up timer intents
+		accelerometerTimerIntent = setupIntent( appContext.getString(R.string.action_accelerometer_timer) );
+		bluetoothTimerIntent = setupIntent( appContext.getString(R.string.action_bluetooth_timer) );
+		GPSTimerIntent = setupIntent( appContext.getString(R.string.action_gps_timer) );
+		signOutTimerIntent = setupIntent( appContext.getString(R.string.action_signout_timer) );
+		
+		Log.i("Timer", signOutTimerIntent.toString()); // Yet another POC
 	}
 
 	// Setup custom intents to be sent to the listeners running in the background process

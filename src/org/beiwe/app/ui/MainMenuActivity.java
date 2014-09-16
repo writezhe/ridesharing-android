@@ -3,7 +3,6 @@ package org.beiwe.app.ui;
 import java.util.HashMap;
 
 import org.apache.http.util.EncodingUtils;
-import org.beiwe.app.GraphActivity;
 import org.beiwe.app.R;
 import org.beiwe.app.survey.AudioRecorderActivity;
 
