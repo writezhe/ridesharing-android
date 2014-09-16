@@ -33,9 +33,9 @@ public class LoginActivity extends Activity {
 	private EditText password;
 	private LoginSessionManager session;
 	private Context appContext;
-	
+
 	@Override
-	
+
 	/**
 	 * onCreate method. If the user is already logged in for some reason, navigate to the {@link DebugInterfaceActivity.java}
 	 * Otherwise, run normally.
@@ -45,24 +45,24 @@ public class LoginActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
-		
+
 		// Private variable set up
 		appContext = getApplicationContext();
 		session = new LoginSessionManager(appContext);
-		
+
 		if (session.isLoggedIn()) {
 			startActivity(new Intent(appContext, DebugInterfaceActivity.class));
 			finish();
 		} else {
 			userID = (EditText) findViewById(R.id.editText1);
 			password = (EditText) findViewById(R.id.editText2);
-		
+
 			TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(appContext);
 			textFieldKeyboard.makeKeyboardBehave(userID);
 			textFieldKeyboard.makeKeyboardBehave(password);
 		}
 	}
-	
+
 
 	/**
 	 * Logic that goes behind this method -
@@ -83,29 +83,31 @@ public class LoginActivity extends Activity {
 			// Strings that have to do with username and password
 			String userIDString = userID.getText().toString();
 			String passwordString = password.getText().toString();
-			String encryptedPassword = EncryptionEngine.hash(passwordString);
 			
 			HashMap<String, String> details = session.getUserDetails();
 			String prefUserID = details.get(LoginSessionManager.KEY_ID);
 			String prefPassword = details.get(LoginSessionManager.KEY_PASSWORD);
 			Log.i("LoginActivity", prefUserID);
 			Log.i("LoginActivity", prefPassword);
-			
+
 			// Logic begins here
-			if(userIDString.trim().length() > 0 && passwordString.trim().length() > 0){
-				if(!userIDString.equals(prefUserID)) {
-					AlertsManager.showAlert("User ID does not match the one in the system. Try again", this);
-				}
-				else if(encryptedPassword.equals(prefPassword)){ 
-					session.createLoginSession(userIDString, encryptedPassword);
-					Upload.pushDataToServer(userIDString, encryptedPassword);
-					startActivity(new Intent(appContext, DebugInterfaceActivity.class));
-					finish();
-				} else { AlertsManager.showAlert("Incorrect user ID and password combination", this);}
-			} else { AlertsManager.showAlert("Login Failed due to a field being too short", this); } // In case login completely fails
+			if(userIDString.trim().length() == 0) {
+				AlertsManager.showAlert(appContext.getString(R.string.invalid_user_id), this);
+			} else if (passwordString.trim().length() == 0) { // TODO: Debug - passwords need to be longer..
+				AlertsManager.showAlert(appContext.getString(R.string.invalid_password), this);
+			} else if(!userIDString.equals(prefUserID)) {
+				AlertsManager.showAlert(appContext.getString(R.string.user_id_system_mismatch), this);
+			} else if(!EncryptionEngine.hash(passwordString).equals(prefPassword)) {
+				AlertsManager.showAlert(appContext.getString(R.string.password_system_mismatch), this);
+			} else {	
+				session.createLoginSession(userIDString, EncryptionEngine.hash(passwordString));
+				Upload.pushDataToServer(userIDString, EncryptionEngine.hash(passwordString));
+				startActivity(new Intent(appContext, DebugInterfaceActivity.class)); // TODO: Dori. Debug
+				finish();
+			}
 		}
 	}
-	
+
 	/**
 	 * Switch to the forgot password screen.
 	 * @param view

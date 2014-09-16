@@ -61,15 +61,15 @@ public class RegisterActivity extends Activity {
 		// TODO: Dori/Eli There needs to be more logic here to prevent false registration
 		// server side: this should call a function that checks if the user id is a valid id for the study, then create the user, then return 200 ok.
 		if(userIDStr.length() == 0) {
-			AlertsManager.showAlert("Invalid user ID", this);
-		} else if (passwordStr.length() == 0) {
-			AlertsManager.showAlert("Invalid password", this);
-		} else if (passwordRepeatStr.length() == 0 || !passwordRepeatStr.equals(passwordStr)) {
-			AlertsManager.showAlert("Passwords mismatch", this);
+			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_user_id), this);
+		} else if (passwordStr.length() == 0) { // TODO: Debug - passwords need to be longer..
+			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_password), this);
+		} else if (!passwordRepeatStr.equals(passwordStr)) {
+			AlertsManager.showAlert(appContext.getResources().getString(R.string.password_mismatch), this);
 		} else {
 			Log.i("RegisterActivity", "Attempting to create a login session");
 			session.createLoginSession(userIDStr, EncryptionEngine.hash(passwordStr));
-			Upload.pushDataToServer(userIDStr, passwordStr);
+			Upload.pushDataToServer(userIDStr, EncryptionEngine.hash(passwordStr));
 			Log.i("RegisterActivity", "Registration complete, attempting to start DebugInterfaceActivity");
 			startActivity(new Intent(appContext, DebugInterfaceActivity.class));
 			finish();

@@ -4,8 +4,10 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
+import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.R;
 import org.beiwe.app.storage.EncryptionEngine;
+import org.beiwe.app.storage.Upload;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
 import android.annotation.SuppressLint;
@@ -73,7 +75,6 @@ public class ForgotPassword extends Activity {
 		String userIdStr = userId.getText().toString();
 		String passwordStr = password.getText().toString();
 		String passwordRepeatStr = passwordRepeat.getText().toString();
-		String encryptedPassword = EncryptionEngine.hash(passwordStr);
 
 		// Encapsulated user's details as saved in the SharedPreferences
 		HashMap<String, String> details = session.getUserDetails();
@@ -83,17 +84,18 @@ public class ForgotPassword extends Activity {
 		Log.i("ForgotPassword_getDetails", details.get(LoginSessionManager.KEY_PASSWORD));
 
 		// Cases: username mismatch, userID mismatch, passwords mismatch, and repeat password with actual password mismatch. 
-		if (userIdStr.trim().length() <= 0) {
-			AlertsManager.showAlert( "Invalid user ID, try again", this );
-		} else if( ! ( details.get( LoginSessionManager.KEY_ID ).equals(userIdStr.trim() ) ) ) {
-			if( !details.get( LoginSessionManager.KEY_PASSWORD ).equals( encryptedPassword ) ) {
-				AlertsManager.showAlert( "Invalid password, try again", this );
-			}
-		} else if ( ! (passwordRepeatStr.equals( passwordStr) ) ) {
-			AlertsManager.showAlert( "Passwords mismatch, try again", this );
-		} else { // Start new activity
-			session.createLoginSession( userIdStr, encryptedPassword );
-			startActivity( new Intent(appContext, LoginActivity.class ) );
+		if(userIdStr.length() == 0) {
+			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_user_id), this);
+		} else if (passwordStr.length() == 0) { // TODO: Debug - passwords need to be longer..
+			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_password), this);
+		} else if (!passwordRepeatStr.equals(passwordStr)) {
+			AlertsManager.showAlert(appContext.getResources().getString(R.string.password_mismatch), this);
+		} else {
+			Log.i("RegisterActivity", "Attempting to create a login session");
+			session.createLoginSession(userIdStr, EncryptionEngine.hash(passwordStr));
+			Upload.pushDataToServer(userIdStr, EncryptionEngine.hash(passwordStr));
+			Log.i("RegisterActivity", "Registration complete, attempting to start DebugInterfaceActivity");
+			startActivity(new Intent(appContext, DebugInterfaceActivity.class));
 			finish();
 		}
 	}

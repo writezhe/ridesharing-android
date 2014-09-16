@@ -50,6 +50,8 @@
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_login_string">Login</string>
     <string name="login_activity_welcoming_message">Login back to Beiwe</string>
+    <string name="user_id_system_mismatch">User ID does not match the one in the system. Try again</string>
+    <string name="password_system_mismatch">Incorrect user ID and password combination</string>
 
     <!-- Forgot Password Activity Strings -->
     <string name="forgot_password_title">Reset your password</string>
@@ -66,6 +68,9 @@
     <string name="register_activity_password_verify">Please enter your password again:</string>
     <string name="register_activity_submit">Submit</string>
     <string name="title_activity_loading">LoadingActivity</string>
+    <string name="invalid_user_id">Invalid user ID</string>
+    <string name="invalid_password">Invalid password</string>
+    <string name="password_mismatch">Passwords mismatch</string>
 
     <!-- Loading Activity Strings -->
     <string name="loading_activity_loading_message">Loading...</string>
@@ -94,5 +99,7 @@
     <string name="recording_notification_message">You haven\'t submitted your recording today </string>
     <string name="recording_notification_details">You have not submitted your recording today. Please do so, by clicking here</string>
     <string name="title_activity_graph">GraphActivity</string>
+    
+    
 
 </resources>
