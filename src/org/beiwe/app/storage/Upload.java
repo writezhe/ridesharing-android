@@ -19,6 +19,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+
 public class Upload {
 	
 	private Context appContext;
@@ -79,6 +80,7 @@ public class Upload {
 	 * @param filename the short name (not the full path) of the file to upload
 	 */
 	private void tryToUploadAndThenDeleteFile(String filename) {
+		//TODO: Josh! Only try to upload if the WiFi is connected
 		if (tryToUploadFile(filename)) {
 			TextFileManager.delete(filename);
 		}
