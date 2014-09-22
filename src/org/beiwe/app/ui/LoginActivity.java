@@ -113,7 +113,7 @@ public class LoginActivity extends Activity {
 	 * @param view
 	 */
 	public void forgotPassword(View view) {
-		startActivity(new Intent(appContext, ForgotPassword.class));
+		startActivity(new Intent(appContext, ResetPassword.class));
 		finish();
 	}
 }

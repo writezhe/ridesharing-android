@@ -3,7 +3,9 @@ package org.beiwe.app.storage;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -21,15 +23,15 @@ import android.util.Log;
 
 
 public class Upload {
-	
+
 	private Context appContext;
-	
-	
+
+
 	public Upload(Context applicationContext) {
 		this.appContext = applicationContext;
 	}
-	
-	
+
+
 	/**
 	 * Return TRUE if WiFi is connected; FALSE otherwise
 	 * @return
@@ -39,21 +41,21 @@ public class Upload {
 		NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 		return mWifi.isConnected(); 
 	}
-	
-	
+
+
 	/**
 	 * Loop through all files on the phone, and for each one, try to upload it
 	 * to the server. If upload is successful, delete the file's local copy. 
 	 */
 	public void uploadAllFiles() {
-		
-	    // Run the HTTP POST on a separate, non-blocking thread
+
+		// Run the HTTP POST on a separate, non-blocking thread
 		ExecutorService executor = Executors.newFixedThreadPool(1);
 		Callable<HttpPost> thread = new Callable<HttpPost>() {
 			@Override
 			public HttpPost call() {
 				String[] files = TextFileManager.getAllUploadableFiles();
-				
+
 				for (String fileName : files) {
 					try {
 						Log.i("Upload.java", "Trying to upload file: " + fileName);
@@ -65,13 +67,13 @@ public class Upload {
 					}
 				}
 				Log.i("Upload.java", "Finished upload loop");				
-				
+
 				return null;
 			}
 		};
 		executor.submit(thread);
 	}
-	
+
 
 	/**
 	 * Try to upload a file to the server, and if successful, delete the local
@@ -85,8 +87,8 @@ public class Upload {
 			TextFileManager.delete(filename);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Try to upload a file to the server
 	 * @param filename the short name (not the full path) of the file to upload
@@ -120,6 +122,40 @@ public class Upload {
 
 
 	public static void pushDataToServer(String userID, String password) {		
+		StringBuilder deviceInfo = getDeviceInfo();
+		String url = "http://beiwe.org/userinfo";
+		String param = "patientID=" + userID + "&pwd=" + password + deviceInfo.toString();
+
+		new AsyncPostSender().execute(param, url);
+	}
+
+	public static int arePasswordsIdentical(final String userID, final String password) {
+		Integer response;
+		/* TODO: Determine which IDs to send
+		 * 1. Device ID + password
+		 * 2. Device ID + password + userID
+		 * 3. UserID + password
+		 * 4. Password only
+		 */
+		Callable<Integer> thread = new Callable<Integer>() {
+			@Override
+			public Integer call() throws Exception {
+				StringBuilder deviceInfo = getDeviceInfo();
+				String param = "patientID=" + userID + "&pwd=" + password + deviceInfo.toString();
+				return PostRequestFileUpload.sendPostRequest(param, new URL("http://beiwe.org/checkpasswords"));
+			}
+		};
+
+		try {
+			response = thread.call();
+			return response;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+
+	private static StringBuilder getDeviceInfo() {
 		StringBuilder stringBuilder = new StringBuilder();
 		try {
 			String droidID = DeviceInfo.getAndroidID();
@@ -130,9 +166,6 @@ public class Upload {
 		} catch (UnsupportedEncodingException e2) {
 			e2.printStackTrace();
 		}
-		String url = "http://beiwe.org/userinfo";
-		String param = "patientID=" + userID + "&pwd=" + password + stringBuilder.toString();
-
-		new AsyncPostSender().execute(param, url);
+		return stringBuilder;
 	}
 }

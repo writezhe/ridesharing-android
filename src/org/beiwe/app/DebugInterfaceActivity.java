@@ -17,6 +17,7 @@ import org.beiwe.app.survey.AudioRecorderActivity;
 import org.beiwe.app.survey.SurveyActivity;
 import org.beiwe.app.ui.AppNotifications;
 import org.beiwe.app.ui.LoginSessionManager;
+import org.beiwe.app.ui.ResetPassword;
 
 
 import android.app.Activity;
@@ -29,6 +30,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+
+// TODO: SOMEONE. Error strings - make sure to add error strings
 
 public class DebugInterfaceActivity extends Activity {
 	
@@ -46,6 +49,7 @@ public class DebugInterfaceActivity extends Activity {
 		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_debug_interface);
+		Log.i("DebugInterface", "Created!");
 		appContext = this.getApplicationContext();
 		
 		//start background service
@@ -212,5 +216,9 @@ public class DebugInterfaceActivity extends Activity {
 	void write_public() {
 		TextFileManager.getKeyFile().deleteSafely();
 		TextFileManager.getKeyFile().write("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApTiH9gI0zXimSSX+lIsPVvsRDKj5+ebBKAxUJ/laWkfz59yDmfw9TkuLPRfU5cI4GWN/3kzyVdP72bt8p7ZU1LpL/WsSrRb3mzDXZtUnEnfKMTL2NvXUG/qJJyI0wzTmTNaY/hN4aKhITTBjX2Lo+8REtHuijxvaVVThbwlEg+Hmk5611f/BoHC29jHI1O6j4t+PdlO+2h+jBYthL7C0+Tfu74s0o3CLonCGNik8sLsZ6hps1sz0Gwn4f4ehLe7OwGviv4svZZAhufJebyPFNaIbWiO8bQN7ev8rEwnT9ROsBZvZ1AzoUYtewBxauBgpF8/NdvgcNqkILKbIFvscawIDAQAB");
+	}
+	
+	public void resetPassword(View view) {
+		Log.i("DebugInterface", "this has been called!");
 	}
 }

@@ -5,6 +5,7 @@
     Reference strings in Java code using a line like this:
     appContext.getResources().getString(R.string.name_of_string)
     -->
+    
     <!-- General Strings -->
     <string name="app_name">Beiwe</string>
     <string name="action_settings">Settings</string>
@@ -53,12 +54,14 @@
     <string name="user_id_system_mismatch">User ID does not match the one in the system. Try again</string>
     <string name="password_system_mismatch">Incorrect user ID and password combination</string>
 
-    <!-- Forgot Password Activity Strings -->
-    <string name="forgot_password_title">Reset your password</string>
-    <string name="forgot_password_enter_ID">Please enter your ID:</string>
-    <string name="forgot_password_enter_password">Please enter your new password:</string>
-    <string name="forgot_password_repeat_password">Enter your new password again:</string>
-    <string name="forgot_password_submit">Submit</string>
+    <!-- Reset Password Activity Strings -->
+    <string name="reset_password_title">Reset your password</string>
+    <string name="reset_password_enter_ID">Please enter your old password:</string>
+    <string name="reset_password_enter_password">Please enter your new password:</string>
+    <string name="reset_password_repeat_password">Enter your new password again:</string>
+    <string name="reset_password_submit">Submit</string>
+    <string name="invalid_old_password">Old password incorrect</string>
+    <string name="pass_reset_complete">Password reset complete</string>
 
     <!-- Registration Activity Strings -->
     <string name="register_activity_welcoming_message">Welcome to the study</string>
@@ -86,6 +89,7 @@
     <string name="main_menu_record_message">Record something</string>
     <string name="main_menu_call_hotline">Call Hotline</string>
     <string name="main_menu_view_graph">View previous answers on graph</string>
+    <string name="main_menu_reset_password">Reset Password</string>
     
 
     <!-- Recording Activity -->

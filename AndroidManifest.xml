@@ -61,7 +61,7 @@
             android:name=".ui.LoginActivity"
             android:label="@string/title_activity_login" />
         <activity
-            android:name=".ui.ForgotPassword"
+            android:name=".ui.ResetPassword"
             android:label="@string/title_activity_forgot_password" />
         <activity
             android:name=".ui.RegisterActivity"
@@ -116,6 +116,11 @@
                 <action android:name="android.intent.action.AIRPLANE_MODE" />
             </intent-filter>
         </receiver>
+
+        <activity
+            android:name=".ForgotPassword"
+            android:label="@string/title_activity_forgot_password" >
+        </activity>
     </application>
 
 </manifest>

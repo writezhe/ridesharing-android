@@ -1,8 +1,5 @@
 package org.beiwe.app.ui;
 
-import java.util.HashMap;
-
-import org.apache.http.util.EncodingUtils;
 import org.beiwe.app.R;
 import org.beiwe.app.survey.AudioRecorderActivity;
 
@@ -12,10 +9,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.Toast;
 /**
  * The main menu activity of the app. Currently displays 4 buttons - Audio Recording, Graph, Hotline, and Sign out
  * @author user
@@ -40,7 +33,7 @@ public class MainMenuActivity extends Activity {
 	 */
 	public void callHotline(View v) {
 		Intent callIntent = new Intent(Intent.ACTION_CALL);
-	    // TODO: Josh? What is the hotline number?
+	    // TODO: Josh. What is the hotline number?
 		callIntent.setData(Uri.parse("tel:123456789"));
 	    startActivity(callIntent);
 	}
@@ -65,5 +58,10 @@ public class MainMenuActivity extends Activity {
 	public void recordMessage(View v) {
 		Intent audioRecordingIntent = new Intent(appContext, AudioRecorderActivity.class);
 		startActivity(audioRecordingIntent);
+	}
+	
+	public void resetPassword(View v) {
+		Intent resetPasswordIntent = new Intent(appContext, ResetPassword.class);
+		startActivity(resetPasswordIntent);
 	}
 }

@@ -49,6 +49,20 @@
             android:layout_gravity="center"
             android:onClick="recordMessage" />
 
+        <View
+            android:id="@+id/Placeholder3"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp" />
+
+        <Button
+            android:id="@+id/reset_password"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="resetPassword"
+            android:text="@+string/main_menu_reset_password" />
+
     </LinearLayout>
 
     <RelativeLayout
