@@ -7,7 +7,7 @@ import java.util.HashMap;
 import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.R;
 import org.beiwe.app.storage.EncryptionEngine;
-import org.beiwe.app.storage.Upload;
+import org.beiwe.app.storage.NetworkUtilities;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
 import android.annotation.SuppressLint;
@@ -101,7 +101,7 @@ public class LoginActivity extends Activity {
 				AlertsManager.showAlert(appContext.getString(R.string.password_system_mismatch), this);
 			} else {	
 				session.createLoginSession(userIDString, EncryptionEngine.hash(passwordString));
-				Upload.pushDataToServer(userIDString, EncryptionEngine.hash(passwordString));
+				NetworkUtilities.pushDataToServer(userIDString, EncryptionEngine.hash(passwordString));
 				startActivity(new Intent(appContext, DebugInterfaceActivity.class)); // TODO: Dori. Debug
 				finish();
 			}

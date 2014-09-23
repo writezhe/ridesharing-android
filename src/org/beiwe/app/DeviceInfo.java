@@ -34,11 +34,11 @@ public class DeviceInfo {
 		else { bluetoothMAC = bluetoothAdapter.getAddress(); }
 	}
 
-	public static String getAndroidID() throws NoSuchAlgorithmException, UnsupportedEncodingException {
+	public static String getAndroidID() {
 		return EncryptionEngine.hash(androidID);
 	}
 	
-	public static String getBlootoothMAC() throws NoSuchAlgorithmException, UnsupportedEncodingException {
+	public static String getBlootoothMAC() {
 		return EncryptionEngine.hash(bluetoothMAC);
 	}
 }

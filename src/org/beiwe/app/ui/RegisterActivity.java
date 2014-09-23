@@ -3,7 +3,7 @@ package org.beiwe.app.ui;
 import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.R;
 import org.beiwe.app.storage.EncryptionEngine;
-import org.beiwe.app.storage.Upload;
+import org.beiwe.app.storage.NetworkUtilities;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
 import android.annotation.SuppressLint;
@@ -69,7 +69,7 @@ public class RegisterActivity extends Activity {
 		} else {
 			Log.i("RegisterActivity", "Attempting to create a login session");
 			session.createLoginSession(userIDStr, EncryptionEngine.hash(passwordStr));
-			Upload.pushDataToServer(userIDStr, EncryptionEngine.hash(passwordStr));
+			NetworkUtilities.pushDataToServer(userIDStr, EncryptionEngine.hash(passwordStr));
 			Log.i("RegisterActivity", "Registration complete, attempting to start DebugInterfaceActivity");
 			startActivity(new Intent(appContext, DebugInterfaceActivity.class));
 			finish();

@@ -12,7 +12,7 @@ import java.security.spec.InvalidKeySpecException;
 
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.TextFileManager;
-import org.beiwe.app.storage.Upload;
+import org.beiwe.app.storage.NetworkUtilities;
 import org.beiwe.app.survey.AudioRecorderActivity;
 import org.beiwe.app.survey.SurveyActivity;
 import org.beiwe.app.ui.AppNotifications;
@@ -104,7 +104,7 @@ public class DebugInterfaceActivity extends Activity {
 	}
 	
 	public void uploadDataFiles(View view) {
-		Upload uploader = new Upload(appContext);
+		NetworkUtilities uploader = new NetworkUtilities(appContext);
 		uploader.uploadAllFiles();
 	}
 	

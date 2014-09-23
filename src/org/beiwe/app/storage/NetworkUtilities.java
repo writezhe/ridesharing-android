@@ -2,11 +2,7 @@ package org.beiwe.app.storage;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -22,20 +18,24 @@ import android.net.NetworkInfo;
 import android.util.Log;
 
 
-public class Upload {
+public class NetworkUtilities {
 
 	private Context appContext;
 
-
-	public Upload(Context applicationContext) {
+	/**Upload must be initialized with an appContext before they can access the wifi state or upload a _file_.
+	 * @param some applicationContext */
+	public NetworkUtilities(Context applicationContext) {
 		this.appContext = applicationContext;
 	}
 
-
-	/**
-	 * Return TRUE if WiFi is connected; FALSE otherwise
-	 * @return
-	 */
+	
+	//#######################################################################################
+	//#############################  WIFI STATE #############################################
+	//#######################################################################################
+	
+	/**Return TRUE if WiFi is connected; FALSE otherwise
+	 * @return boolean value of whether the wifi is on and connected. */
+	//TODO: Josh.  Can you update the comment above: does it return wifi is on or wifi is on + internet is available.  (this may require a bit of testing on a phone?)
 	public Boolean getWifiState() {
 		ConnectivityManager connManager = (ConnectivityManager) appContext.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
@@ -43,10 +43,12 @@ public class Upload {
 	}
 
 
-	/**
-	 * Loop through all files on the phone, and for each one, try to upload it
-	 * to the server. If upload is successful, delete the file's local copy. 
-	 */
+	//#######################################################################################
+	//################################## FILES ##############################################
+	//#######################################################################################
+
+	/**Loop through all files on the phone, and for each one, try to upload it
+	 * to the server. If upload is successful, delete the file's local copy. */
 	public void uploadAllFiles() {
 
 		// Run the HTTP POST on a separate, non-blocking thread
@@ -75,12 +77,10 @@ public class Upload {
 	}
 
 
-	/**
-	 * Try to upload a file to the server, and if successful, delete the local
+	/**Try to upload a file to the server, and if successful, delete the local
 	 * (on-phone) copy of the file to save space, keep security, and not have
 	 * to upload it again
-	 * @param filename the short name (not the full path) of the file to upload
-	 */
+	 * @param filename the short name (not the full path) of the file to upload */
 	private void tryToUploadAndThenDeleteFile(String filename) {
 		//TODO: Josh! Only try to upload if the WiFi is connected
 		if (tryToUploadFile(filename)) {
@@ -89,11 +89,9 @@ public class Upload {
 	}
 
 
-	/**
-	 * Try to upload a file to the server
+	/**Try to upload a file to the server
 	 * @param filename the short name (not the full path) of the file to upload
-	 * @return TRUE if the server reported "200 OK"; FALSE otherwise
-	 */
+	 * @return TRUE if the server reported "200 OK"; FALSE otherwise */
 	private Boolean tryToUploadFile(String filename) {
 		try {
 			// Get the filePath, and the file
@@ -120,18 +118,22 @@ public class Upload {
 		}
 	}
 
+	//#######################################################################################
+	//############################### UTILITY FUNCTIONS #####################################
+	//#######################################################################################
 
 	public static void pushDataToServer(String userID, String password) {		
-		StringBuilder deviceInfo = getDeviceInfo();
+		StringBuilder deviceInfo = getDeviceInfoString();
 		String url = "http://beiwe.org/userinfo";
 		String param = "patientID=" + userID + "&pwd=" + password + deviceInfo.toString();
 
 		new AsyncPostSender().execute(param, url);
 	}
 
-	public static int arePasswordsIdentical(final String userID, final String password) {
+	
+	public static int checkPasswordsIdentical(final String userID, final String password) {
 		Integer response;
-		/* TODO: Determine which IDs to send
+		/* TODO: Dori. Determine which IDs to send
 		 * 1. Device ID + password
 		 * 2. Device ID + password + userID
 		 * 3. UserID + password
@@ -140,7 +142,7 @@ public class Upload {
 		Callable<Integer> thread = new Callable<Integer>() {
 			@Override
 			public Integer call() throws Exception {
-				StringBuilder deviceInfo = getDeviceInfo();
+				StringBuilder deviceInfo = getDeviceInfoString();
 				String param = "patientID=" + userID + "&pwd=" + password + deviceInfo.toString();
 				return PostRequestFileUpload.sendPostRequest(param, new URL("http://beiwe.org/checkpasswords"));
 			}
@@ -155,17 +157,18 @@ public class Upload {
 		return -1;
 	}
 
-	private static StringBuilder getDeviceInfo() {
+	
+	//#######################################################################################
+	//############################### CONVENIENCE FUNCTIONS #################################
+	//#######################################################################################
+
+	private static StringBuilder getDeviceInfoString() {
 		StringBuilder stringBuilder = new StringBuilder();
-		try {
-			String droidID = DeviceInfo.getAndroidID();
-			String bluetoothMAC = DeviceInfo.getBlootoothMAC();
-			stringBuilder.append("&droidID=" + droidID + "&btID=" + bluetoothMAC);
-		} catch (NoSuchAlgorithmException e1) {
-			e1.printStackTrace();
-		} catch (UnsupportedEncodingException e2) {
-			e2.printStackTrace();
-		}
+
+		String droidID = DeviceInfo.getAndroidID();
+		String bluetoothMAC = DeviceInfo.getBlootoothMAC();
+		stringBuilder.append("&droidID=" + droidID + "&btID=" + bluetoothMAC);
+
 		return stringBuilder;
 	}
 }
