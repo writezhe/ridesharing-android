@@ -7,7 +7,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
+import java.util.concurrent.Callable;
 
 import android.util.Log;
 
@@ -85,16 +85,35 @@ public class PostRequestFileUpload {
 		connection.setRequestProperty("Cache-Control", "no-cache");
 		
 		// Create the POST request as a DataOutputStream to the HttpURLConnection
-		DataOutputStream request = new DataOutputStream(connection.getOutputStream());
-		
-		// Write the data to the POST request 
-		request.writeBytes(parameters);
-		request.flush();
-		request.close();
-		
-		// Get HTTP Response
-		Log.i("POSTREQUESTFILEUPLOAD", "RESPONSE = " + connection.getResponseMessage());
-		return connection.getResponseCode();
+		return serverResponse(parameters, connection);
 	}
+	
+	private static Integer serverResponse (final String parameters, final HttpURLConnection connection) {
+		Callable<Integer> thread = new Callable<Integer>() {
+
+			@Override
+			public Integer call() throws Exception {
+				DataOutputStream request = new DataOutputStream(connection.getOutputStream());
+				
+				// Write the data to the POST request 
+				request.writeBytes(parameters);
+				request.flush();
+				request.close();
+				
+				// Get HTTP Response
+				Log.i("POSTREQUESTFILEUPLOAD", "RESPONSE = " + connection.getResponseMessage());
+				return connection.getResponseCode();
+			}
+		};
+		
+		try {
+			return thread.call();
+		} catch (Exception e) {
+			e.printStackTrace(); // TODO: Dori, find a way to return a message. Look into Intents
+		}
+		
+		return -1;
+	}
+	
 
 }
