@@ -1,14 +1,13 @@
-package org.beiwe.app;
+package org.beiwe.app.ui;
 
 import java.util.HashMap;
 
+import org.beiwe.app.R;
+import org.beiwe.app.R.id;
+import org.beiwe.app.R.layout;
+import org.beiwe.app.networking.NetworkUtilities;
 import org.beiwe.app.storage.EncryptionEngine;
-import org.beiwe.app.storage.NetworkUtilities;
 import org.beiwe.app.survey.TextFieldKeyboard;
-import org.beiwe.app.ui.AlertsManager;
-import org.beiwe.app.ui.AsyncPostSender;
-import org.beiwe.app.ui.LoadingActivity;
-import org.beiwe.app.ui.LoginSessionManager;
 
 import android.app.Activity;
 import android.content.Context;

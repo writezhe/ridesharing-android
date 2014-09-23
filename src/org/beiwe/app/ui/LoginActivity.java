@@ -6,8 +6,8 @@ import java.util.HashMap;
 
 import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.R;
+import org.beiwe.app.networking.NetworkUtilities;
 import org.beiwe.app.storage.EncryptionEngine;
-import org.beiwe.app.storage.NetworkUtilities;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
 import android.annotation.SuppressLint;
@@ -18,7 +18,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
+
+
 
 /**
  * A class used to log in to the app. Uses a helper class {@link LoginSessionManager.java}
@@ -97,12 +98,12 @@ public class LoginActivity extends Activity {
 				AlertsManager.showAlert(appContext.getString(R.string.invalid_password), this);
 			} else if(!userIDString.equals(prefUserID)) {
 				AlertsManager.showAlert(appContext.getString(R.string.user_id_system_mismatch), this);
-			} else if(!EncryptionEngine.hash(passwordString).equals(prefPassword)) {
+			} else if( !EncryptionEngine.hash( passwordString).equals( prefPassword ) ) {
 				AlertsManager.showAlert(appContext.getString(R.string.password_system_mismatch), this);
 			} else {	
-				session.createLoginSession(userIDString, EncryptionEngine.hash(passwordString));
-				NetworkUtilities.pushDataToServer(userIDString, EncryptionEngine.hash(passwordString));
-				startActivity(new Intent(appContext, DebugInterfaceActivity.class)); // TODO: Dori. Debug
+				session.createLoginSession( userIDString, EncryptionEngine.hash( passwordString ) );
+				NetworkUtilities.pushIdentifyingData( userIDString, EncryptionEngine.hash( passwordString ) );
+				startActivity( new Intent(appContext, DebugInterfaceActivity.class ) ); // TODO: Dori. Debug
 				finish();
 			}
 		}

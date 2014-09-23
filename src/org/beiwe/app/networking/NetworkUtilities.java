@@ -1,4 +1,5 @@
-package org.beiwe.app.storage;
+package org.beiwe.app.networking;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -10,7 +11,7 @@ import java.util.concurrent.Executors;
 import org.apache.http.client.methods.HttpPost;
 import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
-import org.beiwe.app.ui.AsyncPostSender;
+import org.beiwe.app.storage.TextFileManager;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -19,7 +20,7 @@ import android.util.Log;
 
 
 public class NetworkUtilities {
-
+		
 	private Context appContext;
 
 	/**Upload must be initialized with an appContext before they can access the wifi state or upload a _file_.
@@ -121,15 +122,15 @@ public class NetworkUtilities {
 	//#######################################################################################
 	//############################### UTILITY FUNCTIONS #####################################
 	//#######################################################################################
-
-	public static void pushDataToServer(String userID, String password) {		
+	
+	public static void pushIdentifyingData(String userID, String password) {		
 		StringBuilder deviceInfo = getDeviceInfoString();
 		String url = "http://beiwe.org/userinfo";
 		String param = "patientID=" + userID + "&pwd=" + password + deviceInfo.toString();
 
 		new AsyncPostSender().execute(param, url);
 	}
-
+	
 	
 	public static int checkPasswordsIdentical(final String userID, final String password) {
 		Integer response;
@@ -139,7 +140,7 @@ public class NetworkUtilities {
 		 * 3. UserID + password
 		 * 4. Password only
 		 */
-		Callable<Integer> thread = new Callable<Integer>() {
+		Callable <Integer> thread = new Callable<Integer>() {
 			@Override
 			public Integer call() throws Exception {
 				StringBuilder deviceInfo = getDeviceInfoString();

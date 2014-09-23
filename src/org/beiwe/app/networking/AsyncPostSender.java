@@ -1,9 +1,8 @@
-package org.beiwe.app.ui;
+package org.beiwe.app.networking;
 
 import java.io.IOException;
 import java.net.URL;
 
-import org.beiwe.app.storage.PostRequestFileUpload;
 
 import android.os.AsyncTask;
 import android.util.Log;

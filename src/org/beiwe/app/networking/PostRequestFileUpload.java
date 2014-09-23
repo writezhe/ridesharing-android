@@ -1,4 +1,4 @@
-package org.beiwe.app.storage;
+package org.beiwe.app.networking;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -8,10 +8,11 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+
 import android.util.Log;
 
 public class PostRequestFileUpload {
-
+	
 	static String twoHyphens = "--";
 	static String boundary = "gc0p4Jq0M2Yt08jU534c0p";
 	static String newLine = "\r\n";
@@ -93,7 +94,7 @@ public class PostRequestFileUpload {
 		
 		// Get HTTP Response
 		Log.i("POSTREQUESTFILEUPLOAD", "RESPONSE = " + connection.getResponseMessage());
-		return connection.getResponseCode();	
+		return connection.getResponseCode();
 	}
 
 }

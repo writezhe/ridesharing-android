@@ -4,21 +4,14 @@ import java.io.IOException;
 
 import org.beiwe.app.listeners.AccelerometerListener;
 import org.beiwe.app.listeners.GPSListener;
-import org.beiwe.app.storage.FileDownloader;
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-
+import org.beiwe.app.networking.NetworkUtilities;
 import org.beiwe.app.storage.EncryptionEngine;
+import org.beiwe.app.storage.FileDownloader;
 import org.beiwe.app.storage.TextFileManager;
-import org.beiwe.app.storage.NetworkUtilities;
 import org.beiwe.app.survey.AudioRecorderActivity;
 import org.beiwe.app.survey.SurveyActivity;
 import org.beiwe.app.ui.AppNotifications;
 import org.beiwe.app.ui.LoginSessionManager;
-import org.beiwe.app.ui.ResetPassword;
-
 
 import android.app.Activity;
 import android.content.Context;
