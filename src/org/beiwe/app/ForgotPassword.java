@@ -71,7 +71,7 @@ public class ForgotPassword extends Activity {
 			AlertsManager.showAlert("Passwords mismatch", this);
 		} else {
 			// User entered passwords that match - time to check the encrypted password against the server
-			int response = Upload.arePasswordsIdentical(encryptedPassword);
+			int response = Upload.arePasswordsIdentical(session.getUserDetails().get(LoginSessionManager.KEY_ID), encryptedPassword);
 			if (response != 200) {
 				// Received something other than 200 OK, something is wrong.
 				AlertsManager.showAlert("The passwords you entered is not the password that is in the database. Please contact a researcher", this);
