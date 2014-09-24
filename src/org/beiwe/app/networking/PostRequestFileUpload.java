@@ -90,7 +90,6 @@ public class PostRequestFileUpload {
 	
 	private static Integer serverResponse (final String parameters, final HttpURLConnection connection) {
 		Callable<Integer> thread = new Callable<Integer>() {
-
 			@Override
 			public Integer call() throws Exception {
 				DataOutputStream request = new DataOutputStream(connection.getOutputStream());
@@ -105,15 +104,13 @@ public class PostRequestFileUpload {
 				return connection.getResponseCode();
 			}
 		};
-		
+		Integer response = 403;
 		try {
-			return thread.call();
+			response = thread.call();
+			return response;
 		} catch (Exception e) {
-			e.printStackTrace(); // TODO: Dori, find a way to return a message. Look into Intents
+			e.printStackTrace(); 
+			return response;
 		}
-		
-		return -1;
 	}
-	
-
 }

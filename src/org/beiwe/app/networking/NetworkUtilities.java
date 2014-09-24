@@ -3,6 +3,7 @@ package org.beiwe.app.networking;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -12,6 +13,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
 import org.beiwe.app.storage.TextFileManager;
+import org.beiwe.app.ui.AlertsManager;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -133,27 +135,15 @@ public class NetworkUtilities {
 	
 	
 	public static int checkPasswordsIdentical(final String userID, final String password) {
-		Integer response;
-		/* TODO: Dori. Determine which IDs to send
-		 * 1. Device ID + password
-		 * 2. Device ID + password + userID
-		 * 3. UserID + password
-		 * 4. Password only
-		 */
-		Callable <Integer> thread = new Callable<Integer>() {
-			@Override
-			public Integer call() throws Exception {
-				StringBuilder deviceInfo = getDeviceInfoString();
-				String param = "patientID=" + userID + "&pwd=" + password + deviceInfo.toString();
-				return PostRequestFileUpload.sendPostRequest(param, new URL("http://beiwe.org/checkpasswords"));
-			}
-		};
-
+		StringBuilder deviceInfo = getDeviceInfoString();
+		String param = "patientID=" + userID + "&pwd=" + password + deviceInfo.toString();
 		try {
-			response = thread.call();
-			return response;
-		} catch (Exception e) {
+			return PostRequestFileUpload.sendPostRequest(param, new URL("http://beiwe.org/check_password"));
+		} catch (MalformedURLException e) {
 			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return 502;
 		}
 		return -1;
 	}
