@@ -245,6 +245,12 @@ public class QuestionRenderer {
 			break;
 		}
 
+		/* Improvement idea: if you want to add date and time pickers as input
+		 * types, here's a start: http://stackoverflow.com/a/14933515 */
+		
+		/* Improvement idea: when the user presses Enter, jump to the next
+		 * input field */
+
 		setViewId(editText);
 		
 		// Create text strings that represent the question and its answer choices
@@ -258,9 +264,6 @@ public class QuestionRenderer {
 		
 		LinearLayout textFieldContainer = (LinearLayout) question.findViewById(R.id.textFieldContainer);
 		textFieldContainer.addView(editText);
-		
-		// TODO: Josh. on press carriage return, move to next question
-		// TODO: Josh. add date and time pickers as input types: http://stackoverflow.com/a/14933515
 		
 		return question;
 	}

@@ -38,7 +38,8 @@ public class InputListener {
 
 		@Override
 		public void onStartTrackingTouch(SeekBar seekBar) {
-			// TODO: Josh? Start tracking touch if JP wants
+			/* Improvement idea: record when the user started touching the
+			 * slider bar, not just when they let go of it */
 		}
 
 		@Override
@@ -115,7 +116,10 @@ public class InputListener {
 		public void onFocusChange(View v, boolean hasFocus) {
 			if (hasFocus) {
 				// The user just selected the input box
-				// TODO: Josh. figure out if JP wants us to record this event.
+
+				/* Improvement idea: record when the user first touched the
+				 * input field; right now it only records when the user
+				 * selected away from the input field. */
 
 				// Set the EditText so that if the user taps outside, the keyboard disappears
 				if (v instanceof EditText) {
