@@ -54,8 +54,6 @@ public class ResetPassword extends Activity {
 		textFieldKeyboard.makeKeyboardBehave(newPassword);
 		textFieldKeyboard.makeKeyboardBehave(newPasswordRepeat);
 	}
-//	TODO: Dori - Add a reset password activity that can be accessed from the app.
-//	TODO: Add a button to call the study in case a user forgets the password. Then they are assigned a new password that is checked against the server, then saved in the SharedPreferences
 	/**
 	 *  This happens when a user presses the submit button.
 	 *  

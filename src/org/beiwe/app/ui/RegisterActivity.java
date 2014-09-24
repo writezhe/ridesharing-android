@@ -73,6 +73,10 @@ public class RegisterActivity extends Activity {
 			Log.i("RegisterActivity", "Registration complete, attempting to start DebugInterfaceActivity");
 			startActivity(new Intent(appContext, DebugInterfaceActivity.class));
 			finish();
+//			 TODO: This is faulty because it encodes in Hex
+//			int response = NetworkUtilities.checkPasswordsIdentical(userIDStr, EncryptionEngine.hash( EncryptionEngine.hash( passwordStr ) ) );
+//			
+//			Log.i("RegisterActivity", "" + response);
 		}
 
 		/*
