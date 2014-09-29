@@ -135,29 +135,10 @@ public class NetworkUtilities {
 	
 	
 	public static int checkPasswordsIdentical(final String userID, final String password) {
-//<<<<<<< Updated upstream
+
 		StringBuilder deviceInfo = getDeviceInfoString();
 		String param = "patientID=" + userID + "&pwd=" + password + deviceInfo.toString();
 		
-//TODO: Eli/Dori.  This nonsense was inserted after a merge operation due to Eli forgetting to push, work out if this is relevant anymore.
-//=======
-//		Integer response;
-//		/* TODO: Dori. Determine which IDs to send
-//		 * 1. Device ID + password
-//		 * 2. Device ID + password + userID
-//		 * 3. UserID + password
-//		 * 4. Password only
-//		 */
-//		Callable <Integer> thread = new Callable<Integer>() { // non-blocking network call...
-//			@Override public Integer call() throws Exception {
-//				
-//				StringBuilder deviceInfo = getDeviceInfoString();
-//				String param = "patientID=" + userID + "&pwd=" + password + deviceInfo.toString();
-//				return PostRequestFileUpload.sendPostRequest(param, new URL("http://beiwe.org/checkpasswords"));
-//			}
-//		};
-
-//>>>>>>> Stashed changes
 		try {
 			return PostRequestFileUpload.sendPostRequest(param, new URL("http://beiwe.org/check_password"));
 		} catch (MalformedURLException e) {
