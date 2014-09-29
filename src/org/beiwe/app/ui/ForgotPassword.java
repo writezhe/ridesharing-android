@@ -73,9 +73,11 @@ public class ForgotPassword extends Activity {
 			int response = NetworkUtilities.checkPasswordsIdentical(session.getUserDetails().get(LoginSessionManager.KEY_ID), encryptedPassword);
 			if (response == 502) {
 				AlertsManager.showAlert("Connection timed out. Check you are connected to the internet", this);
-			} else if (response != 200) {
+			} else if (response == 403) {
 				// Received something other than 200 OK, something is wrong.
 				AlertsManager.showAlert("The passwords you entered is not the password that is in the database. Please contact a researcher", this);
+			} else if (response == 405) {
+				AlertsManager.showAlert("This phone is not the phone registered with this user. Please contact the research team", this);
 			} else {
 				// Everything checks out - begin log in session
 				HashMap<String, String> details = session.getUserDetails();

@@ -149,6 +149,16 @@ public class NetworkUtilities {
 		}
 		return -1;
 	}
+	
+	public static String handleServerResponses (Integer responseCode) {
+		switch (responseCode) {
+		case (200) : return "OK";
+		case (403) : return "Patient ID did not match Password on the server";
+		case (405) : return "Phone is not registered to this user. Please contact research staff";
+		case (502) : return "Please connect to the internet and try again";
+		}
+		return "Something went wrong...";
+	}
 
 	
 	//#######################################################################################
