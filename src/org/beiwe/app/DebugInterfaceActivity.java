@@ -220,7 +220,7 @@ public class DebugInterfaceActivity extends Activity {
 	
 	public void sendPostToTestURL(View view) {
 		try {
-			Log.i("DebigInterface", PostRequestFileUpload.sendPostRequest(new URL("http://beiwe.org/test")));
+			Log.i("DebugInterface", PostRequestFileUpload.sendPostRequest(new URL("http://beiwe.org/test")));
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
