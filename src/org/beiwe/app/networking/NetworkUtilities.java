@@ -12,8 +12,9 @@ import java.util.concurrent.Executors;
 import org.apache.http.client.methods.HttpPost;
 import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
+import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.TextFileManager;
-import org.beiwe.app.ui.AlertsManager;
+import org.beiwe.app.ui.LoginSessionManager;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -24,14 +25,19 @@ import android.util.Log;
 public class NetworkUtilities {
 		
 	private Context appContext;
+	private static String patientID;
+	private static String password;
 
 	/**Upload must be initialized with an appContext before they can access the wifi state or upload a _file_.
 	 * @param some applicationContext */
 	public NetworkUtilities(Context applicationContext) {
 		this.appContext = applicationContext;
+		
+		LoginSessionManager session = new LoginSessionManager(appContext);
+		patientID = session.getUserDetails().get(LoginSessionManager.KEY_ID);
+		password = session.getUserDetails().get(LoginSessionManager.KEY_PASSWORD);
 	}
-
-	
+		
 	//#######################################################################################
 	//#############################  WIFI STATE #############################################
 	//#######################################################################################
@@ -43,6 +49,20 @@ public class NetworkUtilities {
 		ConnectivityManager connManager = (ConnectivityManager) appContext.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 		return mWifi.isConnected(); 
+	}
+
+	//#######################################################################################
+	//#############################  GETTERS ################################################
+	//#######################################################################################
+
+	
+	public static String getPatientID() {
+		return patientID;
+	}
+	
+	// TODO: Eli - Explain security implication of hashing password AGAIN
+	public static String getUserPassword() {
+		return EncryptionEngine.hash(password);
 	}
 
 
@@ -125,53 +145,56 @@ public class NetworkUtilities {
 	//############################### UTILITY FUNCTIONS #####################################
 	//#######################################################################################
 	
+	/**
+	 * Pushes identifying data to the server for it to process and save
+	 * 
+	 * @param userID
+	 * @param password
+	 */
+	
+	// **Consider depracation!!
 	public static void pushIdentifyingData(String userID, String password) {		
-		StringBuilder deviceInfo = getDeviceInfoString();
 		String url = "http://beiwe.org/userinfo";
-		String param = "patientID=" + userID + "&pwd=" + password + deviceInfo.toString();
 
-		new AsyncPostSender().execute(param, url);
+		new AsyncPostSender().execute(url);
 	}
 	
-	
-	public static int checkPasswordsIdentical(final String userID, final String password) {
-
-		StringBuilder deviceInfo = getDeviceInfoString();
-		String param = "patientID=" + userID + "&pwd=" + password + deviceInfo.toString();
+	/**
+	 * Sends a post request that checks if user credentials are the same as those registered on the surver 
+	 * 
+	 * @param userID
+	 * @param password
+	 * @return responseCode
+	 */
+	public static String checkPasswordsIdentical(final String userID, final String password) {
 		
+		// Surrounded by try-catch statement because over here starts the asynchronous part
 		try {
-			return PostRequestFileUpload.sendPostRequest(param, new URL("http://beiwe.org/check_password"));
+			return PostRequestFileUpload.sendPostRequest(new URL("http://beiwe.org/check_password"));
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-			return 502;
+			return "502";
 		}
-		return -1;
+		return "-1";
 	}
 	
+	/**
+	 * This is a method used as an intermediate in order to shorten the length of logic trees.
+	 * Method checks a given response code sent from the server, and then returns a string corresponding to the code,
+	 * in order to display that to the user.
+	 * 
+	 * @param responseCode
+	 * @return String to be displayed on the Alert in case of a problem
+	 */
 	public static String handleServerResponses (Integer responseCode) {
 		switch (responseCode) {
 		case (200) : return "OK";
 		case (403) : return "Patient ID did not match Password on the server";
 		case (405) : return "Phone is not registered to this user. Please contact research staff";
 		case (502) : return "Please connect to the internet and try again";
+		default : return "Something went wrong...";
 		}
-		return "Something went wrong...";
-	}
-
-	
-	//#######################################################################################
-	//############################### CONVENIENCE FUNCTIONS #################################
-	//#######################################################################################
-
-	private static StringBuilder getDeviceInfoString() {
-		StringBuilder stringBuilder = new StringBuilder();
-
-		String droidID = DeviceInfo.getAndroidID();
-		String bluetoothMAC = DeviceInfo.getBlootoothMAC();
-		stringBuilder.append("&droidID=" + droidID + "&btID=" + bluetoothMAC);
-
-		return stringBuilder;
 	}
 }

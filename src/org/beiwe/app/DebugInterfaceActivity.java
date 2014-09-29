@@ -1,10 +1,13 @@
 package org.beiwe.app;
  
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.beiwe.app.listeners.AccelerometerListener;
 import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.networking.NetworkUtilities;
+import org.beiwe.app.networking.PostRequestFileUpload;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.FileDownloader;
 import org.beiwe.app.storage.TextFileManager;
@@ -213,5 +216,15 @@ public class DebugInterfaceActivity extends Activity {
 	
 	public void resetPassword(View view) {
 		Log.i("DebugInterface", "this has been called!");
+	}
+	
+	public void sendPostToTestURL(View view) {
+		try {
+			Log.i("DebigInterface", PostRequestFileUpload.sendPostRequest(new URL("http://beiwe.org/test")));
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

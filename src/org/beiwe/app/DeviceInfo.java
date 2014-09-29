@@ -18,7 +18,16 @@ import android.util.Log;
 //this blob will uniquely identify the advice, and assist in pushing the user to the correct actions if they
 //have a new phone, if they have a new phone number, etc.  all identifying data must be hashed.
 //this blob may need to be queryable from the server, it should be unique to each user.
-
+/**
+ * This is a class that NEEDS to be instantiated in the background process. In order to get the Android ID, the class needs
+ * Context. Once instantiated, the class assigns two variables for AndroidID and BluetoothMAC. Once they are instantiated,
+ * they can be called from different classes to be used. They are hashed when they are called.
+ * 
+ * The class is used to grab unique ID data, and pass it to the server. The data is used while authenticating users
+ * 
+ * @author Dori
+ *
+ */
 public class DeviceInfo {
 	private static String androidID;
 	private static String bluetoothMAC;

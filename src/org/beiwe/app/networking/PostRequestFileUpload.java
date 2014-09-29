@@ -9,6 +9,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.Callable;
 
+import org.beiwe.app.DeviceInfo;
+
 import android.util.Log;
 
 public class PostRequestFileUpload {
@@ -27,7 +29,12 @@ public class PostRequestFileUpload {
 	 * @return HTTP Response code as int
 	 * @throws IOException
 	 */
-	public static int sendPostRequest(File file, URL uploadUrl) throws IOException {
+	public static int sendPostRequest(File file, URL uploadUrl) throws IOException {		
+		
+		// Variables
+		String patientID = NetworkUtilities.getPatientID();
+		String password = NetworkUtilities.getUserPassword();
+		String androidInfo = DeviceInfo.getAndroidID();
 		
 		// Create a new HttpURLConnection and set its parameters
 		HttpURLConnection connection = (HttpURLConnection) uploadUrl.openConnection();
@@ -74,8 +81,14 @@ public class PostRequestFileUpload {
 	}
 	
 	
-	public static int sendPostRequest(String parameters, URL uploadUrl) throws IOException {
+	public static String sendPostRequest(URL uploadUrl) throws IOException {
 		
+		// Variables
+		String patientID = NetworkUtilities.getPatientID();
+		String password = NetworkUtilities.getUserPassword();
+		String androidInfo = DeviceInfo.getAndroidID();
+
+//		String parameters = "patientID=" + patientID + "&pwd=" + password + "&androidID=" + androidInfo;
 		// Create a new HttpURLConnection and set its parameters
 		HttpURLConnection connection = (HttpURLConnection) uploadUrl.openConnection();
 		connection.setUseCaches(false);
@@ -83,19 +96,29 @@ public class PostRequestFileUpload {
 		connection.setRequestMethod("POST");
 		connection.setRequestProperty("Connection", "Keep-Alive");
 		connection.setRequestProperty("Cache-Control", "no-cache");
+		connection.setRequestProperty("patiendID", patientID);
+		connection.setRequestProperty("pwd", password);
+		connection.setRequestProperty("androidID", androidInfo);
+
 		
 		// Create the POST request as a DataOutputStream to the HttpURLConnection
-		return serverResponse(parameters, connection);
+		return serverResponse(connection);
 	}
 	
-	private static Integer serverResponse (final String parameters, final HttpURLConnection connection) {
+	/**
+	 * A method used to not block running UI thread. Calls for a connection on a separate Callable (thread...).
+	 * This opens a connection with the server, sends the HTTP parameters, then receives a response code, and returns it.
+	 * 
+	 * @param parameters
+	 * @param connection
+	 * @return serverResponseCode
+	 */
+	private static String serverResponse (final HttpURLConnection connection) {
+		// -----  In-method definition of the new thread ----- 
 		Callable<Integer> thread = new Callable<Integer>() {
 			@Override
 			public Integer call() throws Exception {
 				DataOutputStream request = new DataOutputStream(connection.getOutputStream());
-				
-				// Write the data to the POST request 
-				request.writeBytes(parameters);
 				request.flush();
 				request.close();
 				
@@ -104,9 +127,12 @@ public class PostRequestFileUpload {
 				return connection.getResponseCode();
 			}
 		};
-		Integer response = 403;
+		
+		// ----- Actual code starts here ----- 
+		String response = "403";
 		try {
-			response = thread.call();
+			response = "" + thread.call();
+			Log.i("ResponseCode", response);
 			return response;
 		} catch (Exception e) {
 			e.printStackTrace(); 

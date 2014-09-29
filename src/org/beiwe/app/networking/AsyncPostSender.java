@@ -12,10 +12,9 @@ public class AsyncPostSender extends AsyncTask<String, String, String> {
 	@Override
 	protected String doInBackground(String... params) {
 		try {
-			int response = PostRequestFileUpload.sendPostRequest(params[0], new URL(params[1]));
-			String strResponse = "" + response;
-			Log.i("AsyncPostSender", "RESPONSE = " + strResponse);
-			return strResponse;
+			String response = PostRequestFileUpload.sendPostRequest(new URL(params[0]));
+			Log.i("AsyncPostSender", "RESPONSE = " + response);
+			return response;
 		} catch (IOException e) {
 			e.printStackTrace();
 			Log.i("AsyncPostSender", "IOError");
