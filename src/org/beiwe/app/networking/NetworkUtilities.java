@@ -130,8 +130,8 @@ public class NetworkUtilities {
 
 			// Try to upload the file via a Multipart POST request
 			URL uploadUrl = new URL(appContext.getResources().getString(R.string.data_upload_url));
-			PostRequestFileUpload postRequest = new PostRequestFileUpload();
-			if (postRequest.sendPostRequest(file, uploadUrl) == 200) {
+			PostRequest postRequest = new PostRequest();
+			if (postRequest.doPostRequestFileUpload(file, uploadUrl) == 200) {
 				// If the request was successful (returned "200 OK"), return TRUE
 				return true;
 			}

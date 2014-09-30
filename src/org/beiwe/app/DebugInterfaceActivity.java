@@ -6,10 +6,10 @@ import java.net.URL;
 
 import org.beiwe.app.listeners.AccelerometerListener;
 import org.beiwe.app.listeners.GPSListener;
+import org.beiwe.app.networking.FileDownloader;
 import org.beiwe.app.networking.NetworkUtilities;
-import org.beiwe.app.networking.PostRequestFileUpload;
+import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.storage.EncryptionEngine;
-import org.beiwe.app.storage.FileDownloader;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.AudioRecorderActivity;
 import org.beiwe.app.survey.SurveyActivity;
@@ -219,6 +219,6 @@ public class DebugInterfaceActivity extends Activity {
 	}
 	
 	public void sendPostToTestURL(View view) {
-		PostRequestFileUpload.make_request(NetworkUtilities.makeDefaultParameters(), "http://beiwe.org/test");
+		PostRequest.make_request(NetworkUtilities.makeDefaultParameters(), "http://beiwe.org/test");
 	}
 }

@@ -1,10 +1,12 @@
-package org.beiwe.app.storage;
+package org.beiwe.app.networking;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import org.beiwe.app.storage.TextFileManager;
 
 import android.util.Log;
 

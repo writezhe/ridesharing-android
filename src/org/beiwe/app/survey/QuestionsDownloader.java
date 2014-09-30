@@ -3,7 +3,7 @@ package org.beiwe.app.survey;
 import java.io.IOException;
 
 import org.beiwe.app.R;
-import org.beiwe.app.storage.FileDownloader;
+import org.beiwe.app.networking.FileDownloader;
 import org.beiwe.app.storage.TextFileManager;
 import org.json.JSONArray;
 import org.json.JSONException;
