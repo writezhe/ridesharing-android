@@ -8,16 +8,22 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.beiwe.app.DeviceInfo;
 
 import android.util.Log;
 
+//potentially useful:
+// http://stackoverflow.com/questions/5643704/reusing-ssl-sessions-in-android-with-httpclient
+
+
 public class PostRequestFileUpload {
 	
 	static String twoHyphens = "--";
 	static String boundary = "gc0p4Jq0M2Yt08jU534c0p";
-	static String newLine = "\r\n";
+	static String newLine = "\n";
 	static String attachmentName = "file";
 	
 	
@@ -32,9 +38,9 @@ public class PostRequestFileUpload {
 	public static int sendPostRequest(File file, URL uploadUrl) throws IOException {		
 		
 		// Variables
-		String patientID = NetworkUtilities.getPatientID();
-		String password = NetworkUtilities.getUserPassword();
-		String androidInfo = DeviceInfo.getAndroidID();
+//		String patientID = NetworkUtilities.getPatientID();
+//		String password = NetworkUtilities.getUserPassword();
+//		String androidInfo = DeviceInfo.getAndroidID();
 		
 		// Create a new HttpURLConnection and set its parameters
 		HttpURLConnection connection = (HttpURLConnection) uploadUrl.openConnection();
@@ -81,6 +87,20 @@ public class PostRequestFileUpload {
 	}
 	
 	
+	public static void make_request( final String url ) {
+		ExecutorService executor = Executors.newFixedThreadPool(1);
+		Callable<Integer> new_thread = new Callable<Integer>() {
+			
+			@Override
+			public Integer call() throws Exception {
+				sendPostRequest( new URL(url) );
+				return 5;
+			}
+		};
+		
+		executor.submit(new_thread);
+	}
+	
 	public static String sendPostRequest(URL uploadUrl) throws IOException {
 		
 		// Variables
@@ -96,47 +116,76 @@ public class PostRequestFileUpload {
 		connection.setRequestMethod("POST");
 		connection.setRequestProperty("Connection", "Keep-Alive");
 		connection.setRequestProperty("Cache-Control", "no-cache");
-		connection.setRequestProperty("patiendID", patientID);
-		connection.setRequestProperty("pwd", password);
-		connection.setRequestProperty("androidID", androidInfo);
-
 		
-		// Create the POST request as a DataOutputStream to the HttpURLConnection
-		return serverResponse(connection);
+//		connection.addRequestProperty("patient_id", patientID);
+//		connection.addRequestProperty("password", password);
+//		connection.addRequestProperty("device_id", androidInfo);
+//		
+		connection.setDoOutput(true);
+		
+		String steve= "patient_id=" + "test" + "&password="  + "password" +  "&device_id=" + "test_device" ;
+		
+//		String steve= "patient_id=" +  + "&password="  +  +  "&device_id=" + ;
+//		connection.addRequestProperty("patient_id", "test");
+//		connection.addRequestProperty("password", "password");
+//		connection.addRequestProperty("device_id", "test_device");
+		
+		
+//		// Create the POST request as a DataOutputStream to the HttpURLConnection
+//		int responseCode = connection.getResponseCode();
+//		String responseMessage = connection.getResponseMessage();
+//		connection.disconnect();
+//		return responseMessage;
+////		
+		DataOutputStream request = new DataOutputStream(connection.getOutputStream());
+		request.writeUTF(steve);
+		request.flush();
+		request.close();
+		
+		
+		Log.i("POSTREQUESTFILEUPLOAD", "MESSAGE = " + connection.getResponseMessage());
+		Log.i("POSTREQUESTFILEUPLOAD", "CODE = " + connection.getResponseCode());
+		
+		return "6";
 	}
 	
-	/**
-	 * A method used to not block running UI thread. Calls for a connection on a separate Callable (thread...).
-	 * This opens a connection with the server, sends the HTTP parameters, then receives a response code, and returns it.
-	 * 
-	 * @param parameters
-	 * @param connection
-	 * @return serverResponseCode
-	 */
-	private static String serverResponse (final HttpURLConnection connection) {
-		// -----  In-method definition of the new thread ----- 
-		Callable<Integer> thread = new Callable<Integer>() {
-			@Override
-			public Integer call() throws Exception {
-				DataOutputStream request = new DataOutputStream(connection.getOutputStream());
-				request.flush();
-				request.close();
-				
-				// Get HTTP Response
-				Log.i("POSTREQUESTFILEUPLOAD", "RESPONSE = " + connection.getResponseMessage());
-				return connection.getResponseCode();
-			}
-		};
-		
-		// ----- Actual code starts here ----- 
-		String response = "403";
-		try {
-			response = "" + thread.call();
-			Log.i("ResponseCode", response);
-			return response;
-		} catch (Exception e) {
-			e.printStackTrace(); 
-			return response;
-		}
-	}
+//	/**
+//	 * A method used to not block running UI thread. Calls for a connection on a separate Callable (thread...).
+//	 * This opens a connection with the server, sends the HTTP parameters, then receives a response code, and returns it.
+//	 * 
+//	 * @param parameters
+//	 * @param connection
+//	 * @return serverResponseCode
+//	 */
+//	private static String serverResponse (final HttpURLConnection connection) {
+//		// -----  In-line definition of the callable ----- 
+//		
+//		ExecutorService executor = Executors.newFixedThreadPool(1);
+//		Callable<Integer> new_thread = new Callable<Integer>() {
+//			@Override
+//			public Integer call() throws Exception {
+//				
+//				
+//				// Get HTTP Response
+//				Log.i("POSTREQUESTFILEUPLOAD", "RESPONSE = " + connection.getResponseMessage());
+//				return connection.getResponseCode();
+//			}
+//		};
+//		
+//		executor.submit(new_thread);
+//		
+//		// ----- Actual code starts here ----- 
+//		String response = "";
+//		try {
+//			Log.e("PostRequestFileUpload", "line preceding call() function");
+//			Thread.sleep(1000, 0);
+//			response = "" + new_thread.call();
+//			Log.i("ResponseCode", response);
+//			return response;
+//		} catch (Exception e) {
+//			Log.e("PostRequestFileUpload", "did not get proper response from call() function.");
+//			e.printStackTrace(); 
+//			throw new NullPointerException();
+//		}
+//	}
 }

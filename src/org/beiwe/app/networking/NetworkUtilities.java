@@ -37,6 +37,8 @@ public class NetworkUtilities {
 		patientID = session.getUserDetails().get(LoginSessionManager.KEY_ID);
 		password = session.getUserDetails().get(LoginSessionManager.KEY_PASSWORD);
 	}
+	
+	public void startNetworkUtilities(Context applicationContext) { new NetworkUtilities(applicationContext); }
 		
 	//#######################################################################################
 	//#############################  WIFI STATE #############################################
@@ -55,14 +57,18 @@ public class NetworkUtilities {
 	//#############################  GETTERS ################################################
 	//#######################################################################################
 
-	
+	//todo: remove this hardcoded...
 	public static String getPatientID() {
-		return patientID;
+		return "steve";
+//		return patientID;
+		
 	}
 	
 	// TODO: Eli - Explain security implication of hashing password AGAIN
+	//	also remove this hardcoding.
 	public static String getUserPassword() {
-		return EncryptionEngine.hash(password);
+//		return EncryptionEngine.hash(password);
+		return EncryptionEngine.hash("password");
 	}
 
 
@@ -96,6 +102,7 @@ public class NetworkUtilities {
 				return null;
 			}
 		};
+		//this is how you... "submit" a thread.
 		executor.submit(thread);
 	}
 

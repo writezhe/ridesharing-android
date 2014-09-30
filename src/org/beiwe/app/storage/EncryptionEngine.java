@@ -45,6 +45,9 @@ public class EncryptionEngine {
 	 * @return a UTF-8 String of the hash result. */
 	public static String hash (String input) {
 		/** takes a string as input, outputs a hash. */
+		if (input == null ) { Log.e("hash", "BROKEN");}
+		
+		
 		MessageDigest hash = null;
 		String return_data = null;
 		try {
