@@ -151,41 +151,7 @@ public class NetworkUtilities {
 	//#######################################################################################
 	//############################### UTILITY FUNCTIONS #####################################
 	//#######################################################################################
-	
-	/**
-	 * Pushes identifying data to the server for it to process and save
-	 * 
-	 * @param userID
-	 * @param password
-	 */
-	
-	// **Consider depracation!!
-	public static void pushIdentifyingData(String userID, String password) {		
-		String url = "http://beiwe.org/userinfo";
 
-		new AsyncPostSender().execute(url);
-	}
-	
-	/**
-	 * Sends a post request that checks if user credentials are the same as those registered on the surver 
-	 * 
-	 * @param userID
-	 * @param password
-	 * @return responseCode
-	 */
-	public static String checkPasswordsIdentical(final String userID, final String password) {
-		
-		// Surrounded by try-catch statement because over here starts the asynchronous part
-		try {
-			return PostRequestFileUpload.sendPostRequest(new URL("http://beiwe.org/check_password"));
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-			return "502";
-		}
-		return "-1";
-	}
 	
 	/**
 	 * This is a method used as an intermediate in order to shorten the length of logic trees.
@@ -205,18 +171,18 @@ public class NetworkUtilities {
 		}
 	}
 	
-	public static String makeParameters() {
-//		if (getPatientID().equals(null)) {
+	public static String makeParameter(String key, String value){
+		return "&" + key + "=" + value;
+	}
+	
+	public static String makeDefaultParameters() {
+		if (getPatientID().equals(null)) {
+			//TODO: this is debug code
 			return "&patient_id=" + "test" + "&password="  + "password" +  "&device_id=" + "test_device";
-//		} else {
-//		
-//			String patientID = getPatientID();
-//			String password = getUserPassword();
-//			String androidId = DeviceInfo.getAndroidID();
-//			
-//			return "patient_id=" + patientID +
-//					"&password=" + password + 
-//					"&device_id=" + androidId;
-//		}
+		} else {
+			return  makeParameter("patient_id", patientID ) + 
+					makeParameter("password", password) + 
+					makeParameter("device_id", DeviceInfo.getAndroidID() );
+		}
 	}
 }
