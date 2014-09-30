@@ -12,12 +12,6 @@ import android.util.Log;
 //IMEI: phone SIM identifier.
 //android uuid
 
-
-//TODO: Eli/Dori. update documentation.
-//needs to grab data on first device run, and use that to construct a unique identifying  blob to send to the server.
-//this blob will uniquely identify the advice, and assist in pushing the user to the correct actions if they
-//have a new phone, if they have a new phone number, etc.  all identifying data must be hashed.
-//this blob may need to be queryable from the server, it should be unique to each user.
 /**
  * This is a class that NEEDS to be instantiated in the background process. In order to get the Android ID, the class needs
  * Context. Once instantiated, the class assigns two variables for AndroidID and BluetoothMAC. Once they are instantiated,

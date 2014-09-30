@@ -59,8 +59,8 @@ public class NetworkUtilities {
 
 	//todo: remove this hardcoded...
 	public static String getPatientID() {
-		return "steve";
-//		return patientID;
+//		return "steve";
+		return patientID;
 		
 	}
 	
@@ -203,5 +203,20 @@ public class NetworkUtilities {
 		case (502) : return "Please connect to the internet and try again";
 		default : return "Something went wrong...";
 		}
+	}
+	
+	public static String makeParameters() {
+//		if (getPatientID().equals(null)) {
+			return "&patient_id=" + "test" + "&password="  + "password" +  "&device_id=" + "test_device";
+//		} else {
+//		
+//			String patientID = getPatientID();
+//			String password = getUserPassword();
+//			String androidId = DeviceInfo.getAndroidID();
+//			
+//			return "patient_id=" + patientID +
+//					"&password=" + password + 
+//					"&device_id=" + androidId;
+//		}
 	}
 }
