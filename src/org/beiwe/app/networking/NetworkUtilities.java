@@ -161,14 +161,11 @@ public class NetworkUtilities {
 	 * @param responseCode
 	 * @return String to be displayed on the Alert in case of a problem
 	 */
-	public static String handleServerResponses (Integer responseCode) {
-		switch (responseCode) {
-		case (200) : return "OK";
-		case (403) : return "Patient ID did not match Password on the server";
-		case (405) : return "Phone is not registered to this user. Please contact research staff";
-		case (502) : return "Please connect to the internet and try again";
-		default : return "Something went wrong...";
-		}
+	public static String handleServerResponses (String responseCode) {
+		if (responseCode.equals("200")) {return "OK";}
+		else if (responseCode.equals("403")) {return "Patient ID did not match Password on the server";}
+		else if (responseCode.equals("405")) {return "Phone is not registered to this user. Please contact research staff";}
+		else { return "Please connect to the internet and try again";}
 	}
 	
 	public static String makeParameter(String key, String value){
@@ -176,8 +173,9 @@ public class NetworkUtilities {
 	}
 	
 	public static String makeDefaultParameters() {
-		if (getPatientID().equals(null)) {
+		if (getPatientID() == null) {
 			//TODO: this is debug code
+			Log.i("Something", "Anything");
 			return "&patient_id=" + "test" + "&password="  + "password" +  "&device_id=" + "test_device";
 		} else {
 			return  makeParameter("patient_id", patientID ) + 

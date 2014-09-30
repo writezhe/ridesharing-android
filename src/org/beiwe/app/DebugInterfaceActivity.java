@@ -219,6 +219,6 @@ public class DebugInterfaceActivity extends Activity {
 	}
 	
 	public void sendPostToTestURL(View view) {
-		PostRequestFileUpload.make_request("http://beiwe.org/test");
+		PostRequestFileUpload.make_request(NetworkUtilities.makeDefaultParameters(), "http://beiwe.org/test");
 	}
 }

@@ -1,19 +1,26 @@
 package org.beiwe.app.ui;
 
+import java.util.List;
+
 import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.R;
 import org.beiwe.app.networking.NetworkUtilities;
+import org.beiwe.app.networking.PostRequestFileUpload;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 
 /**Activity used to log a user in to the application for the first time. This activity should only be called on ONCE,
@@ -28,6 +35,9 @@ public class RegisterActivity extends Activity {
 	private EditText password;
 	private EditText passwordRepeat;
 	private LoginSessionManager session;
+	private ProgressBar bar;
+	private String response;
+	private Activity mActivity;
 
 	/** Users will go into this activity first to register information on the phone and on the server. */
 	@Override
@@ -53,7 +63,7 @@ public class RegisterActivity extends Activity {
 	 * Right now it does simple checks to see that the user actually inserted a value.
 	 * @param view */
 	@SuppressLint("ShowToast")
-	public void registrationSequence(View view) {
+	public synchronized void registrationSequence(View view) {
 		String userIDStr = userID.getText().toString();
 		String passwordStr = password.getText().toString();
 		String passwordRepeatStr = passwordRepeat.getText().toString();
@@ -67,18 +77,34 @@ public class RegisterActivity extends Activity {
 		} else if (!passwordRepeatStr.equals(passwordStr)) {
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.password_mismatch), this);
 		} else {
+			setActivity(this);
 			Log.i("RegisterActivity", "Attempting to create a login session");
 			session.createLoginSession(userIDStr, EncryptionEngine.hash(passwordStr));
-			NetworkUtilities.pushIdentifyingData(userIDStr, EncryptionEngine.hash(passwordStr));
-			Log.i("RegisterActivity", "Registration complete, attempting to start DebugInterfaceActivity");
-			startActivity(new Intent(appContext, DebugInterfaceActivity.class));
-			finish();
-//			 TODO: This is faulty because it encodes in Hex
-//			int response = NetworkUtilities.checkPasswordsIdentical(userIDStr, EncryptionEngine.hash( EncryptionEngine.hash( passwordStr ) ) );
-//			
-//			Log.i("RegisterActivity", "" + response);
+			setUpProgressBar();
+			makeNetworkRequest();
 		}
 
+		
+		/*
+		 * Psuedocode for Registration:
+		 * saveStuffToPhone(userIDstr, encryptedPassword) (isRegistered = NO)
+		 * Async push to server:
+		 * 		doInBackground:
+		 * 			parameters(bluetoothID)
+		 * 			postRequest(parameters, registerURL)
+		 * 			return getResponse()
+		 * 
+		 * 		onPostExecute:
+		 * 			If 200:
+		 * 				startActivity(MainMenuActivity)
+		 * 			Else:
+		 * 				error = NetworkUtilities.handleResponse(response)
+		 * 				AlertsManager.displayAlert(error)
+		 * 
+		 * 		
+		 * 
+		 */
+		
 		/*
 		 * if user registration is valid
 		 * request key
@@ -98,4 +124,56 @@ public class RegisterActivity extends Activity {
 		// dns lookup errors
 		// I'm a teapot errors?
 	}
+	
+	public void makeNetworkRequest() {
+		RegisterPhoneLoader loader = new RegisterPhoneLoader();
+		loader.execute();
+	}
+	
+	public void setUpProgressBar() {
+		bar = (ProgressBar) findViewById(R.id.progressBar);
+
+	}
+	
+	private class RegisterPhoneLoader extends AsyncTask<Void, Void, Void>{
+		
+		@Override
+		protected void onPreExecute() {
+			bar.setVisibility(View.VISIBLE);
+		}
+		
+		@Override
+		protected Void doInBackground(Void... arg0) {
+			String parameters = "&patient_id=" + userID.getText().toString() + 
+					"&password="  + password.getText().toString() +  
+					"&device_id=" + "test_device"; 
+			response = PostRequestFileUpload.make_request_on_async_thread(parameters, "http://beiwe.org/test");
+			Log.i("RegisterActivity", "RESPONSE = " + response);
+			return null;
+		} 
+		
+		@Override
+		protected void onPostExecute(Void result) { // Indentation 2
+			bar.setVisibility(View.GONE);
+			if (response.equals("200")) { // Indentation 3
+				startActivity(new Intent(appContext, DebugInterfaceActivity.class));
+				finish();				
+			} else { // ...
+				getCurrentActivity().runOnUiThread(new Runnable() {
+					public void run() {
+						AlertsManager.showAlert(NetworkUtilities.handleServerResponses(response), getCurrentActivity()); // Indentation ZOMG... Ewww Urgghhhhh.
+					}
+				});
+			}
+		}
+	}
+	
+	public Activity getCurrentActivity() {
+		return mActivity;
+	}
+	
+	public void setActivity(Activity activity) {
+		mActivity = activity;
+	}
+
 }
