@@ -7,10 +7,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import android.util.Log;
 
@@ -93,54 +95,70 @@ public class PostRequestFileUpload {
 	 * @param connection
 	 * @return serverResponseCode
 	 */
-	public static void make_request( final String url ) {
+	public static String make_request(final String parameters, final String url ) {
 		ExecutorService executor = Executors.newFixedThreadPool(1);
 		Callable<Integer> new_thread = new Callable<Integer>() {
-			
+			//#FIXME: this is entirely unhandled, there is no response back to the regular code based on execution of the callable tast, anything using this should swap over to the async task.
 			@Override
 			public Integer call() throws Exception {
-				sendPostRequest( new URL(url) );
-				return 5;
+				doPostRequest( parameters, new URL(url) );
+				return 0;
 			}
 		};
-		
 		executor.submit(new_thread);
+		return "5";
 	}
 	
-	public static String sendPostRequest(URL uploadUrl) throws IOException {
+	public static String make_request_on_async_thread( String parameters, String url ) {
 		
-
-//		String parameters = "patientID=" + patientID + "&pwd=" + password + "&androidID=" + androidInfo;
-		// Create a new HttpURLConnection and set its parameters
-		HttpURLConnection connection = (HttpURLConnection) uploadUrl.openConnection();
-		connection.setUseCaches(false);
-		connection.setDoOutput(true);
-		connection.setRequestMethod("POST");
-		connection.setRequestProperty("Connection", "Keep-Alive");
-		connection.setRequestProperty("Cache-Control", "no-cache");		
-		connection.setDoOutput(true);
-		
-		String parameters = NetworkUtilities.makeParameters();
-		
-		Log.i("POSTRequest", parameters);
-			
-		DataOutputStream request = new DataOutputStream(connection.getOutputStream());
-		request.writeUTF(parameters);
-		request.flush();
-		request.close();
-		
-		
-		Log.i("POSTREQUESTFILEUPLOAD", "MESSAGE = " + connection.getResponseMessage());
-		Log.i("POSTREQUESTFILEUPLOAD", "CODE = " + connection.getResponseCode());
-		
-		InputStreamReader response = new InputStreamReader(connection.getInputStream());
-		int c;
-		StringBuilder builder = new StringBuilder();
-		while ((c = response.read()) != -1) {
-			builder.append((char) c);
-			Log.i("POSTREQUEST", builder.toString());
+		try {
+			return doPostRequest( parameters, new URL(url) );
+		} catch (MalformedURLException e) {
+			Log.e("PosteRequestFileUpload", "malformed URL");
+			e.printStackTrace(); //
 		}
+		return ""; //FIXME: Eli/Dori.  This is terrible, 
+	}
+	
+	private static String doPostRequest(String parameters, URL uploadUrl)  {
 		
-		return builder.toString();
+		// Create a new HttpURLConnection and set its parameters
+		HttpURLConnection connection;
+		try {
+			connection = (HttpURLConnection) uploadUrl.openConnection();
+		
+			connection.setUseCaches(false);
+			connection.setDoOutput(true);
+			connection.setRequestMethod("POST");
+			connection.setRequestProperty("Connection", "Keep-Alive");
+			connection.setRequestProperty("Cache-Control", "no-cache");		
+					
+			Log.i("POSTRequest", NetworkUtilities.makeDefaultParameters() );
+				
+			DataOutputStream request = new DataOutputStream(connection.getOutputStream());
+			request.writeUTF( NetworkUtilities.makeDefaultParameters() );
+			request.writeUTF( parameters );
+			request.flush();
+			request.close();
+			
+			Log.i("POSTREQUESTFILEUPLOAD", "MESSAGE = " + connection.getResponseMessage());
+			Log.i("POSTREQUESTFILEUPLOAD", "CODE = " + connection.getResponseCode());
+			
+			InputStreamReader response = new InputStreamReader(connection.getInputStream());
+			int c;
+			StringBuilder builder = new StringBuilder();
+			while ((c = response.read()) != -1) {
+				builder.append((char) c);
+				Log.i("POSTREQUEST", builder.toString());
+			}
+			
+			return builder.toString();
+		
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.exit(1);
+		}
+		return null;
 	}
 }
