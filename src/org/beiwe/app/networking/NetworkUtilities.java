@@ -35,6 +35,7 @@ public class NetworkUtilities {
 		
 		LoginSessionManager session = new LoginSessionManager(appContext);
 		patientID = session.getUserDetails().get(LoginSessionManager.KEY_ID);
+		Log.i("NetworkUtilities", patientID);
 		password = session.getUserDetails().get(LoginSessionManager.KEY_PASSWORD);
 	}
 	
@@ -68,7 +69,7 @@ public class NetworkUtilities {
 	//	also remove this hardcoding.
 	public static String getUserPassword() {
 //		return EncryptionEngine.hash(password);
-		return EncryptionEngine.hash("password");
+		return EncryptionEngine.hash(password);
 	}
 
 
@@ -169,18 +170,20 @@ public class NetworkUtilities {
 	}
 	
 	public static String makeParameter(String key, String value){
-		return "&" + key + "=" + value;
+		return key + "=" + value;
 	}
 	
 	public static String makeDefaultParameters() {
-		if (getPatientID() == null) {
-			//TODO: this is debug code
-			Log.i("Something", "Anything");
-			return "&patient_id=" + "test" + "&password="  + "password" +  "&device_id=" + "test_device";
-		} else {
-			return  makeParameter("patient_id", patientID ) + 
-					makeParameter("password", password) + 
-					makeParameter("device_id", DeviceInfo.getAndroidID() );
-		}
+		StringBuilder sentParameters = new StringBuilder();
+		sentParameters.append( makeParameter("patient_id", getPatientID() ) + "&"
+				+ makeParameter("password", getUserPassword() ) + "&"
+				+ makeParameter("device_id", DeviceInfo.getAndroidID() ) );
+		return sentParameters.toString();
+	}
+	
+	public static String makeFirstTimeParameters() {
+		StringBuilder sentParameters = new StringBuilder();
+		sentParameters.append( makeParameter("bluetooth_id", DeviceInfo.getBlootoothMAC() ) );
+		return sentParameters.append("&" + makeDefaultParameters()).toString();
 	}
 }

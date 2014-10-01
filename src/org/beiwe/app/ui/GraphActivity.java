@@ -60,8 +60,9 @@ public class GraphActivity extends Activity {
 		HashMap<String, String> userDetails = sessionManager.getUserDetails();
 		beiweGraph += userDetails.get(LoginSessionManager.KEY_ID) + "/graph";
 		Log.i("Graph", userDetails.get(LoginSessionManager.KEY_ID));
-		String postData = "patientID=" + userDetails.get(LoginSessionManager.KEY_ID)
-				+ "&pwd=" + userDetails.get(LoginSessionManager.KEY_PASSWORD);
+//		String postData = "patientID=" + userDetails.get(LoginSessionManager.KEY_ID)
+//				+ "&pwd=" + userDetails.get(LoginSessionManager.KEY_PASSWORD); TODO: Debug
+		String postData = "patient_id=mama&password=aaa";
 
 		browser.postUrl(beiweGraph, EncodingUtils.getBytes(postData, "BASE64"));
 	}

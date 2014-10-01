@@ -77,52 +77,14 @@ public class RegisterActivity extends Activity {
 		} else if (!passwordRepeatStr.equals(passwordStr)) {
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.password_mismatch), this);
 		} else {
+			NetworkUtilities util = new NetworkUtilities(appContext);
 			setActivity(this);
 			Log.i("RegisterActivity", "Attempting to create a login session");
+			Log.i("RegisterActivity", userIDStr);
 			session.createLoginSession(userIDStr, EncryptionEngine.hash(passwordStr));
 			setUpProgressBar();
 			makeNetworkRequest();
 		}
-
-		
-		/*
-		 * Psuedocode for Registration:
-		 * saveStuffToPhone(userIDstr, encryptedPassword) (isRegistered = NO)
-		 * Async push to server:
-		 * 		doInBackground:
-		 * 			parameters(bluetoothID)
-		 * 			postRequest(parameters, registerURL)
-		 * 			return getResponse()
-		 * 
-		 * 		onPostExecute:
-		 * 			If 200:
-		 * 				startActivity(MainMenuActivity)
-		 * 			Else:
-		 * 				error = NetworkUtilities.handleResponse(response)
-		 * 				AlertsManager.displayAlert(error)
-		 * 
-		 * 		
-		 * 
-		 */
-		
-		/*
-		 * if user registration is valid
-		 * request key
-		 * wait on that request
-		 * write key file.
-		 * run key file test function.
-		 * if key tests pass... start background service.
-		 */
-
-		//TODO: Eli. add functions in the server to check and return http codes for each case.
-		// invalid patient id
-		// valid patient id
-		// valid patient id, but another device is already registered
-
-		//TODO: Eli/Josh/Eli. handle other types of network error and message display.
-		// server errors (500 codes)
-		// dns lookup errors
-		// I'm a teapot errors?
 	}
 	
 	public void makeNetworkRequest() {
@@ -132,7 +94,6 @@ public class RegisterActivity extends Activity {
 	
 	public void setUpProgressBar() {
 		bar = (ProgressBar) findViewById(R.id.progressBar);
-
 	}
 	
 	private class RegisterPhoneLoader extends AsyncTask<Void, Void, Void>{
@@ -144,10 +105,9 @@ public class RegisterActivity extends Activity {
 		
 		@Override
 		protected Void doInBackground(Void... arg0) {
-			String parameters = "&patient_id=" + userID.getText().toString() + 
-					"&password="  + password.getText().toString() +  
-					"&device_id=" + "test_device"; 
-			response = PostRequest.make_request_on_async_thread(parameters, "http://beiwe.org/test");
+//			String parameters = NetworkUtilities.makeFirstTimeParameters();
+			String parameters = "bluetooth_id=test_device&patient_id=test&password=password&device_id=test_device";
+			response = PostRequest.make_request_on_async_thread(parameters, "http://beiwe.org/register_user");
 			Log.i("RegisterActivity", "RESPONSE = " + response);
 			return null;
 		} 
@@ -156,6 +116,7 @@ public class RegisterActivity extends Activity {
 		protected void onPostExecute(Void result) { // Indentation 2
 			bar.setVisibility(View.GONE);
 			if (response.equals("200")) { // Indentation 3
+				session.setRegistered(true);
 				startActivity(new Intent(appContext, DebugInterfaceActivity.class));
 				finish();				
 			} else { // ...

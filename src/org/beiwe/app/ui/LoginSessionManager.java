@@ -53,9 +53,6 @@ public class LoginSessionManager {
     * @param password
     */
     public void createLoginSession(String userID, String password){
-    	if (!isRegistered()) {
-        	editor.putBoolean(IS_REGISTERED, true);
-    	}
     	editor.putBoolean(IS_LOGIN, true);
         editor.putString(KEY_ID, userID);
         editor.putString(KEY_PASSWORD, password);
@@ -136,5 +133,9 @@ public class LoginSessionManager {
 	public void logoutUserPassive() {
 		editor.putBoolean(IS_LOGIN, false);
 		editor.commit();		
+	}
+	
+	public void setRegistered(boolean value) {
+		editor.putBoolean(IS_LOGIN, value);
 	}
 }

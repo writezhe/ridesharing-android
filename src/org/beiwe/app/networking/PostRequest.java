@@ -1,5 +1,6 @@
 package org.beiwe.app.networking;
 
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -12,7 +13,6 @@ import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import android.util.Log;
 
@@ -133,21 +133,40 @@ public class PostRequest {
 			connection.setConnectTimeout(3000);
 			connection.setReadTimeout(5000);
 			
-			Log.i("POSTRequest", NetworkUtilities.makeDefaultParameters() );
+			Log.i("POSTRequest", parameters );
 				
 			DataOutputStream request = new DataOutputStream(connection.getOutputStream());
-			request.write( NetworkUtilities.makeDefaultParameters().getBytes() );
 			request.write( parameters.getBytes() );
 			request.flush();
 			request.close();
 			
+			if (connection.getResponseCode() == 200) {
+				saveReturnedPublicKey(connection);
+			}
+			
 			return "" + connection.getResponseCode();
 		
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.exit(1);
 		}
 		return null;
+	}
+
+	private static void saveReturnedPublicKey(HttpURLConnection connection) {
+		try {
+			DataInputStream inputStream = new DataInputStream( connection.getInputStream() );
+			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream ) );
+			
+			String line;
+			StringBuilder response = new StringBuilder();
+			while ( (line = reader.readLine() ) != null) {
+				response.append(line);
+			}
+			Log.i("POSTREQUEST", "Returned Data = " + response.toString()); // TODO: Dori, depracate - debug code
+			
+		} catch(IOException e) {
+			e.printStackTrace(); // Really bad....
+		}
 	}
 }
