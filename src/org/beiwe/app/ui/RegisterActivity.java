@@ -5,7 +5,7 @@ import java.util.List;
 import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.R;
 import org.beiwe.app.networking.NetworkUtilities;
-import org.beiwe.app.networking.PostRequestFileUpload;
+import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
@@ -147,7 +147,7 @@ public class RegisterActivity extends Activity {
 			String parameters = "&patient_id=" + userID.getText().toString() + 
 					"&password="  + password.getText().toString() +  
 					"&device_id=" + "test_device"; 
-			response = PostRequestFileUpload.make_request_on_async_thread(parameters, "http://beiwe.org/test");
+			response = PostRequest.make_request_on_async_thread(parameters, "http://beiwe.org/test");
 			Log.i("RegisterActivity", "RESPONSE = " + response);
 			return null;
 		} 

@@ -136,23 +136,12 @@ public class PostRequest {
 			Log.i("POSTRequest", NetworkUtilities.makeDefaultParameters() );
 				
 			DataOutputStream request = new DataOutputStream(connection.getOutputStream());
-			request.writeUTF( NetworkUtilities.makeDefaultParameters() );
-			request.writeUTF( parameters );
+			request.write( NetworkUtilities.makeDefaultParameters().getBytes() );
+			request.write( parameters.getBytes() );
 			request.flush();
 			request.close();
 			
-			Log.i("POSTREQUESTFILEUPLOAD", "MESSAGE = " + connection.getResponseMessage());
-			Log.i("POSTREQUESTFILEUPLOAD", "CODE = " + connection.getResponseCode());
-			
-			InputStreamReader response = new InputStreamReader(connection.getInputStream());
-			int c;
-			StringBuilder builder = new StringBuilder();
-			while ((c = response.read()) != -1) {
-				builder.append((char) c);
-				Log.i("POSTREQUEST", builder.toString());
-			}
-			
-			return builder.toString();
+			return "" + connection.getResponseCode();
 		
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
