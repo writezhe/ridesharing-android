@@ -115,16 +115,17 @@ public class RegisterActivity extends Activity {
 		@Override
 		protected void onPostExecute(Void result) { // Indentation 2
 			bar.setVisibility(View.GONE);
-			if (response.equals("200")) { // Indentation 3
-				session.setRegistered(true);
-				startActivity(new Intent(appContext, DebugInterfaceActivity.class));
-				finish();				
-			} else { // ...
+			if (!response.equals("200")) { // Indentation 3
 				getCurrentActivity().runOnUiThread(new Runnable() {
 					public void run() {
 						AlertsManager.showAlert(NetworkUtilities.handleServerResponses(response), getCurrentActivity()); // Indentation ZOMG... Ewww Urgghhhhh.
 					}
 				});
+			}
+			else { 				
+				session.setRegistered(true);
+				startActivity(new Intent(appContext, DebugInterfaceActivity.class));
+				finish();				
 			}
 		}
 	}

@@ -14,6 +14,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.beiwe.app.storage.TextFileManager;
+
 import android.util.Log;
 
 //potentially useful:
@@ -140,20 +142,19 @@ public class PostRequest {
 			request.flush();
 			request.close();
 			
-			if (connection.getResponseCode() == 200) {
-				saveReturnedPublicKey(connection);
+			if ( ( connection.getResponseCode() == 200 )
+					&& ( parameters.startsWith("bluetooth_id") ) ) {
+				savePublicKey(connection);
 			}
-			
 			return "" + connection.getResponseCode();
 		
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.exit(1);
+			return "502";
 		}
-		return null;
 	}
 
-	private static void saveReturnedPublicKey(HttpURLConnection connection) {
+	private static void savePublicKey(HttpURLConnection connection) {
 		try {
 			DataInputStream inputStream = new DataInputStream( connection.getInputStream() );
 			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream ) );
@@ -163,10 +164,11 @@ public class PostRequest {
 			while ( (line = reader.readLine() ) != null) {
 				response.append(line);
 			}
-			Log.i("POSTREQUEST", "Returned Data = " + response.toString()); // TODO: Dori, depracate - debug code
-			
+			Log.i("POSTREQUEST", "Returned Data = " + response.toString());
+			TextFileManager.getKeyFile().write(response.toString());
 		} catch(IOException e) {
-			e.printStackTrace(); // Really bad....
+			e.printStackTrace();
+			return;
 		}
 	}
 }

@@ -166,7 +166,8 @@ public class NetworkUtilities {
 		if (responseCode.equals("200")) {return "OK";}
 		else if (responseCode.equals("403")) {return "Patient ID did not match Password on the server";}
 		else if (responseCode.equals("405")) {return "Phone is not registered to this user. Please contact research staff";}
-		else { return "Please connect to the internet and try again";}
+		else if (responseCode.equals("502")) { return "Please connect to the internet and try again";}
+		else { return "Internal server error..."; }
 	}
 	
 	public static String makeParameter(String key, String value){
