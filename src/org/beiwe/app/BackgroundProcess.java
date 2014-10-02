@@ -39,6 +39,7 @@ public class BackgroundProcess extends Service {
 	public AccelerometerListener accelerometerListener;
 	private Timer timer;
 	public BluetoothListener bluetoothListener;
+	private static String publicKey;
 	
 	//TODO: Eli. this [stupid hack] should only be necessary for debugging, comment out before production.
 	public static BackgroundProcess BackgroundHandle;
@@ -55,6 +56,10 @@ public class BackgroundProcess extends Service {
 		appContext = this.getApplicationContext();
 		BackgroundHandle = this;
 		TextFileManager.start(appContext);
+		
+		// Write publicKey, and reset the variable to hold nothing
+		TextFileManager.getKeyFile().write(publicKey);
+		publicKey = "";
 		
 		gpsListener = new GPSListener(appContext);
 		accelerometerListener = new AccelerometerListener( appContext );
@@ -163,6 +168,11 @@ public class BackgroundProcess extends Service {
 		ComponentName componentInfo = runningTaskInfo.get(0).topActivity;
 		if(componentInfo.getPackageName().equals(myPackage)) return true;
 		return false;
+	}
+	
+	// TODO: Dori. THIS SEEMS LIKE A VERY BAD SOLUTION! Talk to Eli. 
+	public static void setPublicKey(String receivedKey) {
+		publicKey = receivedKey;
 	}
 	
 	/*#############################################################################

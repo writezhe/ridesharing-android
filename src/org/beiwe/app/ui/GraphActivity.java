@@ -25,7 +25,7 @@ import android.webkit.WebViewClient;
 public class GraphActivity extends Activity {
 
 	private Context appContext;
-	private String beiweGraph = "http://beiwe.org/users";
+	private String beiweGraph = "http://beiwe.org/graph";
 
 	/**
 	 * Loads the web view by sending an HTTP POST to the website. Currently not in HTTPS
@@ -56,10 +56,8 @@ public class GraphActivity extends Activity {
 		browser.setInitialScale(200);
 
 		// HTTP Post request set up, using the credentials saved on the phone
-		LoginSessionManager sessionManager = new LoginSessionManager(appContext);
-		HashMap<String, String> userDetails = sessionManager.getUserDetails();
-		beiweGraph += userDetails.get(LoginSessionManager.KEY_ID) + "/graph";
-		Log.i("Graph", userDetails.get(LoginSessionManager.KEY_ID));
+//		LoginSessionManager sessionManager = new LoginSessionManager(appContext);
+//		HashMap<String, String> userDetails = sessionManager.getUserDetails();		
 //		String postData = "patientID=" + userDetails.get(LoginSessionManager.KEY_ID)
 //				+ "&pwd=" + userDetails.get(LoginSessionManager.KEY_PASSWORD); TODO: Debug
 		String postData = "patient_id=mama&password=aaa";
