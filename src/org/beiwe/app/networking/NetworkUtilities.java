@@ -12,9 +12,9 @@ import java.util.concurrent.Executors;
 import org.apache.http.client.methods.HttpPost;
 import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
+import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.TextFileManager;
-import org.beiwe.app.ui.LoginSessionManager;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -177,7 +177,8 @@ public class NetworkUtilities {
 	public static String makeDefaultParameters() {
 		StringBuilder sentParameters = new StringBuilder();
 		sentParameters.append( makeParameter("patient_id", getPatientID() ) + "&"
-				+ makeParameter("password", getUserPassword() ) + "&"
+//				+ makeParameter("password", getUserPassword() ) + "&"
+				+ makeParameter("password", "K70HX2UOKA") + "&"
 				+ makeParameter("device_id", DeviceInfo.getAndroidID() ) );
 		return sentParameters.toString();
 	}

@@ -17,9 +17,9 @@ import org.beiwe.app.listeners.CallLogger;
 import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
+import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.survey.SurveyAnswersRecorder;
 import org.beiwe.app.survey.SurveyTimingsRecorder;
-import org.beiwe.app.ui.LoginSessionManager;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -102,7 +102,7 @@ public class TextFileManager {
 	 * @param appContext a Context, provided by the app. */
 	public static synchronized void start(Context appContext){
 		//if already started, flip out.
-		//TODO: Eli. test this?  consider removing the pointer exception and just exiting
+		//TODO: Eli. Make this not crash the program
 		if ( started ){ throw new NullPointerException("You may only start the FileManager once."); }
 		else { started = true; }
 		

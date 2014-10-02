@@ -7,6 +7,7 @@ import java.util.HashMap;
 import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.R;
 import org.beiwe.app.networking.NetworkUtilities;
+import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
@@ -114,7 +115,7 @@ public class LoginActivity extends Activity {
 	 * @param view
 	 */
 	public void forgotPassword(View view) {
-		startActivity(new Intent(appContext, ResetPassword.class));
+		startActivity(new Intent(appContext, ResetPasswordActivity.class));
 		finish();
 	}
 }

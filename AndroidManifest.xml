@@ -118,7 +118,7 @@
         </receiver>
 
         <activity
-            android:name="org.beiwe.app.ui.ForgotPassword"
+            android:name="org.beiwe.app.ui.ForgotPasswordActivity"
             android:label="@string/title_activity_forgot_password" >
         </activity>
     </application>

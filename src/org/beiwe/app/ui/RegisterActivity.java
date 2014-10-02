@@ -6,7 +6,9 @@ import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.R;
 import org.beiwe.app.networking.NetworkUtilities;
 import org.beiwe.app.networking.PostRequest;
+import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.EncryptionEngine;
+import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
 import android.annotation.SuppressLint;
@@ -38,6 +40,7 @@ public class RegisterActivity extends Activity {
 	private ProgressBar bar;
 	private String response;
 	private Activity mActivity;
+
 
 	/** Users will go into this activity first to register information on the phone and on the server. */
 	@Override
@@ -77,13 +80,13 @@ public class RegisterActivity extends Activity {
 		} else if (!passwordRepeatStr.equals(passwordStr)) {
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.password_mismatch), this);
 		} else {
-			NetworkUtilities util = new NetworkUtilities(appContext);
 			setActivity(this);
-			Log.i("RegisterActivity", "Attempting to create a login session");
-			Log.i("RegisterActivity", userIDStr);
 			session.createLoginSession(userIDStr, EncryptionEngine.hash(passwordStr));
 			setUpProgressBar();
+			NetworkUtilities util = new NetworkUtilities(appContext);
 			makeNetworkRequest();
+			Log.i("RegisterActivity", "Attempting to create a login session");
+			Log.i("RegisterActivity", userIDStr);
 		}
 	}
 	
@@ -105,8 +108,7 @@ public class RegisterActivity extends Activity {
 		
 		@Override
 		protected Void doInBackground(Void... arg0) {
-//			String parameters = NetworkUtilities.makeFirstTimeParameters();
-			String parameters = "bluetooth_id=test_device&patient_id=test&password=password&device_id=test_device";
+			String parameters = NetworkUtilities.makeFirstTimeParameters();
 			response = PostRequest.make_request_on_async_thread(parameters, "http://beiwe.org/register_user");
 			Log.i("RegisterActivity", "RESPONSE = " + response);
 			return null;
@@ -115,17 +117,18 @@ public class RegisterActivity extends Activity {
 		@Override
 		protected void onPostExecute(Void result) { // Indentation 2
 			bar.setVisibility(View.GONE);
-			if (!response.equals("200")) { // Indentation 3
+			if (response.equals("200")) { // Indentation 3
+				session.setRegistered(true);
+				
+				// Write publicKey, and reset the variable to hold nothing
+				startActivity(new Intent(appContext, DebugInterfaceActivity.class));
+				finish();
+			} else { 				
 				getCurrentActivity().runOnUiThread(new Runnable() {
 					public void run() {
 						AlertsManager.showAlert(NetworkUtilities.handleServerResponses(response), getCurrentActivity()); // Indentation ZOMG... Ewww Urgghhhhh.
 					}
 				});
-			}
-			else { 				
-				session.setRegistered(true);
-				startActivity(new Intent(appContext, DebugInterfaceActivity.class));
-				finish();				
 			}
 		}
 	}
@@ -137,5 +140,7 @@ public class RegisterActivity extends Activity {
 	public void setActivity(Activity activity) {
 		mActivity = activity;
 	}
+	
+	
 
 }

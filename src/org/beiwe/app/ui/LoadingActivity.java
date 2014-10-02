@@ -6,7 +6,9 @@ import java.security.NoSuchAlgorithmException;
 
 import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
+import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.EncryptionEngine;
+import org.beiwe.app.storage.TextFileManager;
 
 import android.app.Activity;
 import android.content.Context;
@@ -47,7 +49,12 @@ public class LoadingActivity extends Activity{
 
 		if (isAbleToHash()) {
 			session.checkLogin();
-			// TODO: Dori. Splash Screen goes here.
+			try {
+				TextFileManager.getAccelFile();
+			} catch (NullPointerException e) {
+				TextFileManager.start(appContext);
+				Log.i("LoadingActivity", "files created");
+			}
 			finish();
 		} else {
 			System.exit(0);

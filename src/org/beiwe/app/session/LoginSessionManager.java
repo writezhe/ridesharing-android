@@ -1,8 +1,10 @@
-package org.beiwe.app.ui;
+package org.beiwe.app.session;
  
 import java.util.HashMap;
 
 import org.beiwe.app.DebugInterfaceActivity;
+import org.beiwe.app.ui.LoginActivity;
+import org.beiwe.app.ui.RegisterActivity;
 
 import android.content.Context;
 import android.content.Intent;

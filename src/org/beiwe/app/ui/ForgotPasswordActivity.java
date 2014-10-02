@@ -6,6 +6,7 @@ import org.beiwe.app.R;
 import org.beiwe.app.R.id;
 import org.beiwe.app.R.layout;
 import org.beiwe.app.networking.NetworkUtilities;
+import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
@@ -16,7 +17,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-public class ForgotPassword extends Activity {
+public class ForgotPasswordActivity extends Activity {
 	
 	private Context appContext;
 	private LoginSessionManager session;

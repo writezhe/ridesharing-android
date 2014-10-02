@@ -9,12 +9,12 @@ import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.networking.FileDownloader;
 import org.beiwe.app.networking.NetworkUtilities;
 import org.beiwe.app.networking.PostRequest;
+import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.AudioRecorderActivity;
 import org.beiwe.app.survey.SurveyActivity;
 import org.beiwe.app.ui.AppNotifications;
-import org.beiwe.app.ui.LoginSessionManager;
 
 import android.app.Activity;
 import android.content.Context;

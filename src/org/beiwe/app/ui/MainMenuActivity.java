@@ -1,6 +1,7 @@
 package org.beiwe.app.ui;
 
 import org.beiwe.app.R;
+import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.survey.AudioRecorderActivity;
 
 import android.app.Activity;
@@ -61,7 +62,7 @@ public class MainMenuActivity extends Activity {
 	}
 	
 	public void resetPassword(View v) {
-		Intent resetPasswordIntent = new Intent(appContext, ResetPassword.class);
+		Intent resetPasswordIntent = new Intent(appContext, ResetPasswordActivity.class);
 		startActivity(resetPasswordIntent);
 	}
 }

@@ -5,6 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 import org.beiwe.app.R;
+import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
@@ -25,7 +26,7 @@ import android.widget.EditText;
  */
 
 @SuppressLint("ShowToast")
-public class ResetPassword extends Activity {
+public class ResetPasswordActivity extends Activity {
 	
 	private Context appContext;
 	private EditText oldPass;
