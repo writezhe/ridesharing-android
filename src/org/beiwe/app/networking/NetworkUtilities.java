@@ -178,7 +178,7 @@ public class NetworkUtilities {
 		StringBuilder sentParameters = new StringBuilder();
 		sentParameters.append( makeParameter("patient_id", getPatientID() ) + "&"
 //				+ makeParameter("password", getUserPassword() ) + "&"
-				+ makeParameter("password", "J4Q7ZCFQR8") + "&"
+				+ makeParameter("password", "aaa") + "&"
 				+ makeParameter("device_id", DeviceInfo.getAndroidID() ) );
 		return sentParameters.toString();
 	}

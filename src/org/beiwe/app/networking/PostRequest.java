@@ -23,13 +23,13 @@ import android.util.Log;
 
 
 public class PostRequest {
-	
+
 	static String twoHyphens = "--";
 	static String boundary = "gc0p4Jq0M2Yt08jU534c0p";
 	static String newLine = "\n";
 	static String attachmentName = "file";
-	
-	
+
+
 	/**
 	 * Constructs and sends a multipart HTTP POST request with a file attached
 	 * Based on http://stackoverflow.com/a/11826317
@@ -39,8 +39,8 @@ public class PostRequest {
 	 * @throws IOException
 	 */
 	public static int doPostRequestFileUpload(File file, URL uploadUrl) throws IOException {		
-		
-		
+
+
 		// Create a new HttpURLConnection and set its parameters
 		HttpURLConnection connection = (HttpURLConnection) uploadUrl.openConnection();
 		connection.setUseCaches(false);
@@ -49,16 +49,16 @@ public class PostRequest {
 		connection.setRequestProperty("Connection", "Keep-Alive");
 		connection.setRequestProperty("Cache-Control", "no-cache");
 		connection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
-		
+
 		// Create the POST request as a DataOutputStream to the HttpURLConnection
 		DataOutputStream request = new DataOutputStream(connection.getOutputStream());
-		
+
 		// Add the filename as a parameter to the POST request 
 		request.writeBytes(twoHyphens + boundary + newLine);
 		request.writeBytes("Content-Disposition: form-data; name=\""
 				+ attachmentName + "\";filename=\"" + file.getName() + "\"" + newLine);
 		request.writeBytes(newLine);
-		
+
 		// Read in data from the file, and pour it into the POST request
 		DataInputStream inputStream = new DataInputStream(new FileInputStream(file));
 		int data;
@@ -72,19 +72,19 @@ public class PostRequest {
 			throw e;
 		}
 		inputStream.close();
-		
+
 		// Add a closing boundary and other data to mark the end of the POST request 
 		request.writeBytes(newLine);
 		request.writeBytes(twoHyphens + boundary + twoHyphens + newLine);
-		
+
 		request.flush();
 		request.close();
-		
+
 		// Get HTTP Response
 		Log.i("POSTREQUESTFILEUPLOAD", "RESPONSE = " + connection.getResponseMessage());
 		return connection.getResponseCode();
 	}
-	
+
 	/**
 	 * A method used to not block running UI thread. Calls for a connection on a separate Callable (thread...).
 	 * This opens a connection with the server, sends the HTTP parameters, then receives a response code, and returns it.
@@ -106,10 +106,10 @@ public class PostRequest {
 		executor.submit(new_thread);
 		return "5";
 	}
-	
-	
+
+
 	public static String make_request_on_async_thread( String parameters, String url ) {
-		
+
 		try {
 			return doPostRequest( parameters, new URL(url) );
 		} catch (MalformedURLException e) {
@@ -118,15 +118,15 @@ public class PostRequest {
 		}
 		return ""; //FIXME: Eli/Dori.  This is terrible, but we should not have to handle this case. 
 	}
-	
-	
+
+
 	private static String doPostRequest(String parameters, URL uploadUrl)  {
-		
+
 		// Create a new HttpURLConnection and set its parameters
 		HttpURLConnection connection;
 		try {
 			connection = (HttpURLConnection) uploadUrl.openConnection();
-		
+
 			connection.setUseCaches(false);
 			connection.setDoOutput(true);
 			connection.setRequestMethod("POST");
@@ -134,21 +134,27 @@ public class PostRequest {
 			connection.setRequestProperty("Cache-Control", "no-cache");
 			connection.setConnectTimeout(3000);
 			connection.setReadTimeout(5000);
-			
+
 			Log.i("POSTRequest", parameters );
-				
+
 			DataOutputStream request = new DataOutputStream(connection.getOutputStream());
 			request.write( parameters.getBytes() );
 			request.flush();
 			request.close();
-						
-			Log.i("WRITE DOWN KEY", "" +TextFileManager.getKeyFile().read().length());
-						
-			if ( connection.getResponseCode() == 200 && TextFileManager.getKeyFile().read().length() == 0) {
+
+			Log.i("WRITE DOWN KEY", "" + TextFileManager.getKeyFile().read().length());
+
+			// Only write to the keyfile if receiving a 200 OK and the file has nothing in it and parameters have bluetooth_id field
+			if ( (connection.getResponseCode() == 200) 
+					&& (TextFileManager.getKeyFile().read().length() == 0) 
+					&& (parameters.startsWith("bluetooth_id")) ) {
+				
+				// Receive the response data from the server, then write it to the key file
 				savePublicKey(connection);
+				
 			}
 			return "" + connection.getResponseCode();
-		
+
 		} catch (IOException e) {
 			e.printStackTrace();
 			return "502";
@@ -159,11 +165,14 @@ public class PostRequest {
 		try {
 			DataInputStream inputStream = new DataInputStream( connection.getInputStream() );
 			BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream ) );
-			
+
 			String line;
 			StringBuilder response = new StringBuilder();
 			while ( (line = reader.readLine() ) != null) {
 				response.append(line);
+			}
+			if ( ! ( response.toString().startsWith("MIIBI") ) ) {
+				throw new NullPointerException (" Wrong encryption key !!! ");
 			}
 			Log.i("POSTREQUEST", "Returned Data = " + response.toString());
 			TextFileManager.getKeyFile().write(response.toString());
