@@ -49,10 +49,9 @@ public class LoadingActivity extends Activity{
 		DeviceInfo info = new DeviceInfo(appContext);
 
 		if (isAbleToHash()) {
-			if (BackgroundProcess.BackgroundHandle == null) {
+			if (BackgroundProcess.getBackgroundHandle() == null) {
 				TextFileManager.start(appContext);
 				Log.i("LoadingActivity", "files created");
-				
 			}
 		session.checkLogin();
 		finish();

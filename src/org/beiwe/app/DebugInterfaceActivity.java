@@ -99,11 +99,11 @@ public class DebugInterfaceActivity extends Activity {
 		TextFileManager.deleteEverything(); }
 	
 	public void toggleAccelerometer(View view) {
-		Boolean accel_state = BackgroundProcess.BackgroundHandle.accelerometerListener.toggle();
+		Boolean accel_state = BackgroundProcess.getBackgroundHandle().accelerometerListener.toggle();
 		Log.i("Toggle Accelerometer button pressed", "Accel state: " + accel_state.toString() ); }
 	
 	public void toggleGPS(View view) {
-		Boolean gps_state = BackgroundProcess.BackgroundHandle.gpsListener.toggle();
+		Boolean gps_state = BackgroundProcess.getBackgroundHandle().gpsListener.toggle();
 		Log.i("Toggle GPS button pressed", "GPS state: " + gps_state.toString() ); }
 	
 	public void signOut (View view) {
@@ -111,11 +111,11 @@ public class DebugInterfaceActivity extends Activity {
 		session.logoutUser();
 		finish(); }
 	
-	public void bluetoothButtonStart (View view){ BackgroundProcess.BackgroundHandle.bluetoothListener.enableBLEScan();	}
+	public void bluetoothButtonStart (View view){ BackgroundProcess.getBackgroundHandle().bluetoothListener.enableBLEScan();	}
 
-	public void bluetoothButtonStop (View view){ BackgroundProcess.BackgroundHandle.bluetoothListener.disableBLEScan();	}
+	public void bluetoothButtonStop (View view){ BackgroundProcess.getBackgroundHandle().bluetoothListener.disableBLEScan();	}
 	
-	public void buttonTimer(View view) { BackgroundProcess.BackgroundHandle.startTimers(); }
+	public void buttonTimer(View view) { BackgroundProcess.getBackgroundHandle().startTimers(); }
 	
 	public void notificationSender (View view) {
 		AppNotifications.displaySurveyNotification(appContext);

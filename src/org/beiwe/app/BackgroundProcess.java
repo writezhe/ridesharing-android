@@ -46,7 +46,13 @@ public class BackgroundProcess extends Service {
 	
 	//TODO: Eli. this [stupid hack] should only be necessary for debugging, comment out before production.
 	public static BackgroundProcess BackgroundHandle = null;
-		
+
+	public static BackgroundProcess getBackgroundHandle(){
+		if (BackgroundHandle != null) { return BackgroundHandle; }
+		Log.e("BackgroundProcess", "background process handle called for before background process had started." );
+		throw new NullPointerException();
+	}
+	
 	private void make_log_statement(String message) {
 		Log.i("BackgroundService", message);
 		Long javaTimeCode = System.currentTimeMillis();
