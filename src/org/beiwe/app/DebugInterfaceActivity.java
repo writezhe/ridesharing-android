@@ -197,17 +197,15 @@ public class DebugInterfaceActivity extends Activity {
 
 	public void testEncrypt (View view) {
 		Log.i("Debug..", TextFileManager.getKeyFile().read());
-//		write_public();
+		write_public();
 		String data = TextFileManager.getKeyFile().read();
 		Log.i("reading keyFile:", data );
 		
 		EncryptionEngine.readKey();
 
-		Log.i("something", "anything");
-
 		String encrypted = EncryptionEngine.encrypt("ThIs Is a TeSt");
-		Log.i("test encrypt", encrypted );
-		Log.i("test encrypt - length", "" + encrypted.length() );
+		Log.i("test encrypt - length:", "" + encrypted.length() );
+		Log.i("test encrypt - output:", encrypted );
 	}
 	
 	
