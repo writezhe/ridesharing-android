@@ -8,6 +8,7 @@ import org.beiwe.app.listeners.CallLogger;
 import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
+import org.beiwe.app.listeners.WifiListener;
 import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.TextFileManager;
 
@@ -39,6 +40,7 @@ public class BackgroundProcess extends Service {
 	public AccelerometerListener accelerometerListener;
 	private Timer timer;
 	public BluetoothListener bluetoothListener;
+	public WifiListener wifiListener;
 	
 	//TODO: Eli. this [stupid hack] should only be necessary for debugging, comment out before production.
 	public static BackgroundProcess BackgroundHandle = null;
@@ -73,6 +75,7 @@ public class BackgroundProcess extends Service {
 //		Log.i("androidID", DeviceInfo.androidID);
 //		Log.i("bluetoothMAC", DeviceInfo.bluetoothMAC);
 		startTimers();
+		wifiListener = new WifiListener(appContext);
 	}
 	
 	
@@ -207,6 +210,7 @@ public class BackgroundProcess extends Service {
 					sessionManager.logoutUser(); }
 				else { sessionManager.logoutUserPassive(); }
 			}
+			//TODO: add wifi scan timer.
 		}
 	};
 	

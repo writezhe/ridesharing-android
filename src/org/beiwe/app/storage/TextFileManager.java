@@ -17,6 +17,7 @@ import org.beiwe.app.listeners.CallLogger;
 import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
+import org.beiwe.app.listeners.WifiListener;
 import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.survey.SurveyAnswersRecorder;
 import org.beiwe.app.survey.SurveyTimingsRecorder;
@@ -53,6 +54,7 @@ public class TextFileManager {
 	private static TextFileManager callLog = null;
 	private static TextFileManager textsLog = null;
 	private static TextFileManager bluetoothLog = null;
+	private static TextFileManager wifiLog = null;
 
 	private static TextFileManager surveyTimings = null;
 	private static TextFileManager surveyAnswers = null;
@@ -76,6 +78,7 @@ public class TextFileManager {
 	public static TextFileManager getCallLogFile(){ if ( callLog == null ) throw new NullPointerException( getter_error ); return callLog; }
 	public static TextFileManager getTextsLogFile(){ if ( textsLog == null ) throw new NullPointerException( getter_error ); return textsLog; }
 	public static TextFileManager getBluetoothLogFile(){ if ( bluetoothLog == null ) throw new NullPointerException( getter_error ); return bluetoothLog; }
+	public static TextFileManager getWifiLogFile(){ if ( wifiLog == null ) throw new NullPointerException( getter_error ); return wifiLog; }
 	public static TextFileManager getSurveyTimingsFile(){ if ( surveyTimings == null ) throw new NullPointerException( getter_error ); return surveyTimings; }
 	public static TextFileManager getSurveyAnswersFile(){ if ( surveyAnswers == null ) throw new NullPointerException( getter_error ); return surveyAnswers; }
 	//the persistent files
@@ -118,6 +121,7 @@ public class TextFileManager {
 		callLog = new TextFileManager(appContext, "callLog", CallLogger.header, false, true);
 		powerStateLog = new TextFileManager(appContext, "powerState", PowerStateListener.header, false, true);
 		bluetoothLog = new TextFileManager(appContext, "bluetoothLog", BluetoothListener.header, false, true);
+		wifiLog = new TextFileManager(appContext, "wifiLog", WifiListener.header, false, true);
 		
 		// Files created upon specific events
 		deviceInfo = new TextFileManager(appContext, "phoneInfo", "", false, false);
@@ -283,7 +287,9 @@ public class TextFileManager {
 		powerStateLog.newFile();
 		callLog.newFile();
 		textsLog.newFile();
-		bluetoothLog.newFile(); }
+		bluetoothLog.newFile();
+		wifiLog.newFile();
+	}
 	
 	//TODO: Eli. this function is/was originally only public for debugging purposes, getAllFilesSafely() should be used instead?
 	/** Very simple function, exists to make any function that needs to grab all extant files thread-safe.

@@ -116,7 +116,13 @@
                 <action android:name="android.intent.action.AIRPLANE_MODE" />
             </intent-filter>
         </receiver>
-
+		
+        <receiver android:name=".listeners.WiFiListener">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+            </intent-filter>
+        </receiver>
+        
         <activity
             android:name="org.beiwe.app.ui.ForgotPasswordActivity"
             android:label="@string/title_activity_forgot_password" >

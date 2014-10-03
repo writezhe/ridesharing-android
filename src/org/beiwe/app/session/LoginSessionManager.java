@@ -68,8 +68,8 @@ public class LoginSessionManager {
      * the user's first time, therefore will start with {@link RegisterActivity}.
      * */
     public void checkLogin(){
-    	Class debug = RegisterActivity.class;
-//    	Class debug = DebugInterfaceActivity.class;
+//    	Class debug = RegisterActivity.class;
+    	Class debug = DebugInterfaceActivity.class;
 //    	Class debug = MainMenuActivity.class;
     	Log.i("SessionManager", "Check if already logged in");
     	Log.i("SessionManager", "" + isRegistered());
