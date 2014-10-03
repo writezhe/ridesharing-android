@@ -197,7 +197,7 @@ public class DebugInterfaceActivity extends Activity {
 
 	public void testEncrypt (View view) {
 		Log.i("Debug..", TextFileManager.getKeyFile().read());
-		write_public();
+//		write_public();
 		String data = TextFileManager.getKeyFile().read();
 		Log.i("reading keyFile:", data );
 		
@@ -206,6 +206,7 @@ public class DebugInterfaceActivity extends Activity {
 		String encrypted = EncryptionEngine.encrypt("ThIs Is a TeSt");
 		Log.i("test encrypt - length:", "" + encrypted.length() );
 		Log.i("test encrypt - output:", encrypted );
+//		Log.i("test hash:", EncryptionEngine.hash( encrypted ) );
 	}
 	
 	
@@ -215,7 +216,7 @@ public class DebugInterfaceActivity extends Activity {
 	}
 	
 	public void resetPassword(View view) {
-		Log.i("DebugInterface", "this has been called!");
+		Log.i("DebugInterface", "reset password has been called?");
 	}
 	
 	public void sendPostToTestURL(View view) {

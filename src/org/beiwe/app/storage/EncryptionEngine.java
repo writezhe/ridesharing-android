@@ -45,15 +45,14 @@ public class EncryptionEngine {
 	 * @return a UTF-8 String of the hash result. */
 	public static String hash (String input) {
 		/** takes a string as input, outputs a hash. */
-		if (input == null ) { Log.e("hash", "BROKEN");}
-		
+		if (input == null ) { Log.e("Hashing", "The hash function received a null string, it will now crash.");}
 		
 		MessageDigest hash = null;
-		String return_data = null;
+		byte[] return_data = null;
 		try {
 			hash = MessageDigest.getInstance("SHA-256");
 			hash.update( input.getBytes("UTF-8") );
-			return_data = new String( hash.digest(), "UTF-8" );
+			return_data = hash.digest();
 		} catch (NoSuchAlgorithmException e) {
 			Log.e("Hashing function", "NoSuchAlgorithmException");
 			System.exit(1);
@@ -64,7 +63,7 @@ public class EncryptionEngine {
 			System.exit(2);
 		}
 		
-		return Base64.encodeToString(return_data.getBytes(), Base64.NO_WRAP | Base64.NO_PADDING);
+		return Base64.encodeToString(return_data, Base64.NO_WRAP | Base64.NO_PADDING);
 //		Log.i("Hash", bytesToHex(return_data.getBytes()));
 //		return bytesToHex(return_data.getBytes());
 	}
