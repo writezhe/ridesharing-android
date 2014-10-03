@@ -9,6 +9,7 @@ import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
 import org.beiwe.app.listeners.WifiListener;
+import org.beiwe.app.networking.NetworkUtilities;
 import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.TextFileManager;
 
@@ -45,7 +46,7 @@ public class BackgroundProcess extends Service {
 	
 	//TODO: Eli. this [stupid hack] should only be necessary for debugging, comment out before production.
 	public static BackgroundProcess BackgroundHandle = null;
-	
+		
 	private void make_log_statement(String message) {
 		Log.i("BackgroundService", message);
 		Long javaTimeCode = System.currentTimeMillis();
@@ -57,6 +58,8 @@ public class BackgroundProcess extends Service {
 	public void onCreate(){		
 		appContext = this.getApplicationContext();
 		BackgroundHandle = this;
+		NetworkUtilities.initializeNetworkUtilities(appContext);
+		TextFileManager.start(appContext);
 		
 		gpsListener = new GPSListener(appContext);
 		accelerometerListener = new AccelerometerListener( appContext );
