@@ -1,23 +1,15 @@
 package org.beiwe.app.ui;
 
-import java.util.List;
-
-import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.R;
 import org.beiwe.app.networking.NetworkUtilities;
-import org.beiwe.app.networking.PostRequest;
+import org.beiwe.app.networking.RegisterPhoneLoader;
 import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.EncryptionEngine;
-import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -84,7 +76,6 @@ public class RegisterActivity extends Activity {
 		} else {
 			setActivity(this);
 			session.createLoginSession(userIDStr, EncryptionEngine.hash(passwordStr));
-			setUpProgressBar();
 			NetworkUtilities util = new NetworkUtilities(appContext);
 			makeNetworkRequest();
 			Log.i("RegisterActivity", "Attempting to create a login session");
@@ -93,43 +84,8 @@ public class RegisterActivity extends Activity {
 	}
 	
 	public void makeNetworkRequest() {
-		RegisterPhoneLoader loader = new RegisterPhoneLoader();
+		RegisterPhoneLoader loader = new RegisterPhoneLoader(response, getCurrentActivity(), session);
 		loader.execute();
-	}
-	
-	public void setUpProgressBar() {
-		bar = (ProgressBar) findViewById(R.id.progressBar);
-	}
-	
-	private class RegisterPhoneLoader extends AsyncTask<Void, Void, Void>{
-		
-		@Override
-		protected void onPreExecute() {
-			bar.setVisibility(View.VISIBLE);
-		}
-		
-		@Override
-		protected Void doInBackground(Void... arg0) {
-			String parameters = NetworkUtilities.makeFirstTimeParameters();
-			response = PostRequest.make_request_on_async_thread(parameters, "http://beiwe.org/register_user");
-			return null;
-		} 
-		
-		@Override
-		protected void onPostExecute(Void result) { // Indentation 2
-			bar.setVisibility(View.GONE);
-			if (response.equals("200")) { // Indentation 3
-				session.setRegistered(true);
-				startActivity(new Intent(appContext, DebugInterfaceActivity.class));
-				finish();
-			} else { 				
-				getCurrentActivity().runOnUiThread(new Runnable() {
-					public void run() {
-						AlertsManager.showAlert(NetworkUtilities.handleServerResponses(response), getCurrentActivity()); // Indentation ZOMG... Ewww Urgghhhhh.
-					}
-				});
-			}
-		}
 	}
 	
 	public static Activity getCurrentActivity() {
