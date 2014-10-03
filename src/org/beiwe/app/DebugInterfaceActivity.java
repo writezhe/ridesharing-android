@@ -23,7 +23,7 @@ import android.view.View;
 public class DebugInterfaceActivity extends Activity {
 	Context appContext = null;
 	AccelerometerListener anAccelerometerListener = null;
-		
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -81,8 +81,8 @@ public class DebugInterfaceActivity extends Activity {
 		TextFileManager.getDebugLogFile().deleteSafely(); }
 	
 	public void uploadDataFiles(View view) {
-		NetworkUtilities uploader = new NetworkUtilities(appContext);
-		uploader.uploadAllFiles(); }
+		NetworkUtilities.initializeNetworkUtilities(appContext);
+		NetworkUtilities.uploadAllFiles(); }
 	
 	public void goToAudioRecorder(View view) {
 		Intent audioRecorderIntent = new Intent(this, AudioRecorderActivity.class);

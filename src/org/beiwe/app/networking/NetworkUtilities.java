@@ -3,7 +3,6 @@ package org.beiwe.app.networking;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -24,14 +23,14 @@ import android.util.Log;
 
 public class NetworkUtilities {
 		
-	private Context appContext;
+	private static Context appContext;
 	private static String patientID;
 	private static String password;
 
 	/**Upload must be initialized with an appContext before they can access the wifi state or upload a _file_.
 	 * @param some applicationContext */
-	public NetworkUtilities(Context applicationContext) {
-		this.appContext = applicationContext;
+	private NetworkUtilities(Context applicationContext) {
+		appContext = applicationContext;
 		
 		LoginSessionManager session = new LoginSessionManager(appContext);
 		patientID = session.getUserDetails().get(LoginSessionManager.KEY_ID);
@@ -39,8 +38,9 @@ public class NetworkUtilities {
 		password = session.getUserDetails().get(LoginSessionManager.KEY_PASSWORD);
 	}
 	
-	public void startNetworkUtilities(Context applicationContext) { new NetworkUtilities(applicationContext); }
-		
+	/** Simply runs the constructor, using the applcationContext to grab variables.  Idempotent. */
+	public static void initializeNetworkUtilities(Context applicationContext) { new NetworkUtilities(applicationContext); }
+	
 	//#######################################################################################
 	//#############################  WIFI STATE #############################################
 	//#######################################################################################
@@ -48,7 +48,7 @@ public class NetworkUtilities {
 	/**Return TRUE if WiFi is connected; FALSE otherwise
 	 * @return boolean value of whether the wifi is on and connected. */
 	//TODO: Josh.  Can you update the comment above: does it return wifi is on or wifi is on + internet is available.  (this may require a bit of testing on a phone?)
-	public Boolean getWifiState() {
+	public static Boolean getWifiState() {
 		ConnectivityManager connManager = (ConnectivityManager) appContext.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 		return mWifi.isConnected(); 
@@ -79,7 +79,7 @@ public class NetworkUtilities {
 
 	/**Loop through all files on the phone, and for each one, try to upload it
 	 * to the server. If upload is successful, delete the file's local copy. */
-	public void uploadAllFiles() {
+	public static void uploadAllFiles() {
 
 		// Run the HTTP POST on a separate, non-blocking thread
 		ExecutorService executor = Executors.newFixedThreadPool(1);
@@ -112,7 +112,7 @@ public class NetworkUtilities {
 	 * (on-phone) copy of the file to save space, keep security, and not have
 	 * to upload it again
 	 * @param filename the short name (not the full path) of the file to upload */
-	private void tryToUploadAndThenDeleteFile(String filename) {
+	private static void tryToUploadAndThenDeleteFile(String filename) {
 		//TODO: Josh! Only try to upload if the WiFi is connected
 		if (tryToUploadFile(filename)) {
 			TextFileManager.delete(filename);
@@ -123,7 +123,7 @@ public class NetworkUtilities {
 	/**Try to upload a file to the server
 	 * @param filename the short name (not the full path) of the file to upload
 	 * @return TRUE if the server reported "200 OK"; FALSE otherwise */
-	private Boolean tryToUploadFile(String filename) {
+	private static Boolean tryToUploadFile(String filename) {
 		try {
 			// Get the filePath, and the file
 			String filePath = appContext.getFilesDir() + "/" + filename;
