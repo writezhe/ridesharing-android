@@ -1,12 +1,6 @@
 package org.beiwe.app;
- 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import org.beiwe.app.listeners.AccelerometerListener;
-import org.beiwe.app.listeners.GPSListener;
-import org.beiwe.app.networking.FileDownloader;
 import org.beiwe.app.networking.NetworkUtilities;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.LoginSessionManager;
@@ -19,7 +13,6 @@ import org.beiwe.app.ui.AppNotifications;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -27,22 +20,12 @@ import android.view.MenuItem;
 import android.view.View;
 
 
-// TODO: SOMEONE. Error strings - make sure to add error strings
-
 public class DebugInterfaceActivity extends Activity {
-	
-//	TextFileManager logFile = null;
 	Context appContext = null;
-	
-	GPSListener aGPSListener = null;
 	AccelerometerListener anAccelerometerListener = null;
-	//test variables of our classes
-	
-	private LoginSessionManager sessionManager = null; 
-	
+		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_debug_interface);
 		Log.i("DebugInterface", "Created!");
@@ -57,6 +40,7 @@ public class DebugInterfaceActivity extends Activity {
 		appContext.startService(backgroundProcess);
 	}
 	
+	//TODO: Dori. insert comment about purpose of this code, or delete.
 //	@Override
 //	public void onResume() {
 //		super.onResume();
@@ -70,7 +54,7 @@ public class DebugInterfaceActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
+		// Inflate the menu; adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.debug_interface, menu);
 		return true;
 	}
@@ -81,9 +65,7 @@ public class DebugInterfaceActivity extends Activity {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
+		if (id == R.id.action_settings) { return true; }
 		return super.onOptionsItemSelected(item);
 	}
 	
@@ -96,80 +78,61 @@ public class DebugInterfaceActivity extends Activity {
 
 	public void clearInternalLog(View view) {
 		Log.i("clear log button pressed", "poke.");
-		TextFileManager.getDebugLogFile().deleteSafely();
-	}
+		TextFileManager.getDebugLogFile().deleteSafely(); }
 	
 	public void uploadDataFiles(View view) {
 		NetworkUtilities uploader = new NetworkUtilities(appContext);
-		uploader.uploadAllFiles();
-	}
+		uploader.uploadAllFiles(); }
 	
 	public void goToAudioRecorder(View view) {
 		Intent audioRecorderIntent = new Intent(this, AudioRecorderActivity.class);
-		startActivity(audioRecorderIntent);
-	}
+		startActivity(audioRecorderIntent); }
 	
 	public void goToSurvey(View view) {
 		Intent surveyIntent = new Intent(this, SurveyActivity.class);
-		startActivity(surveyIntent);
-	}
+		startActivity(surveyIntent); }
 	
 	public void deleteEverything(View view) {
 		Log.i("Delete Everything button pressed", "poke.");
 		for( String file : TextFileManager.getAllFiles() ) {
 			Log.i( "files...", file); }
-		
-		TextFileManager.deleteEverything();
-	}
+		TextFileManager.deleteEverything(); }
 	
 	public void toggleAccelerometer(View view) {
 		Boolean accel_state = BackgroundProcess.BackgroundHandle.accelerometerListener.toggle();
-		Log.i("Toggle Accelerometer button pressed", "Accel state: " + accel_state.toString() );
-	}
+		Log.i("Toggle Accelerometer button pressed", "Accel state: " + accel_state.toString() ); }
 	
 	public void toggleGPS(View view) {
 		Boolean gps_state = BackgroundProcess.BackgroundHandle.gpsListener.toggle();
-		Log.i("Toggle GPS button pressed", "GPS state: " + gps_state.toString() );
-	}
+		Log.i("Toggle GPS button pressed", "GPS state: " + gps_state.toString() ); }
 	
 	public void signOut (View view) {
 		LoginSessionManager session = new LoginSessionManager(appContext);
 		session.logoutUser();
-		finish();
-	}
+		finish(); }
 	
-	public void bluetoothButtonStart (View view){
-		BackgroundProcess.BackgroundHandle.bluetoothListener.enableBLEScan();
-	}
+	public void bluetoothButtonStart (View view){ BackgroundProcess.BackgroundHandle.bluetoothListener.enableBLEScan();	}
 
-	public void bluetoothButtonStop (View view){
-		BackgroundProcess.BackgroundHandle.bluetoothListener.disableBLEScan();
-	}
+	public void bluetoothButtonStop (View view){ BackgroundProcess.BackgroundHandle.bluetoothListener.disableBLEScan();	}
 	
-	public void buttonTimer(View view) {
-		BackgroundProcess.BackgroundHandle.startTimers();
-	}
+	public void buttonTimer(View view) { BackgroundProcess.BackgroundHandle.startTimers(); }
 	
 	public void notificationSender (View view) {
 		AppNotifications.displaySurveyNotification(appContext);
-		Log.i("DebugInterfaceActivity", "Notification Displayed");
-	}
+		Log.i("DebugInterfaceActivity", "Notification Displayed"); 	}
 	
-	public void cancelNotification(View view) {
-		AppNotifications.dismissNotificatoin(appContext, AppNotifications.surveyCode);
-	}
+	public void cancelNotification(View view) { AppNotifications.dismissNotificatoin(appContext, AppNotifications.surveyCode); }
 	
 	public void notificationRecordingSender (View view) {
 		AppNotifications.displayRecordingNotification(appContext);
-		Log.i("DebugInterfaceActivity", "Notification Displayed");
-	}
+		Log.i("DebugInterfaceActivity", "Notification Displayed"); }
 	
 	public void getKeyFile(View view) {
 		Log.i("DEBUG", TextFileManager.getKeyFile().read());
-//		TextFileManager.getKeyFile().write("1");
-		
 	}
 	
+	
+//TODO: Dori. can we delete this yet?
 //	class GetKeyFile extends AsyncTask<String, String, String> {
 //		@Override
 //		protected String doInBackground(String... params) {
@@ -215,11 +178,7 @@ public class DebugInterfaceActivity extends Activity {
 		TextFileManager.getKeyFile().write("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApTiH9gI0zXimSSX+lIsPVvsRDKj5+ebBKAxUJ/laWkfz59yDmfw9TkuLPRfU5cI4GWN/3kzyVdP72bt8p7ZU1LpL/WsSrRb3mzDXZtUnEnfKMTL2NvXUG/qJJyI0wzTmTNaY/hN4aKhITTBjX2Lo+8REtHuijxvaVVThbwlEg+Hmk5611f/BoHC29jHI1O6j4t+PdlO+2h+jBYthL7C0+Tfu74s0o3CLonCGNik8sLsZ6hps1sz0Gwn4f4ehLe7OwGviv4svZZAhufJebyPFNaIbWiO8bQN7ev8rEwnT9ROsBZvZ1AzoUYtewBxauBgpF8/NdvgcNqkILKbIFvscawIDAQAB");
 	}
 	
-	public void resetPassword(View view) {
-		Log.i("DebugInterface", "reset password has been called?");
-	}
+	public void resetPassword(View view) { Log.i("DebugInterface", "reset password has been called?"); }
 	
-	public void sendPostToTestURL(View view) {
-		PostRequest.make_request(NetworkUtilities.makeDefaultParameters(), "http://beiwe.org/test");
-	}
+	public void sendPostToTestURL(View view) { PostRequest.make_request(NetworkUtilities.makeDefaultParameters(), "http://beiwe.org/test"); }
 }
