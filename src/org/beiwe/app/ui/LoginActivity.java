@@ -99,10 +99,10 @@ public class LoginActivity extends Activity {
 				AlertsManager.showAlert(appContext.getString(R.string.invalid_password), this);
 			} else if(!userIDString.equals(prefUserID)) {
 				AlertsManager.showAlert(appContext.getString(R.string.user_id_system_mismatch), this);
-			} else if( !EncryptionEngine.hash( passwordString).equals( prefPassword ) ) {
+			} else if( !EncryptionEngine.safeHash( passwordString).equals( prefPassword ) ) {
 				AlertsManager.showAlert(appContext.getString(R.string.password_system_mismatch), this);
 			} else {	
-				session.createLoginSession( userIDString, EncryptionEngine.hash( passwordString ) );
+				session.createLoginSession( userIDString, EncryptionEngine.safeHash( passwordString ) );
 //				NetworkUtilities.pushIdentifyingData( userIDString, EncryptionEngine.hash( passwordString ) );
 				startActivity( new Intent(appContext, DebugInterfaceActivity.class ) ); // TODO: Dori. Debug
 				finish();

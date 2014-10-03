@@ -115,13 +115,11 @@ public class Timer {
 	 * based on the EXACT_TIMER_OFFSET defined above.
 	 * setupExactHourlyAlarm is used for the Bluetooth timer, because the trigger needs to be synchronized
 	 * between devices. */
-	//TODO: Eli.  CURRENTLY DEBUGGING!  THIS DOES NOT SET ANYTHING TO AN HOURLY REPEAT, NEED TO UNCOMMENT LINE OF CODE.
 	public void setupExactHourlyAlarm( Intent timerIntent, Intent intentToBeBroadcast ) {	
 		long currentTime = System.currentTimeMillis();
 		// current unix time (mod) 3,600,000 milliseconds = a next hour boundry, then add the EXACT_TIMER_OFFSET
 		Long nextTriggerTime = currentTime - ( currentTime % (long) 3600000 ) + EXACT_TIMER_OFFSET;
 		if (nextTriggerTime < currentTime) { nextTriggerTime += 3600000; }
-//		Long nextTriggerTime = System.currentTimeMillis() + 5000;
 		PendingIntent pendingTimerIntent = registerAlarm( intentToBeBroadcast, timerIntent );
 		alarmManager.setExact( AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingTimerIntent );
 	}

@@ -60,7 +60,5 @@ public class PowerStateListener extends BroadcastReceiver {
 			backgroundProcess.doAirplaneModeThings();
 			Log.i("anything", "something");
 		}
-		
-		// TODO: Eli/Josh/Dori Record WIFI status
 	}
 }

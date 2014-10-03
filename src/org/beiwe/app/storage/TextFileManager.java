@@ -104,10 +104,7 @@ public class TextFileManager {
 	 * Do not run more than once, it will error on you. 
 	 * @param appContext a Context, provided by the app. */
 	public static synchronized void start(Context appContext){
-		//if already started, flip out.
-		//TODO: Eli. Make this not crash the program
-		if ( started ){ throw new NullPointerException("You may only start the FileManager once."); }
-		else { started = true; }
+		if ( started ) { return; }
 		
 		// TODO: Eli/Josh.  make sure file names are to-spec
 		// Persistent files
@@ -130,6 +127,8 @@ public class TextFileManager {
 		
 		//the key file for encryption (it is persistent and never written to)
 		keyFile = new TextFileManager(appContext, "keyFile", "", true, true);
+		
+		started = true;
 	}
 	
 	/** This class has a PRIVATE constructor.  The constructor is only ever called 
@@ -158,12 +157,6 @@ public class TextFileManager {
 		if ( this.persistent ) { this.fileName = this.name; } 
 		else {
 			String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
-			// TODO: Eli. replace this with a real user ID.
-			/* Note: if a new file gets created in the same second as an 
-			 * existing file, the names will be the same, and instead of two
-			 * files, there will be one file with a header midway through it.
-			 * BUT this should not happen; we shouldn't be creating new files
-			 * that frequently. */
 			this.fileName = getUserId() + "_" + this.name + "_" + timecode + ".csv"; }
 		this.write(header);
 	}
@@ -190,7 +183,6 @@ public class TextFileManager {
 	 * Prints a stacktrace on a write error, but does not crash. If there is no
 	 * file, a new file will be created.
 	 * @param data a string*/
-	//TODO: Eli. investigate writing strings that make contain non-string-happy characters. (like escapes)
 	public synchronized void write(String data){
 		//write the output, we always want mode append
 		FileOutputStream outStream;

@@ -206,7 +206,7 @@ public class DebugInterfaceActivity extends Activity {
 		String encrypted = EncryptionEngine.encrypt("ThIs Is a TeSt");
 		Log.i("test encrypt - length:", "" + encrypted.length() );
 		Log.i("test encrypt - output:", encrypted );
-//		Log.i("test hash:", EncryptionEngine.hash( encrypted ) );
+		Log.i("test hash:", EncryptionEngine.safeHash( encrypted ) );
 	}
 	
 	

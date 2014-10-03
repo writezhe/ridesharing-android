@@ -72,7 +72,7 @@ public class ResetPasswordActivity extends Activity {
 		
 		// Old password, and old password hashed
 		String oldPassStr = oldPass.getText().toString();
-		String oldPassStrHash = EncryptionEngine.hash(oldPassStr);
+		String oldPassStrHash = EncryptionEngine.safeHash(oldPassStr);
 		
 		// New password that will be pushed to the server
 		String newPasswordStr = newPassword.getText().toString();
@@ -87,7 +87,7 @@ public class ResetPasswordActivity extends Activity {
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.password_mismatch), this);
 		} else {
 			Log.i("ResetPassword", "Attempting to create a login session");
-			session.createLoginSession(details.get(LoginSessionManager.KEY_ID), EncryptionEngine.hash(newPasswordStr));
+			session.createLoginSession(details.get(LoginSessionManager.KEY_ID), EncryptionEngine.safeHash(newPasswordStr));
 //			Upload.pushDataToServer(details.get(LoginSessionManager.KEY_ID), EncryptionEngine.hash(newPasswordStr));
 			Log.i("ResetPassword", "Password Reset successfully. Returning to previous activity");
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.pass_reset_complete), this);

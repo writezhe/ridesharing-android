@@ -63,10 +63,9 @@ public class LoadingActivity extends Activity{
 	}
 
 	private boolean isAbleToHash() {
-		// Check for existence of libraries:
-		// TODO: Eli. Make a function that tests Encryption
+		// Runs the unsafe hashing function and catches errors, if it catches errors.
 		try {
-			EncryptionEngine.test_hash("input");
+			EncryptionEngine.unsafeHash("input");
 			return true;
 		} catch (NoSuchAlgorithmException noSuchAlgorithm) {
 			Log.i("LoadingActivity", "Cannot run the hasher due to unsupported encryption engine - exiting app");

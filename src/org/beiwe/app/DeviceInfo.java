@@ -38,10 +38,10 @@ public class DeviceInfo {
 	}
 
 	public static String getAndroidID() {
-		return EncryptionEngine.hash(androidID);
+		return EncryptionEngine.safeHash(androidID);
 	}
 	
 	public static String getBlootoothMAC() {
-		return EncryptionEngine.hash(bluetoothMAC);
+		return EncryptionEngine.safeHash(bluetoothMAC);
 	}
 }

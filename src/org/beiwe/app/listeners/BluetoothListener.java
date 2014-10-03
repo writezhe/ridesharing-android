@@ -40,7 +40,7 @@ If you want to declare that your app is available to BLE-capable devices only, i
  * @author elijones */
 
 public class BluetoothListener extends BroadcastReceiver {
-	public static String header = "timestamp, rssi";
+	public static String header = "timestamp, MAC";
 	//Base
 	private BluetoothAdapter bluetoothAdapter;
 	
@@ -154,20 +154,12 @@ public class BluetoothListener extends BroadcastReceiver {
 	
 	/** LeScanCallback is code that is run when a Bluetooth LE scan returns some data.
 	*   We take the returned data and log it. */
-	//TODO: Eli.  Currently recording everything, log useful data, format it etc.
 	@SuppressLint("NewApi")
 	private LeScanCallback bluetoothCallback = new LeScanCallback() {
 		@Override
 		public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-			Long time = System.currentTimeMillis();
-			
-			String data = new String( "BLUETOOTH LE SCAN DATA: "
-					+ device.toString() + "\n"
-					+ "rssi: " + rssi + ", "
-					+ "scanRecord: " + scanRecord );
-			Log.i("bluetooth", data);
-			
-			bluetoothLog.write( "" + time + "," + device.toString() );
+			bluetoothLog.write( System.currentTimeMillis() + "," + device.toString() );
+//			Log.i("Bluetooth",  System.currentTimeMillis() + "," + device.toString() );
 		} }; 
 
 		
@@ -176,8 +168,6 @@ public class BluetoothListener extends BroadcastReceiver {
 ####################################################################################*/
 	
 	@Override
-	//TODO: Everyone. If android allows toggling bluetooth on-off quickly, add logic to on and off state checking external state for correctness.
-	// SEE COMMENT AT TOP.
 	/** The onReceive method for the BluetoothListener listens for Bluetooth State changes.
 	 * The Bluetooth adaptor can be in any of 4 states: on, off, turning on, and turning off. 
 	 * Whenever the turning on or off state comes in, we update the externalBluetoothState variable
@@ -222,12 +212,12 @@ public class BluetoothListener extends BroadcastReceiver {
 		return "getstate is broken, value was " + state;
 	}
 	
-	public void bluetoothInfo() {
-		Log.i("bluetooth", "bluetooth existence: " + bluetoothExists.toString() );
-		Log.i("bluetooth", "bluetooth enabled: " + this.isBluetoothEnabled() );
-		Log.i("bluetooth", "bluetooth address: " + bluetoothAdapter.getAddress() );
-		Log.i("bluetooth", "bluetooth state: " + this.getState() );
-		Log.i("bluetooth", "bluetooth scan mode: " + this.bluetoothAdapter.getScanMode() );
-		Log.i("bluetooth", "bluetooth bonded devices:" +bluetoothAdapter.getBondedDevices() );
-	}
+//	public void bluetoothInfo() {
+//		Log.i("bluetooth", "bluetooth existence: " + bluetoothExists.toString() );
+//		Log.i("bluetooth", "bluetooth enabled: " + this.isBluetoothEnabled() );
+//		Log.i("bluetooth", "bluetooth address: " + bluetoothAdapter.getAddress() );
+//		Log.i("bluetooth", "bluetooth state: " + this.getState() );
+//		Log.i("bluetooth", "bluetooth scan mode: " + this.bluetoothAdapter.getScanMode() );
+//		Log.i("bluetooth", "bluetooth bonded devices:" + bluetoothAdapter.getBondedDevices() );
+//	}
 }

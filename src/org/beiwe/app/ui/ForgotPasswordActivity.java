@@ -63,7 +63,7 @@ public class ForgotPasswordActivity extends Activity {
 		// Variable assignments
 		String passwordStr = newPassword.getText().toString();
 		String passwordRepeatStr = newPasswordRepeat.getText().toString();
-		String encryptedPassword = EncryptionEngine.hash(passwordStr);
+		String encryptedPassword = EncryptionEngine.safeHash(passwordStr);
 		// TODO: Change to longer length...
 		if (passwordStr.length() < 0) {
 			AlertsManager.showAlert("Invalid password", this);

@@ -114,7 +114,7 @@ public class PostRequest {
 			return doPostRequest( parameters, new URL(url) );
 		} catch (MalformedURLException e) {
 			Log.e("PosteRequestFileUpload", "malformed URL");
-			e.printStackTrace(); //
+			e.printStackTrace();
 		}
 		return ""; //FIXME: Eli/Dori.  This is terrible, but we should not have to handle this case. 
 	}

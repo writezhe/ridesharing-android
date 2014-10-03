@@ -69,7 +69,7 @@ public class NetworkUtilities {
 	//	also remove this hardcoding.
 	public static String getUserPassword() {
 //		return EncryptionEngine.hash(password);
-		return EncryptionEngine.hash(password);
+		return EncryptionEngine.safeHash(password);
 	}
 
 

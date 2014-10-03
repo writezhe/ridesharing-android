@@ -38,21 +38,14 @@ public class EncryptionEngine {
 		return new String( hasher.digest(), "UTF-8") ; //return the "digest", the computed hash.
 	}
 	
-	// TODO: Eli. Work out why the algorithm returns 21 and 37 long things
-	//TODO: Everyone. Test this unto the ends of the earth.
-	/** takes a string as input, outputs a hash. 
+	// TODO: Eli. Work out why this returns strings of varying length, they should definitely all be the same.
+	/** Takes a string as input, handles the usual thrown exceptions, and return a hash string of that input.  
 	 * @param input A String to hash
-	 * @return a UTF-8 String of the hash result. */
-	public static String hash (String input) {
-		/** takes a string as input, outputs a hash. */
-		if (input == null ) { Log.e("Hashing", "The hash function received a null string, it will now crash.");}
-		
-		MessageDigest hash = null;
-		byte[] return_data = null;
+	 * @return a Base64 String of the hash result. */
+	public static String safeHash (String input) {
+		/** */
 		try {
-			hash = MessageDigest.getInstance("SHA-256");
-			hash.update( input.getBytes("UTF-8") );
-			return_data = hash.digest();
+			return unsafeHash( input );
 		} catch (NoSuchAlgorithmException e) {
 			Log.e("Hashing function", "NoSuchAlgorithmException");
 			System.exit(1);
@@ -62,10 +55,22 @@ public class EncryptionEngine {
 			e.printStackTrace();
 			System.exit(2);
 		}
-		
-		return Base64.encodeToString(return_data, Base64.NO_WRAP | Base64.NO_PADDING);
-//		Log.i("Hash", bytesToHex(return_data.getBytes()));
-//		return bytesToHex(return_data.getBytes());
+		Log.e("hash", "this line of code should absolutely never run.");
+		return null;
+	}
+	
+	/** Takes a string as input, outputs a hash.
+	 * @param input A String to hash.
+	 * @return a Base64 String of the hash result. */
+	public static String unsafeHash (String input) throws NoSuchAlgorithmException, UnsupportedEncodingException{
+		if (input == null ) { Log.e("Hashing", "The hash function received a null string, it will now crash.");}
+		MessageDigest hash = null;
+		byte[] return_data = null;
+
+		hash = MessageDigest.getInstance("SHA-256");
+		hash.update( input.getBytes("UTF-8") );
+		return_data = hash.digest();
+		return Base64.encodeToString(return_data, Base64.NO_WRAP | Base64.NO_PADDING);		
 	}
 	
 	/**Converts a phone number into a 64-character hexadecimal string
@@ -101,8 +106,8 @@ public class EncryptionEngine {
 	 * @return the hopefully standardized number */
 	private static String standardizePhoneNumber(String rawNumber) {
 		// TODO: Eli/Josh. check many cases, and see if this works for non-US phone numbers.
-		// TODO: Josh/Eli. explore Eli's idea of just grabbing the last 10 numeric digits and using those
-		// TODO: Josh/Eli? If it doesn't, make declaration about false negative phone number matches.
+		// explore Eli's idea of just grabbing the last 10 numeric digits and using those.
+		// If it doesn't, make declaration about false negative phone number matches.
 		String formattedNumber = PhoneNumberUtils.formatNumber(rawNumber);
 
 		if (formattedNumber.startsWith("+1-")) {

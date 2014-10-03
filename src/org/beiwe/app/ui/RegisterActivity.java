@@ -75,7 +75,7 @@ public class RegisterActivity extends Activity {
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.password_mismatch), this);
 		} else {
 			setActivity(this);
-			session.createLoginSession(userIDStr, EncryptionEngine.hash(passwordStr));
+			session.createLoginSession(userIDStr, EncryptionEngine.safeHash(passwordStr));
 			NetworkUtilities util = new NetworkUtilities(appContext);
 			makeNetworkRequest();
 			Log.i("RegisterActivity", "Attempting to create a login session");
