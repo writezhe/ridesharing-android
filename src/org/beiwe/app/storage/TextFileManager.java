@@ -197,6 +197,7 @@ public class TextFileManager {
 			outStream = appContext.openFileOutput(fileName, Context.MODE_APPEND);
 			outStream.write( ( data ).getBytes() );
 			outStream.write( "\n".getBytes() );
+			outStream.flush();
 			outStream.close(); }
 		catch (Exception e) {
 			Log.i("FileManager", "Write error: " + this.name);

@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.beiwe.app.BackgroundProcess;
 import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
 import org.beiwe.app.session.LoginSessionManager;
@@ -43,20 +44,20 @@ public class LoadingActivity extends Activity{
 
 		appContext = getApplicationContext();
 		session = new LoginSessionManager(appContext);
-
+		
 		// Instantiating DeviceInfo
 		DeviceInfo info = new DeviceInfo(appContext);
 
 		if (isAbleToHash()) {
-			session.checkLogin();
-			try {
-				TextFileManager.getAccelFile();
-			} catch (NullPointerException e) {
+			if (BackgroundProcess.BackgroundHandle == null) {
 				TextFileManager.start(appContext);
 				Log.i("LoadingActivity", "files created");
+				
 			}
-			finish();
+		session.checkLogin();
+		finish();
 		} else {
+			AlertsManager.showAlert("This phone cannot run the app..", this);
 			System.exit(0);
 		}
 	}
@@ -71,7 +72,7 @@ public class LoadingActivity extends Activity{
 			Log.i("LoadingActivity", "Cannot run the hasher due to unsupported encryption engine - exiting app");
 			return false;
 		} catch (UnsupportedEncodingException unSupportedEncoding) {
-			Log.i("LoadingActivity", "Cannot run the hasher due to unsupported encodin - exiting app");
+			Log.i("LoadingActivity", "Cannot run the hasher due to unsupported encoding - exiting app");
 			return false;
 		}
 	}

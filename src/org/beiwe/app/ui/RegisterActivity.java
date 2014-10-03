@@ -39,7 +39,9 @@ public class RegisterActivity extends Activity {
 	private LoginSessionManager session;
 	private ProgressBar bar;
 	private String response;
-	private Activity mActivity;
+	
+	// Private static field
+	private static Activity mActivity;
 
 
 	/** Users will go into this activity first to register information on the phone and on the server. */
@@ -110,7 +112,6 @@ public class RegisterActivity extends Activity {
 		protected Void doInBackground(Void... arg0) {
 			String parameters = NetworkUtilities.makeFirstTimeParameters();
 			response = PostRequest.make_request_on_async_thread(parameters, "http://beiwe.org/register_user");
-			Log.i("RegisterActivity", "RESPONSE = " + response);
 			return null;
 		} 
 		
@@ -119,8 +120,6 @@ public class RegisterActivity extends Activity {
 			bar.setVisibility(View.GONE);
 			if (response.equals("200")) { // Indentation 3
 				session.setRegistered(true);
-				
-				// Write publicKey, and reset the variable to hold nothing
 				startActivity(new Intent(appContext, DebugInterfaceActivity.class));
 				finish();
 			} else { 				
@@ -133,14 +132,11 @@ public class RegisterActivity extends Activity {
 		}
 	}
 	
-	public Activity getCurrentActivity() {
+	public static Activity getCurrentActivity() {
 		return mActivity;
 	}
 	
-	public void setActivity(Activity activity) {
+	public static void setActivity(Activity activity) {
 		mActivity = activity;
 	}
-	
-	
-
 }

@@ -165,37 +165,39 @@ public class DebugInterfaceActivity extends Activity {
 	}
 	
 	public void getKeyFile(View view) {
-		new GetKeyFile().execute(" ");
+		Log.i("DEBUG", TextFileManager.getKeyFile().read());
+//		TextFileManager.getKeyFile().write("1");
+		
 	}
 	
-	class GetKeyFile extends AsyncTask<String, String, String> {
-		@Override
-		protected String doInBackground(String... params) {
-			try {
-				return FileDownloader.downloadFileFromURL("http://beiwe.org/fetch_key");
-			} catch (IOException e) {
-				Log.i("GetKeyFile", "Couldn't download key file. Error = " + e);
-				return null;
-			}
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			super.onPostExecute(result);
-			
-			if (result != null) {
-				TextFileManager.getKeyFile().newFile();
-				FileDownloader.writeStringToFile(result, TextFileManager.getKeyFile());
-				
-				Log.i("GetKeyFile", "Contents = " + TextFileManager.getKeyFile().read());
-			}			
-		}
-	}
+//	class GetKeyFile extends AsyncTask<String, String, String> {
+//		@Override
+//		protected String doInBackground(String... params) {
+//			try {
+//				return FileDownloader.downloadFileFromURL("http://beiwe.org/fetch_key");
+//			} catch (IOException e) {
+//				Log.i("GetKeyFile", "Couldn't download key file. Error = " + e);
+//				return null;
+//			}
+//		}
+//
+//		@Override
+//		protected void onPostExecute(String result) {
+//			super.onPostExecute(result);
+//			
+//			if (result != null) {
+//				TextFileManager.getKeyFile().newFile();
+//				FileDownloader.writeStringToFile(result, TextFileManager.getKeyFile());
+//				
+//				Log.i("GetKeyFile", "Contents = " + TextFileManager.getKeyFile().read());
+//			}			
+//		}
+//	}
 	
 
 	public void testEncrypt (View view) {
-		
-		write_public();
+		Log.i("Debug..", TextFileManager.getKeyFile().read());
+//		write_public();
 		String data = TextFileManager.getKeyFile().read();
 		Log.i("reading keyFile:", data );
 		

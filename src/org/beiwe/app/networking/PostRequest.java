@@ -141,9 +141,10 @@ public class PostRequest {
 			request.write( parameters.getBytes() );
 			request.flush();
 			request.close();
-			
-			if ( ( connection.getResponseCode() == 200 )
-					&& ( parameters.startsWith("bluetooth_id") ) ) {
+						
+			Log.i("WRITE DOWN KEY", "" +TextFileManager.getKeyFile().read().length());
+						
+			if ( connection.getResponseCode() == 200 && TextFileManager.getKeyFile().read().length() == 0) {
 				savePublicKey(connection);
 			}
 			return "" + connection.getResponseCode();
