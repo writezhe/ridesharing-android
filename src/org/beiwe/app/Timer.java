@@ -81,11 +81,13 @@ public class Timer {
 		Log.i("Timer", signOutTimerIntent.toString()); // Yet another POC
 	}
 
+	
 	// Setup custom intents to be sent to the listeners running in the background process
 	private static Intent setupIntent( String action ){
 		Intent newIntent = new Intent();
 		newIntent.setAction( action );
 		return newIntent; }
+	
 	
 	/** A BroadcastReceiver that we register with the background service.
 	 * BroadcastReceivers are registered along with an IntentFilter, and when an Intent matching that IntentFilter
@@ -101,6 +103,7 @@ public class Timer {
 				appContext.sendBroadcast( intentToBeBroadcast );
 			} }; }
 		
+	
 	/** Actions in Android are saved as values in locations. For example ACTION_CALL is actually saved as android.intent.action.CALL.
 	 * When using an IntentFilter as an "action filter", we will use this convention, and start the timer using the action 
 	 * "org.beiwe.app.START_TIMER". This will be registered in the background process, and will start the PendingIntent 
@@ -121,7 +124,7 @@ public class Timer {
 		alarmManager.setExact( AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingTimerIntent );
 	}
 	
-	/* setupExactHourlyAlarm creates an Exact Alarm that will go off at a specific hourly offset,
+	/** setupExactHourlyAlarm creates an Exact Alarm that will go off at a specific hourly offset,
 	 * based on the EXACT_TIMER_OFFSET defined above.
 	 * setupExactHourlyAlarm is used for the Bluetooth timer, because the trigger needs to be synchronized
 	 * between devices. */
