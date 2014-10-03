@@ -1,5 +1,7 @@
 package org.beiwe.app;
 
+import java.util.Random;
+
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -18,7 +20,7 @@ public class Timer {
 	private BackgroundProcess backgroundProcess;
 	private Context appContext;
 
-	// Intents - Fixed by Dori ;)
+	// Intents
 	public static Intent signoutIntent;
 	public static Intent accelerometerOffIntent;
 	public static Intent accelerometerOnIntent;
@@ -26,13 +28,14 @@ public class Timer {
 	public static Intent bluetoothOnIntent;
 	public static Intent gpsOffIntent;
 	public static Intent gpsOnIntent;
+	public static Intent wifiScanIntent;
 	
-	// Timer intents - Also fixed by Dori ;)
+	// Timer intents
 	public static Intent accelerometerTimerIntent;
 	public static Intent bluetoothTimerIntent;
 	public static Intent GPSTimerIntent;
 	public static Intent signOutTimerIntent;
-	
+	public static Intent wifiScanTimerIntent;
 	
 	// Intent filters
 	public IntentFilter getSignoutIntentFilter() { return new IntentFilter( signoutIntent.getAction() ); }
@@ -42,8 +45,15 @@ public class Timer {
 	public IntentFilter getBluetoothOnIntentFilter() { return new IntentFilter( bluetoothOnIntent.getAction() ); }
 	public IntentFilter getGPSIntentOffFilter() { return new IntentFilter( gpsOffIntent.getAction() ); }
 	public IntentFilter getGPSIntentOnFilter() { return new IntentFilter( gpsOnIntent.getAction() ); }
+	public IntentFilter getWifiScanFilter() { return new IntentFilter( wifiScanTimerIntent.getAction() ); }
 	
+	//The timer offset is a random value that is inserted into time calculations to make them occur at a variable time
 	private final static long EXACT_TIMER_OFFSET = 2856000;
+	//TODO: Eli, implement, test.
+	private static int getRandomTimeOffset(){
+		Random random = new Random();
+		return random.nextInt(1800000);  //this would result in a half hour window, right?
+	}
 	
 	// Constructor
 	public Timer( BackgroundProcess backgroundProcess ) {
