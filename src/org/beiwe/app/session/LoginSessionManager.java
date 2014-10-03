@@ -13,12 +13,9 @@ import android.content.SharedPreferences.Editor;
 import android.util.Log;
  
 
-/** 
- * A class used to manage login sessions. Uses SharedPreferences in order to save
+/**A class used to manage login sessions. Uses SharedPreferences in order to save
  * username-password combinations.
- * @author Dori Samet
- *
- */
+ * @author Dori Samet */
 
 public class LoginSessionManager {
 	
@@ -35,25 +32,22 @@ public class LoginSessionManager {
     public static final String KEY_PASSWORD = "password";
 	public static final String IS_REGISTERED = "IsRegistered";
      
-    /**
-     * This is a constructor method for the session manager class
-     * @param context
-     */
+    
+	/**Constructor method for the session manager class
+     * @param context */
 	public LoginSessionManager(Context context){
         this.appContext = context;
-//      Log.i("SessionManager", "Attempting to get SharedPreferences");
-        pref = appContext.getSharedPreferences(PREF_NAME, PRIVATE_MODE); //Shared Preferences is set to private mode
+        pref = appContext.getSharedPreferences(PREF_NAME, PRIVATE_MODE); //sets Shared Preferences private mode
         editor = pref.edit();
         boolean isRegistered = pref.getBoolean(IS_REGISTERED, false);
-        editor.putBoolean	(IS_REGISTERED, (isRegistered == true) ? true : false);
+        editor.putBoolean(IS_REGISTERED, (isRegistered == true) ? true : false);
         editor.commit();
     }
      
-   /**
-    * This creates a new login session. Interacts with the SharedPreferences.
+	
+   /** Creates a new login session. Interacts with the SharedPreferences.
     * @param userID
-    * @param password
-    */
+    * @param password */
     public void createLoginSession(String userID, String password){
     	editor.putBoolean(IS_LOGIN, true);
         editor.putString(KEY_ID, userID);
@@ -61,12 +55,11 @@ public class LoginSessionManager {
         editor.commit();
     }   
      
-    /**
-     * Checks which page the user should scroll to. If there was an active session, the user will
+    
+    /**Checks which page the user should scroll to. If there was an active session, the user will
      * be transferred to {@link DebugInterfaceActivity}, otherwise if there was information saved in
      * SharedPreferences, the user will be transferred to {@link LoginActivity}. Otherwise, it is
-     * the user's first time, therefore will start with {@link RegisterActivity}.
-     * */
+     * the user's first time, therefore will start with {@link RegisterActivity}. */
     public void checkLogin(){
 //    	Class debug = RegisterActivity.class;
     	Class debug = DebugInterfaceActivity.class;
@@ -91,12 +84,10 @@ public class LoginSessionManager {
         	}
         }
     }
+    
      
-    /**
-     * A way of encapsulating SharedPreferences and the user's details stored in them.
-     * 
-     * @return user details
-     */
+    /**A way of encapsulating SharedPreferences and the user's details stored in them.
+     * @return user details */
     public HashMap<String, String> getUserDetails(){
        	HashMap<String, String> user = new HashMap<String, String>();
         user.put(KEY_ID, pref.getString(KEY_ID, null));
@@ -104,12 +95,12 @@ public class LoginSessionManager {
         Log.i("SessionManager", user.toString());
         return user;
     }
-     
-    /**
-     * Clears session details, and SharedPreferences. Should be used in {@link DebugInterfaceActivity}. 
-     * Using this function does not send the user back to {@link RegisterActivity}, but to {@link LoginActivity}
-     * 
-     * */
+    
+    
+    //TODO: Dori. Put this in a debug section of your code and add a todo reminding disabling before moving to production. 
+    //TODO: Dori. This is definitely used in the background manager.
+    /**Clears session details, and SharedPreferences. Should be used in {@link DebugInterfaceActivity}.
+     * Using this function does not send the user back to {@link RegisterActivity}, but to {@link LoginActivity} */
     public void logoutUser(){
     	editor.putBoolean(IS_LOGIN, false);
         editor.commit();
@@ -118,26 +109,17 @@ public class LoginSessionManager {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         appContext.startActivity(intent);
     }
-     
-    /**
-     * Quick check for login. 
-     *
-     **/
-    public boolean isLoggedIn(){
-//    	Log.i("SessionManager", "" + pref.getBoolean(IS_LOGIN, false));
-    	return pref.getBoolean(IS_LOGIN, false);
-    }
     
-    public boolean isRegistered() {
-    	return pref.getBoolean(IS_REGISTERED, false);
-    }
-
+    
+    /** Quick check for login. **/
+    public boolean isLoggedIn(){ return pref.getBoolean(IS_LOGIN, false); }
+    
+    public boolean isRegistered() { return pref.getBoolean(IS_REGISTERED, false); }
+	
+	public void setRegistered(boolean value) { editor.putBoolean(IS_LOGIN, value); }
+	
 	public void logoutUserPassive() {
 		editor.putBoolean(IS_LOGIN, false);
 		editor.commit();		
-	}
-	
-	public void setRegistered(boolean value) {
-		editor.putBoolean(IS_LOGIN, value);
 	}
 }
