@@ -29,7 +29,7 @@ public class RegisterActivity extends Activity {
 	private EditText password;
 	private EditText passwordRepeat;
 	private LoginSessionManager session;
-	private ProgressBar bar;
+//	private ProgressBar bar;
 	private String response;
 	
 	// Private static field
@@ -64,22 +64,26 @@ public class RegisterActivity extends Activity {
 		String userIDStr = userID.getText().toString();
 		String passwordStr = password.getText().toString();
 		String passwordRepeatStr = passwordRepeat.getText().toString();
-
-		// TODO: Dori/Eli There needs to be more logic here to prevent false registration
-		// server side: this should call a function that checks if the user id is a valid id for the study, then create the user, then return 200 ok.
+ 
 		if(userIDStr.length() == 0) {
-			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_user_id), this);
-		} else if (passwordStr.length() == 0) { // TODO: Debug - passwords need to be longer..
-			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_password), this);
-		} else if (!passwordRepeatStr.equals(passwordStr)) {
-			AlertsManager.showAlert(appContext.getResources().getString(R.string.password_mismatch), this);
-		} else {
+			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_user_id), this); }
+		
+		else if (passwordStr.length() == 0) {
+			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_password), this);}
+		
+		else if ( !passwordRepeatStr.equals(passwordStr) ) {
+			AlertsManager.showAlert(appContext.getResources().getString(R.string.password_mismatch), this);	}
+		
+		 // TODO: Dori. add a check for minimum length.
+		
+		else {
 			setActivity(this);
 			session.createLoginSession(userIDStr, EncryptionEngine.safeHash(passwordStr));
-			NetworkUtilities util = new NetworkUtilities(appContext);
+			
+			//TODO: Dori/Eli.  the initializeNetworkUtilities call should be done on the loading screen.
+			NetworkUtilities.initializeNetworkUtilities(appContext);
 			makeNetworkRequest();
-			Log.i("RegisterActivity", "Attempting to create a login session");
-			Log.i("RegisterActivity", userIDStr);
+			Log.i("RegisterActivity", "creating login session: " + userIDStr);
 		}
 	}
 	
@@ -88,11 +92,7 @@ public class RegisterActivity extends Activity {
 		loader.execute();
 	}
 	
-	public static Activity getCurrentActivity() {
-		return mActivity;
-	}
+	public static Activity getCurrentActivity() { return mActivity; }
 	
-	public static void setActivity(Activity activity) {
-		mActivity = activity;
-	}
+	public static void setActivity(Activity activity) { mActivity = activity; }
 }
