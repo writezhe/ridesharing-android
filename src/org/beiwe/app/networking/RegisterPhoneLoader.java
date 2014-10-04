@@ -13,6 +13,8 @@ import android.widget.ProgressBar;
 
 public class RegisterPhoneLoader extends AsyncTask<Void, Void, Void>{
 	
+	//TODO: Dori.  Document.
+	
 	// Private fields
 	private String response;
 	private Activity activity;
@@ -48,7 +50,7 @@ public class RegisterPhoneLoader extends AsyncTask<Void, Void, Void>{
 	@Override
 	protected Void doInBackground(Void... arg0) {
 		String parameters = NetworkUtilities.makeFirstTimeParameters();
-		response = PostRequest.make_request_on_async_thread(parameters, "http://beiwe.org/register_user");
+		response = PostRequest.make_register_request( parameters, "http://beiwe.org/register_user" );
 		return null;
 	} 
 	
@@ -67,7 +69,7 @@ public class RegisterPhoneLoader extends AsyncTask<Void, Void, Void>{
 	private void alertUser(final Activity activity) {
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
-				AlertsManager.showAlert(NetworkUtilities.handleServerResponses(response), activity); // Indentation ZOMG... Ewww Urgghhhhh.
+				AlertsManager.showAlert(NetworkUtilities.handleServerResponseCodes(response), activity); // Indentation ZOMG... Ewww Urgghhhhh.
 			}
 		});
 	}

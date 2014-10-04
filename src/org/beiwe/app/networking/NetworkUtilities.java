@@ -31,23 +31,23 @@ public class NetworkUtilities {
 	 * @param some applicationContext */
 	private NetworkUtilities(Context applicationContext) {
 		appContext = applicationContext;
-		
+		//TODO: Dori.  Why do we need a NEW loginsessionmanager here? 
 		LoginSessionManager session = new LoginSessionManager(appContext);
 		patientID = session.getUserDetails().get(LoginSessionManager.KEY_ID);
-		Log.i("NetworkUtilities", patientID);
 		password = session.getUserDetails().get(LoginSessionManager.KEY_PASSWORD);
+		Log.i("NetworkUtilities", patientID);
 	}
 	
 	/** Simply runs the constructor, using the applcationContext to grab variables.  Idempotent. */
 	public static void initializeNetworkUtilities(Context applicationContext) { new NetworkUtilities(applicationContext); }
+	private static String getUserPassword() { return EncryptionEngine.safeHash(password); }
 	
 	//#######################################################################################
 	//#############################  WIFI STATE #############################################
 	//#######################################################################################
 	
 	/**Return TRUE if WiFi is connected; FALSE otherwise
-	 * @return boolean value of whether the wifi is on and connected. */
-	//TODO: Josh.  Can you update the comment above: does it return wifi is on or wifi is on + internet is available.  (this may require a bit of testing on a phone?)
+	 * @return boolean value of whether the wifi is on and network connectivity is available. */
 	public static Boolean getWifiState() {
 		ConnectivityManager connManager = (ConnectivityManager) appContext.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
@@ -55,89 +55,53 @@ public class NetworkUtilities {
 	}
 
 	//#######################################################################################
-	//#############################  GETTERS ################################################
-	//#######################################################################################
-
-	//todo: remove this hardcoded...
-	public static String getPatientID() {
-//		return "steve";
-		return patientID;
-		
-	}
-	
-	// TODO: Eli - Explain security implication of hashing password AGAIN
-	//	also remove this hardcoding.
-	public static String getUserPassword() {
-//		return EncryptionEngine.hash(password);
-		return EncryptionEngine.safeHash(password);
-	}
-
-
-	//#######################################################################################
 	//################################## FILES ##############################################
 	//#######################################################################################
 
-	/**Loop through all files on the phone, and for each one, try to upload it
-	 * to the server. If upload is successful, delete the file's local copy. */
+	/** Uploads all available files on a separate thread. */
 	public static void uploadAllFiles() {
-
-		// Run the HTTP POST on a separate, non-blocking thread
+		// Run the HTTP POST on a separate thread
+		if ( !getWifiState() ) { return; }
+		
 		ExecutorService executor = Executors.newFixedThreadPool(1);
+		
 		Callable<HttpPost> thread = new Callable<HttpPost>() {
 			@Override
 			public HttpPost call() {
-				String[] files = TextFileManager.getAllUploadableFiles();
-
-				for (String fileName : files) {
-					try {
-						Log.i("Upload.java", "Trying to upload file: " + fileName);
-						tryToUploadAndThenDeleteFile(fileName);
-					}
-					catch (Exception e) {
-						Log.i("Upload.java", "Failed to upload file: " + fileName);
-						e.printStackTrace();
-					}
-				}
-				Log.i("Upload.java", "Finished upload loop");				
-
+				doTryUploadDelete( TextFileManager.getAllUploadableFiles() ) ;
 				return null;
 			}
 		};
-		//this is how you... "submit" a thread.
 		executor.submit(thread);
 	}
-
-
-	/**Try to upload a file to the server, and if successful, delete the local
-	 * (on-phone) copy of the file to save space, keep security, and not have
-	 * to upload it again
-	 * @param filename the short name (not the full path) of the file to upload */
-	private static void tryToUploadAndThenDeleteFile(String filename) {
-		//TODO: Josh! Only try to upload if the WiFi is connected
-		if (tryToUploadFile(filename)) {
-			TextFileManager.delete(filename);
+	
+	/** For each file name given tries to upload that file.  If successful it then deletes the file.*/
+	public static void doTryUploadDelete(String[] files) {
+		for (String fileName : files) {
+			try {
+				if ( tryToUploadFile(fileName) ) { TextFileManager.delete(fileName); }
+			}
+			catch (Exception e) {
+				Log.i("NetworkUtilities", "Failed to upload file: " + fileName);
+				e.printStackTrace(); }
 		}
+		Log.i("NetworkUtilities", "Finished upload loop.");				
 	}
-
-
+	
+	
 	/**Try to upload a file to the server
 	 * @param filename the short name (not the full path) of the file to upload
 	 * @return TRUE if the server reported "200 OK"; FALSE otherwise */
 	private static Boolean tryToUploadFile(String filename) {
 		try {
-			// Get the filePath, and the file
-			String filePath = appContext.getFilesDir() + "/" + filename;
-			File file = new File(filePath);
-
-			// Try to upload the file via a Multipart POST request
 			URL uploadUrl = new URL(appContext.getResources().getString(R.string.data_upload_url));
-			PostRequest postRequest = new PostRequest();
-			if (postRequest.doPostRequestFileUpload(file, uploadUrl) == 200) {
-				// If the request was successful (returned "200 OK"), return TRUE
-				return true;
-			}
+			File file = new File( appContext.getFilesDir() + "/" + filename );
+
+			if ( PostRequest.doPostRequestFileUpload(file, uploadUrl) == 200) {
+				// request was successful (returned "200 OK"), return TRUE
+				return true; }
 			else {
-				// If the request failed (returned something other than 200), return FALSE
+				// request failed (returned something other than 200), return FALSE
 				return false;
 			}
 		}
@@ -149,20 +113,17 @@ public class NetworkUtilities {
 		}
 	}
 
+	
 	//#######################################################################################
 	//############################### UTILITY FUNCTIONS #####################################
 	//#######################################################################################
 
-	
-	/**
-	 * This is a method used as an intermediate in order to shorten the length of logic trees.
+	/**This is a method used as an intermediate in order to shorten the length of logic trees.
 	 * Method checks a given response code sent from the server, and then returns a string corresponding to the code,
 	 * in order to display that to the user.
-	 * 
 	 * @param responseCode
-	 * @return String to be displayed on the Alert in case of a problem
-	 */
-	public static String handleServerResponses (String responseCode) {
+	 * @return String to be displayed on the Alert in case of a problem	 */
+	public static String handleServerResponseCodes(String responseCode) {
 		if (responseCode.equals("200")) {return "OK";}
 		else if (responseCode.equals("403")) {return "Patient ID did not match Password on the server";}
 		else if (responseCode.equals("405")) {return "Phone is not registered to this user. Please contact research staff";}
@@ -170,16 +131,12 @@ public class NetworkUtilities {
 		else { return "Internal server error..."; }
 	}
 	
-	public static String makeParameter(String key, String value){
-		return key + "=" + value;
-	}
-	
 	public static String makeDefaultParameters() {
 		StringBuilder sentParameters = new StringBuilder();
-		sentParameters.append( makeParameter("patient_id", getPatientID() ) + "&"
-//				+ makeParameter("password", getUserPassword() ) + "&"
-				+ makeParameter("password", "aaa") + "&"
-				+ makeParameter("device_id", DeviceInfo.getAndroidID() ) );
+		sentParameters.append( makeParameter("patient_id", patientID ) +
+//				makeParameter("password", getUserPassword() ) +
+				makeParameter("password", "aaa") +
+				makeParameter("device_id", DeviceInfo.getAndroidID() ) );
 		return sentParameters.toString();
 	}
 	
@@ -188,4 +145,6 @@ public class NetworkUtilities {
 		sentParameters.append( makeParameter("bluetooth_id", DeviceInfo.getBlootoothMAC() ) );
 		return sentParameters.append("&" + makeDefaultParameters()).toString();
 	}
+	
+	public static String makeParameter(String key, String value){ return key + "=" + value + "&"; }
 }
