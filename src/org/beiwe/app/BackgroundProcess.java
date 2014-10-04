@@ -123,48 +123,48 @@ public class BackgroundProcess extends Service {
 	/** create timers that will trigger events throughout the program, and
 	 * register the custom Intents with the controlMessageReceiver. */
 	public void startTimers() {
-//		IntentFilter filter = new IntentFilter();
-//		
-//		//FIXME: Dori.  When you moved the intent identifier strings to res/strings you assigned them the wrong type.  make this code start all the timers, test it, then add a in the wifi scan.
-//		
-//		// this does not work
-//		filter.addAction( R.string.accelerometer_off );
-//		filter.addAction( R.string.accelerometer_on );
-//		filter.addAction( R.string.bluetooth_off );
-//		filter.addAction( R.string.bluetooth_on );
-//		filter.addAction( R.string.gps_off );
-//		filter.addAction( R.string.gps_on );
-//		filter.addAction( R.string.signout_intent );
-//		filter.addAction( R.string.action_accelerometer_timer );
-//		filter.addAction( R.string.action_bluetooth_timer );
-//		filter.addAction( R.string.action_gps_timer );
-//		filter.addAction( R.string.action_signout_timer );
-//		filter.addAction( R.string.action_wifi_scan );
-//		
-//		//nor does this
-//		filter.addAction( R.string.accelerometer_off );
-//		filter.addAction( R.string.accelerometer_on );
-//		filter.addAction( R.string.bluetooth_off );
-//		filter.addAction( R.string.bluetooth_on );
-//		filter.addAction( R.string.gps_off );
-//		filter.addAction( R.string.gps_on );
-//		filter.addAction( R.string.action_wifi_scan );
-//		filter.addAction( R.string.signout_intent );
-//		
-//		
-//		//this was the way it originally worked, it doesn't work anymore
-////		timer.setupSingularFuzzyAlarm(5000L, Timer.GPSTimerIntent, Timer.GPSOnIntent);
-//		filter.addAction(Timer.GPSTimerIntent);
-//		filter.addAction(Timer.GPS_TURN_ON);
-//		timer.setupExactHourlyAlarm(Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
-//		filter.addAction(Timer.BLUETOOTH_TURN_OFF);
-//		filter.addAction(Timer.BLUETOOTH_TURN_ON);
-////		timer.setupSingularFuzzyAlarm(5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent);
-//		filter.addAction(Timer.ACCELEROMETER_TURN_OFF);
-//		filter.addAction(Timer.ACCELEROMETER_TURN_ON);
-////		timer.setupRepeatingAlarm(5000, Timer.signOutTimerIntent, Timer.signoutIntent); // Automatic Signout
-////		filter.addAction(Timer.SIGN_OUT);
-//		registerReceiver(controlMessageReceiver, filter);
+		IntentFilter filter = new IntentFilter();
+		
+		//FIXME: Dori.  When you moved the intent identifier strings to res/strings you assigned them the wrong type.  make this code start all the timers, test it, then add a in the wifi scan.
+		
+		// this does not work
+		filter.addAction( R.string.accelerometer_off );
+		filter.addAction( R.string.accelerometer_on );
+		filter.addAction( R.string.bluetooth_off );
+		filter.addAction( R.string.bluetooth_on );
+		filter.addAction( R.string.gps_off );
+		filter.addAction( R.string.gps_on );
+		filter.addAction( R.string.signout_intent );
+		filter.addAction( R.string.action_accelerometer_timer );
+		filter.addAction( R.string.action_bluetooth_timer );
+		filter.addAction( R.string.action_gps_timer );
+		filter.addAction( R.string.action_signout_timer );
+		filter.addAction( R.string.action_wifi_scan );
+		
+		//nor does this
+		filter.addAction( R.string.accelerometer_off );
+		filter.addAction( R.string.accelerometer_on );
+		filter.addAction( R.string.bluetooth_off );
+		filter.addAction( R.string.bluetooth_on );
+		filter.addAction( R.string.gps_off );
+		filter.addAction( R.string.gps_on );
+		filter.addAction( R.string.action_wifi_scan );
+		filter.addAction( R.string.signout_intent );
+		
+		
+		//this was the way it originally worked, it doesn't work anymore
+//		timer.setupSingularFuzzyAlarm(5000L, Timer.GPSTimerIntent, Timer.GPSOnIntent);
+		filter.addAction(Timer.GPSTimerIntent);
+		filter.addAction(Timer.GPS_TURN_ON);
+		timer.setupExactHourlyAlarm(Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
+		filter.addAction(Timer.BLUETOOTH_TURN_OFF);
+		filter.addAction(Timer.BLUETOOTH_TURN_ON);
+//		timer.setupSingularFuzzyAlarm(5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent);
+		filter.addAction(Timer.ACCELEROMETER_TURN_OFF);
+		filter.addAction(Timer.ACCELEROMETER_TURN_ON);
+//		timer.setupRepeatingAlarm(5000, Timer.signOutTimerIntent, Timer.signoutIntent); // Automatic Signout
+//		filter.addAction(Timer.SIGN_OUT);
+		registerReceiver(controlMessageReceiver, filter);
 	}
 	
 	/*#############################################################################
