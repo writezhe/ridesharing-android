@@ -61,7 +61,7 @@
             android:name=".ui.LoginActivity"
             android:label="@string/title_activity_login" />
         <activity
-            android:name=".ui.ResetPassword"
+            android:name=".ui.ForgotPasswordActivity"
             android:label="@string/title_activity_forgot_password" />
         <activity
             android:name=".ui.RegisterActivity"
@@ -118,8 +118,8 @@
         </receiver>
 		
         <activity
-            android:name="org.beiwe.app.ui.ForgotPasswordActivity"
-            android:label="@string/title_activity_forgot_password" >
+            android:name=".ui.ResetPasswordActivity"
+            android:label="@string/title_activity_reset_password" >
         </activity>
     </application>
 

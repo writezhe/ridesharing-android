@@ -45,6 +45,7 @@
     <string name="login_page_for_app">Login page for app</string>
     <string name="incorrect_user_pass_combo">Incorrect user-password combination!</string>
     <string name="title_activity_forgot_password">Forgot Password</string>
+    <string name="title_activity_reset_password">Reset Password</string>
     <string name="title_activity_register">Register</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_login_string">Login</string>
