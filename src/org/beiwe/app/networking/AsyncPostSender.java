@@ -11,7 +11,7 @@ import android.os.AsyncTask;
 import android.view.View;
 import android.widget.ProgressBar;
 
-public class RegisterPhoneLoader extends AsyncTask<Void, Void, Void>{
+public class AsyncPostSender extends AsyncTask<Void, Void, Void>{
 	
 	//TODO: Dori.  Document.
 	
@@ -25,7 +25,7 @@ public class RegisterPhoneLoader extends AsyncTask<Void, Void, Void>{
 	/* ************************************************************************
 	 * **************************** Constructor *******************************
 	 * ************************************************************************/
-	public RegisterPhoneLoader(String url, Activity activity, LoginSessionManager session) {
+	public AsyncPostSender(String url, Activity activity, LoginSessionManager session) {
 		this.url = url;
 		this.activity = activity;
 		this.session = session;

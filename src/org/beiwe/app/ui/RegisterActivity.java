@@ -2,7 +2,7 @@ package org.beiwe.app.ui;
 
 import org.beiwe.app.R;
 import org.beiwe.app.networking.NetworkUtilities;
-import org.beiwe.app.networking.RegisterPhoneLoader;
+import org.beiwe.app.networking.AsyncPostSender;
 import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.survey.TextFieldKeyboard;
@@ -88,7 +88,7 @@ public class RegisterActivity extends Activity {
 	}
 	
 	public void makeNetworkRequest() {
-		RegisterPhoneLoader loader = new RegisterPhoneLoader("http://beiwe.org/register_user", getCurrentActivity(), session);
+		AsyncPostSender loader = new AsyncPostSender("http://beiwe.org/register_user", getCurrentActivity(), session);
 		loader.execute();
 	}
 	
