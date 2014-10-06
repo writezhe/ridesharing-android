@@ -33,42 +33,13 @@ public class PostRequest {
 	/*##################################################################################
 	 ############################ Public Wrappers ######################################
 	 #################################################################################*/
-	
-	/**A method used to not block running UI thread. Calls for a connection on a separate Callable (thread...).
+		
+	/**A method used to not block running UI thread. Calls for a connection on a separate AsyncTask (thread...).
 	 * This opens a connection with the server, sends the HTTP parameters, then receives a response code, and returns it.
 	 * @param parameters
 	 * @param connection
 	 * @return serverResponseCode */
-	public static String make_register_request(final String parameters, final String url ) {
-		ExecutorService executor = Executors.newFixedThreadPool(1);
-		Callable<Integer> new_thread = new Callable <Integer> () {
-			//#FIXME: Dori.  this is entirely unhandled, there is no response back to the regular code based on execution of the callable tast, anything using this should swap over to the async task.
-			@Override
-			public Integer call() throws Exception { return doRegisterRequest( parameters, new URL(url) ); }
-		};
-		executor.submit(new_thread);
-		return "5";
-	}
-	
-	/**A method used to not block running UI thread. Calls for a connection on a separate Callable (thread...).
-	 * This opens a connection with the server, sends the HTTP parameters, then receives a response code, and returns it.
-	 * @param parameters
-	 * @param connection
-	 * @return serverResponseCode */
-	public static String make_post_request(final String parameters, final String url ) {
-		ExecutorService executor = Executors.newFixedThreadPool(1);
-		Callable<Integer> new_thread = new Callable <Integer> () {
-			//#FIXME: Dori.  this is entirely unhandled, there is no response back to the regular code based on execution of the callable tast, anything using this should swap over to the async task.
-			@Override
-			public Integer call() throws Exception { return doPostRequest( parameters, new URL(url) ); }
-		};
-		executor.submit(new_thread);
-		return "5";
-	}
-	
-	//FIXME: Dori.  I thought we were using the async request(s) below, not the callable request(s) above, but we are currently using both.
-	// If we need both, document what each is for.
-	
+
 	public static int make_register_request_on_async_thread( String parameters, String url ) {
 		try {
 			return doRegisterRequest( parameters, new URL(url) ); }
@@ -81,9 +52,15 @@ public class PostRequest {
 			return 502; }
 	}
 	
+	
+	/**A method used to not block running UI thread. Calls for a connection on a separate AsyncTask (thread...).
+	 * This opens a connection with the server, sends the HTTP parameters, then receives a response code, and returns it.
+	 * @param parameters
+	 * @param connection
+	 * @return serverResponseCode */
 	public static int make_post_request_on_async_thread( String parameters, String url ) {
 		try {
-			return doPostRequest( parameters, new URL(url) ); }
+			return make_post_request( parameters, new URL(url) ); }
 		catch (MalformedURLException e) {
 			Log.e("PosteRequestFileUpload", "malformed URL");
 			e.printStackTrace(); 
@@ -115,7 +92,7 @@ public class PostRequest {
 		return connection;
 	}
 	
-	
+	// TODO: Eli/Josh, make this private, and conform to other code patterns
 	/** Constructs and sends a multipart HTTP POST request with a file attached
 	 * Based on http://stackoverflow.com/a/11826317
 	 * @param file the File to be uploaded
@@ -158,7 +135,7 @@ public class PostRequest {
 	}
 
 	
-	public static int doPostRequest(String parameters, URL url) throws IOException {
+	private static int make_post_request(String parameters, URL url) throws IOException {
 		HttpURLConnection connection = setupHTTP(url);
 		Log.i("PostRequest", "parameters:" + parameters );
 		
@@ -170,7 +147,7 @@ public class PostRequest {
 	}
 	
 	
-	public static int doRegisterRequest(String parameters, URL url) throws IOException {
+	private static int doRegisterRequest(String parameters, URL url) throws IOException {
 		HttpURLConnection connection = setupHTTP(url);
 		Log.i("PostRequest", "parameters:" + parameters );
 		
@@ -181,9 +158,16 @@ public class PostRequest {
 		Log.i("WRITE DOWN KEY", "" + TextFileManager.getKeyFile().read().length());
 
 		// Only write to the keyfile if receiving a 200 OK and the file has nothing in it and parameters have bluetooth_id field
-		//check for a key file in the response?
-		//TODO: lets just make a separate copy of this function with this in there
-		createKey( readResponse(connection) );
+		if ( connection.getResponseCode() == 200
+				&& TextFileManager.getKeyFile().read().length() == 0
+				&& parameters.startsWith("bluetooth_id" ) ) {
+			// If the AsyncPostSender receives a 1, that means that someone misconfigured the server
+			try { 
+				createKey( readResponse(connection) );
+			} catch (NullPointerException e) {
+				return 1;
+			}
+		}
 		return connection.getResponseCode();
 	}
 	

@@ -180,5 +180,5 @@ public class DebugInterfaceActivity extends Activity {
 	
 	public void resetPassword(View view) { Log.i("DebugInterface", "reset password has been called?"); }
 	
-	public void sendPostToTestURL(View view) { PostRequest.make_register_request(NetworkUtilities.makeDefaultParameters(), "http://beiwe.org/test"); }
+	public void sendPostToTestURL(View view) { PostRequest.make_register_request_on_async_thread(NetworkUtilities.makeDefaultParameters(), "http://beiwe.org/test"); }
 }

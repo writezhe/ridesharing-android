@@ -104,6 +104,7 @@
     <string name="title_activity_graph">GraphActivity</string>
     
     <!-- Timer Strings-->
+    <!--  TODO: Make sure to label these as actions! -->
     <string name="accelerometer_off">Accelerometer OFF</string>
     <string name="accelerometer_on">Accelerometer On</string>
     <string name="bluetooth_off">Bluetooth OFF</string>
@@ -111,6 +112,7 @@
     <string name="gps_off">GPS OFF</string>
     <string name="gps_on">GPS On</string>
     <string name="signout_intent">Signout</string>
+    
     <string name="action_accelerometer_timer">Accelerometer Timer</string>
     <string name="action_bluetooth_timer">Bluetooth Timer</string>
     <string name="action_gps_timer">GPS Timer</string>

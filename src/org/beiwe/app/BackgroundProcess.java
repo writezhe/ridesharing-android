@@ -119,35 +119,7 @@ public class BackgroundProcess extends Service {
 		powerStateListener.finish_instantiation(this);  //FIXME:  Eli. fix this, it has to do with airplane mode
 		registerReceiver( (BroadcastReceiver) powerStateListener, filter);
 	}
-	
-	/** create timers that will trigger events throughout the program, and
-	 * register the custom Intents with the controlMessageReceiver. */
-	public void startTimers() {
-		IntentFilter filter = new IntentFilter();
 		
-		// TODO: Eli. This is fixed now. Set up timers throughout the program, or tell Dori how to do it
-		
-		// this does not work
-		filter.addAction( appContext.getString( R.string.accelerometer_off ) );
-		filter.addAction( appContext.getString( R.string.accelerometer_on ) );
-		filter.addAction( appContext.getString( R.string.bluetooth_off ) );
-		filter.addAction( appContext.getString( R.string.bluetooth_on ) );
-		filter.addAction( appContext.getString( R.string.gps_off ) );
-		filter.addAction( appContext.getString( R.string.gps_on ) );
-		filter.addAction( appContext.getString(R.string.signout_intent ) );
-		filter.addAction( appContext.getString( R.string.action_accelerometer_timer ) );
-		filter.addAction( appContext.getString( R.string.action_bluetooth_timer ) );
-		filter.addAction( appContext.getString( R.string.action_gps_timer ) );
-		filter.addAction( appContext.getString( R.string.action_signout_timer ) );
-		filter.addAction( appContext.getString( R.string.action_wifi_scan ) );
-	
-		
-//		timer.setupExactHourlyAlarm(Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
-//		timer.setupRepeatingAlarm(5000, Timer.signOutTimerIntent, Timer.signoutIntent); // Automatic Signout
-//		filter.addAction(Timer.SIGN_OUT);
-		registerReceiver(controlMessageReceiver, filter);
-	}
-	
 	/*#############################################################################
 	####################       Externally Accessed Functions       ################
 	#############################################################################*/
@@ -188,9 +160,40 @@ public class BackgroundProcess extends Service {
 	}
 	
 	/*#############################################################################
-	####################       Control Message Logic         ######################
+	####################            Timer Logic             #######################
 	#############################################################################*/
 	
+	/** create timers that will trigger events throughout the program, and
+	 * register the custom Intents with the controlMessageReceiver. */
+	public void startTimers() {
+		IntentFilter filter = new IntentFilter();
+		
+		// TODO: Eli. This is fixed now. Set up timers throughout the program, or tell Dori how to do it
+		
+		filter.addAction( appContext.getString( R.string.accelerometer_off ) );
+		filter.addAction( appContext.getString( R.string.accelerometer_on ) );
+		filter.addAction( appContext.getString( R.string.bluetooth_off ) );
+		filter.addAction( appContext.getString( R.string.bluetooth_on ) );
+		filter.addAction( appContext.getString( R.string.gps_off ) );
+		filter.addAction( appContext.getString( R.string.gps_on ) );
+		filter.addAction( appContext.getString( R.string.signout_intent ) );
+		filter.addAction( appContext.getString( R.string.action_signout_timer ) );
+		filter.addAction( appContext.getString( R.string.action_accelerometer_timer ) );
+		filter.addAction( appContext.getString( R.string.action_bluetooth_timer ) );
+		filter.addAction( appContext.getString( R.string.action_gps_timer ) );
+		filter.addAction( appContext.getString( R.string.action_wifi_scan ) );
+	
+//		timer.setupExactHourlyAlarm(Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
+//		timer.setupRepeatingAlarm(5000, Timer.signOutTimerIntent, Timer.signoutIntent); // Automatic Signout
+//		filter.addAction(Timer.SIGN_OUT);
+		registerReceiver(controlMessageReceiver, filter);
+	
+		timer.setupSingularFuzzyAlarm( 5000L, Timer.wifiScanTimerIntent, Timer.wifiScanIntent);
+		timer.setupSingularExactAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent);
+		timer.setupExactHourlyAlarm( Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
+		timer.setupSingularFuzzyAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOnIntent);
+	}	
+
 	BroadcastReceiver controlMessageReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context appContext, Intent intent) {
@@ -224,9 +227,11 @@ public class BackgroundProcess extends Service {
 				wifiListener.scanWifi();
 				timer.setupSingularFuzzyAlarm( 5000L, Timer.wifiScanTimerIntent, Timer.wifiScanIntent); }
 			
+			// TODO: Dori. Find out when this needs to go off. Provide a function inside the logic logic that is "start logout timer"
+			// What needs to be done is to send the activity to the background process in case it is no longer used (onPause, onStop, etc...) 
+			// and then start the timer.. There has to be a simpler solution - will write it down as soon as I figuer it out.
 			if (intent.getAction().equals(appContext.getString(R.string.signout_intent) ) ) {
 				Log.i("BackgroundProcess", "Received Signout Message");
-				// TODO: Dori. Needs to be tested
 				
 				sessionManager = new LoginSessionManager(appContext);
 				if( isForeground("org.beiwe.app") ) {

@@ -126,6 +126,7 @@ public class NetworkUtilities {
 		else if (responseCode == 403) {return "Patient ID did not match Password on the server";}
 		else if (responseCode == 405) {return "Phone is not registered to this user. Please contact research staff";}
 		else if (responseCode == 502) { return "Please connect to the internet and try again";}
+		else if (responseCode == 1) {return "Someone misconfigured the server. Please call the research staff";}
 		else { return "Internal server error..."; }
 	}
 	
@@ -144,6 +145,11 @@ public class NetworkUtilities {
 		return sentParameters.append("&" + makeDefaultParameters()).toString();
 	}
 	
+	/**
+	 * Note: This method expects a hashed password
+	 * @param newPassword
+	 * @return
+	 */
 	public static String makeResetPasswordParameters(String newPassword) {
 		StringBuilder sentParameters = new StringBuilder();
 		sentParameters.append( makeParameter("new_password", newPassword));

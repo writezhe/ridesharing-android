@@ -153,7 +153,7 @@ public class EncryptionEngine {
 		catch (InvalidKeyException e) { Log.e("Encryption Engine", "The key is not a valid public RSA key."); }
 		
 		try {  encryptedText = rsaCipher.doFinal( text.getBytes() ); }
-		catch (IllegalBlockSizeException e1) { Log.e("Encryption Engine", "The key is malformed."); }
+		catch (IllegalBlockSizeException e1) { Log.e("Encryption Engine", "The key is malformed."); } 
 		catch (BadPaddingException e2) { Log.e("Encryption Engine", "Something went wrong, go research Padding Exceptions. (BadPaddingException)"); }
 		
 		//This is a bitwise or statement.

@@ -66,22 +66,10 @@ public class AsyncPostSender extends AsyncTask<Void, Void, Void>{
 		String parameters;
 		if (newPassword == null) {
 			parameters = NetworkUtilities.makeFirstTimeParameters();
-			try {
-				response = PostRequest.doRegisterRequest(parameters, new URL(url));
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				response = 502;
-			}
+			response = PostRequest.make_register_request_on_async_thread(parameters, url);
 		} else {
 			parameters = NetworkUtilities.makeResetPasswordParameters(newPassword);
-			try {
-				response = PostRequest.doPostRequest(parameters, new URL(url));
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				response = 502;
-			}
+			response = PostRequest.make_post_request_on_async_thread(parameters, url);
 		}
 //		response = PostRequest.make_register_request( parameters, url );
 		return null;
