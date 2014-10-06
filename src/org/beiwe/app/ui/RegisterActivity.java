@@ -88,7 +88,7 @@ public class RegisterActivity extends Activity {
 	}
 	
 	public void makeNetworkRequest() {
-		RegisterPhoneLoader loader = new RegisterPhoneLoader(response, getCurrentActivity(), session);
+		RegisterPhoneLoader loader = new RegisterPhoneLoader("http://beiwe.org/register_user", getCurrentActivity(), session);
 		loader.execute();
 	}
 	

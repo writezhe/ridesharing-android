@@ -14,7 +14,7 @@ import android.util.Log;
  * addresses of local wifi beacons and writes them to the wifiLog.  It only gets the data
  * if wifi is enabled.
  * @author Eli */
-public class WifiListener {
+public class WiFiListener {
 	WifiManager wifiManager;
 	
 	public static String header = "timestamp, MAC";
@@ -22,7 +22,7 @@ public class WifiListener {
 	/** WifiListener requires an application context in order to access 
 	 * the devices wifi info.  
 	 * @param appContext */
-	public WifiListener (Context appContext){
+	public WiFiListener (Context appContext){
 		wifiManager = (WifiManager) appContext.getSystemService(Context.WIFI_SERVICE);
 	}
 	

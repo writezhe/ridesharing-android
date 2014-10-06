@@ -8,7 +8,7 @@ import org.beiwe.app.listeners.CallLogger;
 import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
-import org.beiwe.app.listeners.WifiListener;
+import org.beiwe.app.listeners.WiFiListener;
 import org.beiwe.app.networking.NetworkUtilities;
 import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.TextFileManager;
@@ -40,7 +40,7 @@ public class BackgroundProcess extends Service {
 	public GPSListener gpsListener;
 	public AccelerometerListener accelerometerListener;
 	public BluetoothListener bluetoothListener;
-	public WifiListener wifiListener;
+	public WiFiListener wifiListener;
 	
 	private Timer timer;
 	
@@ -85,7 +85,7 @@ public class BackgroundProcess extends Service {
 //		Log.i("androidID", DeviceInfo.androidID);
 //		Log.i("bluetoothMAC", DeviceInfo.bluetoothMAC);
 		startTimers();
-		wifiListener = new WifiListener(appContext);
+		wifiListener = new WiFiListener(appContext);
 	}
 	
 	
@@ -125,43 +125,24 @@ public class BackgroundProcess extends Service {
 	public void startTimers() {
 		IntentFilter filter = new IntentFilter();
 		
-		//FIXME: Dori.  When you moved the intent identifier strings to res/strings you assigned them the wrong type.  make this code start all the timers, test it, then add a in the wifi scan.
+		// TODO: Eli. This is fixed now. Set up timers throughout the program, or tell Dori how to do it
 		
 		// this does not work
-		filter.addAction( R.string.accelerometer_off );
-		filter.addAction( R.string.accelerometer_on );
-		filter.addAction( R.string.bluetooth_off );
-		filter.addAction( R.string.bluetooth_on );
-		filter.addAction( R.string.gps_off );
-		filter.addAction( R.string.gps_on );
-		filter.addAction( R.string.signout_intent );
-		filter.addAction( R.string.action_accelerometer_timer );
-		filter.addAction( R.string.action_bluetooth_timer );
-		filter.addAction( R.string.action_gps_timer );
-		filter.addAction( R.string.action_signout_timer );
-		filter.addAction( R.string.action_wifi_scan );
+		filter.addAction( appContext.getString( R.string.accelerometer_off ) );
+		filter.addAction( appContext.getString( R.string.accelerometer_on ) );
+		filter.addAction( appContext.getString( R.string.bluetooth_off ) );
+		filter.addAction( appContext.getString( R.string.bluetooth_on ) );
+		filter.addAction( appContext.getString( R.string.gps_off ) );
+		filter.addAction( appContext.getString( R.string.gps_on ) );
+		filter.addAction( appContext.getString(R.string.signout_intent ) );
+		filter.addAction( appContext.getString( R.string.action_accelerometer_timer ) );
+		filter.addAction( appContext.getString( R.string.action_bluetooth_timer ) );
+		filter.addAction( appContext.getString( R.string.action_gps_timer ) );
+		filter.addAction( appContext.getString( R.string.action_signout_timer ) );
+		filter.addAction( appContext.getString( R.string.action_wifi_scan ) );
+	
 		
-		//nor does this
-		filter.addAction( R.string.accelerometer_off );
-		filter.addAction( R.string.accelerometer_on );
-		filter.addAction( R.string.bluetooth_off );
-		filter.addAction( R.string.bluetooth_on );
-		filter.addAction( R.string.gps_off );
-		filter.addAction( R.string.gps_on );
-		filter.addAction( R.string.action_wifi_scan );
-		filter.addAction( R.string.signout_intent );
-		
-		
-		//this was the way it originally worked, it doesn't work anymore
-//		timer.setupSingularFuzzyAlarm(5000L, Timer.GPSTimerIntent, Timer.GPSOnIntent);
-		filter.addAction(Timer.GPSTimerIntent);
-		filter.addAction(Timer.GPS_TURN_ON);
-		timer.setupExactHourlyAlarm(Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
-		filter.addAction(Timer.BLUETOOTH_TURN_OFF);
-		filter.addAction(Timer.BLUETOOTH_TURN_ON);
-//		timer.setupSingularFuzzyAlarm(5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent);
-		filter.addAction(Timer.ACCELEROMETER_TURN_OFF);
-		filter.addAction(Timer.ACCELEROMETER_TURN_ON);
+//		timer.setupExactHourlyAlarm(Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
 //		timer.setupRepeatingAlarm(5000, Timer.signOutTimerIntent, Timer.signoutIntent); // Automatic Signout
 //		filter.addAction(Timer.SIGN_OUT);
 		registerReceiver(controlMessageReceiver, filter);

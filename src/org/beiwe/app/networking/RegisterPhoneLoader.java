@@ -17,6 +17,7 @@ public class RegisterPhoneLoader extends AsyncTask<Void, Void, Void>{
 	
 	// Private fields
 	private String response;
+	private String url;
 	private Activity activity;
 	private LoginSessionManager session;
 	private View bar;
@@ -24,8 +25,8 @@ public class RegisterPhoneLoader extends AsyncTask<Void, Void, Void>{
 	/* ************************************************************************
 	 * **************************** Constructor *******************************
 	 * ************************************************************************/
-	public RegisterPhoneLoader(String response, Activity activity, LoginSessionManager session) {
-		this.response = response;
+	public RegisterPhoneLoader(String url, Activity activity, LoginSessionManager session) {
+		this.url = url;
 		this.activity = activity;
 		this.session = session;
 	}
@@ -50,14 +51,14 @@ public class RegisterPhoneLoader extends AsyncTask<Void, Void, Void>{
 	@Override
 	protected Void doInBackground(Void... arg0) {
 		String parameters = NetworkUtilities.makeFirstTimeParameters();
-		response = PostRequest.make_register_request( parameters, "http://beiwe.org/register_user" );
+		response = PostRequest.make_register_request( parameters, url );
 		return null;
 	} 
 	
 	@Override
-	protected void onPostExecute(Void result) { // Indentation 2
+	protected void onPostExecute(Void result) {
 		bar.setVisibility(View.GONE);
-		if (response.equals("200")) { // Indentation 3
+		if (response.equals("200")) { 
 			session.setRegistered(true);
 			activity.startActivity(new Intent(activity.getApplicationContext(), DebugInterfaceActivity.class));
 			activity.finish();
@@ -69,7 +70,7 @@ public class RegisterPhoneLoader extends AsyncTask<Void, Void, Void>{
 	private void alertUser(final Activity activity) {
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
-				AlertsManager.showAlert(NetworkUtilities.handleServerResponseCodes(response), activity); // Indentation ZOMG... Ewww Urgghhhhh.
+				AlertsManager.showAlert(NetworkUtilities.handleServerResponseCodes(response), activity);
 			}
 		});
 	}

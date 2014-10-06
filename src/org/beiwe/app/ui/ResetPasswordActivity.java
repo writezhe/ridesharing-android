@@ -5,6 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 import org.beiwe.app.R;
+import org.beiwe.app.networking.RegisterPhoneLoader;
 import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.survey.TextFieldKeyboard;
@@ -88,7 +89,7 @@ public class ResetPasswordActivity extends Activity {
 		} else {
 			Log.i("ResetPassword", "Attempting to create a login session");
 			session.createLoginSession(details.get(LoginSessionManager.KEY_ID), EncryptionEngine.safeHash(newPasswordStr));
-//			Upload.pushDataToServer(details.get(LoginSessionManager.KEY_ID), EncryptionEngine.hash(newPasswordStr));
+			new RegisterPhoneLoader("http://beiwe.org/reset_password", this, session).execute();
 			Log.i("ResetPassword", "Password Reset successfully. Returning to previous activity");
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.pass_reset_complete), this);
 			finish();

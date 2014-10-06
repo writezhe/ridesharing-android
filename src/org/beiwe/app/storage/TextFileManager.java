@@ -17,7 +17,7 @@ import org.beiwe.app.listeners.CallLogger;
 import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
-import org.beiwe.app.listeners.WifiListener;
+import org.beiwe.app.listeners.WiFiListener;
 import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.survey.SurveyAnswersRecorder;
 import org.beiwe.app.survey.SurveyTimingsRecorder;
@@ -118,7 +118,7 @@ public class TextFileManager {
 		callLog = new TextFileManager(appContext, "callLog", CallLogger.header, false, true);
 		powerStateLog = new TextFileManager(appContext, "powerState", PowerStateListener.header, false, true);
 		bluetoothLog = new TextFileManager(appContext, "bluetoothLog", BluetoothListener.header, false, true);
-		wifiLog = new TextFileManager(appContext, "wifiLog", WifiListener.header, false, true);
+		wifiLog = new TextFileManager(appContext, "wifiLog", WiFiListener.header, false, true);
 		
 		// Files created upon specific events
 		deviceInfo = new TextFileManager(appContext, "phoneInfo", "", false, false);
