@@ -64,7 +64,7 @@ public class BackgroundProcess extends Service {
 	public void onCreate(){		
 		appContext = this.getApplicationContext();
 		BackgroundHandle = this;
-		NetworkUtilities.initializeNetworkUtilities(appContext);
+//		NetworkUtilities.initializeNetworkUtilities(appContext);
 		TextFileManager.start(appContext);
 		
 		gpsListener = new GPSListener(appContext);

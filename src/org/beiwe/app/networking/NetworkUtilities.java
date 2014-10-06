@@ -29,17 +29,15 @@ public class NetworkUtilities {
 
 	/**Upload must be initialized with an appContext before they can access the wifi state or upload a _file_.
 	 * @param some applicationContext */
-	private NetworkUtilities(Context applicationContext) {
+	private NetworkUtilities(Context applicationContext, LoginSessionManager session) {
 		appContext = applicationContext;
-		//TODO: Dori.  Why do we need a NEW loginsessionmanager here? 
-		LoginSessionManager session = new LoginSessionManager(appContext);
 		patientID = session.getUserDetails().get(LoginSessionManager.KEY_ID);
 		password = session.getUserDetails().get(LoginSessionManager.KEY_PASSWORD);
-		Log.i("NetworkUtilities", patientID);
+//		Log.i("NetworkUtilities", patientID);
 	}
 	
 	/** Simply runs the constructor, using the applcationContext to grab variables.  Idempotent. */
-	public static void initializeNetworkUtilities(Context applicationContext) { new NetworkUtilities(applicationContext); }
+	public static void initializeNetworkUtilities(Context applicationContext, LoginSessionManager session) { new NetworkUtilities(applicationContext, session); }
 	private static String getUserPassword() { return EncryptionEngine.safeHash(password); }
 	
 	//#######################################################################################
@@ -123,11 +121,11 @@ public class NetworkUtilities {
 	 * in order to display that to the user.
 	 * @param responseCode
 	 * @return String to be displayed on the Alert in case of a problem	 */
-	public static String handleServerResponseCodes(String responseCode) {
-		if (responseCode.equals("200")) {return "OK";}
-		else if (responseCode.equals("403")) {return "Patient ID did not match Password on the server";}
-		else if (responseCode.equals("405")) {return "Phone is not registered to this user. Please contact research staff";}
-		else if (responseCode.equals("502")) { return "Please connect to the internet and try again";}
+	public static String handleServerResponseCodes(int responseCode) {
+		if (responseCode == 200) {return "OK";}
+		else if (responseCode == 403) {return "Patient ID did not match Password on the server";}
+		else if (responseCode == 405) {return "Phone is not registered to this user. Please contact research staff";}
+		else if (responseCode == 502) { return "Please connect to the internet and try again";}
 		else { return "Internal server error..."; }
 	}
 	
@@ -146,5 +144,11 @@ public class NetworkUtilities {
 		return sentParameters.append("&" + makeDefaultParameters()).toString();
 	}
 	
-	public static String makeParameter(String key, String value){ return key + "=" + value + "&"; }
+	public static String makeResetPasswordParameters(String newPassword) {
+		StringBuilder sentParameters = new StringBuilder();
+		sentParameters.append( makeParameter("new_password", newPassword));
+		return sentParameters.append("&" + makeDefaultParameters()).toString();
+	}
+	
+	private static String makeParameter(String key, String value){ return key + "=" + value + "&"; }
 }

@@ -1,7 +1,6 @@
 package org.beiwe.app.ui;
 
 import org.beiwe.app.R;
-import org.beiwe.app.networking.NetworkUtilities;
 import org.beiwe.app.networking.AsyncPostSender;
 import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.EncryptionEngine;
@@ -14,7 +13,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 
 
 /**Activity used to log a user in to the application for the first time. This activity should only be called on ONCE,
@@ -29,11 +27,6 @@ public class RegisterActivity extends Activity {
 	private EditText password;
 	private EditText passwordRepeat;
 	private LoginSessionManager session;
-//	private ProgressBar bar;
-	private String response;
-	
-	// Private static field
-	private static Activity mActivity;
 
 
 	/** Users will go into this activity first to register information on the phone and on the server. */
@@ -64,35 +57,28 @@ public class RegisterActivity extends Activity {
 		String userIDStr = userID.getText().toString();
 		String passwordStr = password.getText().toString();
 		String passwordRepeatStr = passwordRepeat.getText().toString();
- 
+
 		if(userIDStr.length() == 0) {
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_user_id), this); }
-		
+
 		else if (passwordStr.length() == 0) {
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_password), this);}
-		
+
 		else if ( !passwordRepeatStr.equals(passwordStr) ) {
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.password_mismatch), this);	}
-		
-		 // TODO: Dori. add a check for minimum length.
-		
+
+		// TODO: Dori. add a check for minimum length.
+
 		else {
-			setActivity(this);
 			session.createLoginSession(userIDStr, EncryptionEngine.safeHash(passwordStr));
-			
-			//TODO: Dori/Eli.  the initializeNetworkUtilities call should be done on the loading screen.
-			NetworkUtilities.initializeNetworkUtilities(appContext);
+			Log.i("Register Activity", session.getUserDetails().get(LoginSessionManager.KEY_ID));
 			makeNetworkRequest();
 			Log.i("RegisterActivity", "creating login session: " + userIDStr);
 		}
 	}
-	
+
 	public void makeNetworkRequest() {
-		AsyncPostSender loader = new AsyncPostSender("http://beiwe.org/register_user", getCurrentActivity(), session);
-		loader.execute();
+		AsyncPostSender registrationThread = new AsyncPostSender("http://beiwe.org/register_user", this, session);
+		registrationThread.execute();
 	}
-	
-	public static Activity getCurrentActivity() { return mActivity; }
-	
-	public static void setActivity(Activity activity) { mActivity = activity; }
 }

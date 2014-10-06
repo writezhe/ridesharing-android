@@ -81,7 +81,7 @@ public class DebugInterfaceActivity extends Activity {
 		TextFileManager.getDebugLogFile().deleteSafely(); }
 	
 	public void uploadDataFiles(View view) {
-		NetworkUtilities.initializeNetworkUtilities(appContext);
+//		NetworkUtilities.initializeNetworkUtilities(appContext);
 		NetworkUtilities.uploadAllFiles(); }
 	
 	public void goToAudioRecorder(View view) {

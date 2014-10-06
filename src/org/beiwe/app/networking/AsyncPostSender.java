@@ -1,5 +1,9 @@
 package org.beiwe.app.networking;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.R;
 import org.beiwe.app.session.LoginSessionManager;
@@ -16,11 +20,13 @@ public class AsyncPostSender extends AsyncTask<Void, Void, Void>{
 	//TODO: Dori.  Document.
 	
 	// Private fields
-	private String response;
+	private int response;
 	private String url;
 	private Activity activity;
 	private LoginSessionManager session;
 	private View bar;
+	
+	private String newPassword = null;
 	
 	/* ************************************************************************
 	 * **************************** Constructor *******************************
@@ -29,6 +35,13 @@ public class AsyncPostSender extends AsyncTask<Void, Void, Void>{
 		this.url = url;
 		this.activity = activity;
 		this.session = session;
+	}
+	
+	public AsyncPostSender(String url, Activity activity, LoginSessionManager session, String newPassword) {
+		this.url = url;
+		this.activity = activity;
+		this.session = session;
+		this.newPassword = newPassword;
 	}
 	
 	/* ************************************************************************
@@ -50,16 +63,38 @@ public class AsyncPostSender extends AsyncTask<Void, Void, Void>{
 	
 	@Override
 	protected Void doInBackground(Void... arg0) {
-		String parameters = NetworkUtilities.makeFirstTimeParameters();
-		response = PostRequest.make_register_request( parameters, url );
+		String parameters;
+		if (newPassword == null) {
+			parameters = NetworkUtilities.makeFirstTimeParameters();
+			try {
+				response = PostRequest.doRegisterRequest(parameters, new URL(url));
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				response = 502;
+			}
+		} else {
+			parameters = NetworkUtilities.makeResetPasswordParameters(newPassword);
+			try {
+				response = PostRequest.doPostRequest(parameters, new URL(url));
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				response = 502;
+			}
+		}
+//		response = PostRequest.make_register_request( parameters, url );
 		return null;
 	} 
 	
 	@Override
 	protected void onPostExecute(Void result) {
 		bar.setVisibility(View.GONE);
-		if (response.equals("200")) { 
-			session.setRegistered(true);
+		if (response == 200) { 
+			if ( !session.isRegistered() ) {
+				session.setRegistered(true);
+			}
+			// TODO: When this goes to production - change DebugInterfaceActivity to MainMenuActivity.
 			activity.startActivity(new Intent(activity.getApplicationContext(), DebugInterfaceActivity.class));
 			activity.finish();
 		} else { 				

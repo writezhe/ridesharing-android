@@ -158,7 +158,7 @@ public class PostRequest {
 	}
 
 	
-	private static int doPostRequest(String parameters, URL url) throws IOException {
+	public static int doPostRequest(String parameters, URL url) throws IOException {
 		HttpURLConnection connection = setupHTTP(url);
 		Log.i("PostRequest", "parameters:" + parameters );
 		
@@ -170,7 +170,7 @@ public class PostRequest {
 	}
 	
 	
-	private static int doRegisterRequest(String parameters, URL url) throws IOException {
+	public static int doRegisterRequest(String parameters, URL url) throws IOException {
 		HttpURLConnection connection = setupHTTP(url);
 		Log.i("PostRequest", "parameters:" + parameters );
 		
@@ -181,12 +181,9 @@ public class PostRequest {
 		Log.i("WRITE DOWN KEY", "" + TextFileManager.getKeyFile().read().length());
 
 		// Only write to the keyfile if receiving a 200 OK and the file has nothing in it and parameters have bluetooth_id field
-		if ( connection.getResponseCode() == 200
-				&& TextFileManager.getKeyFile().read().length() == 0
-				&& parameters.startsWith("bluetooth_id" ) ) {
-			//check for a key file in the response?  //TODO: lets just make a separate copy of this function with this in there
-			createKey( readResponse(connection) );
-		}
+		//check for a key file in the response?
+		//TODO: lets just make a separate copy of this function with this in there
+		createKey( readResponse(connection) );
 		return connection.getResponseCode();
 	}
 	

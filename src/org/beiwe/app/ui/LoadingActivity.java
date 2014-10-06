@@ -7,6 +7,7 @@ import java.security.NoSuchAlgorithmException;
 import org.beiwe.app.BackgroundProcess;
 import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
+import org.beiwe.app.networking.NetworkUtilities;
 import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.TextFileManager;
@@ -49,8 +50,10 @@ public class LoadingActivity extends Activity{
 		DeviceInfo info = new DeviceInfo(appContext);
 
 		if (isAbleToHash()) {
-			if (BackgroundProcess.getBackgroundHandle() == null) {
+			try { BackgroundProcess.getBackgroundHandle(); } 
+			catch (NullPointerException e){
 				TextFileManager.start(appContext);
+				NetworkUtilities.initializeNetworkUtilities(appContext, session);
 				Log.i("LoadingActivity", "files created");
 			}
 		session.checkLogin();
