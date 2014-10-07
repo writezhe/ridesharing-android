@@ -64,7 +64,7 @@ public class AsyncPostSender extends AsyncTask<Void, Void, Void>{
 	@Override
 	protected Void doInBackground(Void... arg0) {
 		String parameters;
-		if (newPassword == null) {
+		if (url.endsWith("register_user")) {
 			parameters = NetworkUtilities.makeFirstTimeParameters();
 			response = PostRequest.make_register_request_on_async_thread(parameters, url);
 		} else if (url.endsWith("set_password")){
