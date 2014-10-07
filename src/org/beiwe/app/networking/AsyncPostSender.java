@@ -67,13 +67,15 @@ public class AsyncPostSender extends AsyncTask<Void, Void, Void>{
 		if (newPassword == null) {
 			parameters = NetworkUtilities.makeFirstTimeParameters();
 			response = PostRequest.make_register_request_on_async_thread(parameters, url);
-		} else {
+		} else if (url.endsWith("set_password")){
 			parameters = NetworkUtilities.makeResetPasswordParameters(newPassword);
 			response = PostRequest.make_post_request_on_async_thread(parameters, url);
+		} else {
+			parameters = NetworkUtilities.makeDefaultParameters();
+			response = PostRequest.make_post_request_on_async_thread(parameters, url);
 		}
-//		response = PostRequest.make_register_request( parameters, url );
 		return null;
-	} 
+	}
 	
 	@Override
 	protected void onPostExecute(Void result) {

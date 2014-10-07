@@ -33,7 +33,8 @@ public class PostRequest {
 	/*##################################################################################
 	 ############################ Public Wrappers ######################################
 	 #################################################################################*/
-		
+	
+
 	/**A method used to not block running UI thread. Calls for a connection on a separate AsyncTask (thread...).
 	 * This opens a connection with the server, sends the HTTP parameters, then receives a response code, and returns it.
 	 * @param parameters
@@ -170,7 +171,7 @@ public class PostRequest {
 		}
 		return connection.getResponseCode();
 	}
-	
+
 	
 	/*##################################################################################
 	 ######################### Convenience Functions ###################################
