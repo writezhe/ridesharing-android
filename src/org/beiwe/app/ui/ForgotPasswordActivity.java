@@ -5,6 +5,7 @@ import java.util.HashMap;
 import org.beiwe.app.R;
 import org.beiwe.app.R.id;
 import org.beiwe.app.R.layout;
+import org.beiwe.app.networking.AsyncPostSender;
 import org.beiwe.app.networking.NetworkUtilities;
 import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.EncryptionEngine;
@@ -18,24 +19,24 @@ import android.view.View;
 import android.widget.EditText;
 
 public class ForgotPasswordActivity extends Activity {
-	
+
 	private Context appContext;
 	private LoginSessionManager session;
-	
+
 	private EditText newPassword;
 	private EditText newPasswordRepeat;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_forgot_password);
-		
+
 		// Variable assignment
 		appContext = getApplicationContext();
 		newPassword = (EditText) findViewById(R.id.forgot_password_enter_password);
 		newPasswordRepeat = (EditText) findViewById(R.id.forgot_password_enter_password_repeat);
 		session = new LoginSessionManager(appContext);
-		
+
 		// Make keyboard behavior
 		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(appContext);
 		textFieldKeyboard.makeKeyboardBehave(newPassword);
@@ -43,7 +44,7 @@ public class ForgotPasswordActivity extends Activity {
 
 
 	}
-	
+
 	/** This method is used when trying to access the app after a patient loses their password.
 	 * 
 	 * The user calls the researchers in order for them to reset their password. Afterwards, the patient will insert their password to the
@@ -59,7 +60,7 @@ public class ForgotPasswordActivity extends Activity {
 	 * 
 	 * @param view */
 	public void registerNewPassword(View view) {
-		
+
 		// Variable assignments
 		String passwordStr = newPassword.getText().toString();
 		String passwordRepeatStr = newPasswordRepeat.getText().toString();
@@ -70,25 +71,11 @@ public class ForgotPasswordActivity extends Activity {
 		} else if (!passwordStr.equals(passwordRepeatStr)) {
 			AlertsManager.showAlert("Passwords mismatch", this);
 		} else {
-			// User entered passwords that match - time to check the encrypted password against the server
-//			String response = NetworkUtilities.checkPasswordsIdentical(session.getUserDetails().get(LoginSessionManager.KEY_ID), encryptedPassword);
-//			if (response == "502") {
-				AlertsManager.showAlert("Connection timed out. Check you are connected to the internet", this);
-//			} else if (response == "403") {
-				// Received something other than 200 OK, something is wrong.
-				AlertsManager.showAlert("The passwords you entered is not the password that is in the database. Please contact a researcher", this);
-//			} else if (response == "405") {
-				AlertsManager.showAlert("This phone is not the phone registered with this user. Please contact the research team", this);
-//			} else {
-				// Everything checks out - begin log in session
-				HashMap<String, String> details = session.getUserDetails();
-				session.createLoginSession(details.get(LoginSessionManager.KEY_ID), encryptedPassword);
-				Intent mainMenu = new Intent(appContext, LoadingActivity.class);
-				mainMenu.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				mainMenu.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				startActivity(mainMenu);
-				finish();
-			}
+			HashMap<String, String> details = session.getUserDetails();
+			// TODO: Dori. We need to send the raw password for testing. Obviously, this will change before production, but for now this is what happens
+			session.createLoginSession(details.get(LoginSessionManager.KEY_ID), encryptedPassword);
+			new AsyncPostSender("http://beiwe.org/forgot_password", this, session);
 		}
 	}
+}
 //}

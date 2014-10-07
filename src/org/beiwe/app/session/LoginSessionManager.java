@@ -61,7 +61,8 @@ public class LoginSessionManager {
      * SharedPreferences, the user will be transferred to {@link LoginActivity}. Otherwise, it is
      * the user's first time, therefore will start with {@link RegisterActivity}. */
     public void checkLogin(){
-    	Class debug = RegisterActivity.class;
+//    	Class debug = RegisterActivity.class;
+    	Class debug = LoginActivity.class;
 //    	Class debug = DebugInterfaceActivity.class;
 //    	Class debug = MainMenuActivity.class;
     	Log.i("SessionManager", "Check if already logged in");
