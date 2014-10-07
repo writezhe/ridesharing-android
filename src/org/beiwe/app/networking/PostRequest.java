@@ -9,11 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.beiwe.app.storage.TextFileManager;
 
@@ -128,7 +124,7 @@ public class PostRequest {
 	 * @param uploadUrl the destination URL that receives the upload
 	 * @return HTTP Response code as int
 	 * @throws IOException */
-	public static int doPostRequestFileUpload(File file, URL uploadUrl) throws IOException {		
+	public static int doFileUpload(File file, URL uploadUrl) throws IOException {		
 	
 		HttpURLConnection connection = setupHTTP( uploadUrl );
 		connection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
@@ -142,15 +138,7 @@ public class PostRequest {
 		// Read in data from the file, and pour it into the POST request
 		DataInputStream inputStream = new DataInputStream(new FileInputStream(file));
 		int data;
-		try {
-			while( (data = inputStream.read()) != -1)
-				request.write((char)data);
-		}
-		catch (IOException e) {
-			Log.i("Upload", "read error in " + file.getName());
-			e.printStackTrace();
-			throw e;
-		}
+		while( (data = inputStream.read()) != -1) request.write((char)data);
 		inputStream.close();
 
 		// Add closing boundary etc. to mark the end of the POST request 

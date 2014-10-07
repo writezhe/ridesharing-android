@@ -95,7 +95,7 @@ public class NetworkUtilities {
 			URL uploadUrl = new URL(appContext.getResources().getString(R.string.data_upload_url));
 			File file = new File( appContext.getFilesDir() + "/" + filename );
 
-			if ( PostRequest.doPostRequestFileUpload(file, uploadUrl) == 200) {
+			if ( PostRequest.doFileUpload(file, uploadUrl) == 200) {
 				// request was successful (returned "200 OK"), return TRUE
 				return true; }
 			else {
