@@ -74,7 +74,7 @@ public class ForgotPasswordActivity extends Activity {
 			HashMap<String, String> details = session.getUserDetails();
 			// TODO: Dori. We need to send the raw password for testing. Obviously, this will change before production, but for now this is what happens
 			session.createLoginSession(details.get(LoginSessionManager.KEY_ID), encryptedPassword);
-			new AsyncPostSender("http://beiwe.org/forgot_password", this, session);
+			new AsyncPostSender("http://beiwe.org/forgot_password", this, session, passwordStr);
 		}
 	}
 }

@@ -90,11 +90,11 @@ public class LoginSessionManager {
     /**A way of encapsulating SharedPreferences and the user's details stored in them.
      * @return user details */
     public HashMap<String, String> getUserDetails(){
-       	HashMap<String, String> user = new HashMap<String, String>();
-        user.put(KEY_ID, pref.getString(KEY_ID, null));
-        user.put(KEY_PASSWORD, pref.getString(KEY_PASSWORD, null));
-        Log.i("SessionManager", user.toString());
-        return user;
+       	HashMap<String, String> userDetails = new HashMap<String, String>();
+        userDetails.put(KEY_ID, pref.getString(KEY_ID, null));
+        userDetails.put(KEY_PASSWORD, pref.getString(KEY_PASSWORD, null));
+        Log.i("SessionManager", userDetails.toString());
+        return userDetails;
     }
     
     

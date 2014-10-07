@@ -96,7 +96,7 @@ public class ResetPasswordActivity extends Activity {
 		}
 	}
 	private void makeResetPasswordThread(String newPassword) {
-		new AsyncPostSender("http://beiwe.org/set_password", this, session, EncryptionEngine.safeHash(newPassword)).execute();		
+		new AsyncPostSender("http://beiwe.org/set_password", this, session, newPassword).execute();		
 	}
 	
 //	/**
