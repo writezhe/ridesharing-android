@@ -3,7 +3,9 @@ package org.beiwe.app.survey;
 import java.io.IOException;
 
 import org.beiwe.app.R;
-import org.beiwe.app.networking.FileDownloader;
+//import org.beiwe.app.networking.FileDownloader;
+import org.beiwe.app.networking.NetworkUtilities;
+import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.storage.TextFileManager;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,7 +40,9 @@ public class QuestionsDownloader {
 				// If loading from the filesystem didn't work, try loading from the server
 				String jsonString = getSurveyQuestionsFromServer();
 				// If you get questions from the server, write them to the filesystem
-				FileDownloader.writeStringToFile(jsonString, TextFileManager.getCurrentQuestionsFile());
+				TextFileManager.getCurrentQuestionsFile().deleteSafely();
+				TextFileManager.getCurrentQuestionsFile().write(jsonString);
+//				FileDownloader.writeStringToFile(jsonString, TextFileManager.getCurrentQuestionsFile());
 				return jsonString;
 			}
 			catch (Exception e2) {
@@ -63,8 +67,8 @@ public class QuestionsDownloader {
 		// Get the URL of the Survey Questions JSON file
 		String urlString = appContext.getResources().getString(R.string.survey_questions_url);
 		
-		String surveyQuestions = FileDownloader.downloadFileFromURL(urlString);
-		
+//		String surveyQuestions = FileDownloader.downloadFileFromURL(urlString);
+		String surveyQuestions = PostRequest.get_string_from_url( urlString );
 		if (isValidJson(surveyQuestions)) {
 			return surveyQuestions;
 		}
@@ -134,7 +138,9 @@ public class QuestionsDownloader {
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
 			if (result != null) {
-				FileDownloader.writeStringToFile(result, TextFileManager.getCurrentQuestionsFile());
+				TextFileManager.getCurrentQuestionsFile().deleteSafely();
+				TextFileManager.getCurrentQuestionsFile().write(result);
+//				FileDownloader.writeStringToFile(result, TextFileManager.getCurrentQuestionsFile());
 			}
 		}
 	}

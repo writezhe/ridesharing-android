@@ -60,7 +60,7 @@ public class PostRequest {
 	 * @return serverResponseCode */
 	public static int make_post_request_on_async_thread( String parameters, String url ) {
 		try {
-			return make_post_request( parameters, new URL(url) ); }
+			return doPostRequestGetResponseCode( parameters, new URL(url) ); }
 		catch (MalformedURLException e) {
 			Log.e("PosteRequestFileUpload", "malformed URL");
 			e.printStackTrace(); 
@@ -68,6 +68,13 @@ public class PostRequest {
 		catch (IOException e) {
 			Log.e("PostRequest","Unable to establish network connection");
 			return 502; }
+	}
+	
+	public static String get_string_from_url(String urlString) {
+		try { return doPostRequestGetResponseString(urlString); }
+		catch (IOException e) {
+			Log.i("FileDownloader", "Download File failed with exception " + e);
+			throw new NullPointerException(); }
 	}
 	
 	/*##################################################################################
@@ -78,7 +85,7 @@ public class PostRequest {
 	 * @param url a URL object
 	 * @return a new HttpURLConnection with common settings
 	 * @throws IOException This function can throw 2 kinds of IO exceptions: IOExeptions ProtocolException*/
-	private static HttpURLConnection setupHTTP( URL url) throws IOException {
+	private static HttpURLConnection setupHTTP( URL url ) throws IOException {
 		// Create a new HttpURLConnection and set its parameters
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setUseCaches(false);
@@ -91,6 +98,27 @@ public class PostRequest {
 		connection.setReadTimeout(5000);
 		return connection;
 	}
+
+	
+	private static String doPostRequestGetResponseString(String urlString) throws IOException {
+		HttpURLConnection connection = setupHTTP( new URL( urlString) );
+		connection.connect();
+		
+		// read in data using a BufferedReader from the HTTP connection
+		InputStreamReader inputReader = new InputStreamReader(connection.getInputStream());
+		BufferedReader reader = new BufferedReader(inputReader);
+		StringBuilder builder = new StringBuilder();
+		String aux = "";
+		
+		// Read into BufferedReader, append it to the StringBuilder, return string.
+		try { while ((aux = reader.readLine()) != null) { builder.append(aux); }
+		} catch (IOException e) {  //This is really for debugging, we want to be able to discern these buffering errors.
+			throw new NullPointerException("there was an error in receiving file data."); }
+		
+		connection.disconnect();
+		return builder.toString();
+	}
+	
 	
 	// TODO: Eli/Josh, make this private, and conform to other code patterns
 	/** Constructs and sends a multipart HTTP POST request with a file attached
@@ -135,7 +163,7 @@ public class PostRequest {
 	}
 
 	
-	private static int make_post_request(String parameters, URL url) throws IOException {
+	private static int doPostRequestGetResponseCode(String parameters, URL url) throws IOException {
 		HttpURLConnection connection = setupHTTP(url);
 		Log.i("PostRequest", "parameters:" + parameters );
 		

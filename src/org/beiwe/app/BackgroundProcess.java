@@ -188,6 +188,7 @@ public class BackgroundProcess extends Service {
 //		filter.addAction(Timer.SIGN_OUT);
 		registerReceiver(controlMessageReceiver, filter);
 	
+		//TODO: add timer for checking for new survey
 //		timer.setupSingularFuzzyAlarm( 5000L, Timer.wifiScanTimerIntent, Timer.wifiScanIntent);
 //		timer.setupSingularExactAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent);
 //		timer.setupExactHourlyAlarm( Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
