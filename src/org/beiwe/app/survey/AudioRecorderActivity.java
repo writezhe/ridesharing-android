@@ -7,7 +7,6 @@ import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.ui.AppNotifications;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.media.MediaPlayer;
