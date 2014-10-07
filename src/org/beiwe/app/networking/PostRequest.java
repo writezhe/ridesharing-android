@@ -75,8 +75,9 @@ public class PostRequest {
 	}
 	
 	/*##################################################################################
-	 ############################ Private Workers ######################################
+	 ################################ Common Code ######################################
 	 #################################################################################*/
+	
 	
 	/**Creates an HTTP connection with common settings (reduces code clutter).
 	 * @param url a URL object
@@ -95,27 +96,12 @@ public class PostRequest {
 		connection.setReadTimeout(5000);
 		return connection;
 	}
-
 	
-	private static String doPostRequestGetResponseString(String urlString) throws IOException {
-		HttpURLConnection connection = setupHTTP( new URL( urlString) );
-		connection.connect();
-		
-		// read in data using a BufferedReader from the HTTP connection
-		InputStreamReader inputReader = new InputStreamReader(connection.getInputStream());
-		BufferedReader reader = new BufferedReader(inputReader);
-		StringBuilder builder = new StringBuilder();
-		String aux = "";
-		
-		// Read into BufferedReader, append it to the StringBuilder, return string.
-		try { while ((aux = reader.readLine()) != null) { builder.append(aux); }
-		} catch (IOException e) {  //This is really for debugging, we want to be able to discern these buffering errors.
-			throw new NullPointerException("there was an error in receiving file data."); }
-		
-		connection.disconnect();
-		return builder.toString();
-	}
+	/*##################################################################################
+	 ############################ Private Workers ######################################
+	 #################################################################################*/
 	
+	//FIXME: we need to be doing connection.disconnect().  refactor to handle this gracefully,
 	
 	// TODO: Eli/Josh, make this private, and conform to other code patterns
 	/** Constructs and sends a multipart HTTP POST request with a file attached
@@ -149,6 +135,25 @@ public class PostRequest {
 		// Get HTTP Response
 		Log.i("POSTREQUESTFILEUPLOAD", "RESPONSE = " + connection.getResponseMessage());
 		return connection.getResponseCode();
+	}
+	
+	private static String doPostRequestGetResponseString(String urlString) throws IOException {
+		HttpURLConnection connection = setupHTTP( new URL( urlString) );
+		connection.connect();
+		
+		// read in data using a BufferedReader from the HTTP connection
+		InputStreamReader inputReader = new InputStreamReader(connection.getInputStream());
+		BufferedReader reader = new BufferedReader(inputReader);
+		StringBuilder builder = new StringBuilder();
+		String aux = "";
+		
+		// Read into BufferedReader, append it to the StringBuilder, return string.
+		try { while ((aux = reader.readLine()) != null) { builder.append(aux); }
+		} catch (IOException e) {  //This is really for debugging, we want to be able to discern these buffering errors.
+			throw new NullPointerException("there was an error in receiving file data."); }
+		
+		connection.disconnect();
+		return builder.toString();
 	}
 
 	
