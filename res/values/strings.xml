@@ -96,6 +96,8 @@
     <string name="record_activity_playback">Play recording</string>
     <string name="record_activity_play_button_text">Press to play</string>
     <string name="record_activity_record_button_text">Press to record</string>
+    <string name="timeout_msg_1st_half">"The voice recording can't be longer than "</string>
+    <string name="timeout_msg_2nd_half">" minutes, so your recording was automatically stopped and saved"</string>
 
     <!-- Notifications -->
     <string name="survey_notification_message"> You have a new survey waiting </string>
