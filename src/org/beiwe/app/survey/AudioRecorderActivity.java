@@ -7,16 +7,20 @@ import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.ui.AppNotifications;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Audio Recorder
@@ -48,6 +52,10 @@ public class AudioRecorderActivity extends Activity {
     private Button recordingButton;
     
     private TextView surveyMessage;
+    
+    private final Handler recordingTimeoutHandler = new Handler();
+    // Number of milliseconds before the recording stops automatically:
+    private final int maxRecordingTimeLength = 5 * 60 * 1000;
 
     
     /*/////////////////////////////////////////////////*/
@@ -118,19 +126,14 @@ public class AudioRecorderActivity extends Activity {
     	}
 	}
     
-    // TODO: Eli/Josh add arbitrary recording length limiter, like 2 hours
-    // probably make this a timer that calls stopRecording() after a while
-    // TODO: Josh. add UI text saying "the recording can't be longer than X"
     
     // When the user presses the "record" button, toggle (start/stop) recording
     public void buttonRecordPressed(View view) {
     	if (!currentlyRecording) {
-    		AppNotifications.dismissNotificatoin(getApplicationContext(), AppNotifications.recordingCode);
     		startRecording();
     	}
     	else {
     		stopRecording();
-    		checkPlayButtonVisibility(mFileName);
     	}
     }
 
@@ -208,6 +211,8 @@ public class AudioRecorderActivity extends Activity {
     private void startRecording() {
     	currentlyRecording = true;
     	
+		AppNotifications.dismissNotificatoin(getApplicationContext(), AppNotifications.recordingCode);
+
     	// Toggles button
     	recordingButton.setText("Press to stop");
     	recordingButton.setBackgroundResource(R.drawable.ic_scrubs_stop_recording);
@@ -230,19 +235,65 @@ public class AudioRecorderActivity extends Activity {
             Log.e(LOG_TAG, "prepare() failed");
         }
 
+        startTimerForRecordingTimeout();
+        
         mRecorder.start();
     }
 
     
     // Stop recording, and reset the button to "record"
     private void stopRecording() {
+    	checkPlayButtonVisibility(mFileName);
     	currentlyRecording = false;
     	recordingButton.setText("Press to record");
     	recordingButton.setBackgroundResource(R.drawable.ic_scrubs_recording_button);
 
+    	cancelTimerForRecordingTimeout();
+    	
     	mRecorder.stop();
         mRecorder.release();
         mRecorder = null;
+    }
+    
+    
+    /*/////////////////////////////////////////////////*/
+    /*//////// Recording timeout functionality ////////*/ 
+    /*/////////////////////////////////////////////////*/
+    
+    
+    /**
+     * Automatically stop recording if the recording runs longer than n seconds
+     */
+    private void startTimerForRecordingTimeout() {
+    	recordingTimeoutHandler.postDelayed(new Runnable() {    		
+			@Override
+			public void run() {
+				showTimeoutToast();
+				stopRecording();
+			}
+		}, maxRecordingTimeLength);
+    }
+    
+    
+    /**
+     * Show a Toast with message "the recording timed out after n minutes"
+     */
+    private void showTimeoutToast() {
+    	Resources resources = getApplicationContext().getResources();
+    	String msg = (String) resources.getText(R.string.timeout_msg_1st_half);
+    	msg += ((float) maxRecordingTimeLength / 60 / 1000);
+    	msg += resources.getText(R.string.timeout_msg_2nd_half);
+    	Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+    }
+    
+    
+    /**
+     * Cancel the stop-recording timer (this should be called when 
+     * stopRecording() has already been called somewhere else, so that we don't
+     * call stopRecording twice
+     */
+    private void cancelTimerForRecordingTimeout() {
+    	recordingTimeoutHandler.removeCallbacksAndMessages(null);
     }
     
     
