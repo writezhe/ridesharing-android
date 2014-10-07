@@ -86,14 +86,10 @@ public class ResetPasswordActivity extends Activity {
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_password), this);
 		} else if (!newPasswordRepeatStr.equals(newPasswordStr)) {
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.password_mismatch), this);
-		} else {
-			Log.i("ResetPassword", "Attempting to create a login session");
-			makeResetPasswordThread(newPasswordStr);
-			Log.i("ResetPassword", "Password Reset successfully. Returning to previous activity");
-//			AlertsManager.showAlert(appContext.getResources().getString(R.string.pass_reset_complete), this);
-//			finish();
-		}
+		} else { makeResetPasswordThread(newPasswordStr); }
 	}
+	
+	/** Makes an Async Thread to send with the new Password*/
 	private void makeResetPasswordThread(String newPassword) {
 		new AsyncPostSender("http://beiwe.org/set_password", this, session, newPassword).execute();		
 	}

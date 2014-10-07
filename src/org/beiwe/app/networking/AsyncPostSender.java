@@ -44,6 +44,7 @@ public class AsyncPostSender extends AsyncTask<Void, Void, Void>{
 		this.activity = activity;
 		this.session = session;
 		this.newPassword = newPassword;
+		Log.i("Async", "Created");
 	}
 	
 	/* ************************************************************************

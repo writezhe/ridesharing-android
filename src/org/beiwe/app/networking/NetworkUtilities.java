@@ -133,8 +133,8 @@ public class NetworkUtilities {
 	public static String makeDefaultParameters() {
 		StringBuilder sentParameters = new StringBuilder();
 		sentParameters.append( makeParameter("patient_id", patientID ) +
-//				makeParameter("password", getUserPassword() ) +
-				makeParameter("password", "aaa") +
+				makeParameter("password", getUserPassword() ) +
+//				makeParameter("password", "aaa") +
 				makeParameter("device_id", DeviceInfo.getAndroidID() ) );
 		return sentParameters.toString();
 	}

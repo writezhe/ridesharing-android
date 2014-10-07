@@ -39,8 +39,6 @@ public class LoginSessionManager {
         this.appContext = context;
         pref = appContext.getSharedPreferences(PREF_NAME, PRIVATE_MODE); //sets Shared Preferences private mode
         editor = pref.edit();
-        boolean isRegistered = pref.getBoolean(IS_REGISTERED, false);
-        editor.putBoolean(IS_REGISTERED, (isRegistered == true) ? true : false);
         editor.commit();
     }
      
@@ -49,6 +47,7 @@ public class LoginSessionManager {
     * @param userID
     * @param password */
     public void createLoginSession(String userID, String password){
+    	editor.putBoolean(IS_REGISTERED, true);
     	editor.putBoolean(IS_LOGIN, true);
         editor.putString(KEY_ID, userID);
         editor.putString(KEY_PASSWORD, password);
