@@ -3,10 +3,12 @@ package org.beiwe.app.networking;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 
 import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.R;
 import org.beiwe.app.session.LoginSessionManager;
+import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.ui.AlertsManager;
 
 import android.app.Activity;
@@ -26,7 +28,6 @@ public class AsyncPostSender extends AsyncTask<Void, Void, Void>{
 	private Activity activity;
 	private LoginSessionManager session;
 	private View bar;
-	
 	private String newPassword = null;
 	
 	/* ************************************************************************
@@ -87,6 +88,11 @@ public class AsyncPostSender extends AsyncTask<Void, Void, Void>{
 		if (response == 200) { 
 			if ( !session.isRegistered() ) {
 				session.setRegistered(true);
+			}
+			if (newPassword != null) {
+				HashMap<String, String> details = session.getUserDetails();
+				session.createLoginSession(details.get(LoginSessionManager.KEY_ID), EncryptionEngine.safeHash(newPassword));
+				newPassword = null;
 			}
 			// TODO: When this goes to production - change DebugInterfaceActivity to MainMenuActivity.
 			activity.startActivity(new Intent(activity.getApplicationContext(), DebugInterfaceActivity.class));

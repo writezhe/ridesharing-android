@@ -88,7 +88,6 @@ public class ResetPasswordActivity extends Activity {
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.password_mismatch), this);
 		} else {
 			Log.i("ResetPassword", "Attempting to create a login session");
-			session.createLoginSession(details.get(LoginSessionManager.KEY_ID), EncryptionEngine.safeHash(newPasswordStr));
 			makeResetPasswordThread(newPasswordStr);
 			Log.i("ResetPassword", "Password Reset successfully. Returning to previous activity");
 //			AlertsManager.showAlert(appContext.getResources().getString(R.string.pass_reset_complete), this);
