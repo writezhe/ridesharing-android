@@ -5,6 +5,7 @@
     appContext.getResources().getString(R.string.name_of_string) -->
     
     <!-- General Strings -->
+    <string name="hotline_phone_number">5555555555</string>
     <string name="app_name">Beiwe</string>
     <string name="action_settings">Settings</string>
     <string name="button_print_log">Print Internal Log</string>

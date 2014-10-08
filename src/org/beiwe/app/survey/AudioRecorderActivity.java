@@ -303,11 +303,11 @@ public class AudioRecorderActivity extends Activity {
      * Places a call to the hotline.
      * 
      * Note: Consider making this a static function.
-     * @param v
      */
     public void callHotline(View v) {
 		Intent callIntent = new Intent(Intent.ACTION_CALL);
-	    callIntent.setData(Uri.parse("tel:123456789"));
+		String phoneNum = (String) getApplicationContext().getResources().getText(R.string.hotline_phone_number);
+	    callIntent.setData(Uri.parse("tel:" + phoneNum));
 	    startActivity(callIntent);
 	}
     
