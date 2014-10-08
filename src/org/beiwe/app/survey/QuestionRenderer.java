@@ -352,7 +352,9 @@ public class QuestionRenderer {
 	 */
 	private void makeSliderInvisibleUntilTouched(SeekBarEditableThumb slider) {
 		// Before the user has touched the slider, make the "thumb" transparent/ almost invisible
-		// TODO: Josh. debug this!  It works well on Josh's phone (API 16) and not well on Zags's phone (Android 2.3.6).
+		/* Note: this works well on Android 4; there's a weird bug on Android 2 in which the first
+		 * slider question in the survey sometimes appears with a black thumb (once you touch it,
+		 * it turns into a white thumb). */
 		slider.markAsUntouched();
 		
 		slider.setOnTouchListener(new OnTouchListener() {	
