@@ -76,8 +76,12 @@ public class SurveyAnswersRecorder {
 		try {
 			QuestionLinearLayout wholeQuestion = (QuestionLinearLayout) childView;
 			SeekBarEditableThumb slider = (SeekBarEditableThumb) wholeQuestion.getChildAt(2);
-			// TODO: Josh. figure out why getChildAt() works but findViewById() doesn't. It's weird, because findViewById() works for some IDs!
-			//SeekBarEditableThumb slider = (SeekBarEditableThumb) wholeQuestion.findViewById(R.id.theSlider);
+			/* We can't use findViewById() to get the slider, because the slider's ID got reset so
+			 * that every slider would have a unique ID. That's why it's called using getChildAt().
+			 * The downside of this is that it makes the layout file brittle; if
+			 * survey_slider_question.xml is changed and the slider is no longer the third element,
+			 * then we need to change the index fed as the argument to getChildAt(). */
+			
 			if (slider.getHasBeenTouched()) {
 				int answer = slider.getProgress() + slider.getMin();
 				return answerFileLine(wholeQuestion.getQuestionDescription(), "" + answer);
