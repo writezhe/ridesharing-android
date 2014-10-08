@@ -16,8 +16,12 @@ public class SurveyTimingsRecorder {
 	 */
 	public static void recordSurveyFirstDisplayed(String surveyId) {
 		// Create a new data file to record answers for only this survey
-		// TODO: Josh? decide if it's possible for a user to take two surveys at once, and if that's a problem
 		TextFileManager.getSurveyTimingsFile().newFile(surveyId);
+		/* In the unlikely event that the user starts one survey, doesn't finish it, and starts a
+		 * second survey, a new surveyTimingsFile should be created when the second survey is
+		 * started, so hopefully there will never be more than one survey associated with a
+		 * surveyTimingsFile. There should be no mechanism that allows a user to switch back and
+		 * forth from one open survey to another, since there can be only one SurveyActivity. */
 		
 		String message = "Survey first rendered and displayed to user";
 		appendLineToLogFile(message);
