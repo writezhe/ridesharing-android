@@ -8,6 +8,7 @@ import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
+import android.provider.Telephony.TextBasedSmsColumns;
 import android.util.Log;
 
 /**
@@ -32,7 +33,6 @@ public class SmsSentLogger extends ContentObserver {
 	private TextFileManager smsLogFile = null;
 	private Handler handler = null;
 	Context appContext = null;
-	String idOfLastSmsSent = null;
 
 	
 	public SmsSentLogger(Handler theHandler, Context context) {
@@ -52,15 +52,17 @@ public class SmsSentLogger extends ContentObserver {
 		Cursor cursor = appContext.getContentResolver().query(uriSmsUri, null, null, null, null);
 		cursor.moveToNext();
 		
-		String id = cursor.getString(cursor.getColumnIndex("_id"));
-		String protocol = cursor.getString(cursor.getColumnIndex("protocol"));
 		String address = cursor.getString(cursor.getColumnIndex("address"));
 		String body = cursor.getString(cursor.getColumnIndex("body"));
 		String date = cursor.getString(cursor.getColumnIndex("date"));
+		int msgType = cursor.getInt(cursor.getColumnIndex("type"));
 		
-		// TODO: Josh. use MESSAGE_TYPE as the check instead: http://stackoverflow.com/a/9343383
-		if ((protocol == null) && (idIsNew(id))) {
-			// Message was just sent
+		/* Improvement idea: we could log all message types; TextBasedSmsColumns has 6 types of messages: 
+		 * https://developer.android.com/reference/android/provider/Telephony.TextBasedSmsColumns.html
+		 * That would provide more data on draft messages, messages not sent immediately, etc.
+		 * We could also use this class to log incoming messages as well as outgoing messages. */
+		if (msgType == TextBasedSmsColumns.MESSAGE_TYPE_SENT) {
+			
 			String data = "" + date + TextFileManager.DELIMITER;
 			data += EncryptionEngine.hashPhoneNumber(address) + TextFileManager.DELIMITER;
 			data += "sent" + TextFileManager.DELIMITER;
@@ -69,28 +71,36 @@ public class SmsSentLogger extends ContentObserver {
 			Log.i("SMSLogger", "data = " + data);
 			smsLogFile.write(data);
 			
-			// TODO: Josh. figure out if we need to log more data, like "type": http://stackoverflow.com/questions/1976252/how-to-use-sms-content-provider-where-are-the-docs
-			// TODO: Josh. figure out what MESSAGE_TYPE means and if it's important: http://stackoverflow.com/a/18873822
 			// TODO: Josh. Figure out if when a text is sent, is written as a new line if no network.
 		}
 		
-		// TODO: Josh. also log incoming SMS messages this way
 		// TODO: Josh. check how MMS messages are handled
 	}
 	
-	
-	/* Returns true if the ID doesn't match idOfLastSmsSent.
-	 * This check is because every time an SMS goes out, the ContentObserver on
-	 * "content://sms" registers about 5 changes, because the message gets
-	 * changed and/or moved around. See: http://stackoverflow.com/a/8242090
-	 * This check is to make SmsSentLogger only register one text for every
-	 * one text that's sent out. */
-	private boolean idIsNew(String id) {
-		if ((idOfLastSmsSent == null) || (!idOfLastSmsSent.equals(id))) {
-			idOfLastSmsSent = id; // Reset idOfLastSmsSent
-			return true;
-		}
-		return false; // This is not a new/unique ID; return false
-	}
-
 }
+
+///* This is a more brittle way to check if a message is a sent message: check if the
+//* message's "_id" is new, and if its "protocol" is null. The reason for this check is that
+//* every time a message gets sent, the system registers multiple new messages (on one
+//* testing phone, 4 new messages appear each time); one as its moved to the queue, one as
+//* its moved to the outbox, etc. */
+//
+//// Make this a class variable:
+//String idOfLastSmsSent = null;
+//
+//// Put these lines inside onChange():
+//String id = cursor.getString(cursor.getColumnIndex("_id"));
+//String protocol = cursor.getString(cursor.getColumnIndex("protocol"));
+//
+//// Make this the if() statement:
+////if ((protocol == null) && (idIsNew(id))) {
+//
+//// Uncomment this function:
+//// Check if the message's ID hasn't been encountered before: http://stackoverflow.com/a/8242090
+//private boolean idIsNew(String id) {
+//	if ((idOfLastSmsSent == null) || (!idOfLastSmsSent.equals(id))) {
+//		idOfLastSmsSent = id; // Reset idOfLastSmsSent
+//		return true;
+//	}
+//	return false; // This is not a new/unique ID; return false
+//}
