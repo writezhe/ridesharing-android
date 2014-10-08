@@ -53,11 +53,6 @@ public class BackgroundProcess extends Service {
 		throw new NullPointerException();
 	}
 	
-	private void make_log_statement(String message) {
-		Log.i("BackgroundService", message);
-		Long javaTimeCode = System.currentTimeMillis();
-		TextFileManager.getDebugLogFile().write(javaTimeCode.toString() + "," + message +"\n" ); 
-	}
 	
 	@Override
 	/** onCreate is essentially the constructor for the service, initialize variables here.*/
@@ -88,6 +83,9 @@ public class BackgroundProcess extends Service {
 		wifiListener = new WiFiListener(appContext);
 	}
 	
+	/*#############################################################################
+	#########################         Starters              #######################
+	#############################################################################*/
 	
 	/** Initializes the Bluetooth listener 
 	 * Note: Bluetooth needs several checks to make sure that it actually exists,
@@ -115,37 +113,14 @@ public class BackgroundProcess extends Service {
 		IntentFilter filter = new IntentFilter(); 
 		filter.addAction(Intent.ACTION_SCREEN_ON);
 		filter.addAction(Intent.ACTION_SCREEN_OFF);
-		PowerStateListener powerStateListener = new PowerStateListener();
-		powerStateListener.finish_instantiation(this);  //FIXME:  Eli. fix this, it has to do with airplane mode
-		registerReceiver( (BroadcastReceiver) powerStateListener, filter);
+		registerReceiver( (BroadcastReceiver) new PowerStateListener(), filter);
+		PowerStateListener.start();
 	}
 		
 	/*#############################################################################
 	####################       Externally Accessed Functions       ################
 	#############################################################################*/
 	
-	// FIXME: Eli. THIS CRASHES THE PROGRAM!!! ABANDON ALL HOPE :(
-	@SuppressWarnings( "deprecation" )
-	@TargetApi( Build.VERSION_CODES.JELLY_BEAN_MR1 )
-	/** Checks if airplane mode is active, if so it shuts down the GPSListener. */
-	public synchronized void doAirplaneModeThings(){
-		//you MUST actively check airplane mode, the system broadcast is not guaranteed when it is toggled quickly. >_o
-		Boolean airplaneModeEnabled = null;
-		ContentResolver resolver = appContext.getContentResolver();
-		//API call changed in jelly bean (4.3).
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
-			airplaneModeEnabled = Settings.System.getInt(resolver, Settings.System.AIRPLANE_MODE_ON, 0) != 0; }
-		else { airplaneModeEnabled = Settings.Global.getInt(resolver, Settings.Global.AIRPLANE_MODE_ON, 0) != 0; }
-		//if airplane mode enabled and gps is off:
-		if (airplaneModeEnabled && gpsListener.check_status() ){
-			gpsListener.toggle();
-			make_log_statement("GPS turned off"); }
-		//if airplane mode disabled and gps is off
-		if ( !airplaneModeEnabled && !gpsListener.check_status() ) {
-			gpsListener.toggle();
-			if ( gpsListener.check_status() ) { make_log_statement("GPS turned on."); }
-			else { make_log_statement("GPS failed to turn on"); } }
-	}
 	
 	/** Checks whether the foreground app is Beiwe
 	 * @param myPackage
@@ -246,8 +221,8 @@ public class BackgroundProcess extends Service {
 	################# onStartCommand, onBind, and onDesroy (ignore these)# #####################
 	##########################################################################################*/
 	
-	/** The BackgroundService is meant to be all the time, so we return START_STICKY */
 	@Override
+	/** The BackgroundService is meant to be all the time, so we return START_STICKY */
 	public int onStartCommand(Intent intent, int flags, int startId){ return START_STICKY; }
 	@Override
 	public IBinder onBind(Intent arg0) { return null; }
@@ -255,5 +230,7 @@ public class BackgroundProcess extends Service {
 	public void onDestroy() {
 		//this does not appear to run when the service or app are killed...
 		//TODO: Eli. research when onDestroy is actually called, insert informative comment.
-		make_log_statement("BackgroundService Killed"); }
+		Log.i("BackgroundService", "BackgroundService Killed");
+		Long javaTimeCode = System.currentTimeMillis();
+		TextFileManager.getDebugLogFile().write(javaTimeCode.toString() + "," + "BackgroundService Killed" +"\n" ); }
 }
