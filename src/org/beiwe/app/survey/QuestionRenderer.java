@@ -296,8 +296,6 @@ public class QuestionRenderer {
 	 * @param max the highest number on the scale
 	 */
 	private void addNumbersLabelingToSlider(LinearLayout question, int min, int max) {
-		// TODO: Josh. implement the ability to use MIN and MAX so that not every scale starts at zero
-		
 		// Replace the numbers label placeholder view (based on http://stackoverflow.com/a/3760027)
 		View numbersLabel = (View) question.findViewById(R.id.numbersPlaceholder);
 		int index = question.indexOfChild(numbersLabel);
