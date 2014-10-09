@@ -1,9 +1,10 @@
-package org.beiwe.app.session;
+	package org.beiwe.app.session;
  
 import java.util.HashMap;
 
 import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.ui.LoginActivity;
+import org.beiwe.app.ui.MainMenuActivity;
 import org.beiwe.app.ui.RegisterActivity;
 
 import android.content.Context;
@@ -67,17 +68,24 @@ public class LoginSessionManager {
     	Log.i("SessionManager", "Check if already logged in");
     	Log.i("SessionManager", "" + isRegistered());
     	if(this.isLoggedIn()) {
+    		// If already logged in, take user to the main menu screen
+    		// TODO: before launch, uncomment this line:
+    		//Intent intent = new Intent(appContext, MainMenuActivity.class);
     		Intent intent = new Intent(appContext, debug);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             appContext.startActivity(intent);
         } else {
         	Log.i("SessionManager", "Check if it is not first time login");
         	if (this.isRegistered()) {
+        		// If not logged in, but has registered, take user to the login screen
         		Intent intent = new Intent(appContext, LoginActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 appContext.startActivity(intent);      	
         	} else {
+        		// If not logged in and hasn't registered, take user to registration screen
             	Log.i("SessionManager", "First time logged in");
+            	// TODO: before launch, uncomment this line:
+            	//Intent intent = new Intent(appContext, RegisterActivity.class);
             	Intent intent = new Intent(appContext, debug);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 appContext.startActivity(intent);
@@ -118,8 +126,10 @@ public class LoginSessionManager {
 	
 	public void setRegistered(boolean value) { editor.putBoolean(IS_LOGIN, value); }
 	
+	/** This is called when the user gets automatically logged out (which happens n minutes after
+	 * the user pauses the app) */
 	public void logoutUserPassive() {
 		editor.putBoolean(IS_LOGIN, false);
-		editor.commit();		
+		editor.commit();
 	}
 }
