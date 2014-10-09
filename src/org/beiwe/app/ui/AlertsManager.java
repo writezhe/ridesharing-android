@@ -34,4 +34,18 @@ public class AlertsManager {
 		builder.create().show();
 	}
 	
+	public static void showErrorAlert(String message, Activity activity) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+		builder.setTitle("A critical error occured");
+		builder.setMessage(message);
+		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				System.exit(0);
+			}
+		});		
+		builder.create().show();
+	}
+	
 }
