@@ -65,6 +65,7 @@ public class LoadingActivity extends Activity{
 		finish();
 		} else {
 			AlertsManager.showErrorAlert("This phone cannot run the app because it cannot securely encrypt data. Exiting the app..", this);
+			finish();
 		}
 	}
 
