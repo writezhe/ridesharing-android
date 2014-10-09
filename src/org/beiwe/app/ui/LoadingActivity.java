@@ -1,7 +1,6 @@
 package org.beiwe.app.ui;
 
 import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import org.beiwe.app.BackgroundProcess;
@@ -65,7 +64,8 @@ public class LoadingActivity extends Activity{
 		 */
 		finish();
 		} else {
-			AlertsManager.showAlert("This phone cannot run the app..", this);
+			// FIXME: System.exit(0) gets called before the Alert can show to the user. Should call System.exit after the user presses "OK". Fix this...
+			AlertsManager.showAlert("This phone cannot run the app because it cannot securely encrypt data. Exiting the app..", this);
 			System.exit(0);
 		}
 	}
