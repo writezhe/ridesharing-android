@@ -64,8 +64,14 @@ public class LoadingActivity extends Activity{
 		 */
 		finish();
 		} else {
+<<<<<<< HEAD
 			AlertsManager.showErrorAlert("This phone cannot run the app because it cannot securely encrypt data. Exiting the app..", this);
 			finish();
+=======
+			// FIXME: System.exit(0) gets called before the Alert can show to the user. Should call System.exit after the user presses "OK". Fix this...
+			AlertsManager.showAlert("This phone cannot run the app because it cannot securely encrypt data. Exiting the app..", this);
+			System.exit(0);
+>>>>>>> parent of e7130ce... Fixed the fixme in LoadingActivity
 		}
 	}
 
