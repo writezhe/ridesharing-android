@@ -93,6 +93,7 @@ public class LoginActivity extends Activity {
 			Log.i("LoginActivity", prefPassword);
 
 			// Logic begins here. See the logic tree for RegistrationActivity
+			// TODO: Josh, look into whether we should also trim whitespace in RegisterActivity
 			if(userIDString.trim().length() == 0) {
 				AlertsManager.showAlert(appContext.getString(R.string.invalid_user_id), this);
 			} else if (passwordString.trim().length() == 0) { // TODO: Debug - passwords need to be longer..
