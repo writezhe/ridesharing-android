@@ -125,6 +125,7 @@ public class BackgroundProcess extends Service {
 	/** Checks whether the foreground app is Beiwe
 	 * @param myPackage
 	 * @return */
+	// TODO: consider deprecating this function because every activity calls finish() when it ends, so onPause() should only get called when the app really is paused
 	public boolean isForeground(String myPackage){
 		ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
 		List < ActivityManager.RunningTaskInfo > runningTaskInfo = manager.getRunningTasks(1); 
@@ -175,7 +176,7 @@ public class BackgroundProcess extends Service {
 		public void onReceive(Context appContext, Intent intent) {
 			Log.i("BackgroundService - timers", "Received Broadcast: " + intent.toString());
 			
-			if ( intent.equals(appContext.getString(R.string.accelerometer_off) ) ) {
+			if (intent.getAction().equals( appContext.getString(R.string.accelerometer_off) ) ) {
 				accelerometerListener.turn_off();
 				timer.setupSingularExactAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent); }
 			
