@@ -92,7 +92,7 @@ public class LoginActivity extends Activity {
 			Log.i("LoginActivity", prefUserID);
 			Log.i("LoginActivity", prefPassword);
 
-			// Logic begins here
+			// Logic begins here. See the logic tree for RegistrationActivity
 			if(userIDString.trim().length() == 0) {
 				AlertsManager.showAlert(appContext.getString(R.string.invalid_user_id), this);
 			} else if (passwordString.trim().length() == 0) { // TODO: Debug - passwords need to be longer..
@@ -102,6 +102,7 @@ public class LoginActivity extends Activity {
 			} else if( !EncryptionEngine.safeHash( passwordString).equals( prefPassword ) ) {
 				AlertsManager.showAlert(appContext.getString(R.string.password_system_mismatch), this);
 			} else {	
+				// Unlike registration activity, this one does not check against the server
 				session.createLoginSession( userIDString, EncryptionEngine.safeHash( passwordString ) );
 				startActivity( new Intent(appContext, DebugInterfaceActivity.class ) ); // TODO: Dori. Debug
 				finish();

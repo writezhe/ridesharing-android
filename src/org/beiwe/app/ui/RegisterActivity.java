@@ -59,17 +59,21 @@ public class RegisterActivity extends Activity {
 		String passwordStr = password.getText().toString();
 		String passwordRepeatStr = passwordRepeat.getText().toString();
 
+		// If the user id length is too short, alert the user
 		if(userIDStr.length() == 0) {
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_user_id), this); }
 
+		// If the password length is too short, alert the user
 		else if (passwordStr.length() == 0) {
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_password), this);}
 
+		// If the repeat password does not match the original password, alert the user
 		else if ( !passwordRepeatStr.equals(passwordStr) ) {
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.password_mismatch), this);	}
 
 		// TODO: Dori. add a check for minimum length.
-
+		
+		// Otherwise, start the registration process against the user
 		else {
 			session.createLoginSession(userIDStr, EncryptionEngine.safeHash(passwordStr));
 			Log.i("Register Activity", session.getUserDetails().get(LoginSessionManager.KEY_ID));

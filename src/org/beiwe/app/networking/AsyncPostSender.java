@@ -1,8 +1,5 @@
 package org.beiwe.app.networking;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
 
 import org.beiwe.app.DebugInterfaceActivity;
@@ -58,12 +55,15 @@ public class AsyncPostSender extends AsyncTask<Void, Void, Void>{
 	 * ************** Functions that deal with logging in *********************
 	 * ********************************************************************** */
 	
+	// Set up the progress bar
 	@Override
 	protected void onPreExecute() {
 		setupProgressBar();
 		bar.setVisibility(View.VISIBLE);
 	}
 	
+	
+	// Check what kind of post request needs to be sent, depending on the URL ending
 	@Override
 	protected Void doInBackground(Void... arg0) {
 		String parameters;
@@ -86,10 +86,13 @@ public class AsyncPostSender extends AsyncTask<Void, Void, Void>{
 	@Override
 	protected void onPostExecute(Void result) {
 		bar.setVisibility(View.GONE);
+		
+		// If the response is 200 and the session is not registered, set it to be true
 		if (response == 200) { 
 			if ( !session.isRegistered() ) {
 				session.setRegistered(true);
 			}
+			// If the user wants to reset their password, log them in using the new password
 			if (newPassword != null) {
 				HashMap<String, String> details = session.getUserDetails();
 				session.createLoginSession(details.get(LoginSessionManager.KEY_ID), EncryptionEngine.safeHash(newPassword));
@@ -99,10 +102,16 @@ public class AsyncPostSender extends AsyncTask<Void, Void, Void>{
 			activity.startActivity(new Intent(activity.getApplicationContext(), DebugInterfaceActivity.class));
 			activity.finish();
 		} else { 				
+			// If the server did not send back a 200 OK, then display the error message to the user
 			alertUser(activity);
 		}
 	}
 	
+	/**
+	 * Pops up an alert with the interpreted message from the server, according to the 
+	 * response code received
+	 * @param activity
+	 */
 	private void alertUser(final Activity activity) {
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
