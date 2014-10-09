@@ -79,7 +79,7 @@ public class RegisterActivity extends Activity {
 		}
 	}
 
-	public void makeNetworkRequest() {
+	private void makeNetworkRequest() {
 		AsyncPostSender registrationThread = new AsyncPostSender("http://beiwe.org/register_user", this, session);
 		registrationThread.execute();
 	}
