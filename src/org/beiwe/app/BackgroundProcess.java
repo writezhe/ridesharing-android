@@ -125,6 +125,14 @@ public class BackgroundProcess extends Service {
 	/** Checks whether the foreground app is Beiwe
 	 * @param myPackage
 	 * @return */
+	/*
+	 * Some things I found while researching this but never really got around to write:
+	 * http://stackoverflow.com/questions/8489993/check-android-application-is-in-foreground-or-not
+	 * http://stackoverflow.com/questions/2166961/determining-the-current-foreground-application-from-a-background-task-or-service
+	 * 
+	 * Basically this can be checked using an AsyncTask.
+	 * 
+	 */
 	// TODO: consider deprecating this function because every activity calls finish() when it ends, so onPause() should only get called when the app really is paused
 	public boolean isForeground(String myPackage){
 		ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
