@@ -4,7 +4,6 @@ import java.util.HashMap;
 
 import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.ui.LoginActivity;
-import org.beiwe.app.ui.MainMenuActivity;
 import org.beiwe.app.ui.RegisterActivity;
 
 import android.content.Context;
