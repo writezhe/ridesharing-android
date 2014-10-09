@@ -67,30 +67,30 @@ public class LoginSessionManager {
 //    	Class debug = MainMenuActivity.class;
     	Log.i("SessionManager", "Check if already logged in");
     	Log.i("SessionManager", "" + isRegistered());
+
+    	/* Improvement idea: start intent from LoadingActivity, because it might be more clear/
+    	 * readable that way */
+    	Intent intent = null;
     	if(this.isLoggedIn()) {
     		// If already logged in, take user to the main menu screen
     		// TODO: before launch, uncomment this line:
     		//Intent intent = new Intent(appContext, MainMenuActivity.class);
-    		Intent intent = new Intent(appContext, debug);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            appContext.startActivity(intent);
+    		intent = new Intent(appContext, debug);
         } else {
         	Log.i("SessionManager", "Check if it is not first time login");
         	if (this.isRegistered()) {
         		// If not logged in, but has registered, take user to the login screen
-        		Intent intent = new Intent(appContext, LoginActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                appContext.startActivity(intent);      	
+        		intent = new Intent(appContext, LoginActivity.class);
         	} else {
         		// If not logged in and hasn't registered, take user to registration screen
             	Log.i("SessionManager", "First time logged in");
             	// TODO: before launch, uncomment this line:
             	//Intent intent = new Intent(appContext, RegisterActivity.class);
-            	Intent intent = new Intent(appContext, debug);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                appContext.startActivity(intent);
+            	intent = new Intent(appContext, debug);
         	}
         }
+    	intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    	appContext.startActivity(intent);
     }
     
      
