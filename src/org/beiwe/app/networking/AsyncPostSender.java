@@ -30,12 +30,14 @@ public class AsyncPostSender extends AsyncTask<Void, Void, Void>{
 	/* ************************************************************************
 	 * **************************** Constructor *******************************
 	 * ************************************************************************/
+	/** This constructor is used for normal post requests, as well as the registration requests*/
 	public AsyncPostSender(String url, Activity activity, LoginSessionManager session) {
 		this.url = url;
 		this.activity = activity;
 		this.session = session;
 	}
 	
+	/** The same as the previous constructor, but used to assign a new password*/
 	public AsyncPostSender(String url, Activity activity, LoginSessionManager session, String newPassword) {
 		this.url = url;
 		this.activity = activity;
@@ -63,7 +65,12 @@ public class AsyncPostSender extends AsyncTask<Void, Void, Void>{
 	}
 	
 	
-	// Check what kind of post request needs to be sent, depending on the URL ending
+	/**
+	 * Check what kind of post request needs to be sent, depending on the URL ending.
+	 * URL endings that need special care are register_user (uses bluetooth ID field) 
+	 * and set_password (uses new_password field).
+	 */
+	// 
 	@Override
 	protected Void doInBackground(Void... arg0) {
 		String parameters;

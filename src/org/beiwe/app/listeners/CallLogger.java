@@ -22,9 +22,6 @@ public class CallLogger extends ContentObserver {
 	// Last recorded values
 	private int lastRecordedID = 0;
 	private int lastKnownSize = 0;
-	//TODO: Dori. What is this variable?
-	private long lastRecordingDate = 0;
-
 	// Fields
 	private String id = android.provider.CallLog.Calls._ID;
 	private String number = android.provider.CallLog.Calls.NUMBER;
@@ -61,7 +58,7 @@ public class CallLogger extends ContentObserver {
 		//TODO: Dori. document in why this check is necessary
 		if (lastKnownSize != 0) {
 			lastRecordedID = textsDBQuery.getInt(textsDBQuery.getColumnIndex(id));
-			lastRecordingDate = textsDBQuery.getLong(textsDBQuery.getColumnIndex(android.provider.CallLog.Calls.DATE));
+			textsDBQuery.getLong(textsDBQuery.getColumnIndex(android.provider.CallLog.Calls.DATE));
 		}
 	}
 
@@ -82,7 +79,7 @@ public class CallLogger extends ContentObserver {
 		// Record id of last made call, recod last date
 		if (lastKnownSize == 0) {
 			lastRecordedID = textsDBQuery.getInt(textsDBQuery.getColumnIndex(id));
-			lastRecordingDate = textsDBQuery.getLong(textsDBQuery.getColumnIndex(android.provider.CallLog.Calls.DATE));
+			textsDBQuery.getLong(textsDBQuery.getColumnIndex(android.provider.CallLog.Calls.DATE));
 		}
 		
 		// Comparison values
@@ -90,9 +87,6 @@ public class CallLogger extends ContentObserver {
 //		Log.i("Call Log", "" + "Current Size is " + currentID);
 //		Log.i("Call Log", "Last Known ID is " + lastRecordedID)
 		;
-		//TODO: Dori. what is this variable.
-		long currentDate = textsDBQuery.getLong(textsDBQuery.getColumnIndex(date));
-
 		// A call was deleted
 		if (currentSize < lastKnownSize) {
 			Log.i("Call Logger", "Last Call deleted, Last Call deleted, Last Call deleted, Last Call deleted"); }
