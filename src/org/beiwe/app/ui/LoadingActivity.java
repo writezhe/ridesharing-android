@@ -57,6 +57,12 @@ public class LoadingActivity extends Activity{
 				Log.i("LoadingActivity", "files created");
 			}
 		session.checkLogin();
+		/*
+		 * switch ( session.checkLogin() ) {
+		 * case (LoginSessionManager.caseCode1) : startActivity(new Intent(RegisterActivity));
+		 * case (LoginSessionManager.caseCode2) : startActivity(new Intent(LoginActivity));
+		 * case (LoginSessionManager.caseCode3) : startActivity(new Intent(MainMenuActivity));
+		 */
 		finish();
 		} else {
 			AlertsManager.showAlert("This phone cannot run the app..", this);
