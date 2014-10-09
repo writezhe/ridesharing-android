@@ -44,7 +44,7 @@ public class LoadingActivity extends Activity{
 
 		appContext = getApplicationContext();
 		session = new LoginSessionManager(appContext);
-		
+
 		// Instantiating DeviceInfo
 		DeviceInfo info = new DeviceInfo(appContext);
 
@@ -55,14 +55,15 @@ public class LoadingActivity extends Activity{
 				NetworkUtilities.initializeNetworkUtilities(appContext, session);
 				Log.i("LoadingActivity", "files created");
 			}
-		session.checkLogin();
-		/*
-		 * switch ( session.checkLogin() ) {
-		 * case (LoginSessionManager.caseCode1) : startActivity(new Intent(RegisterActivity));
-		 * case (LoginSessionManager.caseCode2) : startActivity(new Intent(LoginActivity));
-		 * case (LoginSessionManager.caseCode3) : startActivity(new Intent(MainMenuActivity));
-		 */
-		finish();
+			session.checkLogin();
+			// TODO: Josh, start activities from here instead of from LoginSessionManager.java
+			/*
+			 * switch ( session.checkLogin() ) {
+			 * case (LoginSessionManager.caseCode1) : startActivity(new Intent(RegisterActivity));
+			 * case (LoginSessionManager.caseCode2) : startActivity(new Intent(LoginActivity));
+			 * case (LoginSessionManager.caseCode3) : startActivity(new Intent(MainMenuActivity));
+			 */
+			finish();
 		} else {
 			AlertsManager.showErrorAlert("This phone cannot run the app because it cannot securely encrypt data. Exiting the app..", this);
 		}
