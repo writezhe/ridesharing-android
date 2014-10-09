@@ -67,8 +67,6 @@ public class LoginSessionManager {
     	Log.i("SessionManager", "Check if already logged in");
     	Log.i("SessionManager", "" + isRegistered());
 
-    	/* Improvement idea: start intent from LoadingActivity, because it might be more clear/
-    	 * readable that way */
     	Intent intent = null;
     	if(this.isLoggedIn()) {
     		// If already logged in, take user to the main menu screen
