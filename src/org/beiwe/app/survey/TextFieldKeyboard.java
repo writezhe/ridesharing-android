@@ -27,7 +27,14 @@ public class TextFieldKeyboard {
 	
 	/**
 	 * Set up the UI so that if the user taps outside the current EditText, the
-	 * software keyboard goes away
+	 * software keyboard goes away.
+	 * THIS FUNCTION HAS ONE ANNOYING SIDE-EFFECT THAT MESSES WITH
+	 * ONTOUCHLISTENERS.
+	 * It works by setting onTouchListeners on EVERYTHING else in the view, so
+	 * that when anything outside the keyboard gets touched, the keyboard
+	 * disappears.  But objects can only have one onTouchListener at a time,
+	 * so if you set another onTouchListener on anything else in the view, one
+	 * onTouchListener will override the other.
 	 * @param editText the EditText the user is currently typing in
 	 */
 	public void makeKeyboardBehave(EditText editText) {
