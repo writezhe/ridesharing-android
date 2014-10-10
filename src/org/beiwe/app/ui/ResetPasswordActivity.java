@@ -94,6 +94,7 @@ public class ResetPasswordActivity extends Activity {
 		new AsyncPostSender("http://beiwe.org/set_password", this, session, newPassword).execute();		
 	}
 	
+	//TODO: Josh, see if possible to, in the Manifest.xml, set MainMenuActivity as the parent, so that when you press "Back", it takes you there.
 //	/**
 //	 * This happens when the user presses "back".
 //	 * 
