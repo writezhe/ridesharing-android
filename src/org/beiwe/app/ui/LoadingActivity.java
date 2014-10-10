@@ -23,7 +23,7 @@ import android.util.Log;
  * Right now all it does is to call on checkLogin, which is the actual transfer mechanism.
  * 
  * This activity is also designed for splash screens.
- * @author Dori Samet
+ * @author Dor Samet
  *
  */
 

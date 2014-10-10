@@ -24,7 +24,7 @@ import android.widget.EditText;
 
 /**
  * A class used to log in to the app. Uses a helper class {@link LoginSessionManager.java}
- * @author Dori Samet
+ * @author Dor Samet
  *
  */
 

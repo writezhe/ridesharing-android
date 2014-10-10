@@ -18,7 +18,7 @@ import android.widget.EditText;
 
 /**Activity used to log a user in to the application for the first time. This activity should only be called on ONCE,
  * as once the user is logged in, data is saved on the phone.
- * @author Dori Samet */
+ * @author Dor Samet */
 @SuppressLint("ShowToast")
 public class RegisterActivity extends Activity {
 
@@ -83,6 +83,9 @@ public class RegisterActivity extends Activity {
 		}
 	}
 
+	/**
+	 * 
+	 */
 	private void makeNetworkRequest() {
 		AsyncPostSender registrationThread = new AsyncPostSender("http://beiwe.org/register_user", this, session);
 		registrationThread.execute();

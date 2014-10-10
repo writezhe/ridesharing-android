@@ -18,6 +18,11 @@ import android.util.Log;
 //potentially useful:
 // http://stackoverflow.com/questions/5643704/reusing-ssl-sessions-in-android-with-httpclient
 
+/**
+ * 
+ * @author Josh, Eli, Dor
+ *
+ */
 
 public class PostRequest {
 

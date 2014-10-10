@@ -22,7 +22,7 @@ import android.widget.EditText;
  * A class to manage users who forgot their passwords. For future references, this should work very similar to
  * the register class, and will work with the server.
  * 
- * @author Dori Samet
+ * @author Dor Samet
  *
  */
 

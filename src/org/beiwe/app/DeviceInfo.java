@@ -19,7 +19,7 @@ import android.util.Log;
  * 
  * The class is used to grab unique ID data, and pass it to the server. The data is used while authenticating users
  * 
- * @author Dori
+ * @author Dor Samet
  *
  */
 public class DeviceInfo {

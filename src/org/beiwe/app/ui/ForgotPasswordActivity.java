@@ -17,7 +17,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
-
+/**
+ * 
+ * @author Dor Samet
+ *
+ */
 public class ForgotPasswordActivity extends Activity {
 
 	private Context appContext;

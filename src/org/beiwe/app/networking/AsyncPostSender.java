@@ -15,10 +15,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
+/**
+ * 
+ * @author Dor Samet
+ *
+ */
+
 public class AsyncPostSender extends AsyncTask<Void, Void, Void>{
-	
-	//TODO: Dori.  Document.
-	
+		
 	// Private fields
 	private int response;
 	private String url;

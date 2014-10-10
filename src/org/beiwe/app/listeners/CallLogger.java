@@ -10,7 +10,11 @@ import android.net.Uri;
 import android.os.Handler;
 import android.provider.CallLog;
 import android.util.Log;
-
+/**
+ * 
+ * @author Dor Samet
+ *
+ */
 public class CallLogger extends ContentObserver {
 
 	public static String header = "hashed phone number,call type,date,duration in seconds";

@@ -14,7 +14,7 @@ import android.util.Log;
 /** The Timer class provides a meeans of setting various timers.  These are used by the BackgroundProcess
  * for devices that must be turned on/off, and timing the user to automatically logout after a period of time.
  * This class includes all the Intents and IntentFilters we for trigged broadcasts.
- * @author Eli, Dori */
+ * @author Eli, Dor */
 public class Timer {
 	private AlarmManager alarmManager;
 	private BackgroundProcess backgroundProcess;

@@ -8,7 +8,7 @@ import android.content.DialogInterface;
  * This is a class that holds the function to show alerts. In case we want to use other alert functionalities,
  * these should be put here.
  * 
- * @author Dori Samet
+ * @author Dor Samet
  *
  */
 public class AlertsManager {
