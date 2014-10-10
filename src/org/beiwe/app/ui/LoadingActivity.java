@@ -55,7 +55,7 @@ public class LoadingActivity extends Activity{
 				NetworkUtilities.initializeNetworkUtilities(appContext, session);
 				Log.i("LoadingActivity", "files created");
 			}
-			session.checkLogin();
+			startActivity(session.checkLogin());
 			// TODO: Josh, start activities from here instead of from LoginSessionManager.java
 			/*
 			 * switch ( session.checkLogin() ) {

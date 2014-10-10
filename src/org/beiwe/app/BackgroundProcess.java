@@ -218,6 +218,14 @@ public class BackgroundProcess extends Service {
 			if (intent.getAction().equals(appContext.getString(R.string.signout_intent) ) ) {
 				Log.i("BackgroundProcess", "Received Signout Message");
 				
+				
+				// TODO: Eli. Add to all activities in either onCreate(), onDestroy() and/or onPause() to reset this loginSession timer.
+				// (onDestroy() is called whenever finish() is called), which is whenever user leaves to go to another activity within the app.
+				// onPause() is called whenever a user leaves the app, but does not kill it. We should not use onDestroy(), because a user can
+				// also kill the app from the task manager. Therefore the timer call should probably be called onCreate() using a static function
+				// (handle signOutTimer() ).
+				// If onPause is called before onDestroy in the taskManager, we could put this in onPause or onDestroy.
+				// So, therefore the best solution is to have it in onPause and onDestroy.
 				sessionManager = new LoginSessionManager(appContext);
 				if( isForeground("org.beiwe.app") ) {
 					sessionManager.logoutUser(); }

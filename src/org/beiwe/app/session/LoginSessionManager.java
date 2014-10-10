@@ -59,7 +59,7 @@ public class LoginSessionManager {
      * be transferred to {@link DebugInterfaceActivity}, otherwise if there was information saved in
      * SharedPreferences, the user will be transferred to {@link LoginActivity}. Otherwise, it is
      * the user's first time, therefore will start with {@link RegisterActivity}. */
-    public void checkLogin(){
+    public Intent checkLogin(){
 //    	Class debug = RegisterActivity.class;
     	Class debug = LoginActivity.class;
 //    	Class debug = DebugInterfaceActivity.class;
@@ -67,27 +67,24 @@ public class LoginSessionManager {
     	Log.i("SessionManager", "Check if already logged in");
     	Log.i("SessionManager", "" + isRegistered());
 
-    	Intent intent = null;
     	if(this.isLoggedIn()) {
     		// If already logged in, take user to the main menu screen
     		// TODO: before launch, uncomment this line:
     		//Intent intent = new Intent(appContext, MainMenuActivity.class);
-    		intent = new Intent(appContext, debug);
+    		return new Intent(appContext, debug);
         } else {
         	Log.i("SessionManager", "Check if it is not first time login");
         	if (this.isRegistered()) {
         		// If not logged in, but has registered, take user to the login screen
-        		intent = new Intent(appContext, LoginActivity.class);
+        		return new Intent(appContext, LoginActivity.class);
         	} else {
         		// If not logged in and hasn't registered, take user to registration screen
             	Log.i("SessionManager", "First time logged in");
             	// TODO: before launch, uncomment this line:
             	//Intent intent = new Intent(appContext, RegisterActivity.class);
-            	intent = new Intent(appContext, debug);
+            	return new Intent(appContext, debug);
         	}
         }
-    	intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    	appContext.startActivity(intent);
     }
     
      
