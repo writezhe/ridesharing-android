@@ -59,7 +59,6 @@ public class BackgroundProcess extends Service {
 	public void onCreate(){		
 		appContext = this.getApplicationContext();
 		BackgroundHandle = this;
-//		NetworkUtilities.initializeNetworkUtilities(appContext);
 		TextFileManager.start(appContext);
 		
 		gpsListener = new GPSListener(appContext);
@@ -133,7 +132,7 @@ public class BackgroundProcess extends Service {
 	 * Basically this can be checked using an AsyncTask.
 	 * 
 	 */
-	// TODO: consider deprecating this function because every activity calls finish() when it ends, so onPause() should only get called when the app really is paused
+	// TODO: Eli/Josh deprecate this function? every activity calls finish() when it ends, so onPause() should only get called when the app is paused/no longer foreground.
 	public boolean isForeground(String myPackage){
 		ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
 		List < ActivityManager.RunningTaskInfo > runningTaskInfo = manager.getRunningTasks(1); 
@@ -172,7 +171,7 @@ public class BackgroundProcess extends Service {
 //		filter.addAction(Timer.SIGN_OUT);
 		registerReceiver(controlMessageReceiver, filter);
 	
-		//TODO: add timer for checking for new survey
+		//TODO: Eli, create timer for checking for a new survey.
 //		timer.setupSingularFuzzyAlarm( 5000L, Timer.wifiScanTimerIntent, Timer.wifiScanIntent);
 //		timer.setupSingularExactAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent);
 //		timer.setupExactHourlyAlarm( Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
@@ -212,7 +211,7 @@ public class BackgroundProcess extends Service {
 				wifiListener.scanWifi();
 				timer.setupSingularFuzzyAlarm( 5000L, Timer.wifiScanTimerIntent, Timer.wifiScanIntent); }
 			
-			// TODO: Dori. Find out when this needs to go off. Provide a function inside the logic logic that is "start logout timer"
+			// TODO: Eli. formerly dori. Find out when this needs to go off. Provide a function inside the logic logic that is "start logout timer"
 			// What needs to be done is to send the activity to the background process in case it is no longer used (onPause, onStop, etc...) 
 			// and then start the timer.. There has to be a simpler solution - will write it down as soon as I figuer it out.
 			if (intent.getAction().equals(appContext.getString(R.string.signout_intent) ) ) {

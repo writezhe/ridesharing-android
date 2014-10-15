@@ -35,24 +35,26 @@ public class LoginSessionManager {
     
 	/**Constructor method for the session manager class
      * @param context */
+	//TODO: Eli.  changed some logic in the login activity, make sure it matches over here
 	public LoginSessionManager(Context context){
         this.appContext = context;
         pref = appContext.getSharedPreferences(PREF_NAME, PRIVATE_MODE); //sets Shared Preferences private mode
         editor = pref.edit();
         editor.commit();
     }
-     
+    
 	
    /** Creates a new login session. Interacts with the SharedPreferences.
     * @param userID
     * @param password */
+	//TODO: Eli.  changed some logic in the login activity, make sure it matches over here
     public void createLoginSession(String userID, String password){
     	editor.putBoolean(IS_REGISTERED, true);
     	editor.putBoolean(IS_LOGIN, true);
         editor.putString(KEY_ID, userID);
         editor.putString(KEY_PASSWORD, password);
         editor.commit();
-    }   
+    }
      
     
     /**Checks which page the user should scroll to. If there was an active session, the user will
@@ -80,7 +82,7 @@ public class LoginSessionManager {
         	} else {
         		// If not logged in and hasn't registered, take user to registration screen
             	Log.i("SessionManager", "First time logged in");
-            	// TODO: before launch, uncomment this line:
+            	// TODO: DEBUG CODE. uncomment this line:
             	//Intent intent = new Intent(appContext, RegisterActivity.class);
             	return new Intent(appContext, debug);
         	}
@@ -99,8 +101,7 @@ public class LoginSessionManager {
     }
     
     
-    //TODO: Dori. Put this in a debug section of your code and add a todo reminding disabling before moving to production. 
-    //TODO: Dori. This is definitely used in the background manager.
+    // Used in the background service to log out a user.
     /**Clears session details, and SharedPreferences. Should be used in {@link DebugInterfaceActivity}.
      * Using this function does not send the user back to {@link RegisterActivity}, but to {@link LoginActivity} */
     public void logoutUser(){

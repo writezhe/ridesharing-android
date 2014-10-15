@@ -96,7 +96,7 @@ public class PostRequest {
 		connection.setRequestMethod("POST");
 		connection.setRequestProperty("Connection", "Keep-Alive");
 		connection.setRequestProperty("Cache-Control", "no-cache");
-		//TODO: Dori/Eli/Josh. Test if the timeouts below are compatible with the file upload function.  There is no reason they *shouldn't*, but it is untested.
+		//TODO: Eli. research if the timeouts below are compatible with the file upload function.  There is no reason they *shouldn't*, but it is untested.
 		connection.setConnectTimeout(3000);
 		connection.setReadTimeout(5000);
 		return connection;
@@ -208,7 +208,7 @@ public class PostRequest {
 	 * @param response */
 	private static void createKey(String response){
 		if ( !response.toString().startsWith("MIIBI") ) {
-			throw new NullPointerException (" Wrong encryption key !!!" ); }  //TODO: Dori.  Why does this throw an exception?  I assume the answer is "for debugging?
+			throw new NullPointerException (" Wrong encryption key !!!" ); }  //TODO: Eli.  This needs to alert the user or return an exception that is caught and handled with a user errer alert prompt.
 		Log.i( "POSTREQUEST", "Received a key: " + response.toString() );
 		TextFileManager.getKeyFile().write( response.toString() );
 	}

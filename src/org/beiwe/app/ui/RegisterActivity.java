@@ -71,7 +71,7 @@ public class RegisterActivity extends Activity {
 		else if ( !passwordRepeatStr.equals(passwordStr) ) {
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.password_mismatch), this);	}
 
-		// TODO: Dori. add a check for minimum length.
+		// TODO: Eli. add a check for minimum length.
 		
 		// Otherwise, start the registration process against the user
 		else {

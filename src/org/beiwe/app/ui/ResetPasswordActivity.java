@@ -80,9 +80,10 @@ public class ResetPasswordActivity extends Activity {
 		String newPasswordRepeatStr = newPasswordRepeat.getText().toString();
 
 		// Cases: username mismatch, userID mismatch, passwords mismatch, and repeat password with actual password mismatch. 
+		//TODO: Eli. this logic is used in at least... 3 place: here ,login, and creation.  Modularize it.
 		if(oldPassStr.length() == 0 || !oldPassStrHash.equals(details.get(LoginSessionManager.KEY_PASSWORD))) {
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_old_password), this);
-		} else if (newPasswordStr.length() == 0) { // TODO: Debug - passwords need to be longer..
+		} else if (newPasswordStr.length() == 0) { // TODO: MAKE LENGTH CHECK CORRECT.
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_password), this);
 		} else if (!newPasswordRepeatStr.equals(newPasswordStr)) {
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.password_mismatch), this);

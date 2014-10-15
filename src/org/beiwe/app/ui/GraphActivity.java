@@ -55,11 +55,12 @@ public class GraphActivity extends Activity {
 		browserSettings.setJavaScriptEnabled(true);
 		browser.setInitialScale(200);
 
+		//TODO: Eli/Josh.  There was a debug reminder here.... debug?
 		// HTTP Post request set up, using the credentials saved on the phone
 //		LoginSessionManager sessionManager = new LoginSessionManager(appContext);
 //		HashMap<String, String> userDetails = sessionManager.getUserDetails();		
 //		String postData = "patientID=" + userDetails.get(LoginSessionManager.KEY_ID)
-//				+ "&pwd=" + userDetails.get(LoginSessionManager.KEY_PASSWORD); TODO: Debug
+//				+ "&pwd=" + userDetails.get(LoginSessionManager.KEY_PASSWORD);
 		String postData = "patient_id=mama&password=aaa";
 
 		browser.postUrl(beiweGraph, EncodingUtils.getBytes(postData, "BASE64"));

@@ -108,7 +108,6 @@
     <string name="title_activity_graph">GraphActivity</string>
     
     <!-- Timer Strings-->
-    <!--  TODO: Make sure to label these as actions! -->
     <string name="accelerometer_off">Accelerometer OFF</string>
     <string name="accelerometer_on">Accelerometer On</string>
     <string name="bluetooth_off">Bluetooth OFF</string>

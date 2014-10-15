@@ -69,17 +69,16 @@ public class ForgotPasswordActivity extends Activity {
 		String passwordStr = newPassword.getText().toString();
 		String passwordRepeatStr = newPasswordRepeat.getText().toString();
 		String encryptedPassword = EncryptionEngine.safeHash(passwordStr);
-		// TODO: Change to longer length...
+		// TODO: CHANGE LENGTH CHECK.
 		if (passwordStr.length() < 0) {
 			AlertsManager.showAlert("Invalid password", this);
 		} else if (!passwordStr.equals(passwordRepeatStr)) {
 			AlertsManager.showAlert("Passwords mismatch", this);
 		} else {
 			HashMap<String, String> details = session.getUserDetails();
-			// TODO: Dori. We need to send the raw password for testing. Obviously, this will change before production, but for now this is what happens
+			//FIXME: Eli. Currently sending the raw password, change this to be correct/work at all.
 			session.createLoginSession(details.get(LoginSessionManager.KEY_ID), encryptedPassword);
 			new AsyncPostSender("http://beiwe.org/forgot_password", this, session).execute();
 		}
 	}
 }
-//}

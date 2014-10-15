@@ -40,7 +40,7 @@ public class DebugInterfaceActivity extends Activity {
 		appContext.startService(backgroundProcess);
 	}
 	
-	//TODO: Dori. insert comment about purpose of this code, or delete.
+	//TODO: Eli. this looks like junk, work out if it can be removed.
 //	@Override
 //	public void onResume() {
 //		super.onResume();
@@ -50,8 +50,7 @@ public class DebugInterfaceActivity extends Activity {
 //			finish();
 //		}
 //	}
-//	
-
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; adds items to the action bar if it is present.

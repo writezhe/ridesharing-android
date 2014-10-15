@@ -10,11 +10,9 @@ import android.net.Uri;
 import android.os.Handler;
 import android.provider.CallLog;
 import android.util.Log;
-/**
- * 
- * @author Dor Samet
- *
- */
+
+/** @author Dor Samet */
+
 public class CallLogger extends ContentObserver {
 
 	public static String header = "hashed phone number,call type,date,duration in seconds";
@@ -59,7 +57,7 @@ public class CallLogger extends ContentObserver {
 		lastKnownSize = textsDBQuery.getCount();
 //		Log.i("CallLogger", "" + lastKnownSize);
 		// Record id of last made call and the date
-		//TODO: Dori. document in why this check is necessary
+		//TODO: work out why this check is necessary.
 		if (lastKnownSize != 0) {
 			lastRecordedID = textsDBQuery.getInt(textsDBQuery.getColumnIndex(id));
 			textsDBQuery.getLong(textsDBQuery.getColumnIndex(android.provider.CallLog.Calls.DATE));
