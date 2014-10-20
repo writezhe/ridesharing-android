@@ -9,25 +9,23 @@ import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
 import org.beiwe.app.listeners.WiFiListener;
-import org.beiwe.app.networking.NetworkUtilities;
 import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.TextFileManager;
+import org.beiwe.app.survey.QuestionsDownloader;
+import org.beiwe.app.survey.SurveyScheduler;
+import org.beiwe.app.ui.AppNotifications;
 
-import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
-import android.provider.Settings;
 import android.util.Log;
 
 
@@ -160,6 +158,9 @@ public class BackgroundProcess extends Service {
 		filter.addAction( appContext.getString( R.string.gps_off ) );
 		filter.addAction( appContext.getString( R.string.gps_on ) );
 		filter.addAction( appContext.getString( R.string.signout_intent ) );
+		filter.addAction( appContext.getString( R.string.voice_recording ) );
+		filter.addAction( appContext.getString( R.string.daily_survey ) );
+		filter.addAction( appContext.getString( R.string.weekly_survey ) );
 		filter.addAction( appContext.getString( R.string.action_signout_timer ) );
 		filter.addAction( appContext.getString( R.string.action_accelerometer_timer ) );
 		filter.addAction( appContext.getString( R.string.action_bluetooth_timer ) );
@@ -176,6 +177,16 @@ public class BackgroundProcess extends Service {
 //		timer.setupSingularExactAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent);
 //		timer.setupExactHourlyAlarm( Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
 //		timer.setupSingularFuzzyAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOnIntent);
+				
+		// Start voice recording alarm
+		timer.setupDailyRepeatingAlarm(19, new Intent(appContext.getString(R.string.voice_recording)));
+
+		// TODO: Josh delete these; they're only for debugging while downloading from the server is broken
+		QuestionsDownloader downloader = new QuestionsDownloader(appContext);
+		downloader.downloadJsonQuestions();
+		SurveyScheduler scheduler = new SurveyScheduler(appContext);
+		scheduler.scheduleSurvey("");
+		scheduler.scheduleSurvey("{weekly_or_daily: 'weekly'}");
 	}	
 
 	BroadcastReceiver controlMessageReceiver = new BroadcastReceiver() {
@@ -210,6 +221,19 @@ public class BackgroundProcess extends Service {
 			if (intent.getAction().equals( appContext.getString(R.string.action_wifi_scan) ) ) {
 				wifiListener.scanWifi();
 				timer.setupSingularFuzzyAlarm( 5000L, Timer.wifiScanTimerIntent, Timer.wifiScanIntent); }
+			
+			if (intent.getAction().equals( appContext.getString(R.string.voice_recording) ) ) {
+				Log.i("TIMERS", "voice recording timer sounded");
+				AppNotifications.displayRecordingNotification(appContext); }
+			
+			if (intent.getAction().equals( appContext.getString(R.string.daily_survey) ) ) {
+				Log.i("TIMERS", "DAILY SURVEY CALLED");
+				AppNotifications.displaySurveyNotification(appContext); }
+			
+			if (intent.getAction().equals( appContext.getString(R.string.weekly_survey) ) ) {
+				// TODO: Josh, differentiate between daily and weekly surveys
+				Log.i("TIMERS", "WEEKLY SURVEY CALLED");
+				AppNotifications.displaySurveyNotification(appContext); }
 			
 			// TODO: Eli. formerly dori. Find out when this needs to go off. Provide a function inside the logic logic that is "start logout timer"
 			// What needs to be done is to send the activity to the background process in case it is no longer used (onPause, onStop, etc...) 

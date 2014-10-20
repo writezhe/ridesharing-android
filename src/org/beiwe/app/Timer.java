@@ -1,5 +1,7 @@
 package org.beiwe.app;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Random;
 
 import android.app.AlarmManager;
@@ -29,6 +31,9 @@ public class Timer {
 	public static Intent gpsOffIntent;
 	public static Intent gpsOnIntent;
 	public static Intent wifiScanIntent;
+	public static Intent voiceRecordingIntent;
+	public static Intent dailySurveyIntent;
+	public static Intent weeklySurveyIntent;
 	
 	// Timer intents
 	public static Intent accelerometerTimerIntent;
@@ -45,7 +50,10 @@ public class Timer {
 	public IntentFilter getBluetoothOnIntentFilter() { return new IntentFilter( bluetoothOnIntent.getAction() ); }
 	public IntentFilter getGPSIntentOffFilter() { return new IntentFilter( gpsOffIntent.getAction() ); }
 	public IntentFilter getGPSIntentOnFilter() { return new IntentFilter( gpsOnIntent.getAction() ); }
-	public IntentFilter getWifiScanFilter() { return new IntentFilter( wifiScanTimerIntent.getAction() ); }
+	public IntentFilter getWifiScanFilter() { return new IntentFilter( wifiScanTimerIntent.getAction() ); } //TODO: Eli, is this supposed to be wifiScanIntent instead of wifiScanTimerIntent?
+	public IntentFilter getVoiceRecordingIntentFilter() { return new IntentFilter( voiceRecordingIntent.getAction() ); }
+	public IntentFilter getDailySurveyIntentFilter() { return new IntentFilter( dailySurveyIntent.getAction() ); }
+	public IntentFilter getWeeklySurveyIntentFilter() { return new IntentFilter( weeklySurveyIntent.getAction() ); }
 	
 	//The timer offset is a random value that is inserted into time calculations to make them occur at a variable time
 	private final static long EXACT_TIMER_OFFSET = 2856000;
@@ -68,7 +76,10 @@ public class Timer {
 		bluetoothOffIntent = setupIntent( appContext.getString(R.string.bluetooth_off) );
 		bluetoothOnIntent = setupIntent( appContext.getString(R.string.accelerometer_on) );
 		gpsOffIntent = setupIntent( appContext.getString(R.string.gps_off) );
-		gpsOnIntent = setupIntent( appContext.getString(R.string.gps_on));
+		gpsOnIntent = setupIntent( appContext.getString(R.string.gps_on) );
+		voiceRecordingIntent = setupIntent( appContext.getString(R.string.voice_recording) );
+		dailySurveyIntent = setupIntent( appContext.getString(R.string.daily_survey) );
+		weeklySurveyIntent = setupIntent( appContext.getString(R.string.weekly_survey) );
 		
 		Log.i("Timer", signoutIntent.toString()); // POC
 		
@@ -77,6 +88,7 @@ public class Timer {
 		bluetoothTimerIntent = setupIntent( appContext.getString(R.string.action_bluetooth_timer) );
 		GPSTimerIntent = setupIntent( appContext.getString(R.string.action_gps_timer) );
 		signOutTimerIntent = setupIntent( appContext.getString(R.string.action_signout_timer) );
+		// TODO: Eli, do we need to add wifiScanIntent here?
 		
 		Log.i("Timer", signOutTimerIntent.toString()); // Yet another POC
 	}
@@ -121,7 +133,53 @@ public class Timer {
 		PendingIntent pendingTimerIntent = registerAlarm( intentToBeBroadcast, timerIntent );
 		/* The alarmManager.setExact(*parameters*) operation makes exact alarms.  They are guaranteed
 		 * to go off at the precise/exact time that you specify. */
+		// TODO: Eli, can we use this?  AlarmManager.setExact only exists in API 19 and above.
 		alarmManager.setExact( AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingTimerIntent );
+	}
+	
+	/** Set a repeating, once-a-day alarm. Uses AlarmManager.setRepeating, which may not be precise
+	 * @param hourOfDay in 24-hr time, when the alarm should fire. E.g., "19" means 7pm every day
+	 * @param intentToBeBroadcast the intent to be broadcast when the alarm fires      */
+	public void setupDailyRepeatingAlarm(int hourOfDay, Intent intentToBeBroadcast) {
+		// TODO: Josh, use this log statement to test surveys downloaded from server
+		Log.i("Timer.java", "setupDailyRepeatingAlarm(" + hourOfDay + ", " + intentToBeBroadcast);
+		// TODO: Josh, purge existing alarms?
+		Calendar date = new GregorianCalendar();
+		date.set(Calendar.HOUR_OF_DAY, hourOfDay);
+		date.set(Calendar.MINUTE, 0);
+		date.set(Calendar.SECOND, 0);
+		date.set(Calendar.MILLISECOND, 0);
+		long triggerAtMillis = date.getTimeInMillis(); // TODO: Josh use the below line for debugging
+		//long triggerAtMillis = System.currentTimeMillis() - 5000L;
+		
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
+		long oneDayInMillis = 24 * 60 * 60 * 1000L; // TODO: Josh use the line below for debugging
+		//long oneDayInMillis = 10 * 1000L;
+		
+		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, triggerAtMillis, oneDayInMillis, pendingIntent);		
+	}
+	
+	/** Set a repeating, once-a-week alarm. Uses AlarmManager.setRepeating, which may not be precise
+	 * @param dayOfWeek Sunday = 1, Saturday = 7; or use Calendar.SUNDAY, Calendar.MONDAY, etc.
+	 * @param hourOfDay in 24-hr time, when the alarm should fire. E.g., "19" means 7pm every day
+	 * @param intentToBeBroadcast the intent to be broadcast when the alarm fires      */
+	public void setupWeeklyRepeatingAlarm(int dayOfWeek, int hourOfDay, Intent intentToBeBroadcast) {
+		// TODO: Josh, use this log statement to test surveys downloaded from server
+		Log.i("Timer.java", "setupWeeklyRepeatingAlarm(" + dayOfWeek + ", " + hourOfDay + ", " + intentToBeBroadcast);
+		Calendar date = new GregorianCalendar();
+		date.set(Calendar.DAY_OF_WEEK, dayOfWeek);
+		date.set(Calendar.HOUR_OF_DAY, hourOfDay);
+		date.set(Calendar.MINUTE, 0);
+		date.set(Calendar.SECOND, 0);
+		date.set(Calendar.MILLISECOND, 0);
+		long triggerAtMillis = date.getTimeInMillis(); // TODO: Josh, use the line below for debugging
+		//long triggerAtMillis = System.currentTimeMillis() - 5000L;
+		
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
+		long oneWeekInMillis = 7 * 24 * 60 * 60 * 1000L; // TODO: Josh use the line below for debugging
+		//long oneWeekInMillis = 42 * 1000L;
+		
+		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, triggerAtMillis, oneWeekInMillis, pendingIntent);		
 	}
 	
 	/** setupExactHourlyAlarm creates an Exact Alarm that will go off at a specific hourly offset,

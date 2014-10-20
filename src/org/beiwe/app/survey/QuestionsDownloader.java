@@ -3,8 +3,6 @@ package org.beiwe.app.survey;
 import java.io.IOException;
 
 import org.beiwe.app.R;
-//import org.beiwe.app.networking.FileDownloader;
-import org.beiwe.app.networking.NetworkUtilities;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.storage.TextFileManager;
 import org.json.JSONArray;
@@ -15,6 +13,7 @@ import android.content.Context;
 import android.content.res.Resources.NotFoundException;
 import android.os.AsyncTask;
 import android.util.Log;
+//import org.beiwe.app.networking.FileDownloader;
 
 public class QuestionsDownloader {
 
@@ -141,6 +140,10 @@ public class QuestionsDownloader {
 				TextFileManager.getCurrentQuestionsFile().deleteSafely();
 				TextFileManager.getCurrentQuestionsFile().write(result);
 //				FileDownloader.writeStringToFile(result, TextFileManager.getCurrentQuestionsFile());
+				
+				// Schedule surveys, based on the schedule contained in the JSON file
+				SurveyScheduler scheduler = new SurveyScheduler(appContext);
+				scheduler.scheduleSurvey(result);
 			}
 		}
 	}
