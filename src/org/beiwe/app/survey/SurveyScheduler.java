@@ -25,18 +25,18 @@ public class SurveyScheduler {
 		Timer timer = new Timer(BackgroundProcess.getBackgroundHandle());
 		int hour = hourOfDayToAskSurvey(jsonSurveyString);
 
-		if (surveyIsWeeklyNotDaily(jsonSurveyString)) {
+		if (dayOfWeekToAskSurvey(jsonSurveyString) == -1) {
+			// Schedule a daily survey
+			Intent intent = new Intent(appContext.getString(R.string.daily_survey));
+			timer.setupDailyRepeatingAlarm(hour, intent);
+			Log.i("SurveyScheduler", "Daily survey scheduled");
+		}
+		else {
 			// Schedule a weekly survey
 			int dayOfWeek = dayOfWeekToAskSurvey(jsonSurveyString);
 			Intent intent = new Intent(appContext.getString(R.string.weekly_survey));
 			timer.setupWeeklyRepeatingAlarm(dayOfWeek, hour, intent);
 			Log.i("SurveyScheduler", "Weekly survey scheduled");
-		}
-		else {
-			// Schedule a daily survey
-			Intent intent = new Intent(appContext.getString(R.string.daily_survey));
-			timer.setupDailyRepeatingAlarm(hour, intent);
-			Log.i("SurveyScheduler", "Daily survey scheduled");
 		}
 		Log.i("SurveyScheduler", "scheduleSurvey() finished");
 	}
@@ -58,21 +58,9 @@ public class SurveyScheduler {
 			JSONObject surveyObject = new JSONObject(jsonSurveyString);
 			return surveyObject.getInt("day_of_week");
 		} catch (JSONException e) {
-			// If JSON parsing fails, schedule the survey for Tuesdays
-			return 3;
+			// If attribute "day_of_week" doesn't exist, it's a daily survey; return -1
+			return -1;
 		}
-	}
-	
-	
-	private Boolean surveyIsWeeklyNotDaily(String jsonSurveyString) {
-		try {
-			JSONObject surveyObject = new JSONObject(jsonSurveyString);
-			if (surveyObject.getString("weekly_or_daily").equals("weekly")) {
-				return true;
-			}
-		} catch (JSONException e) {}		
-		// If JSON parsing fails, or if "weekly_or_daily" != "weekly", assume the survey is daily
-		return false;
 	}
 	
 }
