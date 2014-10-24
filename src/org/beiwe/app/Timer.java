@@ -22,7 +22,7 @@ public class Timer {
 	private BackgroundProcess backgroundProcess;
 	private Context appContext;
 
-	// Intents
+	// Control Message Intents
 	public static Intent accelerometerOffIntent;
 	public static Intent accelerometerOnIntent;
 	public static Intent bluetoothOffIntent;
@@ -33,14 +33,15 @@ public class Timer {
 	public static Intent signoutIntent;
 	public static Intent voiceRecordingIntent;
 	public static Intent weeklySurveyIntent;
-	public static Intent wifiScanIntent;
+	public static Intent wifiLogIntent;
+	// FIXME: add an upload datafiles/download new survey timer; call it networkTimer or something
 	
 	// Timer intents
 	public static Intent accelerometerTimerIntent;
 	public static Intent bluetoothTimerIntent;
 	public static Intent GPSTimerIntent;
 	public static Intent signOutTimerIntent;
-	public static Intent wifiScanTimerIntent;
+	public static Intent wifiLogTimerIntent;
 	
 	// Intent filters
 	public IntentFilter getAccelerometerOffIntentFilter() { return new IntentFilter( accelerometerOffIntent.getAction() ); }
@@ -53,8 +54,8 @@ public class Timer {
 	public IntentFilter getSignoutIntentFilter() { return new IntentFilter( signoutIntent.getAction() ); }
 	public IntentFilter getVoiceRecordingIntentFilter() { return new IntentFilter( voiceRecordingIntent.getAction() ); }
 	public IntentFilter getWeeklySurveyIntentFilter() { return new IntentFilter( weeklySurveyIntent.getAction() ); }
-	public IntentFilter getWifiScanFilter() { return new IntentFilter( wifiScanTimerIntent.getAction() ); }
-	//TODO: Eli, is this supposed to be wifiScanIntent instead of wifiScanTimerIntent?	
+	public IntentFilter getWifiLogFilter() { return new IntentFilter( wifiLogTimerIntent.getAction() ); }
+	//TODO: Eli, is this supposed to be wifiLogIntent instead of wifiLogTimerIntent?	
 	
 	//The timer offset is a random value that is inserted into time calculations to make them occur at a variable time
 	private final static long EXACT_TIMER_OFFSET = 2856000;
@@ -87,7 +88,7 @@ public class Timer {
 		bluetoothTimerIntent = setupIntent( appContext.getString(R.string.action_bluetooth_timer) );
 		GPSTimerIntent = setupIntent( appContext.getString(R.string.action_gps_timer) );
 		signOutTimerIntent = setupIntent( appContext.getString(R.string.action_signout_timer) );
-		// TODO: Eli, determine if we need to add wifiScanIntent here?
+		// TODO: Eli, determine if we need to add wifiLogIntent here?
 	}
 
 	

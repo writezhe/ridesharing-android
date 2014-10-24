@@ -154,7 +154,7 @@ public class BackgroundProcess extends Service {
 //		filter.addAction( appContext.getString( R.string.action_bluetooth_timer ) );
 //		filter.addAction( appContext.getString( R.string.action_gps_timer ) );
 //		filter.addAction( appContext.getString( R.string.action_signout_timer ) );
-//		filter.addAction( appContext.getString( R.string.action_wifi_scan ) );
+//		filter.addAction( appContext.getString( R.string.action_wifi_log ) );
 //		filter.addAction( appContext.getString( R.string.bluetooth_off ) );
 //		filter.addAction( appContext.getString( R.string.bluetooth_on ) );
 //		filter.addAction( appContext.getString( R.string.daily_survey ) );
@@ -173,7 +173,7 @@ public class BackgroundProcess extends Service {
 //		timer.setupExactHourlyAlarm( Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
 //		timer.setupSingularExactAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent);
 //		timer.setupSingularFuzzyAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOnIntent);
-//		timer.setupSingularFuzzyAlarm( 5000L, Timer.wifiScanTimerIntent, Timer.wifiScanIntent);				
+//		timer.setupSingularFuzzyAlarm( 5000L, Timer.wifiLogTimerIntent, Timer.wifiLogIntent);				
 //		// Start voice recording alarm
 //		timer.setupDailyRepeatingAlarm(19, new Intent(appContext.getString(R.string.voice_recording)));
 
@@ -215,9 +215,9 @@ public class BackgroundProcess extends Service {
 				gpsListener.turn_on();
 				timer.setupSingularExactAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOffIntent); }
 		
-			if (intent.getAction().equals( appContext.getString(R.string.action_wifi_scan) ) ) {
+			if (intent.getAction().equals( appContext.getString(R.string.action_wifi_log) ) ) {
 				wifiListener.scanWifi();
-				timer.setupSingularFuzzyAlarm( 5000L, Timer.wifiScanTimerIntent, Timer.wifiScanIntent); }
+				timer.setupSingularFuzzyAlarm( 5000L, Timer.wifiLogTimerIntent, Timer.wifiLogIntent); }
 			
 			if (intent.getAction().equals( appContext.getString(R.string.voice_recording) ) ) {
 				Log.i("TIMERS", "voice recording timer sounded");
