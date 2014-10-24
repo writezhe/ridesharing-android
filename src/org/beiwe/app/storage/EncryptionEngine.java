@@ -156,5 +156,5 @@ public class EncryptionEngine {
 	}
 	
 	
-	private static String toBase64(byte[] data) {return Base64.encodeToString(data, Base64.NO_WRAP | Base64.NO_PADDING); }
+	private static String toBase64(byte[] data) {return Base64.encodeToString(data, Base64.NO_WRAP ); }
 }
