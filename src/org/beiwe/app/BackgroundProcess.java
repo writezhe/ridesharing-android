@@ -45,10 +45,9 @@ public class BackgroundProcess extends Service {
 	//TODO: Eli. this [stupid hack] should only be necessary for debugging, comment out before production.
 	public static BackgroundProcess BackgroundHandle = null;
 
-	public static BackgroundProcess getBackgroundHandle(){
+	public static BackgroundProcess getBackgroundHandle() throws NullPointerException{
 		if (BackgroundHandle != null) { return BackgroundHandle; }
-		Log.e("BackgroundProcess", "background process handle called for before background process had started." );
-		throw new NullPointerException();
+		throw new NullPointerException("background process handle called for before background process had started.");
 	}
 	
 	
@@ -147,39 +146,36 @@ public class BackgroundProcess extends Service {
 	/** create timers that will trigger events throughout the program, and
 	 * register the custom Intents with the controlMessageReceiver. */
 	public void startTimers() {
-		IntentFilter filter = new IntentFilter();
-		
-		// TODO: Eli. This is fixed now. Set up timers throughout the program, or tell Dori how to do it
-		
-		filter.addAction( appContext.getString( R.string.accelerometer_off ) );
-		filter.addAction( appContext.getString( R.string.accelerometer_on ) );
-		filter.addAction( appContext.getString( R.string.bluetooth_off ) );
-		filter.addAction( appContext.getString( R.string.bluetooth_on ) );
-		filter.addAction( appContext.getString( R.string.gps_off ) );
-		filter.addAction( appContext.getString( R.string.gps_on ) );
-		filter.addAction( appContext.getString( R.string.signout_intent ) );
-		filter.addAction( appContext.getString( R.string.voice_recording ) );
-		filter.addAction( appContext.getString( R.string.daily_survey ) );
-		filter.addAction( appContext.getString( R.string.weekly_survey ) );
-		filter.addAction( appContext.getString( R.string.action_signout_timer ) );
-		filter.addAction( appContext.getString( R.string.action_accelerometer_timer ) );
-		filter.addAction( appContext.getString( R.string.action_bluetooth_timer ) );
-		filter.addAction( appContext.getString( R.string.action_gps_timer ) );
-		filter.addAction( appContext.getString( R.string.action_wifi_scan ) );
-	
+//		IntentFilter filter = new IntentFilter();
+//		
+//		filter.addAction( appContext.getString( R.string.accelerometer_off ) );
+//		filter.addAction( appContext.getString( R.string.accelerometer_on ) );
+//		filter.addAction( appContext.getString( R.string.action_accelerometer_timer ) );
+//		filter.addAction( appContext.getString( R.string.action_bluetooth_timer ) );
+//		filter.addAction( appContext.getString( R.string.action_gps_timer ) );
+//		filter.addAction( appContext.getString( R.string.action_signout_timer ) );
+//		filter.addAction( appContext.getString( R.string.action_wifi_scan ) );
+//		filter.addAction( appContext.getString( R.string.bluetooth_off ) );
+//		filter.addAction( appContext.getString( R.string.bluetooth_on ) );
+//		filter.addAction( appContext.getString( R.string.daily_survey ) );
+//		filter.addAction( appContext.getString( R.string.gps_off ) );
+//		filter.addAction( appContext.getString( R.string.gps_on ) );
+//		filter.addAction( appContext.getString( R.string.signout_intent ) );
+//		filter.addAction( appContext.getString( R.string.voice_recording ) );
+//		filter.addAction( appContext.getString( R.string.weekly_survey ) );
+//		
 //		timer.setupExactHourlyAlarm(Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
-//		timer.setupRepeatingAlarm(5000, Timer.signOutTimerIntent, Timer.signoutIntent); // Automatic Signout
-//		filter.addAction(Timer.SIGN_OUT);
-		registerReceiver(controlMessageReceiver, filter);
-	
-		//TODO: Eli, create timer for checking for a new survey.
-//		timer.setupSingularFuzzyAlarm( 5000L, Timer.wifiScanTimerIntent, Timer.wifiScanIntent);
-//		timer.setupSingularExactAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent);
+//		timer.setupSingularExactAlarm( 5000L, Timer.signOutTimerIntent, Timer.signoutIntent); // Automatic Signout, also this line is simply incorrect
+//		registerReceiver(controlMessageReceiver, filter);
+//	
+//		//TODO: Josh, create timer for checking for a new survey. (I think you have done this)  
+//		
 //		timer.setupExactHourlyAlarm( Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
+//		timer.setupSingularExactAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent);
 //		timer.setupSingularFuzzyAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOnIntent);
-				
-		// Start voice recording alarm
-		timer.setupDailyRepeatingAlarm(19, new Intent(appContext.getString(R.string.voice_recording)));
+//		timer.setupSingularFuzzyAlarm( 5000L, Timer.wifiScanTimerIntent, Timer.wifiScanIntent);				
+//		// Start voice recording alarm
+//		timer.setupDailyRepeatingAlarm(19, new Intent(appContext.getString(R.string.voice_recording)));
 
 		// TODO: Josh delete these; they're only for debugging while downloading from the server is broken
 		QuestionsDownloader downloader = new QuestionsDownloader(appContext);
@@ -188,7 +184,8 @@ public class BackgroundProcess extends Service {
 		scheduler.scheduleSurvey("");
 		scheduler.scheduleSurvey("{weekly_or_daily: 'weekly'}");
 	}	
-
+	
+	
 	BroadcastReceiver controlMessageReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context appContext, Intent intent) {
@@ -235,20 +232,23 @@ public class BackgroundProcess extends Service {
 				Log.i("TIMERS", "WEEKLY SURVEY CALLED");
 				AppNotifications.displaySurveyNotification(appContext); }
 			
-			// TODO: Eli. formerly dori. Find out when this needs to go off. Provide a function inside the logic logic that is "start logout timer"
+			// TODO: Eli. formerly dori. Find out when this needs to go off. Provide a function inside the logic that is "start logout timer"
 			// What needs to be done is to send the activity to the background process in case it is no longer used (onPause, onStop, etc...) 
 			// and then start the timer.. There has to be a simpler solution - will write it down as soon as I figuer it out.
 			if (intent.getAction().equals(appContext.getString(R.string.signout_intent) ) ) {
-				Log.i("BackgroundProcess", "Received Signout Message");
-				
+				Log.i("BackgroundProcess", "Received Logout");
 				
 				// TODO: Eli. Add to all activities in either onCreate(), onDestroy() and/or onPause() to reset this loginSession timer.
-				// (onDestroy() is called whenever finish() is called), which is whenever user leaves to go to another activity within the app.
+				// (onDestroy() is called whenever finish() is called), which is whenever a user leaves to go to another activity within the app.
 				// onPause() is called whenever a user leaves the app, but does not kill it. We should not use onDestroy(), because a user can
 				// also kill the app from the task manager. Therefore the timer call should probably be called onCreate() using a static function
 				// (handle signOutTimer() ).
 				// If onPause is called before onDestroy in the taskManager, we could put this in onPause or onDestroy.
 				// So, therefore the best solution is to have it in onPause and onDestroy.
+				// refinement:
+				//		in onPause and onDestroy call a function that...
+				//		...signs the user in (because... that is exactly the behavior we want), starts a fifteen minute logout timer.
+				// is t
 				sessionManager = new LoginSessionManager(appContext);
 				if( isForeground("org.beiwe.app") ) {
 					sessionManager.logoutUser(); }
@@ -269,7 +269,6 @@ public class BackgroundProcess extends Service {
 	@Override
 	public void onDestroy() {
 		//this does not appear to run when the service or app are killed...
-		//TODO: Eli. research when onDestroy is actually called, insert informative comment.
 		Log.i("BackgroundService", "BackgroundService Killed");
 		Long javaTimeCode = System.currentTimeMillis();
 		TextFileManager.getDebugLogFile().write(javaTimeCode.toString() + "," + "BackgroundService Killed" +"\n" ); }

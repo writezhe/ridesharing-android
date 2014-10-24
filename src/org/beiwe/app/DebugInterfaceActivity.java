@@ -1,7 +1,7 @@
 package org.beiwe.app;
 
 import org.beiwe.app.listeners.AccelerometerListener;
-import org.beiwe.app.networking.NetworkUtilities;
+import org.beiwe.app.networking.NetworkUtility;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.EncryptionEngine;
@@ -28,7 +28,6 @@ public class DebugInterfaceActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_debug_interface);
-		Log.i("DebugInterface", "Created!");
 		appContext = this.getApplicationContext();
 		
 		//start background service
@@ -81,7 +80,7 @@ public class DebugInterfaceActivity extends Activity {
 	
 	public void uploadDataFiles(View view) {
 //		NetworkUtilities.initializeNetworkUtilities(appContext);
-		NetworkUtilities.uploadAllFiles(); }
+		PostRequest.uploadAllFiles(); }
 	
 	public void goToAudioRecorder(View view) {
 		Intent audioRecorderIntent = new Intent(this, AudioRecorderActivity.class);
@@ -152,5 +151,5 @@ public class DebugInterfaceActivity extends Activity {
 	
 	public void resetPassword(View view) { Log.i("DebugInterface", "reset password has been called?"); }
 	
-	public void sendPostToTestURL(View view) { PostRequest.make_register_request_on_async_thread(NetworkUtilities.makeDefaultParameters(), "http://beiwe.org/test"); }
+	public void sendPostToTestURL(View view) { PostRequest.asyncRegisterHandler(PostRequest.defaultParameters(), "http://beiwe.org/test"); }
 }

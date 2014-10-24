@@ -35,7 +35,6 @@ public class LoginSessionManager {
     
 	/**Constructor method for the session manager class
      * @param context */
-	//TODO: Eli.  changed some logic in the login activity, make sure it matches over here
 	public LoginSessionManager(Context context){
         this.appContext = context;
         pref = appContext.getSharedPreferences(PREF_NAME, PRIVATE_MODE); //sets Shared Preferences private mode
@@ -47,7 +46,6 @@ public class LoginSessionManager {
    /** Creates a new login session. Interacts with the SharedPreferences.
     * @param userID
     * @param password */
-	//TODO: Eli.  changed some logic in the login activity, make sure it matches over here
     public void createLoginSession(String userID, String password){
     	editor.putBoolean(IS_REGISTERED, true);
     	editor.putBoolean(IS_LOGIN, true);
@@ -62,12 +60,11 @@ public class LoginSessionManager {
      * SharedPreferences, the user will be transferred to {@link LoginActivity}. Otherwise, it is
      * the user's first time, therefore will start with {@link RegisterActivity}. */
     public Intent checkLogin(){
-//    	Class debug = RegisterActivity.class;
-    	Class debug = LoginActivity.class;
+    	Class debug = RegisterActivity.class;
+//    	Class debug = LoginActivity.class;
 //    	Class debug = DebugInterfaceActivity.class;
 //    	Class debug = MainMenuActivity.class;
-    	Log.i("SessionManager", "Check if already logged in");
-    	Log.i("SessionManager", "" + isRegistered());
+    	Log.i("LoginSessionManager", "Already logged in: " + isRegistered() );
 
     	if(this.isLoggedIn()) {
     		// If already logged in, take user to the main menu screen
@@ -75,13 +72,12 @@ public class LoginSessionManager {
     		//Intent intent = new Intent(appContext, MainMenuActivity.class);
     		return new Intent(appContext, debug);
         } else {
-        	Log.i("SessionManager", "Check if it is not first time login");
         	if (this.isRegistered()) {
         		// If not logged in, but has registered, take user to the login screen
         		return new Intent(appContext, LoginActivity.class);
         	} else {
         		// If not logged in and hasn't registered, take user to registration screen
-            	Log.i("SessionManager", "First time logged in");
+            	Log.i("LoginSessionManager", "First time logged in");
             	// TODO: DEBUG CODE. uncomment this line:
             	//Intent intent = new Intent(appContext, RegisterActivity.class);
             	return new Intent(appContext, debug);
@@ -96,14 +92,13 @@ public class LoginSessionManager {
        	HashMap<String, String> userDetails = new HashMap<String, String>();
         userDetails.put(KEY_ID, pref.getString(KEY_ID, null));
         userDetails.put(KEY_PASSWORD, pref.getString(KEY_PASSWORD, null));
-        Log.i("SessionManager", userDetails.toString());
+        //TODO: Eli. Determine why this is triggering twice when bypassing the login screen for the debug activity.
+        Log.i("LoginSessionManager", "user details: " + userDetails.toString());
         return userDetails;
     }
     
     
-    // Used in the background service to log out a user.
-    /**Clears session details, and SharedPreferences. Should be used in {@link DebugInterfaceActivity}.
-     * Using this function does not send the user back to {@link RegisterActivity}, but to {@link LoginActivity} */
+    /**Clears session details and SharedPreferences.  Sends user to {@link LoginActivity} */
     public void logoutUser(){
     	editor.putBoolean(IS_LOGIN, false);
         editor.commit();
@@ -113,7 +108,12 @@ public class LoginSessionManager {
         appContext.startActivity(intent);
     }
     
-    
+	/** logs user out without forcing an activity change. */
+	public void logoutUserPassive() {
+		editor.putBoolean(IS_LOGIN, false);
+		editor.commit();
+	}
+    	
     /** Quick check for login. **/
     public boolean isLoggedIn(){ return pref.getBoolean(IS_LOGIN, false); }
     
@@ -121,10 +121,5 @@ public class LoginSessionManager {
 	
 	public void setRegistered(boolean value) { editor.putBoolean(IS_LOGIN, value); }
 	
-	/** This is called when the user gets automatically logged out (which happens n minutes after
-	 * the user pauses the app) */
-	public void logoutUserPassive() {
-		editor.putBoolean(IS_LOGIN, false);
-		editor.commit();
-	}
+
 }

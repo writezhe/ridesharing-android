@@ -2,7 +2,8 @@ package org.beiwe.app.ui;
 
 import org.beiwe.app.R;
 import org.beiwe.app.networking.AsyncPostSender;
-import org.beiwe.app.networking.NetworkUtilities;
+import org.beiwe.app.networking.NetworkUtility;
+import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.survey.TextFieldKeyboard;
@@ -77,7 +78,7 @@ public class RegisterActivity extends Activity {
 		else {
 			session.createLoginSession(userIDStr, EncryptionEngine.safeHash(passwordStr));
 			Log.i("Register Activity", session.getUserDetails().get(LoginSessionManager.KEY_ID));
-			NetworkUtilities.initializeNetworkUtilities(appContext, session);
+			PostRequest.initializePostRequest(appContext, session);
 			makeNetworkRequest();
 			Log.i("RegisterActivity", "creating login session: " + userIDStr);
 		}

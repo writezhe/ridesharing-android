@@ -65,9 +65,8 @@ public class QuestionsDownloader {
 		
 		// Get the URL of the Survey Questions JSON file
 		String urlString = appContext.getResources().getString(R.string.survey_questions_url);
-		
-//		String surveyQuestions = FileDownloader.downloadFileFromURL(urlString);
-		String surveyQuestions = PostRequest.get_string_from_url( urlString );
+		String parameters = "";
+		String surveyQuestions = PostRequest.asyncRequestString( parameters, urlString );
 		if (isValidJson(surveyQuestions)) {
 			return surveyQuestions;
 		}

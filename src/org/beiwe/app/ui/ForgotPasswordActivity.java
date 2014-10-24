@@ -6,7 +6,7 @@ import org.beiwe.app.R;
 import org.beiwe.app.R.id;
 import org.beiwe.app.R.layout;
 import org.beiwe.app.networking.AsyncPostSender;
-import org.beiwe.app.networking.NetworkUtilities;
+import org.beiwe.app.networking.NetworkUtility;
 import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.survey.TextFieldKeyboard;

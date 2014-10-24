@@ -76,22 +76,23 @@ public class LoginActivity extends Activity {
 			HashMap<String, String> details = loginSessionManager.getUserDetails();
 			String prefUserID = details.get(LoginSessionManager.KEY_ID);
 			String prefPassword = details.get(LoginSessionManager.KEY_PASSWORD);
-			Log.i("LoginActivity", prefUserID);
-			Log.i("LoginActivity", prefPassword);
-
+			
+			//TODO: Eli. handle this: kill the app if the user is not registered, this is a pain for debugging.
+//			Log.i("LoginActivity", prefUserID);
+//			Log.i("LoginActivity", prefPassword);
+			
 			//Check password length, user id, hashed password validity,
 			//TODO: Eli. add check device id.
 			if(userIDString.trim().length() == 0) {
-				AlertsManager.showAlert(appContext.getString(R.string.invalid_user_id), this);
-			} else if ( passwordString.trim().length() == 0 ) { // TODO: CHANGE TO ~6 BEFORE PRODUCTON.
-				AlertsManager.showAlert(appContext.getString(R.string.invalid_password), this);
-			} else if( !userIDString.equals(prefUserID) ) {
-				AlertsManager.showAlert(appContext.getString(R.string.user_id_system_mismatch), this);
-			} else if( !EncryptionEngine.safeHash( passwordString).equals( prefPassword ) ) {
-				AlertsManager.showAlert(appContext.getString(R.string.password_system_mismatch), this);
-			} else {	
-				// Unlike registration activity, this one does not check against the server
-				//TODO: Eli make createLoginSession return a bool, it will compare the password correctly, drop the above password check logic, solve positioning of finish() to correct resulting problems.  make sure this still works while modularizing the password check code.
+				AlertsManager.showAlert(appContext.getString(R.string.invalid_user_id), this); }
+			else if ( passwordString.trim().length() == 0 ) { // TODO: CHANGE TO ~6 BEFORE PRODUCTON.
+				AlertsManager.showAlert(appContext.getString(R.string.invalid_password), this); }
+			else if( !userIDString.equals(prefUserID) ) {
+				AlertsManager.showAlert(appContext.getString(R.string.user_id_system_mismatch), this); }
+			else if( !EncryptionEngine.safeHash( passwordString).equals( prefPassword ) ) {
+				AlertsManager.showAlert(appContext.getString(R.string.password_system_mismatch), this); }
+			else {
+				// Unlike registration, this does not check against the server.
 				loginSessionManager.createLoginSession( userIDString, EncryptionEngine.safeHash( passwordString ) );
 				startActivity( new Intent(appContext, DebugInterfaceActivity.class ) ); // TODO: Eli. there was a "debug" comment here, why?
 				finish();

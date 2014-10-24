@@ -6,7 +6,8 @@ import java.security.NoSuchAlgorithmException;
 import org.beiwe.app.BackgroundProcess;
 import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
-import org.beiwe.app.networking.NetworkUtilities;
+import org.beiwe.app.networking.NetworkUtility;
+import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.TextFileManager;
@@ -46,40 +47,42 @@ public class LoadingActivity extends Activity{
 		session = new LoginSessionManager(appContext);
 
 		// Instantiating DeviceInfo
+		//TODO: Eli. Change this to a static initializer function.
 		DeviceInfo info = new DeviceInfo(appContext);
 
-		if (isAbleToHash()) {
+		if ( isAbleToHash() ) {
 			try { BackgroundProcess.getBackgroundHandle(); } 
-			catch (NullPointerException e){
+			catch (NullPointerException e) {
+				Log.i("LoadingActivity", e.getMessage() );
 				TextFileManager.start(appContext);
-				NetworkUtilities.initializeNetworkUtilities(appContext, session);
-				Log.i("LoadingActivity", "files created");
+				PostRequest.initializePostRequest(appContext, session);
 			}
-			startActivity(session.checkLogin());
+			startActivity( session.checkLogin() );
 			// TODO: Josh, start activities from here instead of from LoginSessionManager.java
-			/*
-			 * switch ( session.checkLogin() ) {
+			/* switch ( session.checkLogin() ) {
 			 * case (LoginSessionManager.caseCode1) : startActivity(new Intent(RegisterActivity));
 			 * case (LoginSessionManager.caseCode2) : startActivity(new Intent(LoginActivity));
 			 * case (LoginSessionManager.caseCode3) : startActivity(new Intent(MainMenuActivity));
 			 */
 			finish();
-		} else {
-			AlertsManager.showErrorAlert("This phone cannot run the app because it cannot securely encrypt data. Exiting the app..", this);
-		}
+		} else { failureExit(); }
 	}
 
 	private boolean isAbleToHash() {
 		// Runs the unsafe hashing function and catches errors, if it catches errors.
 		try {
 			EncryptionEngine.unsafeHash("input");
-			return true;
-		} catch (NoSuchAlgorithmException noSuchAlgorithm) {
-			Log.i("LoadingActivity", "Cannot run the hasher due to unsupported encryption engine - exiting app");
-			return false;
-		} catch (UnsupportedEncodingException unSupportedEncoding) {
-			Log.i("LoadingActivity", "Cannot run the hasher due to unsupported encoding - exiting app");
-			return false;
-		}
+			return true; }
+		catch (NoSuchAlgorithmException noSuchAlgorithm) {
+			failureExit(); }
+		catch (UnsupportedEncodingException unSupportedEncoding) {
+			failureExit(); }
+		return false;
+	}
+
+	private void failureExit() {
+		//TODO: Eli.  Make this an android string.
+		AlertsManager.showErrorAlert("This device does not meet minimum specifications for this app, sorry.", this);
+		System.exit(1);
 	}
 }

@@ -3,6 +3,7 @@ package org.beiwe.app.networking;
 import java.util.HashMap;
 
 import org.beiwe.app.DebugInterfaceActivity;
+import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
 import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.EncryptionEngine;
@@ -74,24 +75,20 @@ public class AsyncPostSender extends AsyncTask<Void, Void, Void>{
 	 * URL endings that need special care are register_user (uses bluetooth ID field) 
 	 * and set_password (uses new_password field).
 	 */
-	// 
 	@Override
 	protected Void doInBackground(Void... arg0) {
 		String parameters;
 		if (url.endsWith("register_user")) {
-			Log.i("AsyncPostSender", "Register User Post Request");
-			parameters = NetworkUtilities.makeFirstTimeParameters();
-			response = PostRequest.make_register_request_on_async_thread(parameters, url);
+			parameters = PostRequest.defaultParameters() + PostRequest.makeParameter("bluetooth_id", DeviceInfo.getBlootoothMAC() );
+			response = PostRequest.asyncRegisterHandler(parameters, url);
 		} else if (url.endsWith("set_password")){
-			Log.i("AsyncPostSender", "Reset Password Post Request");
-			parameters = NetworkUtilities.makeResetPasswordParameters(newPassword);
-			response = PostRequest.make_post_request_on_async_thread(parameters, url);
+			parameters = PostRequest.makeParameter("new_password", newPassword) + "&" + PostRequest.defaultParameters();			
+			response = PostRequest.asyncPostHandler(parameters, url);
 		} else {
-			Log.i("AsyncPostSender", "Normal Post Request");
-			parameters = NetworkUtilities.makeDefaultParameters();
-			response = PostRequest.make_post_request_on_async_thread(parameters, url);
+			parameters = PostRequest.defaultParameters();
+			response = PostRequest.asyncPostHandler(parameters, url);
 		}
-		return null;
+		return null;  //whhhyyy java.  just why.
 	}
 	
 	@Override
@@ -126,7 +123,7 @@ public class AsyncPostSender extends AsyncTask<Void, Void, Void>{
 	private void alertUser(final Activity activity) {
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
-				AlertsManager.showAlert(NetworkUtilities.handleServerResponseCodes(response), activity);
+				AlertsManager.showAlert(PostRequest.handleServerResponseCodes(response), activity);
 			}
 		});
 	}

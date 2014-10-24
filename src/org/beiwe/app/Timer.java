@@ -23,17 +23,17 @@ public class Timer {
 	private Context appContext;
 
 	// Intents
-	public static Intent signoutIntent;
 	public static Intent accelerometerOffIntent;
 	public static Intent accelerometerOnIntent;
 	public static Intent bluetoothOffIntent;
 	public static Intent bluetoothOnIntent;
+	public static Intent dailySurveyIntent;
 	public static Intent gpsOffIntent;
 	public static Intent gpsOnIntent;
-	public static Intent wifiScanIntent;
+	public static Intent signoutIntent;
 	public static Intent voiceRecordingIntent;
-	public static Intent dailySurveyIntent;
 	public static Intent weeklySurveyIntent;
+	public static Intent wifiScanIntent;
 	
 	// Timer intents
 	public static Intent accelerometerTimerIntent;
@@ -43,17 +43,18 @@ public class Timer {
 	public static Intent wifiScanTimerIntent;
 	
 	// Intent filters
-	public IntentFilter getSignoutIntentFilter() { return new IntentFilter( signoutIntent.getAction() ); }
 	public IntentFilter getAccelerometerOffIntentFilter() { return new IntentFilter( accelerometerOffIntent.getAction() ); }
 	public IntentFilter getAccelerometerOnIntentFilter() { return new IntentFilter( accelerometerOnIntent.getAction() ); }
 	public IntentFilter getBluetoothOffIntentFilter() { return new IntentFilter( bluetoothOffIntent.getAction() ); }
 	public IntentFilter getBluetoothOnIntentFilter() { return new IntentFilter( bluetoothOnIntent.getAction() ); }
+	public IntentFilter getDailySurveyIntentFilter() { return new IntentFilter( dailySurveyIntent.getAction() ); }
 	public IntentFilter getGPSIntentOffFilter() { return new IntentFilter( gpsOffIntent.getAction() ); }
 	public IntentFilter getGPSIntentOnFilter() { return new IntentFilter( gpsOnIntent.getAction() ); }
-	public IntentFilter getWifiScanFilter() { return new IntentFilter( wifiScanTimerIntent.getAction() ); } //TODO: Eli, is this supposed to be wifiScanIntent instead of wifiScanTimerIntent?
+	public IntentFilter getSignoutIntentFilter() { return new IntentFilter( signoutIntent.getAction() ); }
 	public IntentFilter getVoiceRecordingIntentFilter() { return new IntentFilter( voiceRecordingIntent.getAction() ); }
-	public IntentFilter getDailySurveyIntentFilter() { return new IntentFilter( dailySurveyIntent.getAction() ); }
 	public IntentFilter getWeeklySurveyIntentFilter() { return new IntentFilter( weeklySurveyIntent.getAction() ); }
+	public IntentFilter getWifiScanFilter() { return new IntentFilter( wifiScanTimerIntent.getAction() ); }
+	//TODO: Eli, is this supposed to be wifiScanIntent instead of wifiScanTimerIntent?	
 	
 	//The timer offset is a random value that is inserted into time calculations to make them occur at a variable time
 	private final static long EXACT_TIMER_OFFSET = 2856000;
@@ -70,27 +71,23 @@ public class Timer {
 		alarmManager = (AlarmManager)( backgroundProcess.getSystemService( Context.ALARM_SERVICE ));
 		
 		// Set up intent on/off intents
-		signoutIntent = setupIntent( appContext.getString(R.string.signout_intent) );
 		accelerometerOffIntent = setupIntent( appContext.getString(R.string.accelerometer_off) );
 		accelerometerOnIntent = setupIntent( appContext.getString(R.string.accelerometer_on) );
 		bluetoothOffIntent = setupIntent( appContext.getString(R.string.bluetooth_off) );
 		bluetoothOnIntent = setupIntent( appContext.getString(R.string.accelerometer_on) );
+		dailySurveyIntent = setupIntent( appContext.getString(R.string.daily_survey) );
 		gpsOffIntent = setupIntent( appContext.getString(R.string.gps_off) );
 		gpsOnIntent = setupIntent( appContext.getString(R.string.gps_on) );
+		signoutIntent = setupIntent( appContext.getString(R.string.signout_intent) );
 		voiceRecordingIntent = setupIntent( appContext.getString(R.string.voice_recording) );
-		dailySurveyIntent = setupIntent( appContext.getString(R.string.daily_survey) );
 		weeklySurveyIntent = setupIntent( appContext.getString(R.string.weekly_survey) );
-		
-		Log.i("Timer", signoutIntent.toString()); // POC
 		
 		// Set up timer intents
 		accelerometerTimerIntent = setupIntent( appContext.getString(R.string.action_accelerometer_timer) );
 		bluetoothTimerIntent = setupIntent( appContext.getString(R.string.action_bluetooth_timer) );
 		GPSTimerIntent = setupIntent( appContext.getString(R.string.action_gps_timer) );
 		signOutTimerIntent = setupIntent( appContext.getString(R.string.action_signout_timer) );
-		// TODO: Eli, do we need to add wifiScanIntent here?
-		
-		Log.i("Timer", signOutTimerIntent.toString()); // Yet another POC
+		// TODO: Eli, determine if we need to add wifiScanIntent here?
 	}
 
 	
@@ -137,12 +134,13 @@ public class Timer {
 		alarmManager.setExact( AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingTimerIntent );
 	}
 	
+	
 	/** Set a repeating, once-a-day alarm. Uses AlarmManager.setRepeating, which may not be precise
 	 * @param hourOfDay in 24-hr time, when the alarm should fire. E.g., "19" means 7pm every day
 	 * @param intentToBeBroadcast the intent to be broadcast when the alarm fires      */
 	public void setupDailyRepeatingAlarm(int hourOfDay, Intent intentToBeBroadcast) {
 		// TODO: Josh, use this log statement to test surveys downloaded from server
-		Log.i("Timer.java", "setupDailyRepeatingAlarm(" + hourOfDay + ", " + intentToBeBroadcast);
+		Log.i("Timer", "setupDailyRepeatingAlarm(" + hourOfDay + ", " + intentToBeBroadcast);
 		// TODO: Josh, purge existing alarms?
 		Calendar date = new GregorianCalendar();
 		date.set(Calendar.HOUR_OF_DAY, hourOfDay);
@@ -159,13 +157,14 @@ public class Timer {
 		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, triggerAtMillis, oneDayInMillis, pendingIntent);		
 	}
 	
+	
 	/** Set a repeating, once-a-week alarm. Uses AlarmManager.setRepeating, which may not be precise
 	 * @param dayOfWeek Sunday = 1, Saturday = 7; or use Calendar.SUNDAY, Calendar.MONDAY, etc.
 	 * @param hourOfDay in 24-hr time, when the alarm should fire. E.g., "19" means 7pm every day
 	 * @param intentToBeBroadcast the intent to be broadcast when the alarm fires      */
 	public void setupWeeklyRepeatingAlarm(int dayOfWeek, int hourOfDay, Intent intentToBeBroadcast) {
 		// TODO: Josh, use this log statement to test surveys downloaded from server
-		Log.i("Timer.java", "setupWeeklyRepeatingAlarm(" + dayOfWeek + ", " + hourOfDay + ", " + intentToBeBroadcast);
+		Log.i("Timer", "setupWeeklyRepeatingAlarm(" + dayOfWeek + ", " + hourOfDay + ", " + intentToBeBroadcast);
 		Calendar date = new GregorianCalendar();
 		date.set(Calendar.DAY_OF_WEEK, dayOfWeek);
 		date.set(Calendar.HOUR_OF_DAY, hourOfDay);
@@ -182,6 +181,7 @@ public class Timer {
 		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, triggerAtMillis, oneWeekInMillis, pendingIntent);		
 	}
 	
+	
 	/** setupExactHourlyAlarm creates an Exact Alarm that will go off at a specific hourly offset,
 	 * based on the EXACT_TIMER_OFFSET defined above.
 	 * setupExactHourlyAlarm is used for the Bluetooth timer, because the trigger needs to be synchronized
@@ -194,6 +194,7 @@ public class Timer {
 		PendingIntent pendingTimerIntent = registerAlarm( intentToBeBroadcast, timerIntent );
 		alarmManager.setExact( AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingTimerIntent );
 	}
+	
 	
 	/** This function handles the common elements for any alarm creation.
 	 * @param intentToBeBroadcast is the intent that the Alarm will broadcast when it goes off.

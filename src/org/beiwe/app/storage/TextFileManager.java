@@ -127,7 +127,6 @@ public class TextFileManager {
 		
 		//the key file for encryption (it is persistent and never written to)
 		keyFile = new TextFileManager(appContext, "keyFile", "", true, true);
-		
 		started = true;
 	}
 	
@@ -142,9 +141,7 @@ public class TextFileManager {
 		this.name = name;
 		this.header = header;
 		this.persistent = persistent;
-		if (createNow) {
-			this.newFile();
-		}
+		if (createNow) { this.newFile(); }
 	}
 	
 	/*###############################################################################
