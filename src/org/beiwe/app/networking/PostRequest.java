@@ -103,9 +103,9 @@ public class PostRequest {
 	public static String asyncRequestString(String parameters, String urlString) throws NullPointerException {
 		try { return doPostRequestGetResponseString(parameters, urlString); }
 		catch (IOException e) {
-			Log.e("PostRequest", "Download File failed with exception: " + e);
-			Log.e("parameters", ": " + parameters);
-			Log.e("url", ": " + urlString);
+			Log.e("PostRequest error", "Download File failed with exception: " + e);
+			Log.e("PostRequest error cont.", "parameters: " + parameters);
+			Log.e("PostRequest error cont.", "url: " + urlString);
 			e.printStackTrace();
 			
 			throw new NullPointerException(); }
@@ -114,9 +114,6 @@ public class PostRequest {
 	/*##################################################################################
 	 ################################ Common Code ######################################
 	 #################################################################################*/
-	
-//	/** Convenience... */
-//	private static HttpURLConnection setupHTTP( URL url ) throws IOException { return setupHTTP( "", url); }
 	
 	/**Creates an HTTP connection with common settings (reduces code clutter).
 	 * @param url a URL object
@@ -144,29 +141,31 @@ public class PostRequest {
 		return connection;
 	}
 	
+	/**Reads in the response data from an HttpURLConnection, returns it as a String.
+	 * @param connection an HttpURLConnection
+	 * @return a String containing return data
+	 * @throws IOException */
+	private static String readResponse(HttpURLConnection connection) throws IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader( new DataInputStream( connection.getInputStream() ) ) );
+		String line;
+		StringBuilder response = new StringBuilder();
+		while ( (line = reader.readLine() ) != null) { response.append(line); }
+		return response.toString();
+	}
+	
+	
 	/*##################################################################################
-	 ############################ Private Workers ######################################
+	 ####################### HTTP Post Request Handlers ################################
 	 #################################################################################*/
-		
 	
 	private static String doPostRequestGetResponseString(String parameters, String urlString) throws IOException {
 		HttpURLConnection connection = setupHTTP( parameters, new URL( urlString ) );
 		connection.connect();
-		
-		// read in data using a BufferedReader from the HTTP connection
-		BufferedReader reader = new BufferedReader( new InputStreamReader(connection.getInputStream() ) );
-		StringBuilder builder = new StringBuilder();
-		String dumb = "";
-		
-		try { // Read into BufferedReader, append it to the StringBuilder, return string.
-			while ((dumb = reader.readLine()) != null) { builder.append(dumb); }
-		} catch (IOException e) {  //This is really for debugging, we want to be able to discern these buffering errors.
-			throw new NullPointerException("there was an error in receiving file data.??"); }
-		//FIXME: Eli/Josh.  This could be extremely unsafe behavior, research? fix?
-		
+		String data = readResponse(connection);
 		connection.disconnect();
-		return builder.toString();
+		return data;
 	}
+	
 	
 	private static int doPostRequestGetResponseCode(String parameters, URL url) throws IOException {
 		HttpURLConnection connection = setupHTTP(parameters, url);
@@ -176,34 +175,25 @@ public class PostRequest {
 	}
 	
 	
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
 	private static int doRegisterRequest(String parameters, URL url) throws IOException {
 		HttpURLConnection connection = setupHTTP(parameters, url);
-		
-		Log.i("PostRequest - doRegister", "current key: " + TextFileManager.getKeyFile().read());
-		
-		// write to the keyfile if received 200 OK AND the file has nothing in it AND parameters has a bluetooth_id field
-		if ( connection.getResponseCode() == 200
-				&& TextFileManager.getKeyFile().read().length() == 0
-				&& parameters.startsWith("bluetooth_id" ) ) {
-			//FIXME: Eli. probably broke this string check due to the refactor, work out.
-			// If the AsyncPostSender receives a 1, that means that someone misconfigured the server.
-			//TODO: Eli. Why?
-			try { createKey( readResponse(connection) ); }
-			catch (NullPointerException e) { return 1; }
-		}
 		int response = connection.getResponseCode();
+		if ( response == 200 ) {
+			// TODO: Eli.  Determine why this statement is true: If the AsyncPostSender receives a 1, that means that someone misconfigured the server.
+			String key = readResponse(connection) ;
+			if ( !key.startsWith("MIIBI") ) {
+				Log.e("PostRequest - register", " Received an invalid encryption key from server: " + key );
+			} //TODO: Eli.  This needs to alert the user or throw an exception that is caught and handled with a user error alert prompt.
+			Log.i( "POSTREQUEST", "Received a key: " + key );
+			TextFileManager.getKeyFile().deleteSafely();
+			TextFileManager.getKeyFile().write( key );
+		}
 		connection.disconnect();
 		return response;
 	}
 
 	
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	//FIXME: we need to be doing connection.disconnect().  refactor to handle this gracefully,
-	
-	/** Constructs and sends a multipart HTTP POST request with a file attached
+	/** Constructs and sends a multipart HTTP POST request with a file attached.
 	 * Based on http://stackoverflow.com/a/11826317
 	 * @param file the File to be uploaded
 	 * @param uploadUrl the destination URL that receives the upload
@@ -234,37 +224,6 @@ public class PostRequest {
 		int response = connection.getResponseCode();
 		connection.disconnect();
 		return response;
-	}
-	
-	
-	/*##################################################################################
-	 ######################### Convenience Functions ###################################
-	 #################################################################################*/
-
-	
-	/**Checks a string to see if it is an RSA key file, if so it writes it to the Key File. 
-	 * @param response */
-	private static void createKey(String response){
-		if ( !response.toString().startsWith("MIIBI") ) {
-			throw new NullPointerException ("Bad encryption key !!!" ); }
-		//TODO: Eli.  This needs to alert the user or throw an exception that is caught and handled with a user error alert prompt.
-		Log.i( "POSTREQUEST", "Received a key: " + response.toString() );
-		TextFileManager.getKeyFile().write( response.toString() );
-		//TODO: Eli.  handle case where a key already exists?
-	}
-	
-	
-	/**Reads in the response data from an HttpURLConnection, returns it as a String.
-	 * @param connection an HttpURLConnection
-	 * @return a String containing return data
-	 * @throws IOException */
-	private static String readResponse(HttpURLConnection connection) throws IOException {
-		DataInputStream inputStream = new DataInputStream( connection.getInputStream() );
-		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream ) );
-		String line;
-		StringBuilder response = new StringBuilder();
-		while ( (line = reader.readLine() ) != null) { response.append(line); }
-		return response.toString();
 	}
 	
 	

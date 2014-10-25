@@ -72,22 +72,19 @@ public class RegisterActivity extends Activity {
 		else if ( !passwordRepeatStr.equals(passwordStr) ) {
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.password_mismatch), this);	}
 
-		// TODO: Eli. add a check for minimum length.
-		
+		// TODO: Eli. make sure this doesn't fail due to password restrictions conflicting with a randomly generated password.
 		// Otherwise, start the registration process against the user
 		else {
 			session.createLoginSession(userIDStr, EncryptionEngine.safeHash(passwordStr));
 			Log.i("Register Activity", session.getUserDetails().get(LoginSessionManager.KEY_ID));
-			PostRequest.initializePostRequest(appContext, session);
-			makeNetworkRequest();
+			PostRequest.initializePostRequest(appContext, session); //TODO: Eli. move this to the loading activity.
+			makeRegisterRequest();
 			Log.i("RegisterActivity", "creating login session: " + userIDStr);
 		}
 	}
 
-	/**
-	 * 
-	 */
-	private void makeNetworkRequest() {
+	/** Does exactly what it says. */
+	private void makeRegisterRequest() {
 		AsyncPostSender registrationThread = new AsyncPostSender("http://beiwe.org/register_user", this, session);
 		registrationThread.execute();
 	}

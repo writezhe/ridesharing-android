@@ -77,7 +77,7 @@ public class AsyncPostSender extends AsyncTask<Void, Void, Void>{
 	 */
 	@Override
 	protected Void doInBackground(Void... arg0) {
-		String parameters;
+		String parameters = "";
 		if (url.endsWith("register_user")) {
 			parameters = PostRequest.makeParameter("bluetooth_id", DeviceInfo.getBlootoothMAC() );
 			response = PostRequest.asyncRegisterHandler(parameters, url);
@@ -85,7 +85,6 @@ public class AsyncPostSender extends AsyncTask<Void, Void, Void>{
 			parameters = PostRequest.makeParameter("new_password", newPassword);			
 			response = PostRequest.asyncPostHandler(parameters, url);
 		} else {
-			parameters = "";
 			response = PostRequest.asyncPostHandler(parameters, url);
 		}
 		return null;  //whhhyyy java.  just why.
