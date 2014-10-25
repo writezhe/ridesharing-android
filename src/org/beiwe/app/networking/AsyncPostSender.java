@@ -79,13 +79,13 @@ public class AsyncPostSender extends AsyncTask<Void, Void, Void>{
 	protected Void doInBackground(Void... arg0) {
 		String parameters;
 		if (url.endsWith("register_user")) {
-			parameters = PostRequest.defaultParameters() + PostRequest.makeParameter("bluetooth_id", DeviceInfo.getBlootoothMAC() );
+			parameters = PostRequest.makeParameter("bluetooth_id", DeviceInfo.getBlootoothMAC() );
 			response = PostRequest.asyncRegisterHandler(parameters, url);
 		} else if (url.endsWith("set_password")){
-			parameters = PostRequest.makeParameter("new_password", newPassword) + "&" + PostRequest.defaultParameters();			
+			parameters = PostRequest.makeParameter("new_password", newPassword);			
 			response = PostRequest.asyncPostHandler(parameters, url);
 		} else {
-			parameters = PostRequest.defaultParameters();
+			parameters = "";
 			response = PostRequest.asyncPostHandler(parameters, url);
 		}
 		return null;  //whhhyyy java.  just why.

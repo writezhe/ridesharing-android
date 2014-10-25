@@ -31,7 +31,7 @@ public class LoginSessionManager {
     public static final String KEY_ID = "uid";
     public static final String KEY_PASSWORD = "password";
 	public static final String IS_REGISTERED = "IsRegistered";
-     
+    
     
 	/**Constructor method for the session manager class
      * @param context */

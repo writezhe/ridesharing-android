@@ -18,7 +18,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
 import org.beiwe.app.session.LoginSessionManager;
-import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.TextFileManager;
 
 import android.content.Context;
@@ -42,11 +41,9 @@ public class PostRequest {
 	private static Context appContext;
 	private static String patientID;
 	private static String password;
-
-	//FIXME: Eli. Solve the password hashing discrepancy between server and android
-	private static String getUserPassword() { return EncryptionEngine.safeHash(password); }
-
 	
+	
+	//TODO: Eli. We do not appear to need the applicationContext in this class.
 	/**Uploads must be initialized with an appContext before they can access the wifi state or upload a _file_.
 	 * @param some applicationContext */
 	private PostRequest( Context applicationContext, LoginSessionManager session ) {
@@ -139,6 +136,7 @@ public class PostRequest {
 		
 		if ( parameters.length() > 0 ) {
 			DataOutputStream request = new DataOutputStream(connection.getOutputStream());
+			request.write( securityParameters().getBytes() );
 			request.write( parameters.getBytes() );
 			request.flush();
 			request.close();
@@ -182,7 +180,8 @@ public class PostRequest {
 	
 	private static int doRegisterRequest(String parameters, URL url) throws IOException {
 		HttpURLConnection connection = setupHTTP(parameters, url);
-		Log.i("WRITE DOWN KEY", "" + TextFileManager.getKeyFile().read().length());
+		
+		Log.i("PostRequest - doRegister", "current key: " + TextFileManager.getKeyFile().read());
 		
 		// write to the keyfile if received 200 OK AND the file has nothing in it AND parameters has a bluetooth_id field
 		if ( connection.getResponseCode() == 200
@@ -280,7 +279,7 @@ public class PostRequest {
 		// FIXME: Eli+Josh. Run through ALL code that uses network, we need to be running this check.
 		if ( !NetworkUtility.getWifiState(appContext) ) { return; }
 		ExecutorService executor = Executors.newFixedThreadPool(1);
-		Callable<HttpPost> thread = new Callable<HttpPost>() {
+		Callable <HttpPost> thread = new Callable<HttpPost>() {
 			@Override
 			public HttpPost call() {
 				doTryUploadDelete( TextFileManager.getAllUploadableFiles() ) ;
@@ -340,9 +339,9 @@ public class PostRequest {
 	
 	public static String makeParameter(String key, String value) { return key + "=" + value + "&"; }
 	
-	public static String defaultParameters() { 
+	private static String securityParameters() { 
 		return makeParameter("patient_id", patientID ) +
-				makeParameter("password", getUserPassword() ) +
+				makeParameter("password", password ) +
 				makeParameter("device_id", DeviceInfo.getAndroidID() );
 	}
 }
