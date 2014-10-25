@@ -126,7 +126,7 @@ public class DebugInterfaceActivity extends Activity {
 		Log.i("DebugInterfaceActivity", "Notification Displayed"); }
 	
 	public void getKeyFile(View view) {
-		Log.i("DEBUG", TextFileManager.getKeyFile().read());
+		Log.i("DEBUG", "key file data: " + TextFileManager.getKeyFile().read());
 	}
 	
 	public void testEncrypt (View view) {
