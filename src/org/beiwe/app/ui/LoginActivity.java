@@ -82,7 +82,7 @@ public class LoginActivity extends Activity {
 			//TODO: Eli. add check device id.
 			if(userIDString.trim().length() == 0) {
 				AlertsManager.showAlert(appContext.getString(R.string.invalid_user_id), this); }
-			else if ( passwordString.trim().length() == 0 ) { // TODO: CHANGE TO ~6 BEFORE PRODUCTON.
+			else if ( passwordString.trim().length() == 0 ) { // TODO: postproduction. CHANGE TO ~6 BEFORE PRODUCTON.
 				AlertsManager.showAlert(appContext.getString(R.string.invalid_password), this); }
 			else if( !userIDString.equals(prefUserID) ) {
 				AlertsManager.showAlert(appContext.getString(R.string.user_id_system_mismatch), this); }

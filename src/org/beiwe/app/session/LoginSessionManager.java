@@ -130,7 +130,7 @@ public class LoginSessionManager {
     	
     	if(isLoggedIn()) {
     		// If already logged in, take user to the main menu screen
-    		// TODO: before launch, uncomment this line:
+    		// TODO: postproduction. before launch, uncomment this line:
     		//Intent intent = new Intent(appContext, MainMenuActivity.class);
     		return new Intent(appContext, debug); }
     	else {

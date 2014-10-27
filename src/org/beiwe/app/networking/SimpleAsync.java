@@ -17,7 +17,7 @@ public class SimpleAsync extends AsyncTask<Void, Void, Void> {
 	protected String url;
 	protected String parameters = "";
 	protected Activity activity;
-	protected int response;
+	protected int response = -1;
 	
 	
 	public SimpleAsync(String url, Activity activity) {
@@ -46,16 +46,20 @@ public class SimpleAsync extends AsyncTask<Void, Void, Void> {
 	
 	//code should override the onPostExecute function for their own needs, code sholud call super.
 	@Override
-	protected void onPostExecute(Void arg) { alertSpinner.setVisibility(View.GONE); }
+	protected void onPostExecute(Void arg) {
+		alertSpinner.setVisibility(View.GONE);
+		alertUser();
+	}
 	
 	
 	/**Pops up an alert with the interpreted message from the server, according to the 
 	 * response code received
 	 * @param the response HTTP code from the PostRequest */
-	private void alertUser(final int httpResponseCode) {
+	protected void alertUser() {
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
-				AlertsManager.showAlert(PostRequest.handleServerResponseCodes(httpResponseCode), activity);
+				if (response == -1) Log.e("SimpleAsync", "WOAH WOAH WOAH, YOU ARE FAILING TO HANDLE THE RESPONSE VARIABLE.");
+				if (response != 200) AlertsManager.showAlert(PostRequest.handleServerResponseCodes(response), activity);
 			}
 		} );
 	}

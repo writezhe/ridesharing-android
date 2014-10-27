@@ -1,9 +1,12 @@
 package org.beiwe.app.ui;
 
+import org.beiwe.app.DebugInterfaceActivity;
+import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
 import org.beiwe.app.networking.AsyncPostSender;
 import org.beiwe.app.networking.NetworkUtility;
 import org.beiwe.app.networking.PostRequest;
+import org.beiwe.app.networking.SimpleAsync;
 import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.survey.TextFieldKeyboard;
@@ -11,6 +14,7 @@ import org.beiwe.app.survey.TextFieldKeyboard;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -74,16 +78,39 @@ public class RegisterActivity extends Activity {
 		// Otherwise, start the registration process against the user
 		else {
 			LoginSessionManager.createLoginSession(userIDStr, EncryptionEngine.safeHash(passwordStr));
-			Log.i("Register Activity", LoginSessionManager.getPatientID() );
+			
+			Log.i("RegisterActivity", "trying \"" + LoginSessionManager.getPatientID() + "\" with password \"" + LoginSessionManager.getPassword() + "\"" );
+			
 			PostRequest.initialize(appContext); //TODO: Eli. move this to the loading activity.
 			makeRegisterRequest();
-			Log.i("RegisterActivity", "creating login session: " + userIDStr);
 		}
 	}
-
+	
+	
 	/** Does exactly what it says. */
 	private void makeRegisterRequest() {
-		AsyncPostSender registrationThread = new AsyncPostSender("http://beiwe.org/register_user", this);
-		registrationThread.execute();
+		doRegister("http://beiwe.org/register_user");
 	}
+	
+	
+	//Aww yeuh. 
+	private void doRegister(final String url) { new SimpleAsync(url, this) {
+		@Override
+		protected Void doInBackground(Void... arg0) {
+			parameters = PostRequest.makeParameter("bluetooth_id", DeviceInfo.getBlootoothMAC() );
+			response = PostRequest.asyncRegisterHandler(parameters, url);
+			return null; //hate
+		}
+		
+		@Override
+		protected void onPostExecute(Void arg) {
+			if (response == 200) { 
+				LoginSessionManager.setRegistered(true);
+				//TODO: postproduction. Change to point at regular activity.
+				activity.startActivity(new Intent(activity.getApplicationContext(), DebugInterfaceActivity.class));
+				activity.finish();
+			}
+			super.onPostExecute(arg);
+		}
+	};}
 }
