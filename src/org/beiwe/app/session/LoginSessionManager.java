@@ -1,4 +1,4 @@
-	package org.beiwe.app.session;
+package org.beiwe.app.session;
  
 import java.util.HashMap;
 
@@ -32,7 +32,26 @@ public class LoginSessionManager {
     public static final String KEY_PASSWORD = "password";
 	public static final String IS_REGISTERED = "IsRegistered";
     
+	
+	/** Quick check for login. **/
+    public boolean isLoggedIn(){ return pref.getBoolean(IS_LOGIN, false); }
     
+    public boolean isRegistered() { return pref.getBoolean(IS_REGISTERED, false); }
+	
+	public void setRegistered(boolean value) { editor.putBoolean(IS_LOGIN, value); }
+	
+	
+//	//Eli. Think about if this is a good idea
+//    public static String getPassword() {
+//    	return pref.getString( KEY_PASSWORD, null );
+//    }
+    
+    public void setPassword (String password) {
+        editor.putString(KEY_PASSWORD, password);
+        editor.commit();
+    }
+	
+	
 	/**Constructor method for the session manager class
      * @param context */
 	public LoginSessionManager(Context context){
@@ -43,49 +62,31 @@ public class LoginSessionManager {
     }
     
 	
+	/*###########################################################################################
+	##################################### Credentials ###########################################
+	###########################################################################################*/
+	
+	
    /** Creates a new login session. Interacts with the SharedPreferences.
     * @param userID
     * @param password */
+	//TODO: Eli. Rename this function, probably split functionality between this and setLoginCredenctials
     public void createLoginSession(String userID, String password){
+    	setLoginCredentials(userID, password); //remove?
     	editor.putBoolean(IS_REGISTERED, true);
     	editor.putBoolean(IS_LOGIN, true);
-        editor.putString(KEY_ID, userID);
+    	editor.commit();
+    }
+    
+    
+    public void setLoginCredentials( String userID, String password ) {
+    	editor.putString(KEY_ID, userID);
         editor.putString(KEY_PASSWORD, password);
         editor.commit();
     }
-     
     
-    /**Checks which page the user should scroll to. If there was an active session, the user will
-     * be transferred to {@link DebugInterfaceActivity}, otherwise if there was information saved in
-     * SharedPreferences, the user will be transferred to {@link LoginActivity}. Otherwise, it is
-     * the user's first time, therefore will start with {@link RegisterActivity}. */
-    public Intent checkLogin(){
-    	Class debug = RegisterActivity.class;
-//    	Class debug = LoginActivity.class;
-//    	Class debug = DebugInterfaceActivity.class;
-//    	Class debug = MainMenuActivity.class;
-    	Log.i("LoginSessionManager", "Already logged in: " + isRegistered() );
-
-    	if(this.isLoggedIn()) {
-    		// If already logged in, take user to the main menu screen
-    		// TODO: before launch, uncomment this line:
-    		//Intent intent = new Intent(appContext, MainMenuActivity.class);
-    		return new Intent(appContext, debug);
-        } else {
-        	if (this.isRegistered()) {
-        		// If not logged in, but has registered, take user to the login screen
-        		return new Intent(appContext, LoginActivity.class);
-        	} else {
-        		// If not logged in and hasn't registered, take user to registration screen
-            	Log.i("LoginSessionManager", "First time logged in");
-            	// TODO: DEBUG CODE. uncomment this line:
-            	//Intent intent = new Intent(appContext, RegisterActivity.class);
-            	return new Intent(appContext, debug);
-        	}
-        }
-    }
     
-     
+    //TODO: Eli. Get rid of this stupid hashmap.  Fuck that.  Two getters, two setters. 
     /**A way of encapsulating SharedPreferences and the user's details stored in them.
      * @return user details */
     public HashMap<String, String> getUserDetails(){
@@ -97,6 +98,9 @@ public class LoginSessionManager {
         return userDetails;
     }
     
+    /*###########################################################################################
+	##################################### Log Out ###############################################
+	###########################################################################################*/
     
     /**Clears session details and SharedPreferences.  Sends user to {@link LoginActivity} */
     public void logoutUser(){
@@ -108,18 +112,49 @@ public class LoginSessionManager {
         appContext.startActivity(intent);
     }
     
+    
 	/** logs user out without forcing an activity change. */
 	public void logoutUserPassive() {
 		editor.putBoolean(IS_LOGIN, false);
 		editor.commit();
 	}
-    	
-    /** Quick check for login. **/
-    public boolean isLoggedIn(){ return pref.getBoolean(IS_LOGIN, false); }
-    
-    public boolean isRegistered() { return pref.getBoolean(IS_REGISTERED, false); }
 	
-	public void setRegistered(boolean value) { editor.putBoolean(IS_LOGIN, value); }
+	
+	/*###########################################################################################
+	##################################### Log In ################################################
+	###########################################################################################*/
+	
+	//TODO: Eli.  make this... less... dumb?  rewrite it...?
+    /**Checks which page the user should scroll to. If there was an active session, the user will
+     * be transferred to {@link DebugInterfaceActivity}, otherwise if there was information saved in
+     * SharedPreferences, the user will be transferred to {@link LoginActivity}. Otherwise, it is
+     * the user's first time, therefore will start with {@link RegisterActivity}. */
+    public Intent login(){
+    	Class debug = RegisterActivity.class;
+//    	Class debug = LoginActivity.class;
+//    	Class debug = DebugInterfaceActivity.class;
+//    	Class debug = MainMenuActivity.class;
+    	
+    	//  What the hell does this log statement mean.
+    	Log.i("LoginSessionManager", "Already logged in: " + isRegistered() );
+    	
+    	if(this.isLoggedIn()) {
+    		// If already logged in, take user to the main menu screen
+    		// TODO: before launch, uncomment this line:
+    		//Intent intent = new Intent(appContext, MainMenuActivity.class);
+    		return new Intent(appContext, debug); }
+    	else {
+        	if (this.isRegistered()) {
+        		// If not logged in, but has registered, take user to the login screen
+        		return new Intent(appContext, LoginActivity.class); }
+        	else {
+        		// If not logged in and hasn't registered, take user to registration screen
+            	Log.i("LoginSessionManager", "First time logged in");
+            	// TODO: DEBUG CODE. uncomment this line:
+            	//Intent intent = new Intent(appContext, RegisterActivity.class);
+            	return new Intent(appContext, debug); }
+        }
+    }
 	
 
 }
