@@ -82,14 +82,8 @@ public class RegisterActivity extends Activity {
 			Log.i("RegisterActivity", "trying \"" + LoginSessionManager.getPatientID() + "\" with password \"" + LoginSessionManager.getPassword() + "\"" );
 			
 			PostRequest.initialize(appContext); //TODO: Eli. move this to the loading activity.
-			makeRegisterRequest();
+			doRegister("http://beiwe.org/register_user");
 		}
-	}
-	
-	
-	/** Does exactly what it says. */
-	private void makeRegisterRequest() {
-		doRegister("http://beiwe.org/register_user");
 	}
 	
 	
