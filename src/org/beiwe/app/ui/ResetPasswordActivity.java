@@ -68,9 +68,6 @@ public class ResetPasswordActivity extends Activity {
 	 * @throws NoSuchAlgorithmException 
 	 */
 	public void resetPasswordSequence(View view) {
-		// Encapsulated user's details as saved in the SharedPreferences
-//		HashMap<String, String> details = session.getUserDetails();
-		
 		// Old password, and old password hashed
 		String oldPassStr = oldPass.getText().toString();
 		String oldPassStrHash = EncryptionEngine.safeHash(oldPassStr);
