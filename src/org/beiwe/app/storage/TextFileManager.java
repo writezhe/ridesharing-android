@@ -23,7 +23,6 @@ import org.beiwe.app.survey.SurveyAnswersRecorder;
 import org.beiwe.app.survey.SurveyTimingsRecorder;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 /**
@@ -36,7 +35,7 @@ import android.util.Log;
  * single pointer to each file type, and that these files are never overwritten, written to asynchronously,
  * or left accidentally empty.
  * The files handled here are the GPSFile, accelFile, powerStateLog, audioSurveyInfo, callLog, textsLog, surveyTimings,
- * currentQuestuons, deviceData, and debugLogFile.
+ * currentDailyQuestions, currentWeeklyQuestions, deviceData, and debugLogFile.
  * On construction you provide a boolean flag ("persistent").  Persistent files do not get overwritten on application start.
  * To access a file use the following construction: TextFileManager.getXXXFile()
  * @author Eli */
@@ -60,7 +59,8 @@ public class TextFileManager {
 	private static TextFileManager surveyAnswers = null;
 	
 	private static TextFileManager debugLogFile = null;
-	private static TextFileManager currentQuestions = null;
+	private static TextFileManager currentDailyQuestions = null;
+	private static TextFileManager currentWeeklyQuestions = null;
 	private static TextFileManager deviceInfo = null;
 	
 	private static TextFileManager keyFile = null;
@@ -82,7 +82,8 @@ public class TextFileManager {
 	public static TextFileManager getSurveyTimingsFile(){ if ( surveyTimings == null ) throw new NullPointerException( getter_error ); return surveyTimings; }
 	public static TextFileManager getSurveyAnswersFile(){ if ( surveyAnswers == null ) throw new NullPointerException( getter_error ); return surveyAnswers; }
 	//the persistent files
-	public static TextFileManager getCurrentQuestionsFile(){ if ( currentQuestions == null ) throw new NullPointerException( getter_error ); return currentQuestions; }
+	public static TextFileManager getCurrentDailyQuestionsFile(){ if ( currentDailyQuestions == null ) throw new NullPointerException( getter_error ); return currentDailyQuestions; }
+	public static TextFileManager getCurrentWeeklyQuestionsFile(){ if ( currentWeeklyQuestions == null ) throw new NullPointerException( getter_error ); return currentWeeklyQuestions; }
 	public static TextFileManager getDebugLogFile(){ if ( debugLogFile == null ) throw new NullPointerException( getter_error ); return debugLogFile; }
 	public static TextFileManager getDeviceInfoFile(){ if ( deviceInfo == null ) throw new NullPointerException( getter_error ); return deviceInfo; }
 	public static TextFileManager getKeyFile() { if ( keyFile == null ) throw new NullPointerException( getter_error ); return keyFile; }
@@ -109,7 +110,8 @@ public class TextFileManager {
 		// TODO: Eli/Josh.  make sure file names are to-spec
 		// Persistent files
 		debugLogFile = new TextFileManager(appContext, "logFile.txt", "THIS LINE IS A LOG FILE HEADER\n", true, true);
-		currentQuestions = new TextFileManager(appContext, "currentQuestionsFile.json", "", true, true);
+		currentDailyQuestions = new TextFileManager(appContext, "currentDailyQuestionsFile.json", "", true, true);
+		currentWeeklyQuestions = new TextFileManager(appContext, "currentWeeklyQuestionsFile.json", "", true, true);
 		
 		// Regularly/periodically-created files
 		GPSFile = new TextFileManager(appContext, "gps", GPSListener.header, false, true);
@@ -294,7 +296,8 @@ public class TextFileManager {
 		Set<String> files = new HashSet<String>();
 		Collections.addAll(files, getAllFiles());
 		
-		files.remove(TextFileManager.getCurrentQuestionsFile().fileName);
+		files.remove(TextFileManager.getCurrentDailyQuestionsFile().fileName);
+		files.remove(TextFileManager.getCurrentWeeklyQuestionsFile().fileName);
 		files.remove(TextFileManager.getDebugLogFile().fileName);
 		
 		makeNewFilesForEverything();
@@ -318,8 +321,10 @@ public class TextFileManager {
 		//Need to do this crap or else we end up deleting the persistent files repeatedly
 		files.remove(TextFileManager.getDeviceInfoFile().fileName);
 		TextFileManager.getDeviceInfoFile().deleteSafely();
-		files.remove(TextFileManager.getCurrentQuestionsFile().fileName);
-		TextFileManager.getCurrentQuestionsFile().deleteSafely();
+		files.remove(TextFileManager.getCurrentDailyQuestionsFile().fileName);
+		TextFileManager.getCurrentDailyQuestionsFile().deleteSafely();
+		files.remove(TextFileManager.getCurrentWeeklyQuestionsFile().fileName);
+		TextFileManager.getCurrentWeeklyQuestionsFile().deleteSafely();
 		files.remove(TextFileManager.getDebugLogFile().fileName);
 		TextFileManager.getDebugLogFile().deleteSafely();
 		

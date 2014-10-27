@@ -1,8 +1,9 @@
 package org.beiwe.app.survey;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.beiwe.app.R;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.storage.TextFileManager;
 import org.json.JSONArray;
@@ -17,6 +18,9 @@ import android.util.Log;
 
 public class QuestionsDownloader {
 
+	/*public enum SurveyType {
+		DAILY, WEEKLY
+	}*/
 	private Context appContext;
 	
 	public QuestionsDownloader(Context applicationContext) {
@@ -25,31 +29,20 @@ public class QuestionsDownloader {
 	
 	
 	public void downloadJsonQuestions() {
-		new GetUpToDateSurvey().execute(" ");
+		new GetUpToDateSurveys().execute(" ");
 	}
 
 
-	public String getJsonSurveyString() {
+	public String getJsonSurveyString(SurveyType.Type type) {
 		try {
 			// Try loading the questions.json file from the local filesystem
-			return getSurveyQuestionsFromFilesystem();
+			return getSurveyQuestionsFromFilesystem(type);
 		}
 		catch (Exception e1) {
-			try {
-				// If loading from the filesystem didn't work, try loading from the server
-				String jsonString = getSurveyQuestionsFromServer();
-				// If you get questions from the server, write them to the filesystem
-				TextFileManager.getCurrentQuestionsFile().deleteSafely();
-				TextFileManager.getCurrentQuestionsFile().write(jsonString);
-//				FileDownloader.writeStringToFile(jsonString, TextFileManager.getCurrentQuestionsFile());
-				return jsonString;
-			}
-			catch (Exception e2) {
-				/* If the app hasn't downloaded questions.json and saved it to
-				 * the filesystem, return an empty String, which will break the
-				 * JSON parser and display an error message instead of the survey */
-				return "";
-			}
+			/* If the app hasn't downloaded questions.json and saved it to
+			 * the filesystem, return an empty String, which will break the
+			 * JSON parser and display an error message instead of the survey */
+			return "";
 		}
 	}
 	
@@ -60,11 +53,7 @@ public class QuestionsDownloader {
 	 * @throws IOException 
 	 * @throws JSONException 
 	 */
-	private String getSurveyQuestionsFromServer() throws NotFoundException, IOException, JSONException {
-		Log.i("QuestionsDownloader", "Called getSurveyQuestionsFromServer()");
-		
-		// Get the URL of the Survey Questions JSON file
-		String urlString = appContext.getResources().getString(R.string.survey_questions_url);
+	private String getSurveyQuestionsFromServer(String urlString) throws NotFoundException, IOException, JSONException {
 		String parameters = "";
 		String surveyQuestions = PostRequest.asyncRequestString( parameters, urlString );
 		if (isValidJson(surveyQuestions)) {
@@ -80,10 +69,10 @@ public class QuestionsDownloader {
 	 * Read a file from the local Android filesystem, and return it as a String
 	 * @throws JSONException 
 	 */
-	private String getSurveyQuestionsFromFilesystem() throws NullPointerException, JSONException {
+	private String getSurveyQuestionsFromFilesystem(SurveyType.Type type) throws NullPointerException, JSONException {
 		Log.i("QuestionsDownloader", "Called getSurveyQuestionsFromFilesystem()");
 		
-		String surveyQuestions = TextFileManager.getCurrentQuestionsFile().read();
+		String surveyQuestions = type.file.read();
 
 		if (isValidJson(surveyQuestions)) {
 			return surveyQuestions;
@@ -117,34 +106,47 @@ public class QuestionsDownloader {
 	
 	
 	/**
-	 * Gets the most up-to-date version of the survey; does it on a separate,
+	 * Gets the most up-to-date versions of the surveys; does it on a separate,
 	 * non-blocking thread, because it's a slow network request
 	 */
-	class GetUpToDateSurvey extends AsyncTask<String, String, String> {
+	// TODO Josh: can we use the AsyncPostSender.java or AsyncTask.java for this?
+	class GetUpToDateSurveys extends AsyncTask<String, Integer, Map<String, String>> {
 
 		@Override
-		protected String doInBackground(String... params) {
+		protected Map<String, String> doInBackground(String... params) {
 			try {
-				return getSurveyQuestionsFromServer();
-			} catch (Exception e) {
+				Map<String, String> surveysDict = new HashMap<String, String>();
+				for (SurveyType.Type type : SurveyType.Type.values()) {
+					String urlString = appContext.getResources().getString(type.urlResource);
+					surveysDict.put(type.dictKey, getSurveyQuestionsFromServer(urlString));
+				}
+				return surveysDict;
+			}
+			catch (Exception e) {
 				Log.i("QUESTIONSDOWNLOADER", "getSurveyQuestionsFromServer() failed with exception " + e);
 				return null;
 			}
 		}
 		
 		@Override
-		protected void onPostExecute(String result) {
-			super.onPostExecute(result);
-			if (result != null) {
-				TextFileManager.getCurrentQuestionsFile().deleteSafely();
-				TextFileManager.getCurrentQuestionsFile().write(result);
-//				FileDownloader.writeStringToFile(result, TextFileManager.getCurrentQuestionsFile());
-				
-				// Schedule surveys, based on the schedule contained in the JSON file
-				SurveyScheduler scheduler = new SurveyScheduler(appContext);
-				scheduler.scheduleSurvey(result);
+		protected void onPostExecute(Map<String, String> surveysDict) {
+			if (surveysDict != null && !surveysDict.isEmpty()) {
+				for (SurveyType.Type type : SurveyType.Type.values()) {
+					writeSurveyToFile(surveysDict.get(type.dictKey), type.file);
+				}
 			}
 		}
+	}
+	
+	
+	private void writeSurveyToFile(String survey, TextFileManager file) {
+		Log.i("QuestionsDownloader.java", "writeSurveyToFile() called on " + file.name);
+		if (survey != null) {
+			file.deleteSafely();
+			file.write(survey);
+			SurveyScheduler scheduler = new SurveyScheduler(appContext);
+			scheduler.scheduleSurvey(survey);
+		}		
 	}
 
 }

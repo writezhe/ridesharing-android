@@ -1,13 +1,13 @@
 package org.beiwe.app;
 
 import org.beiwe.app.listeners.AccelerometerListener;
-import org.beiwe.app.networking.NetworkUtility;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.AudioRecorderActivity;
 import org.beiwe.app.survey.SurveyActivity;
+import org.beiwe.app.survey.SurveyType.Type;
 import org.beiwe.app.ui.AppNotifications;
 
 import android.app.Activity;
@@ -115,10 +115,8 @@ public class DebugInterfaceActivity extends Activity {
 	public void buttonTimer(View view) { BackgroundProcess.getBackgroundHandle().startTimers(); }
 	
 	public void notificationSender (View view) {
-		AppNotifications.displaySurveyNotification(appContext);
+		AppNotifications.displaySurveyNotification(appContext, Type.DAILY);
 		Log.i("DebugInterfaceActivity", "Notification Displayed"); 	}
-	
-	public void cancelNotification(View view) { AppNotifications.dismissNotificatoin(appContext, AppNotifications.surveyCode); }
 	
 	public void notificationRecordingSender (View view) {
 		AppNotifications.displayRecordingNotification(appContext);

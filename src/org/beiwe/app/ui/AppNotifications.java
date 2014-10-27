@@ -3,6 +3,7 @@ package org.beiwe.app.ui;
 import org.beiwe.app.R;
 import org.beiwe.app.survey.AudioRecorderActivity;
 import org.beiwe.app.survey.SurveyActivity;
+import org.beiwe.app.survey.SurveyType;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -20,8 +21,7 @@ import android.util.Log;
 
 public class AppNotifications {
 
-	public static final int surveyCode = 001;
-	public static final int recordingCode = 002;
+	public static final int recordingCode = 001;
 	
 	/**
 	 * Creates a survey notification that transfers the user to the survey activity. 
@@ -29,10 +29,10 @@ public class AppNotifications {
 	 * Note: the notification can only be dismissed through submitting the survey
 	 * @param appContext
 	 */
-	public static void displaySurveyNotification(Context appContext) {
-		Notification surveyNotification = setupNotification(appContext, surveyCode, R.drawable.survey_icon);
+	public static void displaySurveyNotification(Context appContext, SurveyType.Type surveyType) {
+		Notification surveyNotification = setupNotification(appContext, surveyType.notificationCode, R.drawable.survey_icon, surveyType);
 		surveyNotification.flags = Notification.FLAG_ONGOING_EVENT;
-		Log.i("SurveyNotification", "Set up intent");
+		Log.i("SurveyNotification", "Set up intent with notification code " + surveyType.notificationCode);
 
 		// Get an instance of the notification manager
 		NotificationManager notificationManager = 
@@ -40,10 +40,10 @@ public class AppNotifications {
 
 		// Terrible naming for the method to post a notification
 		Log.i("SurveyNotification", "Notifying...");
-		notificationManager.cancel(surveyCode);
+		notificationManager.cancel(surveyType.notificationCode);
 		
 		notificationManager.notify(
-				surveyCode, // If another notification with the same ID pops up, it will be updated. This SHOULD be fine
+				surveyType.notificationCode, // If another notification with the same ID pops up, it will be updated. This SHOULD be fine
 				surveyNotification);
 	}
 	
@@ -54,7 +54,7 @@ public class AppNotifications {
 	 * @param appContext
 	 */
 	public static void displayRecordingNotification(Context appContext) {
-		Notification recordingNotification = setupNotification(appContext, recordingCode, R.drawable.voice_recording_icon);
+		Notification recordingNotification = setupNotification(appContext, recordingCode, R.drawable.voice_recording_icon, null);
 		recordingNotification.flags = Notification.FLAG_ONGOING_EVENT;
 		
 		NotificationManager notificationManager = 
@@ -88,18 +88,21 @@ public class AppNotifications {
 	 * @param drawableCode
 	 * @return
 	 */
-	private static Notification setupNotification(Context appContext, int notifCode, int drawableCode) {
+	// FIXME Josh: there's a bug that I don't understand. When two notifications show up, if you tap on the higher one, it behaves fine. But if you tap on the lower one, it takes you to the survey for the higher one. Why???
+	private static Notification setupNotification(Context appContext, int notifCode, int drawableCode, SurveyType.Type surveyType) {
 		Notification.Builder builder = new Notification.Builder(appContext);
 		Intent intent;
 		builder.setContentTitle("Beiwe");
-		if (notifCode == surveyCode) { // Sets up a survey notification
-			builder.setContentText(appContext.getResources().getString(R.string.survey_notification_details));
-			builder.setTicker(appContext.getResources().getString(R.string.survey_notification_message));
-	        intent = new Intent(appContext, SurveyActivity.class);
-		} else { // Sets up a voice recording notification
+		if (notifCode == recordingCode) { // Sets up a voice recording notification
 			builder.setContentText(appContext.getResources().getString(R.string.recording_notification_details));
 			builder.setTicker(appContext.getResources().getString(R.string.recording_notification_message));
 	        intent = new Intent(appContext, AudioRecorderActivity.class);
+		} else { // Sets up a survey notification
+			builder.setContentText(appContext.getResources().getString(surveyType.notificationDetailsResource));
+			builder.setTicker(appContext.getResources().getString(surveyType.notificationMsgResource));
+	        intent = new Intent(appContext, SurveyActivity.class);
+	        // TODO: Josh, get SUrveyType from Enum
+	        intent.putExtra("SurveyType", surveyType);
 		}
 		// Sets up the two icons to be displayed
 		builder.setSmallIcon(drawableCode);

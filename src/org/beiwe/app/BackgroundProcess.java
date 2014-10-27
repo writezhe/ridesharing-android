@@ -13,6 +13,7 @@ import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.QuestionsDownloader;
 import org.beiwe.app.survey.SurveyScheduler;
+import org.beiwe.app.survey.SurveyType.Type;
 import org.beiwe.app.ui.AppNotifications;
 
 import android.app.ActivityManager;
@@ -216,17 +217,13 @@ public class BackgroundProcess extends Service {
 				timer.setupSingularFuzzyAlarm( 5000L, Timer.wifiLogTimerIntent, Timer.wifiLogIntent); }
 			
 			if (intent.getAction().equals( appContext.getString(R.string.voice_recording) ) ) {
-				Log.i("TIMERS", "voice recording timer sounded");
 				AppNotifications.displayRecordingNotification(appContext); }
 			
 			if (intent.getAction().equals( appContext.getString(R.string.daily_survey) ) ) {
-				Log.i("TIMERS", "DAILY SURVEY CALLED");
-				AppNotifications.displaySurveyNotification(appContext); }
+				AppNotifications.displaySurveyNotification(appContext, Type.DAILY); }
 			
 			if (intent.getAction().equals( appContext.getString(R.string.weekly_survey) ) ) {
-				// TODO: Josh, differentiate between daily and weekly surveys
-				Log.i("TIMERS", "WEEKLY SURVEY CALLED");
-				AppNotifications.displaySurveyNotification(appContext); }
+				AppNotifications.displaySurveyNotification(appContext, Type.WEEKLY); }
 			
 			// TODO: Eli. formerly dori. Find out when this needs to go off. Provide a function inside the logic that is "start logout timer"
 			// What needs to be done is to send the activity to the background process in case it is no longer used (onPause, onStop, etc...) 

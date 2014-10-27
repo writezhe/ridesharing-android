@@ -8,6 +8,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -18,12 +19,23 @@ public class SurveyActivity extends Activity {
 	private LinearLayout surveyLayout;
 	private SurveyAnswersRecorder answersRecorder;
 	private String surveyId;
+	private SurveyType.Type surveyType;
 	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_survey);
+		
+		Log.i("SurveyActivity.java", "SurveyActivity was created");
+		
+		if (savedInstanceState == null) {
+			Bundle extras = getIntent().getExtras();
+			if (extras != null) {
+				surveyType = SurveyType.Type.values()[extras.getInt("SurveyType")];
+				Log.i("SurveyActivity.java", "Extras was not null; SurveyType = " + surveyType);
+			}
+		}		
 		
 		/* Show that the survey is "Loading..." (This was more important when the
 		 * survey had to be downloaded from the server while the user waited) */
@@ -42,7 +54,6 @@ public class SurveyActivity extends Activity {
 		View loadingSpinner = getLayoutInflater().inflate(R.layout.survey_loading_spinner, null);
 		replaceSurveyPageContents(loadingSpinner);
 	}
-
 	
 	
 	/**
@@ -54,7 +65,7 @@ public class SurveyActivity extends Activity {
 		@Override
 		protected String doInBackground(String... params) {
 			QuestionsDownloader downloader = new QuestionsDownloader(getApplicationContext());
-			return downloader.getJsonSurveyString();
+			return downloader.getJsonSurveyString(surveyType);
 		}
 
 		@Override
@@ -106,7 +117,7 @@ public class SurveyActivity extends Activity {
 	 * @param v
 	 */
 	public void submitButtonPressed(View v) {		
-		AppNotifications.dismissNotificatoin(getApplicationContext(), AppNotifications.surveyCode);
+		AppNotifications.dismissNotificatoin(getApplicationContext(), surveyType.notificationCode);
 
 		SurveyTimingsRecorder.recordSubmit(getApplicationContext());
 		
@@ -169,8 +180,7 @@ public class SurveyActivity extends Activity {
 		Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
 
 		// Close the Activity
-		finish();		
+		finish();
 	}
-	
-	
+		
 }

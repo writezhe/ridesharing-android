@@ -102,13 +102,6 @@
 		    android:text="@string/timer_button" />
 		
 		<Button
-	        android:id="@+id/buttonDismiss"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:onClick="cancelNotification"
-	        android:text="Dismiss notification" />
-		
-		<Button
 	        android:id="@+id/buttonRecordingNotif"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
