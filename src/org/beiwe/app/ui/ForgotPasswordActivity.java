@@ -77,7 +77,7 @@ public class ForgotPasswordActivity extends Activity {
 		} else if (!passwordStr.equals(passwordRepeatStr)) {
 			AlertsManager.showAlert("Passwords mismatch", this);
 		} else {
-			LoginSessionManager.createLoginSession( LoginSessionManager.getPatientID(), encryptedPassword);
+			LoginSessionManager.setLoginCredentialsAndLogIn( LoginSessionManager.getPatientID(), encryptedPassword);
 			new AsyncPostSender("http://beiwe.org/forgot_password", this).execute();
 		}
 	}
@@ -99,7 +99,7 @@ public class ForgotPasswordActivity extends Activity {
 		@Override
 		protected void onPostExecute(Void arg) {
 			if (response == 200){
-				LoginSessionManager.createLoginSession( LoginSessionManager.getPatientID(), hashedNewPassword);
+				LoginSessionManager.setLoginCredentialsAndLogIn( LoginSessionManager.getPatientID(), hashedNewPassword);
 				activity.startActivity(new Intent(activity.getApplicationContext(), DebugInterfaceActivity.class));
 				activity.finish();
 				return;

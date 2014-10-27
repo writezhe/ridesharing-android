@@ -69,7 +69,7 @@ public class LoginSessionManager {
     * @param userID
     * @param password */
 	//TODO: Eli. Rename this function, probably split functionality between this and setLoginCredenctials
-    public static void createLoginSession(String userID, String password){
+    public static void setLoginCredentialsAndLogIn(String userID, String password){
     	setLoginCredentials(userID, password); //remove?
     	editor.putBoolean(IS_REGISTERED, true);
     	editor.putBoolean(IS_LOGIN, true);

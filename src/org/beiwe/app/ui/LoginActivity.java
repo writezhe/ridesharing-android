@@ -90,7 +90,7 @@ public class LoginActivity extends Activity {
 				AlertsManager.showAlert(appContext.getString(R.string.password_system_mismatch), this); }
 			else {
 				// Unlike registration, this does not check against the server.
-				LoginSessionManager.createLoginSession( userIDString, EncryptionEngine.safeHash( passwordString ) );
+				LoginSessionManager.setLoginCredentialsAndLogIn( userIDString, EncryptionEngine.safeHash( passwordString ) );
 				startActivity( new Intent(appContext, DebugInterfaceActivity.class ) ); // TODO: Eli. there was a "debug" comment here, why?
 				finish();
 			}

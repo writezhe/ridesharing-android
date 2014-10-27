@@ -93,7 +93,7 @@ public class AsyncPostSender extends AsyncTask<Void, Void, Void> {
 			}
 			// If the user wants to reset their password, log them in using the new password
 			if (newPassword != null) {
-				LoginSessionManager.createLoginSession( LoginSessionManager.getPatientID(), EncryptionEngine.safeHash(newPassword));
+				LoginSessionManager.setLoginCredentialsAndLogIn( LoginSessionManager.getPatientID(), EncryptionEngine.safeHash(newPassword));
 				newPassword = null;
 			}
 			// FIXME: Eli. This is terrible, change it.

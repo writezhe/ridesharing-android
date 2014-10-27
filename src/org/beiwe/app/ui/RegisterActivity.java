@@ -77,11 +77,10 @@ public class RegisterActivity extends Activity {
 		// TODO: Eli. make sure this doesn't fail due to password restrictions conflicting with a randomly generated password.
 		// Otherwise, start the registration process against the user
 		else {
-			LoginSessionManager.createLoginSession(userIDStr, EncryptionEngine.safeHash(passwordStr));
+			LoginSessionManager.setLoginCredentialsAndLogIn(userIDStr, EncryptionEngine.safeHash(passwordStr));
 			
 			Log.i("RegisterActivity", "trying \"" + LoginSessionManager.getPatientID() + "\" with password \"" + LoginSessionManager.getPassword() + "\"" );
 			
-			PostRequest.initialize(appContext); //TODO: Eli. move this to the loading activity.
 			doRegister("http://beiwe.org/register_user");
 		}
 	}
