@@ -1,6 +1,4 @@
 package org.beiwe.app.session;
- 
-import java.util.HashMap;
 
 import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.ui.LoginActivity;
