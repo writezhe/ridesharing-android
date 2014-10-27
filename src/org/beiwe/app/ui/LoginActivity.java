@@ -73,9 +73,8 @@ public class LoginActivity extends Activity {
 			String userIDString = userID.getText().toString();
 			String passwordString = password.getText().toString();
 			
-			HashMap<String, String> details = loginSessionManager.getUserDetails();
-			String prefUserID = details.get(LoginSessionManager.KEY_ID);
-			String prefPassword = details.get(LoginSessionManager.KEY_PASSWORD);
+			String prefUserID = loginSessionManager.getPatientID();
+			String prefPassword = loginSessionManager.getPassword();
 			
 			//TODO: Eli. handle this: kill the app if the user is not registered, this is a pain for debugging.
 //			Log.i("LoginActivity", prefUserID);

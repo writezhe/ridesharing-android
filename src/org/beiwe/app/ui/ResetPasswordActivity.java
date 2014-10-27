@@ -69,7 +69,7 @@ public class ResetPasswordActivity extends Activity {
 	 */
 	public void resetPasswordSequence(View view) {
 		// Encapsulated user's details as saved in the SharedPreferences
-		HashMap<String, String> details = session.getUserDetails();
+//		HashMap<String, String> details = session.getUserDetails();
 		
 		// Old password, and old password hashed
 		String oldPassStr = oldPass.getText().toString();
@@ -81,7 +81,7 @@ public class ResetPasswordActivity extends Activity {
 
 		// Cases: username mismatch, userID mismatch, passwords mismatch, and repeat password with actual password mismatch. 
 		//TODO: Eli. this logic is used in at least... 3 place: here ,login, and creation.  Modularize it.
-		if(oldPassStr.length() == 0 || !oldPassStrHash.equals(details.get(LoginSessionManager.KEY_PASSWORD))) {
+		if(oldPassStr.length() == 0 || !oldPassStrHash.equals( session.getPassword() ) ) {
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_old_password), this);
 		} else if (newPasswordStr.length() == 0) { // TODO: MAKE LENGTH CHECK CORRECT.
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_password), this);

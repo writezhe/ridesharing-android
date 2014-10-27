@@ -48,8 +48,8 @@ public class PostRequest {
 	 * @param some applicationContext */
 	private PostRequest( Context applicationContext, LoginSessionManager session ) {
 		appContext = applicationContext;
-		patientID = session.getUserDetails().get( LoginSessionManager.KEY_ID );
-		password = session.getUserDetails().get( LoginSessionManager.KEY_PASSWORD );
+		patientID = session.getPatientID();
+		password = session.getPassword();
 	}
 	
 	/** Simply runs the constructor, using the applcationContext to grab variables.  Idempotent. */

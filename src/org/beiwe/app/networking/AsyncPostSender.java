@@ -22,19 +22,23 @@ import android.widget.ProgressBar;
  *
  */
 
-public class AsyncPostSender extends AsyncTask<Void, Void, Void>{
-		
-	// Private fields
+//FIXME: This needs to be changed entirely. extend and modify asynctask to make the loading menu happen, internal variables.
+
+
+public class AsyncPostSender extends AsyncTask<Void, Void, Void> {
+	
+	// Common variables
 	private int response;
 	private String url;
-	private Activity activity;
-	private LoginSessionManager session;
-	private View bar;
-	private String newPassword = null;
+	private View alertSpinner;
 	
-	/* ************************************************************************
-	 * **************************** Constructor *******************************
-	 * ************************************************************************/
+
+	private Activity activity;  //TODO: Eli. determine if we can kill this
+	//TODO: Eli. Kill these
+	private LoginSessionManager session;
+	private String newPassword = null;
+
+	
 	/** This constructor is used for normal post requests, as well as the registration requests*/
 	public AsyncPostSender(String url, Activity activity, LoginSessionManager session) {
 		this.url = url;
@@ -48,51 +52,42 @@ public class AsyncPostSender extends AsyncTask<Void, Void, Void>{
 		this.activity = activity;
 		this.session = session;
 		this.newPassword = newPassword;
-		Log.i("Async", "Created");
 	}
 	
-	/* ************************************************************************
-	 * ************************* Convenience Functions ************************
-	 * ********************************************************************** */
-	public void setupProgressBar() {
-		bar = (ProgressBar) activity.findViewById(R.id.progressBar);
-	}
 	
-	/* ************************************************************************
-	 * ************** Functions that deal with logging in *********************
-	 * ********************************************************************** */
+	
 	
 	// Set up the progress bar
 	@Override
 	protected void onPreExecute() {
-		setupProgressBar();
-		bar.setVisibility(View.VISIBLE);
+		alertSpinner = (ProgressBar) activity.findViewById(R.id.progressBar);
+		alertSpinner.setVisibility(View.VISIBLE);
 	}
 	
 	
 	/**
 	 * Check what kind of post request needs to be sent, depending on the URL ending.
 	 * URL endings that need special care are register_user (uses bluetooth ID field) 
-	 * and set_password (uses new_password field).
-	 */
+	 * and set_password (uses new_password field). */
 	@Override
 	protected Void doInBackground(Void... arg0) {
-		String parameters = "";
+		String parameters = "";  //TODO: Move parameters up to class variable?
+		
 		if (url.endsWith("register_user")) {
 			parameters = PostRequest.makeParameter("bluetooth_id", DeviceInfo.getBlootoothMAC() );
 			response = PostRequest.asyncRegisterHandler(parameters, url);
-		} else if (url.endsWith("set_password")){
-			parameters = PostRequest.makeParameter("new_password", newPassword);			
-			response = PostRequest.asyncPostHandler(parameters, url);
+		} else if ( url.endsWith("set_password") ) {
+			parameters = PostRequest.makeParameter( "new_password", newPassword );			
+			response = PostRequest.asyncPostHandler( parameters, url );
 		} else {
-			response = PostRequest.asyncPostHandler(parameters, url);
+			response = PostRequest.asyncPostHandler( parameters, url );
 		}
 		return null;  //whhhyyy java.  just why.
 	}
 	
 	@Override
 	protected void onPostExecute(Void result) {
-		bar.setVisibility(View.GONE);
+		alertSpinner.setVisibility(View.GONE);
 		
 		// If the response is 200 and the session is not registered, set it to be true
 		if (response == 200) { 
@@ -101,11 +96,11 @@ public class AsyncPostSender extends AsyncTask<Void, Void, Void>{
 			}
 			// If the user wants to reset their password, log them in using the new password
 			if (newPassword != null) {
-				HashMap<String, String> details = session.getUserDetails();
-				session.createLoginSession(details.get(LoginSessionManager.KEY_ID), EncryptionEngine.safeHash(newPassword));
+				session.createLoginSession(session.getPatientID(), EncryptionEngine.safeHash(newPassword));
 				newPassword = null;
 			}
-			// TODO: When this goes to production - change DebugInterfaceActivity to MainMenuActivity.
+			// FIXME: Eli. This is terrible, change it.
+			//  old comment: "When this goes to production - change DebugInterfaceActivity to MainMenuActivity."
 			activity.startActivity(new Intent(activity.getApplicationContext(), DebugInterfaceActivity.class));
 			activity.finish();
 		} else { 				

@@ -35,16 +35,10 @@ public class LoginSessionManager {
 	
 	/** Quick check for login. **/
     public boolean isLoggedIn(){ return pref.getBoolean(IS_LOGIN, false); }
-    
     public boolean isRegistered() { return pref.getBoolean(IS_REGISTERED, false); }
-	
+
 	public void setRegistered(boolean value) { editor.putBoolean(IS_LOGIN, value); }
 	
-	
-//	//Eli. Think about if this is a good idea
-//    public static String getPassword() {
-//    	return pref.getString( KEY_PASSWORD, null );
-//    }
     
     public void setPassword (String password) {
         editor.putString(KEY_PASSWORD, password);
@@ -85,19 +79,11 @@ public class LoginSessionManager {
         editor.commit();
     }
     
+    public String getPassword() { return pref.getString( KEY_PASSWORD, null ); }
     
-    //TODO: Eli. Get rid of this stupid hashmap.  Fuck that.  Two getters, two setters. 
-    /**A way of encapsulating SharedPreferences and the user's details stored in them.
-     * @return user details */
-    public HashMap<String, String> getUserDetails(){
-       	HashMap<String, String> userDetails = new HashMap<String, String>();
-        userDetails.put(KEY_ID, pref.getString(KEY_ID, null));
-        userDetails.put(KEY_PASSWORD, pref.getString(KEY_PASSWORD, null));
-        //TODO: Eli. Determine why this is triggering twice when bypassing the login screen for the debug activity.
-        Log.i("LoginSessionManager", "user details: " + userDetails.toString());
-        return userDetails;
-    }
+    public String getPatientID() { return pref.getString(KEY_ID, null); }
     
+        
     /*###########################################################################################
 	##################################### Log Out ###############################################
 	###########################################################################################*/

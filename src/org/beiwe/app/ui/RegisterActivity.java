@@ -76,7 +76,7 @@ public class RegisterActivity extends Activity {
 		// Otherwise, start the registration process against the user
 		else {
 			session.createLoginSession(userIDStr, EncryptionEngine.safeHash(passwordStr));
-			Log.i("Register Activity", session.getUserDetails().get(LoginSessionManager.KEY_ID));
+			Log.i("Register Activity", session.getPatientID() );
 			PostRequest.initializePostRequest(appContext, session); //TODO: Eli. move this to the loading activity.
 			makeRegisterRequest();
 			Log.i("RegisterActivity", "creating login session: " + userIDStr);
