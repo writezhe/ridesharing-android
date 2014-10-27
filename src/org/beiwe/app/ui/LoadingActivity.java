@@ -57,7 +57,7 @@ public class LoadingActivity extends Activity{
 				TextFileManager.start(appContext);
 				PostRequest.initializePostRequest(appContext, session);
 			}
-			startActivity( session.checkLogin() );
+			startActivity( session.login() );
 			// TODO: Josh, start activities from here instead of from LoginSessionManager.java
 			/* switch ( session.checkLogin() ) {
 			 * case (LoginSessionManager.caseCode1) : startActivity(new Intent(RegisterActivity));
