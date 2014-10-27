@@ -44,15 +44,12 @@ public class LoadingActivity extends Activity{
 		
 		appContext = getApplicationContext();
 
-		// Instantiating DeviceInfo
-		//TODO: Eli. Change this to a static initializer function.
-		DeviceInfo info = new DeviceInfo(appContext);
-
 		if ( isAbleToHash() ) {
 			try { BackgroundProcess.getBackgroundHandle(); } 
 			catch (NullPointerException e) {
 				Log.i("LoadingActivity", e.getMessage() + "\n... Initializing app components." );
-				//Order LoginSessionManager, TextFileManager, PoshRequest.
+				//Order DevicInfo, LoginSessionManager, TextFileManager, PoshRequest.
+				DeviceInfo.initialize(appContext);
 				LoginSessionManager.initialize(appContext);
 				TextFileManager.start(appContext);
 				PostRequest.initialize(appContext);

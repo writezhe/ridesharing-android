@@ -1,14 +1,10 @@
 package org.beiwe.app;
 
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
-
 import org.beiwe.app.storage.EncryptionEngine;
 
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.provider.Settings;
-import android.util.Log;
 //IMEI: phone SIM identifier.
 //android uuid
 
@@ -27,7 +23,7 @@ public class DeviceInfo {
 	private static String bluetoothMAC;
 	
 	/** grab the Android ID and the Bluetooth's MAC address */
-	public DeviceInfo(Context appContext) {
+	public static void initialize(Context appContext) {
 		androidID = Settings.Secure.getString( appContext.getContentResolver(), Settings.Secure.ANDROID_ID );
 
 		BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -35,7 +31,7 @@ public class DeviceInfo {
 		 * (this does happen sometimes!), record an empty string for the Bluetooth Mac address. */
 		if ( bluetoothAdapter == null || bluetoothAdapter.getAddress() == null ) { bluetoothMAC = ""; }
 		else { bluetoothMAC = bluetoothAdapter.getAddress(); }
-	}
+	} 
 
 	public static String getAndroidID() {
 		return EncryptionEngine.safeHash(androidID);

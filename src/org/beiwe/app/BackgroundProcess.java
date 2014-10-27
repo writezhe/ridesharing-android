@@ -32,7 +32,6 @@ import android.util.Log;
 public class BackgroundProcess extends Service {
 	
 	private Context appContext;
-	private LoginSessionManager sessionManager;
 	
 	// TODO: Eli. Make these private after killing DebugInterfaceActivity
 	public GPSListener gpsListener;
@@ -42,7 +41,7 @@ public class BackgroundProcess extends Service {
 	
 	private Timer timer;
 	
-	//TODO: Eli. this [stupid hack] should only be necessary for debugging, comment out before production.
+	//TODO: Eli. this [stupid hack] should only be necessary for debugging, comment out before production?
 	public static BackgroundProcess BackgroundHandle = null;
 
 	public static BackgroundProcess getBackgroundHandle() throws NullPointerException{
@@ -69,9 +68,6 @@ public class BackgroundProcess extends Service {
 		startSmsSentLogger();
 		startCallLogger();
 		startPowerStateListener();
-		
-		@SuppressWarnings("unused")  //the constructor hands DeviceInfo a Context, which it uses to grab info.
-		DeviceInfo deviceInfo = new DeviceInfo(appContext);
 		
 //		Log.i("androidID", DeviceInfo.androidID);
 //		Log.i("bluetoothMAC", DeviceInfo.bluetoothMAC);
