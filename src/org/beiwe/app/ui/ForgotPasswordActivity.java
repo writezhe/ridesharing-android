@@ -9,7 +9,7 @@ import org.beiwe.app.R.layout;
 import org.beiwe.app.networking.AsyncPostSender;
 import org.beiwe.app.networking.NetworkUtility;
 import org.beiwe.app.networking.PostRequest;
-import org.beiwe.app.networking.SimpleAsync;
+import org.beiwe.app.networking.HTTPAsync;
 import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.survey.TextFieldKeyboard;
@@ -86,7 +86,7 @@ public class ForgotPasswordActivity extends Activity {
 	
 	/**Creates an SimpleAsync to make a HTTP Post Request  
 	 * @param url */
-	private void async_thing(final String url) { new SimpleAsync(url, this) {  //This is a retarded spacing hack...
+	private void async_thing(final String url) { new HTTPAsync(url, this) {  //This is a retarded spacing hack...
 
 		@Override
 		protected Void doInBackground(Void... arg0) {

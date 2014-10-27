@@ -9,7 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
-public class SimpleAsync extends AsyncTask<Void, Void, Void> {
+public class HTTPAsync extends AsyncTask<Void, Void, Void> {
 	//Private UI element
 	private View alertSpinner;
 	
@@ -20,7 +20,7 @@ public class SimpleAsync extends AsyncTask<Void, Void, Void> {
 	protected int response = -1;
 	
 	
-	public SimpleAsync(String url, Activity activity) {
+	public HTTPAsync(String url, Activity activity) {
 		this.url = url;
 		this.activity = activity;
 		this.execute(); //Wow, you can do this?
