@@ -29,7 +29,6 @@ import android.widget.EditText;
 public class ForgotPasswordActivity extends Activity {
 
 	private Context appContext;
-	private LoginSessionManager session;
 
 	private EditText newPassword;
 	private EditText newPasswordRepeat;
@@ -52,8 +51,7 @@ public class ForgotPasswordActivity extends Activity {
 		appContext = getApplicationContext();
 		newPassword = (EditText) findViewById(R.id.forgot_password_enter_password);
 		newPasswordRepeat = (EditText) findViewById(R.id.forgot_password_enter_password_repeat);
-		session = new LoginSessionManager(appContext);
-
+		
 		// Make keyboard behavior
 		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(appContext);
 		textFieldKeyboard.makeKeyboardBehave(newPassword);
@@ -79,8 +77,8 @@ public class ForgotPasswordActivity extends Activity {
 		} else if (!passwordStr.equals(passwordRepeatStr)) {
 			AlertsManager.showAlert("Passwords mismatch", this);
 		} else {
-			session.createLoginSession( session.getPatientID(), encryptedPassword);
-			new AsyncPostSender("http://beiwe.org/forgot_password", this, session).execute();
+			LoginSessionManager.createLoginSession( LoginSessionManager.getPatientID(), encryptedPassword);
+			new AsyncPostSender("http://beiwe.org/forgot_password", this).execute();
 		}
 	}
 	
@@ -101,7 +99,7 @@ public class ForgotPasswordActivity extends Activity {
 		@Override
 		protected void onPostExecute(Void arg) {
 			if (response == 200){
-				session.createLoginSession( session.getPatientID(), hashedNewPassword);
+				LoginSessionManager.createLoginSession( LoginSessionManager.getPatientID(), hashedNewPassword);
 				activity.startActivity(new Intent(activity.getApplicationContext(), DebugInterfaceActivity.class));
 				activity.finish();
 				return;

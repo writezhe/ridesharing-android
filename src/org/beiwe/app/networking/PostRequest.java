@@ -38,22 +38,17 @@ public class PostRequest {
 	static String newLine = "\n"; //we will use unix-style new lines
 	static String attachmentName = "file";
 	
-	private static Context appContext;
-	private static String patientID;
-	private static String password;
-	
+	private static Context appContext;	
 	
 	//TODO: Eli. We do not appear to need the applicationContext in this class.
 	/**Uploads must be initialized with an appContext before they can access the wifi state or upload a _file_.
 	 * @param some applicationContext */
-	private PostRequest( Context applicationContext, LoginSessionManager session ) {
+	private PostRequest( Context applicationContext ) {
 		appContext = applicationContext;
-		patientID = session.getPatientID();
-		password = session.getPassword();
 	}
 	
 	/** Simply runs the constructor, using the applcationContext to grab variables.  Idempotent. */
-	public static void initializePostRequest(Context applicationContext, LoginSessionManager session) { new PostRequest(applicationContext, session); }
+	public static void initialize(Context applicationContext) { new PostRequest(applicationContext); }
 	
 	
 	/*##################################################################################
@@ -299,8 +294,8 @@ public class PostRequest {
 	public static String makeParameter(String key, String value) { return key + "=" + value + "&"; }
 	
 	private static String securityParameters() { 
-		return makeParameter("patient_id", patientID ) +
-				makeParameter("password", password ) +
+		return makeParameter("patient_id", LoginSessionManager.getPatientID() ) +
+				makeParameter("password", LoginSessionManager.getPassword() ) +
 				makeParameter("device_id", DeviceInfo.getAndroidID() );
 	}
 }

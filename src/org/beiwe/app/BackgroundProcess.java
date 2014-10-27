@@ -249,10 +249,9 @@ public class BackgroundProcess extends Service {
 				//		in onPause and onDestroy call a function that...
 				//		...signs the user in (because... that is exactly the behavior we want), starts a fifteen minute logout timer.
 				// is t
-				sessionManager = new LoginSessionManager(appContext);
 				if( isForeground("org.beiwe.app") ) {
-					sessionManager.logoutUser(); }
-				else { sessionManager.logoutUserPassive(); }
+					LoginSessionManager.logoutUser(); }
+				else { LoginSessionManager.logoutUserPassive(); }
 			}
 		}
 	};

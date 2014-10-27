@@ -29,7 +29,6 @@ public class LoginActivity extends Activity {
 	
 	private EditText userID;
 	private EditText password;
-	private LoginSessionManager loginSessionManager;
 	private Context appContext;
 	
 	@Override
@@ -44,9 +43,8 @@ public class LoginActivity extends Activity {
 		//TODO: Eli/Josh.  Talk to josh about how/when rotate device calls the oncreate method.
 		// Private variable set up
 		appContext = getApplicationContext();
-		loginSessionManager = new LoginSessionManager(appContext);
 
-		if (loginSessionManager.isLoggedIn()) {
+		if (LoginSessionManager.isLoggedIn()) {
 			startActivity(new Intent(appContext, DebugInterfaceActivity.class));
 			finish(); //TODO: Eli. Research exact functionality of Finish()
 		} else {
@@ -64,8 +62,8 @@ public class LoginActivity extends Activity {
 	 * IF session is not logged in, wait for user input.
 	 * @param view*/
 	public void loginSequence(View view) {
-		if (loginSessionManager.isLoggedIn()) {
-			Log.i("LoginActivity", "" + loginSessionManager.isLoggedIn());
+		if (LoginSessionManager.isLoggedIn()) {
+			Log.i("LoginActivity", "" + LoginSessionManager.isLoggedIn());
 			startActivity(new Intent(appContext, DebugInterfaceActivity.class));
 			finish();
 		//TODO: Eli. check the finish() statement gets run in all relevant cases.
@@ -73,8 +71,8 @@ public class LoginActivity extends Activity {
 			String userIDString = userID.getText().toString();
 			String passwordString = password.getText().toString();
 			
-			String prefUserID = loginSessionManager.getPatientID();
-			String prefPassword = loginSessionManager.getPassword();
+			String prefUserID = LoginSessionManager.getPatientID();
+			String prefPassword = LoginSessionManager.getPassword();
 			
 			//TODO: Eli. handle this: kill the app if the user is not registered, this is a pain for debugging.
 //			Log.i("LoginActivity", prefUserID);
@@ -92,7 +90,7 @@ public class LoginActivity extends Activity {
 				AlertsManager.showAlert(appContext.getString(R.string.password_system_mismatch), this); }
 			else {
 				// Unlike registration, this does not check against the server.
-				loginSessionManager.createLoginSession( userIDString, EncryptionEngine.safeHash( passwordString ) );
+				LoginSessionManager.createLoginSession( userIDString, EncryptionEngine.safeHash( passwordString ) );
 				startActivity( new Intent(appContext, DebugInterfaceActivity.class ) ); // TODO: Eli. there was a "debug" comment here, why?
 				finish();
 			}

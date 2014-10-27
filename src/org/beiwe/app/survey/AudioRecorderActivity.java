@@ -3,6 +3,7 @@ package org.beiwe.app.survey;
 import java.io.IOException;
 
 import org.beiwe.app.R;
+import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.ui.AppNotifications;
 
@@ -199,7 +200,7 @@ public class AudioRecorderActivity extends Activity {
      */
     private String getAudioFileName() {
 		String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
-		String fileName = fileDirectory + "/" + TextFileManager.getUserId() + "_voiceRecording" + "_" + timecode + ".mp4";
+		String fileName = fileDirectory + "/" + LoginSessionManager.getPatientID() + "_voiceRecording" + "_" + timecode + ".mp4";
 		
 		mFileName = fileName;
 		return fileName;

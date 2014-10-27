@@ -20,6 +20,7 @@ import android.widget.EditText;
 /**Activity used to log a user in to the application for the first time. This activity should only be called on ONCE,
  * as once the user is logged in, data is saved on the phone.
  * @author Dor Samet */
+
 @SuppressLint("ShowToast")
 public class RegisterActivity extends Activity {
 
@@ -28,8 +29,6 @@ public class RegisterActivity extends Activity {
 	private EditText userID;
 	private EditText password;
 	private EditText passwordRepeat;
-	private LoginSessionManager session;
-
 
 	/** Users will go into this activity first to register information on the phone and on the server. */
 	@Override
@@ -42,7 +41,6 @@ public class RegisterActivity extends Activity {
 		userID = (EditText) findViewById(R.id.userID_box);
 		password = (EditText) findViewById(R.id.password_box);
 		passwordRepeat = (EditText) findViewById(R.id.repeat_password_box);
-		session = new LoginSessionManager(appContext);
 
 		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(appContext);
 		textFieldKeyboard.makeKeyboardBehave(userID);
@@ -75,9 +73,9 @@ public class RegisterActivity extends Activity {
 		// TODO: Eli. make sure this doesn't fail due to password restrictions conflicting with a randomly generated password.
 		// Otherwise, start the registration process against the user
 		else {
-			session.createLoginSession(userIDStr, EncryptionEngine.safeHash(passwordStr));
-			Log.i("Register Activity", session.getPatientID() );
-			PostRequest.initializePostRequest(appContext, session); //TODO: Eli. move this to the loading activity.
+			LoginSessionManager.createLoginSession(userIDStr, EncryptionEngine.safeHash(passwordStr));
+			Log.i("Register Activity", LoginSessionManager.getPatientID() );
+			PostRequest.initialize(appContext); //TODO: Eli. move this to the loading activity.
 			makeRegisterRequest();
 			Log.i("RegisterActivity", "creating login session: " + userIDStr);
 		}
@@ -85,7 +83,7 @@ public class RegisterActivity extends Activity {
 
 	/** Does exactly what it says. */
 	private void makeRegisterRequest() {
-		AsyncPostSender registrationThread = new AsyncPostSender("http://beiwe.org/register_user", this, session);
+		AsyncPostSender registrationThread = new AsyncPostSender("http://beiwe.org/register_user", this);
 		registrationThread.execute();
 	}
 }

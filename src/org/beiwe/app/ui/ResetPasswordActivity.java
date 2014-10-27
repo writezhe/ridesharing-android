@@ -33,7 +33,6 @@ public class ResetPasswordActivity extends Activity {
 	private EditText oldPass;
 	private EditText newPassword;
 	private EditText newPasswordRepeat;
-	private LoginSessionManager session;
 	
 	/**
 	 * onCreate method. Nothing interesting happens here...
@@ -48,7 +47,6 @@ public class ResetPasswordActivity extends Activity {
 		oldPass = (EditText) findViewById(R.id.reset_password_old_password);
 		newPassword = (EditText) findViewById(R.id.reset_password_password);
 		newPasswordRepeat = (EditText) findViewById(R.id.reset_password_password_repeat);
-		session = new LoginSessionManager(appContext);
 		
 		// Make keyboard behavior nicely - when clicking outside of the textbox, keyboard disappears
 		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(appContext);
@@ -78,7 +76,7 @@ public class ResetPasswordActivity extends Activity {
 
 		// Cases: username mismatch, userID mismatch, passwords mismatch, and repeat password with actual password mismatch. 
 		//TODO: Eli. this logic is used in at least... 3 place: here ,login, and creation.  Modularize it.
-		if(oldPassStr.length() == 0 || !oldPassStrHash.equals( session.getPassword() ) ) {
+		if(oldPassStr.length() == 0 || !oldPassStrHash.equals( LoginSessionManager.getPassword() ) ) {
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_old_password), this);
 		} else if (newPasswordStr.length() == 0) { // TODO: MAKE LENGTH CHECK CORRECT.
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_password), this);
@@ -89,7 +87,7 @@ public class ResetPasswordActivity extends Activity {
 	
 	/** Makes an Async Thread to send with the new Password*/
 	private void makeResetPasswordThread(String newPassword) {
-		new AsyncPostSender("http://beiwe.org/set_password", this, session, newPassword).execute();		
+		new AsyncPostSender("http://beiwe.org/set_password", this, newPassword).execute();		
 	}
 	
 	//TODO: Josh, see if possible to, in the Manifest.xml, set MainMenuActivity as the parent, so that when you press "Back", it takes you there.

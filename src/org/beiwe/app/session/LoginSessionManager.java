@@ -18,54 +18,60 @@ import android.util.Log;
  * @author Dor Samet */
 
 public class LoginSessionManager {
+	private static int PRIVATE_MODE = 0;
 	
 	// Private things that are encapsulated using functions in this class 
-	private SharedPreferences pref; 
-    private Editor editor;
-    private Context appContext;
-    public static int PRIVATE_MODE = 0;     
+	private static SharedPreferences pref; 
+    private static Editor editor;
+    private static Context appContext;
+    
     public static final String PREF_NAME = "BeiwePref";
     private static final String IS_LOGIN = "IsLoggedIn";
    
     // Public names for when inspecting the user's details. Used to call from outside the class.
-    public static final String KEY_ID = "uid";
-    public static final String KEY_PASSWORD = "password";
-	public static final String IS_REGISTERED = "IsRegistered";
+    private static final String KEY_ID = "uid";
+    private static final String KEY_PASSWORD = "password";
+	private static final String IS_REGISTERED = "IsRegistered";
     
-	
-	/** Quick check for login. **/
-    public boolean isLoggedIn(){ return pref.getBoolean(IS_LOGIN, false); }
-    public boolean isRegistered() { return pref.getBoolean(IS_REGISTERED, false); }
-
-	public void setRegistered(boolean value) { editor.putBoolean(IS_LOGIN, value); }
-	
-    
-    public void setPassword (String password) {
-        editor.putString(KEY_PASSWORD, password);
-        editor.commit();
-    }
-	
 	
 	/**Constructor method for the session manager class
      * @param context */
-	public LoginSessionManager(Context context){
-        this.appContext = context;
+	private LoginSessionManager(Context context){
+        appContext = context;
         pref = appContext.getSharedPreferences(PREF_NAME, PRIVATE_MODE); //sets Shared Preferences private mode
         editor = pref.edit();
         editor.commit();
     }
-    
+	
+	public static void initialize( Context context) { new LoginSessionManager(context); } 
+	
+	
+	/*###########################################################################################
+	##################################### Boolean checks ###########################################
+	###########################################################################################*/
+	
+	/** Quick check for login. **/
+    public static boolean isLoggedIn(){ return pref.getBoolean(IS_LOGIN, false); }
+    public static boolean isRegistered() { return pref.getBoolean(IS_REGISTERED, false); }
+
 	
 	/*###########################################################################################
 	##################################### Credentials ###########################################
 	###########################################################################################*/
 	
+	public static void setRegistered(boolean value) { editor.putBoolean(IS_LOGIN, value); }
+	
+	public static void setPassword (String password) {
+		editor.putString(KEY_PASSWORD, password);
+		editor.commit();
+	}
+		
 	
    /** Creates a new login session. Interacts with the SharedPreferences.
     * @param userID
     * @param password */
 	//TODO: Eli. Rename this function, probably split functionality between this and setLoginCredenctials
-    public void createLoginSession(String userID, String password){
+    public static void createLoginSession(String userID, String password){
     	setLoginCredentials(userID, password); //remove?
     	editor.putBoolean(IS_REGISTERED, true);
     	editor.putBoolean(IS_LOGIN, true);
@@ -73,15 +79,15 @@ public class LoginSessionManager {
     }
     
     
-    public void setLoginCredentials( String userID, String password ) {
+    public static void setLoginCredentials( String userID, String password ) {
     	editor.putString(KEY_ID, userID);
         editor.putString(KEY_PASSWORD, password);
         editor.commit();
     }
     
-    public String getPassword() { return pref.getString( KEY_PASSWORD, null ); }
+    public static String getPassword() { return pref.getString( KEY_PASSWORD, "NULLID" ); }
     
-    public String getPatientID() { return pref.getString(KEY_ID, null); }
+    public static String getPatientID() { return pref.getString(KEY_ID, null); }
     
         
     /*###########################################################################################
@@ -89,7 +95,7 @@ public class LoginSessionManager {
 	###########################################################################################*/
     
     /**Clears session details and SharedPreferences.  Sends user to {@link LoginActivity} */
-    public void logoutUser(){
+    public static void logoutUser(){
     	editor.putBoolean(IS_LOGIN, false);
         editor.commit();
         Intent intent = new Intent(appContext, LoginActivity.class);
@@ -100,7 +106,7 @@ public class LoginSessionManager {
     
     
 	/** logs user out without forcing an activity change. */
-	public void logoutUserPassive() {
+	public static void logoutUserPassive() {
 		editor.putBoolean(IS_LOGIN, false);
 		editor.commit();
 	}
@@ -115,7 +121,7 @@ public class LoginSessionManager {
      * be transferred to {@link DebugInterfaceActivity}, otherwise if there was information saved in
      * SharedPreferences, the user will be transferred to {@link LoginActivity}. Otherwise, it is
      * the user's first time, therefore will start with {@link RegisterActivity}. */
-    public Intent login(){
+    public static Intent login(){
     	Class debug = RegisterActivity.class;
 //    	Class debug = LoginActivity.class;
 //    	Class debug = DebugInterfaceActivity.class;
@@ -124,13 +130,13 @@ public class LoginSessionManager {
     	//  What the hell does this log statement mean.
     	Log.i("LoginSessionManager", "Already logged in: " + isRegistered() );
     	
-    	if(this.isLoggedIn()) {
+    	if(isLoggedIn()) {
     		// If already logged in, take user to the main menu screen
     		// TODO: before launch, uncomment this line:
     		//Intent intent = new Intent(appContext, MainMenuActivity.class);
     		return new Intent(appContext, debug); }
     	else {
-        	if (this.isRegistered()) {
+        	if (isRegistered()) {
         		// If not logged in, but has registered, take user to the login screen
         		return new Intent(appContext, LoginActivity.class); }
         	else {

@@ -154,7 +154,7 @@ public class TextFileManager {
 		if ( this.persistent ) { this.fileName = this.name; } 
 		else {
 			String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
-			this.fileName = getUserId() + "_" + this.name + "_" + timecode + ".csv"; }
+			this.fileName = LoginSessionManager.getPatientID() + "_" + this.name + "_" + timecode + ".csv"; }
 		this.write(header);
 	}
 	
@@ -169,12 +169,6 @@ public class TextFileManager {
 		this.name = nameHolder;
 	}
 	
-	/** Get the user/patient ID that's stored in SharedPreferences
-	 * @return the ID string, or the string "NULLID" if it doesn't exist */
-	public static String getUserId() {
-		SharedPreferences pref = appContext.getSharedPreferences(LoginSessionManager.PREF_NAME, LoginSessionManager.PRIVATE_MODE);
-		return pref.getString(LoginSessionManager.KEY_ID, "NULLID");
-	}
 	
 	/** Takes a string. writes that to the file, adds a new line to the string.
 	 * Prints a stacktrace on a write error, but does not crash. If there is no

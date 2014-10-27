@@ -6,7 +6,6 @@ import java.security.NoSuchAlgorithmException;
 import org.beiwe.app.BackgroundProcess;
 import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
-import org.beiwe.app.networking.NetworkUtility;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.EncryptionEngine;
@@ -24,14 +23,13 @@ import android.util.Log;
  * Right now all it does is to call on checkLogin, which is the actual transfer mechanism.
  * 
  * This activity is also designed for splash screens.
- * @author Dor Samet
+ * @author Eli Jones, Dor Samet
  *
  */
 
 public class LoadingActivity extends Activity{
 
 	// Private objects
-	private LoginSessionManager session;
 	private Context appContext;
 
 	/**
@@ -40,11 +38,11 @@ public class LoadingActivity extends Activity{
 	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		Log.i("Something", "anything");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_loading);
-
+		
 		appContext = getApplicationContext();
-		session = new LoginSessionManager(appContext);
 
 		// Instantiating DeviceInfo
 		//TODO: Eli. Change this to a static initializer function.
@@ -53,13 +51,18 @@ public class LoadingActivity extends Activity{
 		if ( isAbleToHash() ) {
 			try { BackgroundProcess.getBackgroundHandle(); } 
 			catch (NullPointerException e) {
-				Log.i("LoadingActivity", e.getMessage() );
+				Log.i("LoadingActivity", e.getMessage() + "\n... Initializing app components." );
+				//Order LoginSessionManager, TextFileManager, PoshRequest.
+				LoginSessionManager.initialize(appContext);
 				TextFileManager.start(appContext);
-				PostRequest.initializePostRequest(appContext, session);
+				PostRequest.initialize(appContext);
 			}
-			startActivity( session.login() );
+			
+			startActivity( LoginSessionManager.login() );
+			
 			// TODO: Josh, start activities from here instead of from LoginSessionManager.java
-			/* switch ( session.checkLogin() ) {
+			/*
+			 *  switch ( session.checkLogin() ) {
 			 * case (LoginSessionManager.caseCode1) : startActivity(new Intent(RegisterActivity));
 			 * case (LoginSessionManager.caseCode2) : startActivity(new Intent(LoginActivity));
 			 * case (LoginSessionManager.caseCode3) : startActivity(new Intent(MainMenuActivity));

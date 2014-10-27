@@ -35,22 +35,19 @@ public class AsyncPostSender extends AsyncTask<Void, Void, Void> {
 
 	private Activity activity;  //TODO: Eli. determine if we can kill this
 	//TODO: Eli. Kill these
-	private LoginSessionManager session;
 	private String newPassword = null;
 
 	
 	/** This constructor is used for normal post requests, as well as the registration requests*/
-	public AsyncPostSender(String url, Activity activity, LoginSessionManager session) {
+	public AsyncPostSender(String url, Activity activity) {
 		this.url = url;
 		this.activity = activity;
-		this.session = session;
 	}
 	
 	/** The same as the previous constructor, but used to assign a new password*/
-	public AsyncPostSender(String url, Activity activity, LoginSessionManager session, String newPassword) {
+	public AsyncPostSender(String url, Activity activity, String newPassword) {
 		this.url = url;
 		this.activity = activity;
-		this.session = session;
 		this.newPassword = newPassword;
 	}
 	
@@ -91,12 +88,12 @@ public class AsyncPostSender extends AsyncTask<Void, Void, Void> {
 		
 		// If the response is 200 and the session is not registered, set it to be true
 		if (response == 200) { 
-			if ( !session.isRegistered() ) {
-				session.setRegistered(true);
+			if ( !LoginSessionManager.isRegistered() ) {
+				LoginSessionManager.setRegistered(true);
 			}
 			// If the user wants to reset their password, log them in using the new password
 			if (newPassword != null) {
-				session.createLoginSession(session.getPatientID(), EncryptionEngine.safeHash(newPassword));
+				LoginSessionManager.createLoginSession( LoginSessionManager.getPatientID(), EncryptionEngine.safeHash(newPassword));
 				newPassword = null;
 			}
 			// FIXME: Eli. This is terrible, change it.

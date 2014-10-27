@@ -105,8 +105,7 @@ public class DebugInterfaceActivity extends Activity {
 		Log.i("Toggle GPS button pressed", "GPS state: " + gps_state.toString() ); }
 	
 	public void signOut (View view) {
-		LoginSessionManager session = new LoginSessionManager(appContext);
-		session.logoutUser();
+		LoginSessionManager.logoutUser();
 		finish(); }
 	
 	public void bluetoothButtonStart (View view){ BackgroundProcess.getBackgroundHandle().bluetoothListener.enableBLEScan();	}
