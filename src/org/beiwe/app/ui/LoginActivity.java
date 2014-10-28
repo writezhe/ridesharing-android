@@ -1,7 +1,5 @@
 package org.beiwe.app.ui;
 
-import java.util.HashMap;
-
 import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.R;
 import org.beiwe.app.session.LoginSessionManager;
@@ -18,7 +16,7 @@ import android.view.View;
 import android.widget.EditText;
 
 
-//TODO: Eli.  Make sure this doc is correct.
+//TODO: Eli.  update doc.
 /**Ui presents an interface-less loading activity to the user.  Moves user to the correct activity based on application state.
  * Logs the User into the app, handles correct loading timing of various app components.
  * Helper class {@link LoginSessionManager.java}
@@ -27,33 +25,27 @@ import android.widget.EditText;
 @SuppressLint({ "CommitPrefEdits", "ShowToast" })
 public class LoginActivity extends Activity {
 	
-	private EditText userID;
 	private EditText password;
 	private Context appContext;
 	
+	
 	@Override
-	//TODO: Eli. Update behavior to load users choice of activity (for debugging)?
-	//TODO: Eli.  research whether one activity can close another activity, that is a confused comment.
-	/**If the user is already logged in navigate to the DebugInterfaceActivity {@link DebugInterfaceActivity.java}
-	 * Otherwise load Login Screen.
-	 * >>>> This functionality is used, because I have yet to figure out how to shut down an activity from another activity. */
+	//TODO: move logic about determining where to send a user to the loadingActivity.
+	/**The login activity Always prompts the user for the password. */
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
-		//TODO: Eli/Josh.  Talk to josh about how/when rotate device calls the oncreate method.
-		// Private variable set up
 		appContext = getApplicationContext();
-
-		if (LoginSessionManager.isLoggedIn()) {
-			startActivity(new Intent(appContext, DebugInterfaceActivity.class));
-			finish(); //TODO: Eli. Research exact functionality of Finish()
-		} else {
-			userID = (EditText) findViewById(R.id.editText1);
-			password = (EditText) findViewById(R.id.editText2);
-
-			TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(appContext);
-			textFieldKeyboard.makeKeyboardBehave(userID);
-			textFieldKeyboard.makeKeyboardBehave(password);
+		
+		password = (EditText) findViewById(R.id.editText2);
+		
+		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(appContext);
+		textFieldKeyboard.makeKeyboardBehave(password);
+		
+		//TODO: Eli+Josh. this should never, ever happen.
+		if ( !LoginSessionManager.isRegistered() ) {
+			Log.e("LoginActivity", "WOW you fucked something up, this device is not even registered.");
+			System.exit(1);
 		}
 	}
 	
@@ -61,39 +53,13 @@ public class LoginActivity extends Activity {
 	/**IF session is logged in (value in shared prefs), keep the session logged in.
 	 * IF session is not logged in, wait for user input.
 	 * @param view*/
-	public void loginSequence(View view) {
-		if (LoginSessionManager.isLoggedIn()) {
-			Log.i("LoginActivity", "" + LoginSessionManager.isLoggedIn());
-			startActivity(new Intent(appContext, DebugInterfaceActivity.class));
+	public void loginSequence(View view) {		
+		if ( LoginSessionManager.checkPassword( password.getText().toString() ) ) {
+			LoginSessionManager.setLoggedIn(true);
+			Log.i("something", "anything");
+			//TODO: Eli (or Josh), this needs to point at the correct activity.
+			startActivity( new Intent( appContext, DebugInterfaceActivity.class ) ); // TODO: Eli. there was a "debug" comment here, why?
 			finish();
-		//TODO: Eli. check the finish() statement gets run in all relevant cases.
-		} else {
-			String userIDString = userID.getText().toString();
-			String passwordString = password.getText().toString();
-			
-			String prefUserID = LoginSessionManager.getPatientID();
-			String prefPassword = LoginSessionManager.getPassword();
-			
-			//TODO: Eli. handle this: kill the app if the user is not registered, this is a pain for debugging.
-//			Log.i("LoginActivity", prefUserID);
-//			Log.i("LoginActivity", prefPassword);
-			
-			//Check password length, user id, hashed password validity,
-			//TODO: Eli. add check device id.
-			if(userIDString.trim().length() == 0) {
-				AlertsManager.showAlert(appContext.getString(R.string.invalid_user_id), this); }
-			else if ( passwordString.trim().length() == 0 ) { // TODO: postproduction. CHANGE TO ~6 BEFORE PRODUCTON.
-				AlertsManager.showAlert(appContext.getString(R.string.invalid_password), this); }
-			else if( !userIDString.equals(prefUserID) ) {
-				AlertsManager.showAlert(appContext.getString(R.string.user_id_system_mismatch), this); }
-			else if( !EncryptionEngine.safeHash( passwordString).equals( prefPassword ) ) {
-				AlertsManager.showAlert(appContext.getString(R.string.password_system_mismatch), this); }
-			else {
-				// Unlike registration, this does not check against the server.
-				LoginSessionManager.setLoginCredentialsAndLogIn( userIDString, EncryptionEngine.safeHash( passwordString ) );
-				startActivity( new Intent(appContext, DebugInterfaceActivity.class ) ); // TODO: Eli. there was a "debug" comment here, why?
-				finish();
-			}
 		}
 	}
 	
@@ -101,7 +67,7 @@ public class LoginActivity extends Activity {
 	/**Move user to the forgot password activity.
 	 * @param view */
 	public void forgotPassword(View view) {
-		startActivity(new Intent(appContext, ForgotPasswordActivity.class));
+		startActivity( new Intent(appContext, ForgotPasswordActivity.class) );
 		finish();
 	}
 }

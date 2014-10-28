@@ -3,8 +3,6 @@ package org.beiwe.app.ui;
 import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
-import org.beiwe.app.networking.AsyncPostSender;
-import org.beiwe.app.networking.NetworkUtility;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.networking.HTTPAsync;
 import org.beiwe.app.session.LoginSessionManager;

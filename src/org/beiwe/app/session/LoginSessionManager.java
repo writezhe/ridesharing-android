@@ -1,9 +1,13 @@
 package org.beiwe.app.session;
 
 import org.beiwe.app.DebugInterfaceActivity;
+import org.beiwe.app.R;
+import org.beiwe.app.storage.EncryptionEngine;
+import org.beiwe.app.ui.AlertsManager;
 import org.beiwe.app.ui.LoginActivity;
 import org.beiwe.app.ui.RegisterActivity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -24,7 +28,7 @@ public class LoginSessionManager {
     private static Context appContext;
     
     public static final String PREF_NAME = "BeiwePref";
-    private static final String IS_LOGIN = "IsLoggedIn";
+    private static final String IS_LOGGED_IN = "IsLoggedIn";
    
     // Public names for when inspecting the user's details. Used to call from outside the class.
     private static final String KEY_ID = "uid";
@@ -41,23 +45,60 @@ public class LoginSessionManager {
         editor.commit();
     }
 	
-	public static void initialize( Context context) { new LoginSessionManager(context); } 
+	public static void initialize( Context context ) { new LoginSessionManager(context); } 
 	
 	
 	/*###########################################################################################
-	##################################### Boolean checks ###########################################
+	##################################### Booleans ########################################
 	###########################################################################################*/
 	
 	/** Quick check for login. **/
-    public static boolean isLoggedIn(){ return pref.getBoolean(IS_LOGIN, false); }
+    public static boolean isLoggedIn(){ return pref.getBoolean(IS_LOGGED_IN, false); }
+    public static void setLoggedIn(boolean value) { editor.putBoolean(IS_LOGGED_IN, value); } 
+    
     public static boolean isRegistered() { return pref.getBoolean(IS_REGISTERED, false); }
+	public static void setRegistered(boolean value) { editor.putBoolean(IS_REGISTERED, value); }
 
+    
+    /*###########################################################################################
+	##################################### Passwords ########################################
+	###########################################################################################*/
+	
+    
+    /** Checks that an input matches valid password requirements. (this only checks length)
+     * Throws up an alert notifying the user if the password is not valid.
+     * @param input
+     * @param activity
+     * @return */
+    public static boolean validatePassword(String input, Activity activity) {
+    	if (input.length() < 6) {
+    		AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_password), activity );
+    		return false; }
+    	return true;
+    }
+    
+    //TODO: Eli.  Implement. (see ruccent logic in resetpassword for a vague idea of what to do.
+    public static boolean resetPasswordCheck( String input, Activity activity ) {
+    	String currentPassword = getPassword();
+		return false;
+    }
+    
+    
+    
+    /**Takes an input string and returns a boolean value stating whether the input matches the current password.
+     * @param input
+     * @param activity
+     * @return */
+    public static boolean checkPassword(String input){
+    	return ( getPassword().equals( EncryptionEngine.safeHash(input) ) );
+    }
+    
+    
 	
 	/*###########################################################################################
 	##################################### Credentials ###########################################
 	###########################################################################################*/
 	
-	public static void setRegistered(boolean value) { editor.putBoolean(IS_LOGIN, value); }
 	
 	public static void setPassword (String password) {
 		editor.putString(KEY_PASSWORD, password);
@@ -70,9 +111,9 @@ public class LoginSessionManager {
     * @param password */
 	//TODO: Eli. Rename this function, probably split functionality between this and setLoginCredenctials
     public static void setLoginCredentialsAndLogIn(String userID, String password){
-    	setLoginCredentials(userID, password); //remove?
+    	setLoginCredentials(userID, password);
     	editor.putBoolean(IS_REGISTERED, true);
-    	editor.putBoolean(IS_LOGIN, true);
+    	editor.putBoolean(IS_LOGGED_IN, true);
     	editor.commit();
     }
     
@@ -94,7 +135,7 @@ public class LoginSessionManager {
     
     /**Clears session details and SharedPreferences.  Sends user to {@link LoginActivity} */
     public static void logoutUser(){
-    	editor.putBoolean(IS_LOGIN, false);
+    	editor.putBoolean(IS_LOGGED_IN, false);
         editor.commit();
         Intent intent = new Intent(appContext, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -105,7 +146,7 @@ public class LoginSessionManager {
     
 	/** logs user out without forcing an activity change. */
 	public static void logoutUserPassive() {
-		editor.putBoolean(IS_LOGIN, false);
+		editor.putBoolean(IS_LOGGED_IN, false);
 		editor.commit();
 	}
 	
@@ -120,8 +161,8 @@ public class LoginSessionManager {
      * SharedPreferences, the user will be transferred to {@link LoginActivity}. Otherwise, it is
      * the user's first time, therefore will start with {@link RegisterActivity}. */
     public static Intent login(){
-    	Class debug = RegisterActivity.class;
-//    	Class debug = LoginActivity.class;
+//    	Class debug = RegisterActivity.class;
+    	Class debug = LoginActivity.class;
 //    	Class debug = DebugInterfaceActivity.class;
 //    	Class debug = MainMenuActivity.class;
     	
