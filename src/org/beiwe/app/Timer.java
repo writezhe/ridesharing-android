@@ -131,8 +131,7 @@ public class Timer {
 		PendingIntent pendingTimerIntent = registerAlarm( intentToBeBroadcast, timerIntent );
 		/* The alarmManager.setExact(*parameters*) operation makes exact alarms.  They are guaranteed
 		 * to go off at the precise/exact time that you specify. */
-		// TODO: Eli, can we use this?  AlarmManager.setExact only exists in API 19 and above.
-		alarmManager.setExact( AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingTimerIntent );
+		setAsExactAsPossible(alarmManager, AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingTimerIntent);
 	}
 	
 	
@@ -193,7 +192,7 @@ public class Timer {
 		Long nextTriggerTime = currentTime - ( currentTime % (long) 3600000 ) + EXACT_TIMER_OFFSET;
 		if (nextTriggerTime < currentTime) { nextTriggerTime += 3600000; }
 		PendingIntent pendingTimerIntent = registerAlarm( intentToBeBroadcast, timerIntent );
-		alarmManager.setExact( AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingTimerIntent );
+		setAsExactAsPossible(alarmManager, AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingTimerIntent);
 	}
 	
 	
@@ -206,5 +205,21 @@ public class Timer {
 		BroadcastReceiver broadcastReceiver = alarmReceiver(intentToBeBroadcast);
 		backgroundProcess.registerReceiver( broadcastReceiver, new IntentFilter( timerIntent.getAction() ) );
 		return pendingTimerIntent;
+	}
+	
+	
+	/* TODO: Eli, please think through whether this is OK.  I (Josh) set it up
+	 * this way because AlarmManager.setExact only exists for API 19 and above. */
+	/** Calls AlarmManager.set() for API < 19, and AlarmManager.setExact() for API 19+
+	 * For an exact alarm, it seems you need to use .set() for API 18 and below, and
+	 * .setExact() for API 19 (KitKat) and above. */
+	private void setAsExactAsPossible(AlarmManager alarmManager, int type, long triggerAtMillis, PendingIntent operation) {
+		int currentApiVersion = android.os.Build.VERSION.SDK_INT;
+		if (currentApiVersion < android.os.Build.VERSION_CODES.KITKAT) {
+			alarmManager.set(type, triggerAtMillis, operation);
+		}
+		else {
+			alarmManager.setExact(type, triggerAtMillis, operation);
+		}	
 	}
 }
