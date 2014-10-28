@@ -175,16 +175,13 @@ public class BackgroundProcess extends Service {
 		// TODO: Josh delete these; they're only for debugging while downloading from the server is broken
 		QuestionsDownloader downloader = new QuestionsDownloader(appContext);
 		downloader.downloadJsonQuestions();
-		SurveyScheduler scheduler = new SurveyScheduler(appContext);
-		scheduler.scheduleSurvey("");
-		scheduler.scheduleSurvey("{weekly_or_daily: 'weekly'}");
 	}	
 	
 	
 	BroadcastReceiver controlMessageReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context appContext, Intent intent) {
-			Log.i("BackgroundService - timers", "Received Broadcast: " + intent.toString());
+			//Log.i("BackgroundService - timers", "Received Broadcast: " + intent.toString());
 			
 			if (intent.getAction().equals( appContext.getString(R.string.accelerometer_off) ) ) {
 				accelerometerListener.turn_off();

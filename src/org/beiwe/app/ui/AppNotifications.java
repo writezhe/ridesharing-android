@@ -102,7 +102,7 @@ public class AppNotifications {
 			builder.setTicker(appContext.getResources().getString(surveyType.notificationMsgResource));
 	        intent = new Intent(appContext, SurveyActivity.class);
 	        // TODO: Josh, get SUrveyType from Enum
-	        intent.putExtra("SurveyType", surveyType);
+	        intent.putExtra("SurveyType", surveyType.dictKey);
 		}
 		// Sets up the two icons to be displayed
 		builder.setSmallIcon(drawableCode);

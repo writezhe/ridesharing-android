@@ -1,6 +1,7 @@
 package org.beiwe.app.survey;
 
 import org.beiwe.app.R;
+import org.beiwe.app.survey.SurveyType.Type;
 import org.beiwe.app.ui.AppNotifications;
 
 import android.app.Activity;
@@ -32,7 +33,13 @@ public class SurveyActivity extends Activity {
 		if (savedInstanceState == null) {
 			Bundle extras = getIntent().getExtras();
 			if (extras != null) {
-				surveyType = SurveyType.Type.values()[extras.getInt("SurveyType")];
+				String surveyTypeKey = extras.getString("SurveyType");
+				if (surveyTypeKey.equals(SurveyType.Type.DAILY.dictKey)) {
+					surveyType = Type.DAILY;
+				}
+				else if (surveyTypeKey.equals(SurveyType.Type.WEEKLY.dictKey)) {
+					surveyType = Type.WEEKLY;
+				}
 				Log.i("SurveyActivity.java", "Extras was not null; SurveyType = " + surveyType);
 			}
 		}		
