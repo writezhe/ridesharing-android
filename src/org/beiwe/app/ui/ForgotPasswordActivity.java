@@ -1,13 +1,8 @@
 package org.beiwe.app.ui;
 
-import java.util.HashMap;
-
 import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.R;
-import org.beiwe.app.R.id;
-import org.beiwe.app.R.layout;
 import org.beiwe.app.networking.AsyncPostSender;
-import org.beiwe.app.networking.NetworkUtility;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.networking.HTTPAsync;
 import org.beiwe.app.session.LoginManager;
@@ -18,7 +13,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 /**

@@ -56,7 +56,6 @@ public class LoginActivity extends Activity {
 	public void loginSequence(View view) {		
 		if ( LoginManager.checkPassword( password.getText().toString() ) ) {
 			LoginManager.setLoggedIn(true);
-			Log.i("something", "anything");
 			//TODO: Eli (or Josh), this needs to point at the correct activity.
 			startActivity( new Intent( appContext, DebugInterfaceActivity.class ) ); // TODO: Eli. there was a "debug" comment here, why?
 			finish();
