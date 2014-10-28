@@ -123,14 +123,15 @@ public class BackgroundProcess extends Service {
 	 * 
 	 */
 	// TODO: Eli/Josh deprecate this function? every activity calls finish() when it ends, so onPause() should only get called when the app is paused/no longer foreground.
-	public boolean isForeground(String myPackage){
+    // TODO: IN ORDER TO USE THIS FUNCTION, YOU MUST UNCOMMENT THE PERMISSION "GET_TASKS" IN MANIFEST.XML
+	/*public boolean isForeground(String myPackage){
 		ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
 		List < ActivityManager.RunningTaskInfo > runningTaskInfo = manager.getRunningTasks(1); 
 		
 		ComponentName componentInfo = runningTaskInfo.get(0).topActivity;
 		if(componentInfo.getPackageName().equals(myPackage)) return true;
 		return false;
-	}
+	}*/
 	
 	/*#############################################################################
 	####################            Timer Logic             #######################
@@ -239,9 +240,9 @@ public class BackgroundProcess extends Service {
 				//		in onPause and onDestroy call a function that...
 				//		...signs the user in (because... that is exactly the behavior we want), starts a fifteen minute logout timer.
 				// is t
-				if( isForeground("org.beiwe.app") ) {
+				/* if( isForeground("org.beiwe.app") ) {
 					LoginManager.logoutUser(); }
-				else { LoginManager.logoutUserPassive(); }
+				else { LoginManager.logoutUserPassive(); } */
 			}
 		}
 	};
