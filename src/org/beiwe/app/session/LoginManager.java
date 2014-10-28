@@ -4,8 +4,10 @@ import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.R;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.ui.AlertsManager;
+import org.beiwe.app.ui.ForgotPasswordActivity;
 import org.beiwe.app.ui.LoginActivity;
 import org.beiwe.app.ui.RegisterActivity;
+import org.beiwe.app.ui.ResetPasswordActivity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -70,18 +72,12 @@ public class LoginManager {
      * @param input
      * @param activity
      * @return */
+	//TODO: Eli. change the minimum value to ~6
     public static boolean validatePassword(String input, Activity activity) {
-    	if (input.length() < 6) {
+    	if (input.length() < 1) {  //do not set to less than 1, this check takes care of entering a length 0 password
     		AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_password), activity );
     		return false; }
     	return true;
-    }
-    
-    
-    //TODO: Eli.  Implement. (see relevant logic in resetpassword for a vague idea of what to do.)
-    public static boolean resetPasswordCheck( String input, Activity activity ) {
-    	String currentPassword = getPassword();
-		return false;
     }
     
     
@@ -101,7 +97,7 @@ public class LoginManager {
 	
 	
 	public static void setPassword (String password) {
-		editor.putString(KEY_PASSWORD, password);
+		editor.putString(KEY_PASSWORD, EncryptionEngine.safeHash(password) );
 		editor.commit();
 	}
 		
@@ -161,10 +157,11 @@ public class LoginManager {
      * SharedPreferences, the user will be transferred to {@link LoginActivity}. Otherwise, it is
      * the user's first time, therefore will start with {@link RegisterActivity}. */
     public static Intent login(){
-//    	Class debug = RegisterActivity.class;
-    	Class debug = LoginActivity.class;
+    	Class debug = RegisterActivity.class;
+//    	Class debug = LoginActivity.class;
 //    	Class debug = DebugInterfaceActivity.class;
 //    	Class debug = MainMenuActivity.class;
+//    	Class debug = ResetPasswordActivity.class;
     	
     	//  What the hell does this log statement mean.
     	Log.i("LoginSessionManager", "Already logged in: " + isRegistered() );
