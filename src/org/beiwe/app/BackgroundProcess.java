@@ -166,7 +166,8 @@ public class BackgroundProcess extends Service {
 		timer.setupExactHourlyAlarm( Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
 		timer.setupSingularExactAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent);
 		timer.setupSingularFuzzyAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOnIntent);
-		timer.setupSingularFuzzyAlarm( 5000L, Timer.wifiLogTimerIntent, Timer.wifiLogIntent);				
+		// FIXME: Eli, setting up the WiFi log timer intent causes an NPE; please debug
+		//timer.setupSingularFuzzyAlarm( 5000L, Timer.wifiLogTimerIntent, Timer.wifiLogIntent);				
 		// Start voice recording alarm
 		timer.setupDailyRepeatingAlarm(19, new Intent(appContext.getString(R.string.voice_recording)));
 
