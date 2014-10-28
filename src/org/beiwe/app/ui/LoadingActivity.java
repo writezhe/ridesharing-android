@@ -6,6 +6,7 @@ import java.security.NoSuchAlgorithmException;
 import org.beiwe.app.BackgroundProcess;
 import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
+import org.beiwe.app.listeners.WifiListener;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.EncryptionEngine;
@@ -53,6 +54,7 @@ public class LoadingActivity extends Activity{
 				LoginSessionManager.initialize(appContext);
 				TextFileManager.start(appContext);
 				PostRequest.initialize(appContext);
+				WifiListener.initialize(appContext);
 			}
 			
 			startActivity( LoginSessionManager.login() );

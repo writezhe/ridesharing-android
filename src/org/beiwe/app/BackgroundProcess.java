@@ -8,7 +8,7 @@ import org.beiwe.app.listeners.CallLogger;
 import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
-import org.beiwe.app.listeners.WiFiListener;
+import org.beiwe.app.listeners.WifiListener;
 import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.QuestionsDownloader;
@@ -38,7 +38,6 @@ public class BackgroundProcess extends Service {
 	public GPSListener gpsListener;
 	public AccelerometerListener accelerometerListener;
 	public BluetoothListener bluetoothListener;
-	public WiFiListener wifiListener;
 	
 	private Timer timer;
 	
@@ -70,10 +69,7 @@ public class BackgroundProcess extends Service {
 		startCallLogger();
 		startPowerStateListener();
 		
-//		Log.i("androidID", DeviceInfo.androidID);
-//		Log.i("bluetoothMAC", DeviceInfo.bluetoothMAC);
-		startTimers();
-		wifiListener = new WiFiListener(appContext);
+//		startTimers();
 	}
 	
 	/*#############################################################################
@@ -143,36 +139,36 @@ public class BackgroundProcess extends Service {
 	/** create timers that will trigger events throughout the program, and
 	 * register the custom Intents with the controlMessageReceiver. */
 	public void startTimers() {
-//		IntentFilter filter = new IntentFilter();
-//		
-//		filter.addAction( appContext.getString( R.string.accelerometer_off ) );
-//		filter.addAction( appContext.getString( R.string.accelerometer_on ) );
-//		filter.addAction( appContext.getString( R.string.action_accelerometer_timer ) );
-//		filter.addAction( appContext.getString( R.string.action_bluetooth_timer ) );
-//		filter.addAction( appContext.getString( R.string.action_gps_timer ) );
-//		filter.addAction( appContext.getString( R.string.action_signout_timer ) );
-//		filter.addAction( appContext.getString( R.string.action_wifi_log ) );
-//		filter.addAction( appContext.getString( R.string.bluetooth_off ) );
-//		filter.addAction( appContext.getString( R.string.bluetooth_on ) );
-//		filter.addAction( appContext.getString( R.string.daily_survey ) );
-//		filter.addAction( appContext.getString( R.string.gps_off ) );
-//		filter.addAction( appContext.getString( R.string.gps_on ) );
-//		filter.addAction( appContext.getString( R.string.signout_intent ) );
-//		filter.addAction( appContext.getString( R.string.voice_recording ) );
-//		filter.addAction( appContext.getString( R.string.weekly_survey ) );
-//		
-//		timer.setupExactHourlyAlarm(Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
-//		timer.setupSingularExactAlarm( 5000L, Timer.signOutTimerIntent, Timer.signoutIntent); // Automatic Signout, also this line is simply incorrect
-//		registerReceiver(controlMessageReceiver, filter);
-//	
-//		//TODO: Josh, create timer for checking for a new survey. (I think you have done this)  
-//		
-//		timer.setupExactHourlyAlarm( Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
-//		timer.setupSingularExactAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent);
-//		timer.setupSingularFuzzyAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOnIntent);
-//		timer.setupSingularFuzzyAlarm( 5000L, Timer.wifiLogTimerIntent, Timer.wifiLogIntent);				
-//		// Start voice recording alarm
-//		timer.setupDailyRepeatingAlarm(19, new Intent(appContext.getString(R.string.voice_recording)));
+		IntentFilter filter = new IntentFilter();
+		
+		filter.addAction( appContext.getString( R.string.accelerometer_off ) );
+		filter.addAction( appContext.getString( R.string.accelerometer_on ) );
+		filter.addAction( appContext.getString( R.string.action_accelerometer_timer ) );
+		filter.addAction( appContext.getString( R.string.action_bluetooth_timer ) );
+		filter.addAction( appContext.getString( R.string.action_gps_timer ) );
+		filter.addAction( appContext.getString( R.string.action_signout_timer ) );
+		filter.addAction( appContext.getString( R.string.action_wifi_log ) );
+		filter.addAction( appContext.getString( R.string.bluetooth_off ) );
+		filter.addAction( appContext.getString( R.string.bluetooth_on ) );
+		filter.addAction( appContext.getString( R.string.daily_survey ) );
+		filter.addAction( appContext.getString( R.string.gps_off ) );
+		filter.addAction( appContext.getString( R.string.gps_on ) );
+		filter.addAction( appContext.getString( R.string.signout_intent ) );
+		filter.addAction( appContext.getString( R.string.voice_recording ) );
+		filter.addAction( appContext.getString( R.string.weekly_survey ) );
+		
+		timer.setupExactHourlyAlarm(Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
+		timer.setupSingularExactAlarm( 5000L, Timer.signOutTimerIntent, Timer.signoutIntent); // Automatic Signout, also this line is simply incorrect
+		registerReceiver(controlMessageReceiver, filter);
+	
+		//TODO: Josh, create timer for checking for a new survey. (I think you have done this)  
+		
+		timer.setupExactHourlyAlarm( Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
+		timer.setupSingularExactAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent);
+		timer.setupSingularFuzzyAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOnIntent);
+		timer.setupSingularFuzzyAlarm( 5000L, Timer.wifiLogTimerIntent, Timer.wifiLogIntent);				
+		// Start voice recording alarm
+		timer.setupDailyRepeatingAlarm(19, new Intent(appContext.getString(R.string.voice_recording)));
 
 		// TODO: Josh delete these; they're only for debugging while downloading from the server is broken
 		QuestionsDownloader downloader = new QuestionsDownloader(appContext);
@@ -213,7 +209,7 @@ public class BackgroundProcess extends Service {
 				timer.setupSingularExactAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOffIntent); }
 		
 			if (intent.getAction().equals( appContext.getString(R.string.action_wifi_log) ) ) {
-				wifiListener.scanWifi();
+				WifiListener.scanWifi();
 				timer.setupSingularFuzzyAlarm( 5000L, Timer.wifiLogTimerIntent, Timer.wifiLogIntent); }
 			
 			if (intent.getAction().equals( appContext.getString(R.string.voice_recording) ) ) {

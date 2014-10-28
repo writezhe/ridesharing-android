@@ -14,17 +14,19 @@ import android.util.Log;
  * addresses of local wifi beacons and writes them to the wifiLog.  It only gets the data
  * if wifi is enabled.
  * @author Eli */
-public class WiFiListener {
-	WifiManager wifiManager;
+public class WifiListener {
+	static WifiManager wifiManager;
 	
 	public static String header = "timestamp, MAC";
 	
 	/** WifiListener requires an application context in order to access 
 	 * the devices wifi info.  
 	 * @param appContext */
-	public WiFiListener (Context appContext){
+	private WifiListener (Context appContext){
 		wifiManager = (WifiManager) appContext.getSystemService(Context.WIFI_SERVICE);
 	}
+	
+	public static void initialize( Context context ) { new WifiListener( context ); } 
 	
 	//#######################################################################################
 	//#############################  WIFI STATE #############################################
@@ -33,7 +35,7 @@ public class WiFiListener {
 	/** checks the state of the devices wifi, returns True if it is on and able to provide
 	 * us with SSID broadcast data.
 	 * @return boolean of whether we can gather wifi data. */
-	private boolean checkState() {
+	private static boolean checkState() {
 		int state = wifiManager.getWifiState();
 		if (WifiManager.WIFI_MODE_FULL == state ||
 			WifiManager.WIFI_MODE_FULL_HIGH_PERF == state ||
@@ -44,7 +46,7 @@ public class WiFiListener {
 	}
 	
 	/** Writes to the wifiLog file all mac addresses of local wifi beacons. */
-	public void scanWifi(){
+	public static void scanWifi(){
 		if ( checkState() ) {
 			List<ScanResult> scanResults = wifiManager.getScanResults();		
 			Log.i("length", "" + scanResults.size() );
