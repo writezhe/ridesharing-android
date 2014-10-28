@@ -2,7 +2,7 @@ package org.beiwe.app.ui;
 
 import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.R;
-import org.beiwe.app.session.LoginSessionManager;
+import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
@@ -19,7 +19,7 @@ import android.widget.EditText;
 //TODO: Eli.  update doc.
 /**Ui presents an interface-less loading activity to the user.  Moves user to the correct activity based on application state.
  * Logs the User into the app, handles correct loading timing of various app components.
- * Helper class {@link LoginSessionManager.java}
+ * Helper class {@link LoginManager.java}
  * @authors Dor Samet, Eli Jones */
 
 @SuppressLint({ "CommitPrefEdits", "ShowToast" })
@@ -43,7 +43,7 @@ public class LoginActivity extends Activity {
 		textFieldKeyboard.makeKeyboardBehave(password);
 		
 		//TODO: Eli+Josh. this should never, ever happen.
-		if ( !LoginSessionManager.isRegistered() ) {
+		if ( !LoginManager.isRegistered() ) {
 			Log.e("LoginActivity", "WOW you fucked something up, this device is not even registered.");
 			System.exit(1);
 		}
@@ -54,8 +54,8 @@ public class LoginActivity extends Activity {
 	 * IF session is not logged in, wait for user input.
 	 * @param view*/
 	public void loginSequence(View view) {		
-		if ( LoginSessionManager.checkPassword( password.getText().toString() ) ) {
-			LoginSessionManager.setLoggedIn(true);
+		if ( LoginManager.checkPassword( password.getText().toString() ) ) {
+			LoginManager.setLoggedIn(true);
 			Log.i("something", "anything");
 			//TODO: Eli (or Josh), this needs to point at the correct activity.
 			startActivity( new Intent( appContext, DebugInterfaceActivity.class ) ); // TODO: Eli. there was a "debug" comment here, why?

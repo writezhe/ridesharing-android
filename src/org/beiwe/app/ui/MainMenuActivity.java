@@ -1,7 +1,7 @@
 package org.beiwe.app.ui;
 
 import org.beiwe.app.R;
-import org.beiwe.app.session.LoginSessionManager;
+import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.survey.AudioRecorderActivity;
 
 import android.app.Activity;
@@ -45,7 +45,7 @@ public class MainMenuActivity extends Activity {
 	 *********************************************************************** */
 	public void signOutButton(View v) {
 		Intent signOutIntent = new Intent(appContext, LoadingActivity.class);
-		LoginSessionManager.logoutUser();
+		LoginManager.logoutUser();
 		startActivity(signOutIntent);
 	    finish();
 	}

@@ -17,7 +17,7 @@ import java.util.concurrent.Executors;
 import org.apache.http.client.methods.HttpPost;
 import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
-import org.beiwe.app.session.LoginSessionManager;
+import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.storage.TextFileManager;
 
 import android.content.Context;
@@ -294,8 +294,8 @@ public class PostRequest {
 	public static String makeParameter(String key, String value) { return key + "=" + value + "&"; }
 	
 	private static String securityParameters() { 
-		return makeParameter("patient_id", LoginSessionManager.getPatientID() ) +
-				makeParameter("password", LoginSessionManager.getPassword() ) +
+		return makeParameter("patient_id", LoginManager.getPatientID() ) +
+				makeParameter("password", LoginManager.getPassword() ) +
 				makeParameter("device_id", DeviceInfo.getAndroidID() );
 	}
 }

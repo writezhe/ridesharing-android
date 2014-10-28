@@ -2,7 +2,7 @@ package org.beiwe.app;
 
 import org.beiwe.app.listeners.AccelerometerListener;
 import org.beiwe.app.networking.PostRequest;
-import org.beiwe.app.session.LoginSessionManager;
+import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.AudioRecorderActivity;
@@ -105,7 +105,7 @@ public class DebugInterfaceActivity extends Activity {
 		Log.i("Toggle GPS button pressed", "GPS state: " + gps_state.toString() ); }
 	
 	public void signOut (View view) {
-		LoginSessionManager.logoutUser();
+		LoginManager.logoutUser();
 		finish(); }
 	
 	public void bluetoothButtonStart (View view){ BackgroundProcess.getBackgroundHandle().bluetoothListener.enableBLEScan();	}

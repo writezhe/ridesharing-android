@@ -19,7 +19,7 @@ import android.util.Log;
  * username-password combinations.
  * @author Dor Samet */
 
-public class LoginSessionManager {
+public class LoginManager {
 	private static int PRIVATE_MODE = 0;
 	
 	// Private things that are encapsulated using functions in this class 
@@ -38,14 +38,14 @@ public class LoginSessionManager {
 	
 	/**Constructor method for the session manager class
      * @param context */
-	private LoginSessionManager(Context context){
+	private LoginManager(Context context){
         appContext = context;
         pref = appContext.getSharedPreferences(PREF_NAME, PRIVATE_MODE); //sets Shared Preferences private mode
         editor = pref.edit();
         editor.commit();
     }
 	
-	public static void initialize( Context context ) { new LoginSessionManager(context); } 
+	public static void initialize( Context context ) { new LoginManager(context); } 
 	
 	
 	/*###########################################################################################

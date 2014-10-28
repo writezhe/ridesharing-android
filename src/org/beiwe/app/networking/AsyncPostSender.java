@@ -5,7 +5,7 @@ import java.util.HashMap;
 import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
-import org.beiwe.app.session.LoginSessionManager;
+import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.ui.AlertsManager;
 
@@ -88,12 +88,12 @@ public class AsyncPostSender extends AsyncTask<Void, Void, Void> {
 		
 		// If the response is 200 and the session is not registered, set it to be true
 		if (response == 200) { 
-			if ( !LoginSessionManager.isRegistered() ) {
-				LoginSessionManager.setRegistered(true);
+			if ( !LoginManager.isRegistered() ) {
+				LoginManager.setRegistered(true);
 			}
 			// If the user wants to reset their password, log them in using the new password
 			if (newPassword != null) {
-				LoginSessionManager.setLoginCredentialsAndLogIn( LoginSessionManager.getPatientID(), EncryptionEngine.safeHash(newPassword));
+				LoginManager.setLoginCredentialsAndLogIn( LoginManager.getPatientID(), EncryptionEngine.safeHash(newPassword));
 				newPassword = null;
 			}
 			// FIXME: Eli. This is terrible, change it.

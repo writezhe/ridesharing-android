@@ -5,7 +5,7 @@ import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.networking.HTTPAsync;
-import org.beiwe.app.session.LoginSessionManager;
+import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
@@ -75,9 +75,9 @@ public class RegisterActivity extends Activity {
 		// TODO: Eli. make sure this doesn't fail due to password restrictions conflicting with a randomly generated password.
 		// Otherwise, start the registration process against the user
 		else {
-			LoginSessionManager.setLoginCredentialsAndLogIn(userIDStr, EncryptionEngine.safeHash(passwordStr));
+			LoginManager.setLoginCredentialsAndLogIn(userIDStr, EncryptionEngine.safeHash(passwordStr));
 			
-			Log.i("RegisterActivity", "trying \"" + LoginSessionManager.getPatientID() + "\" with password \"" + LoginSessionManager.getPassword() + "\"" );
+			Log.i("RegisterActivity", "trying \"" + LoginManager.getPatientID() + "\" with password \"" + LoginManager.getPassword() + "\"" );
 			
 			doRegister("http://beiwe.org/register_user");
 		}
@@ -96,7 +96,7 @@ public class RegisterActivity extends Activity {
 		@Override
 		protected void onPostExecute(Void arg) {
 			if (response == 200) { 
-				LoginSessionManager.setRegistered(true);
+				LoginManager.setRegistered(true);
 				//TODO: postproduction. Change to point at regular activity.
 				activity.startActivity(new Intent(activity.getApplicationContext(), DebugInterfaceActivity.class));
 				activity.finish();

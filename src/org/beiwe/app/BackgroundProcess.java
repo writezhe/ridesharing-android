@@ -9,7 +9,7 @@ import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
 import org.beiwe.app.listeners.WifiListener;
-import org.beiwe.app.session.LoginSessionManager;
+import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.QuestionsDownloader;
 import org.beiwe.app.survey.SurveyScheduler;
@@ -239,8 +239,8 @@ public class BackgroundProcess extends Service {
 				//		...signs the user in (because... that is exactly the behavior we want), starts a fifteen minute logout timer.
 				// is t
 				if( isForeground("org.beiwe.app") ) {
-					LoginSessionManager.logoutUser(); }
-				else { LoginSessionManager.logoutUserPassive(); }
+					LoginManager.logoutUser(); }
+				else { LoginManager.logoutUserPassive(); }
 			}
 		}
 	};

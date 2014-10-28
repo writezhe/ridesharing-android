@@ -18,7 +18,7 @@ import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
 import org.beiwe.app.listeners.WifiListener;
-import org.beiwe.app.session.LoginSessionManager;
+import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.survey.SurveyAnswersRecorder;
 import org.beiwe.app.survey.SurveyTimingsRecorder;
 
@@ -156,7 +156,7 @@ public class TextFileManager {
 		if ( this.persistent ) { this.fileName = this.name; } 
 		else {
 			String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
-			this.fileName = LoginSessionManager.getPatientID() + "_" + this.name + "_" + timecode + ".csv"; }
+			this.fileName = LoginManager.getPatientID() + "_" + this.name + "_" + timecode + ".csv"; }
 		this.write(header);
 	}
 	

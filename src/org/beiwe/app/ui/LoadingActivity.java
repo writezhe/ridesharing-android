@@ -8,7 +8,7 @@ import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
 import org.beiwe.app.listeners.WifiListener;
 import org.beiwe.app.networking.PostRequest;
-import org.beiwe.app.session.LoginSessionManager;
+import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.TextFileManager;
 
@@ -51,13 +51,13 @@ public class LoadingActivity extends Activity{
 				Log.i("LoadingActivity", e.getMessage() + "\n... Initializing app components." );
 				//Order DevicInfo, LoginSessionManager, TextFileManager, PoshRequest.
 				DeviceInfo.initialize(appContext);
-				LoginSessionManager.initialize(appContext);
+				LoginManager.initialize(appContext);
 				TextFileManager.start(appContext);
 				PostRequest.initialize(appContext);
 				WifiListener.initialize(appContext);
 			}
 			
-			startActivity( LoginSessionManager.login() );
+			startActivity( LoginManager.login() );
 			
 			// TODO: Josh, start activities from here instead of from LoginSessionManager.java
 			/*

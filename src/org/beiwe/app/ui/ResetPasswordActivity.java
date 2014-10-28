@@ -7,7 +7,7 @@ import java.util.HashMap;
 import org.beiwe.app.R;
 import org.beiwe.app.networking.AsyncPostSender;
 import org.beiwe.app.networking.HTTPAsync;
-import org.beiwe.app.session.LoginSessionManager;
+import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
@@ -74,7 +74,7 @@ public class ResetPasswordActivity extends Activity {
 
 		// Cases: username mismatch, userID mismatch, passwords mismatch, and repeat password with actual password mismatch. 
 		//TODO: Eli. this logic is used in at least... 3 place: here ,login, and creation.  Modularize it.
-		if(oldPassStr.length() == 0 || !oldPassStrHash.equals( LoginSessionManager.getPassword() ) ) {
+		if(oldPassStr.length() == 0 || !oldPassStrHash.equals( LoginManager.getPassword() ) ) {
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_old_password), this); }
 		else if (newPasswordStr.length() == 0) { // TODO: MAKE LENGTH CHECK CORRECT.
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_password), this); }

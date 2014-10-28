@@ -10,7 +10,7 @@ import org.beiwe.app.networking.AsyncPostSender;
 import org.beiwe.app.networking.NetworkUtility;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.networking.HTTPAsync;
-import org.beiwe.app.session.LoginSessionManager;
+import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
@@ -77,7 +77,7 @@ public class ForgotPasswordActivity extends Activity {
 		} else if (!passwordStr.equals(passwordRepeatStr)) {
 			AlertsManager.showAlert("Passwords mismatch", this);
 		} else {
-			LoginSessionManager.setLoginCredentialsAndLogIn( LoginSessionManager.getPatientID(), encryptedPassword);
+			LoginManager.setLoginCredentialsAndLogIn( LoginManager.getPatientID(), encryptedPassword);
 			new AsyncPostSender("http://beiwe.org/forgot_password", this).execute();
 		}
 	}
@@ -99,7 +99,7 @@ public class ForgotPasswordActivity extends Activity {
 		@Override
 		protected void onPostExecute(Void arg) {
 			if (response == 200){
-				LoginSessionManager.setLoginCredentialsAndLogIn( LoginSessionManager.getPatientID(), hashedNewPassword);
+				LoginManager.setLoginCredentialsAndLogIn( LoginManager.getPatientID(), hashedNewPassword);
 				activity.startActivity(new Intent(activity.getApplicationContext(), DebugInterfaceActivity.class));
 				activity.finish();
 				return;
