@@ -77,12 +77,12 @@ public class LoginSessionManager {
     	return true;
     }
     
-    //TODO: Eli.  Implement. (see ruccent logic in resetpassword for a vague idea of what to do.
+    
+    //TODO: Eli.  Implement. (see relevant logic in resetpassword for a vague idea of what to do.)
     public static boolean resetPasswordCheck( String input, Activity activity ) {
     	String currentPassword = getPassword();
 		return false;
     }
-    
     
     
     /**Takes an input string and returns a boolean value stating whether the input matches the current password.
