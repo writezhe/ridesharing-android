@@ -63,22 +63,15 @@ public class RegisterActivity extends Activity {
 		// If the user id length is too short, alert the user
 		if(userIDStr.length() == 0) {
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_user_id), this); }
-
-		// If the password length is too short, alert the user
-		else if (passwordStr.length() == 0) {
-			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_password), this);}
-
+		
 		// If the repeat password does not match the original password, alert the user
 		else if ( !passwordRepeatStr.equals(passwordStr) ) {
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.password_mismatch), this);	}
 
-		// TODO: Eli. make sure this doesn't fail due to password restrictions conflicting with a randomly generated password.
-		// Otherwise, start the registration process against the user
-		else {
+		// If the password length is too short, alert the user
+		else if ( LoginManager.validatePassword(passwordStr, this) ) {
 			LoginManager.setLoginCredentialsAndLogIn(userIDStr, EncryptionEngine.safeHash(passwordStr));
-			
 			Log.i("RegisterActivity", "trying \"" + LoginManager.getPatientID() + "\" with password \"" + LoginManager.getPassword() + "\"" );
-			
 			doRegister("http://beiwe.org/register_user");
 		}
 	}
