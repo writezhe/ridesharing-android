@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import org.beiwe.app.R;
 import org.beiwe.app.networking.AsyncPostSender;
+import org.beiwe.app.networking.HTTPAsync;
 import org.beiwe.app.session.LoginSessionManager;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.survey.TextFieldKeyboard;
@@ -54,10 +55,7 @@ public class ResetPasswordActivity extends Activity {
 		textFieldKeyboard.makeKeyboardBehave(newPassword);
 		textFieldKeyboard.makeKeyboardBehave(newPasswordRepeat);
 	}
-	/**
-	 *  This happens when a user presses the submit button.
-	 *  
-	 *  Each time there is an error, such like an incorrect username, the program will throw an alert,
+	/** Each time there is an error, such like an incorrect username, the program will throw an alert,
 	 *  informing the user of the error.
 	 *  
 	 *  If the user succeeds in logging in, the activity finishes.
@@ -77,18 +75,25 @@ public class ResetPasswordActivity extends Activity {
 		// Cases: username mismatch, userID mismatch, passwords mismatch, and repeat password with actual password mismatch. 
 		//TODO: Eli. this logic is used in at least... 3 place: here ,login, and creation.  Modularize it.
 		if(oldPassStr.length() == 0 || !oldPassStrHash.equals( LoginSessionManager.getPassword() ) ) {
-			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_old_password), this);
-		} else if (newPasswordStr.length() == 0) { // TODO: MAKE LENGTH CHECK CORRECT.
-			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_password), this);
-		} else if (!newPasswordRepeatStr.equals(newPasswordStr)) {
-			AlertsManager.showAlert(appContext.getResources().getString(R.string.password_mismatch), this);
-		} else { makeResetPasswordThread(newPasswordStr); }
+			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_old_password), this); }
+		else if (newPasswordStr.length() == 0) { // TODO: MAKE LENGTH CHECK CORRECT.
+			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_password), this); }
+		else if (!newPasswordRepeatStr.equals(newPasswordStr)) {
+			AlertsManager.showAlert(appContext.getResources().getString(R.string.password_mismatch), this); }
+		else { makeResetPasswordThread(newPasswordStr); }
 	}
+	
 	
 	/** Makes an Async Thread to send with the new Password*/
 	private void makeResetPasswordThread(String newPassword) {
-		new AsyncPostSender("http://beiwe.org/set_password", this, newPassword).execute();		
+//		new AsyncPostSender("http://beiwe.org/set_password", this, newPassword).execute();
+		doResetPassword("http://beiwe.org/set_password");
 	}
+	
+	private void doResetPassword(String url) { new HTTPAsync(url, this) {
+		
+	};}
+	
 	
 	//TODO: Josh, see if possible to, in the Manifest.xml, set MainMenuActivity as the parent, so that when you press "Back", it takes you there.
 //	/**
