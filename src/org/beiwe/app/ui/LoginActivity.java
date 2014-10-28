@@ -61,6 +61,7 @@ public class LoginActivity extends Activity {
 			startActivity( new Intent( appContext, DebugInterfaceActivity.class ) ); // TODO: Eli. there was a "debug" comment here, why?
 			finish();
 		}
+		AlertsManager.showAlert("Incorrect password", this);
 	}
 	
 	
