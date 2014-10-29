@@ -51,7 +51,7 @@
     <string name="title_activity_register">Register</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_login_string">Login</string>
-    <string name="login_activity_welcoming_message">Login back to Beiwe</string>
+    <string name="login_activity_welcoming_message">Log in to Beiwe</string>
     <string name="user_id_system_mismatch">User ID does not match the one in the system. Try again</string>
     <string name="password_system_mismatch">Incorrect user ID and password combination</string>
 

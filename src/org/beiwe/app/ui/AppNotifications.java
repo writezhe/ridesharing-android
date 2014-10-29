@@ -88,7 +88,7 @@ public class AppNotifications {
 	private static Notification setupNotification(Context appContext, int notifCode, int drawableCode, SurveyType.Type surveyType) {
 		Notification.Builder builder = new Notification.Builder(appContext);
 		Intent intent;
-		builder.setContentTitle("Beiwe");
+		builder.setContentTitle(appContext.getString(R.string.app_name));
 		if (notifCode == recordingCode) { // Sets up a voice recording notification
 			builder.setContentText(appContext.getResources().getString(R.string.recording_notification_details));
 			builder.setTicker(appContext.getResources().getString(R.string.recording_notification_message));
