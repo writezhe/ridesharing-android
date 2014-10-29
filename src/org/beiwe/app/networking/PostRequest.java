@@ -141,11 +141,15 @@ public class PostRequest {
 	 * @return a String containing return data
 	 * @throws IOException */
 	private static String readResponse(HttpURLConnection connection) throws IOException {
-		BufferedReader reader = new BufferedReader(new InputStreamReader( new DataInputStream( connection.getInputStream() ) ) );
-		String line;
-		StringBuilder response = new StringBuilder();
-		while ( (line = reader.readLine() ) != null) { response.append(line); }
-		return response.toString();
+		Integer responseCode = connection.getResponseCode();
+		if (responseCode == 200) {
+			BufferedReader reader = new BufferedReader(new InputStreamReader( new DataInputStream( connection.getInputStream() ) ) );
+			String line;
+			StringBuilder response = new StringBuilder();
+			while ( (line = reader.readLine() ) != null) { response.append(line); }
+			return response.toString();
+		}
+		return responseCode.toString(); //FIXME: Eli, test this behavior wherever it is used of returning non-200 response codes as a string.
 	}
 	
 	
@@ -276,21 +280,6 @@ public class PostRequest {
 	//############################### UTILITY FUNCTIONS #####################################
 	//#######################################################################################
 
-	/**This is a method used as an intermediate in order to shorten the length of logic trees.
-	 * Method checks a given response code sent from the server, and then returns a string corresponding to the code,
-	 * in order to display that to the user.
-	 * @param responseCode
-	 * @return String to be displayed on the Alert in case of a problem	 */
-	public static String handleServerResponseCodes(int responseCode) {
-		if (responseCode == 200) {return "OK";}
-		else if (responseCode == 403) { return "Patient ID did not match Password on the server";}
-		else if (responseCode == 405) { return "Phone is not registered to this user. Please contact research staff";}
-		else if (responseCode == 502) { return "Please connect to the internet and try again";}
-		//TODO: Eli. investigate what response code = 1 means in java? python?
-		else if (responseCode == 1) { return "Someone misconfigured the server, please contact staff";}
-		else { return "Internal server error..."; }
-	}
-	
 	public static String makeParameter(String key, String value) { return key + "=" + value + "&"; }
 	
 	private static String securityParameters() { 

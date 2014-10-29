@@ -18,6 +18,7 @@ public class HTTPAsync extends AsyncTask<Void, Void, Void> {
 	protected String parameters = "";
 	protected Activity activity;
 	protected int response = -1;
+	protected String responseString = null; //if this variable is still null after an attempt to execute then the request failed.
 	
 	
 	public HTTPAsync(String url, Activity activity) {
@@ -40,7 +41,7 @@ public class HTTPAsync extends AsyncTask<Void, Void, Void> {
 	protected Void doInBackground(Void... arg0) {
 		Log.e("AsyncPostRequest", "You are not using this right, exiting program for your own good");
 		System.exit(1);
-		return null;  //whhhyyy java.  just why.
+		return null; //Hate.
 	}
 	
 	
@@ -58,11 +59,24 @@ public class HTTPAsync extends AsyncTask<Void, Void, Void> {
 	protected void alertUser() {
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
-				if (response == -1) Log.e("SimpleAsync", "WOAH WOAH WOAH, YOU ARE FAILING TO HANDLE THE RESPONSE VARIABLE.");
-				if (response != 200) AlertsManager.showAlert(PostRequest.handleServerResponseCodes(response), activity);
+				if (response == -1) AlertsManager.showAlert(responseCodeAlert( Integer.parseInt(responseString) ), activity); 
+				else if (response != 200) AlertsManager.showAlert( responseCodeAlert(response), activity);
 			}
 		} );
 	}
 	
+	/**Checks a given response code sent from the server, and then returns a string corresponding to the code,
+	 * in order to display that to the user.
+	 * @param responseCode
+	 * @return String to be displayed on the Alert in case of a problem	 */
+	public static String responseCodeAlert(int responseCode) {
+		if (responseCode == 200) {return "OK";}
+		else if (responseCode == 403) { return "Patient ID did not match Password on the server";}
+		else if (responseCode == 405) { return "Phone is not registered to this user. Please contact research staff";}
+		else if (responseCode == 502) { return "Please connect to the internet and try again";}
+		//TODO: Eli. investigate what response code = 1 means in java? python?
+		else if (responseCode == 1) { return "Someone misconfigured the server, please contact staff";}
+		else { return "Internal server error..."; }
+	}
 	
 }
