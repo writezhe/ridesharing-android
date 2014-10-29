@@ -32,7 +32,7 @@ public class HTTPAsync extends AsyncTask<Void, Void, Void> {
 	@Override
 	protected void onPreExecute() {
 		alertSpinner = (ProgressBar) activity.findViewById(R.id.progressBar);
-		alertSpinner.setVisibility(View.VISIBLE);
+		if (alertSpinner != null) alertSpinner.setVisibility(View.VISIBLE);
 	}
 	
 	
@@ -48,7 +48,7 @@ public class HTTPAsync extends AsyncTask<Void, Void, Void> {
 	//code should override the onPostExecute function for their own needs, code sholud call super.
 	@Override
 	protected void onPostExecute(Void arg) {
-		alertSpinner.setVisibility(View.GONE);
+		if (alertSpinner != null) alertSpinner.setVisibility(View.GONE);
 		alertUser();
 	}
 	
@@ -59,6 +59,7 @@ public class HTTPAsync extends AsyncTask<Void, Void, Void> {
 	protected void alertUser() {
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
+				//TODO: Eli...  test this...
 				if (response == -1) AlertsManager.showAlert(responseCodeAlert( Integer.parseInt(responseString) ), activity); 
 				else if (response != 200) AlertsManager.showAlert( responseCodeAlert(response), activity);
 			}
