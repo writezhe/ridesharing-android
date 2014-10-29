@@ -1,21 +1,16 @@
 package org.beiwe.app.ui;
 
-import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.R;
-import org.beiwe.app.networking.AsyncPostSender;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.networking.HTTPAsync;
 import org.beiwe.app.session.LoginManager;
-import org.beiwe.app.storage.EncryptionEngine;
-import org.beiwe.app.survey.TextFieldKeyboard;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
+
 /**
  * @author Dor Samet, Eli Jones
  */
@@ -34,18 +29,17 @@ public class ForgotPasswordActivity extends Activity {
 		setContentView(R.layout.activity_forgot_password);
 
 		//TODO: Josh/Eli. make some letters that say "your user ID is blah, press this button to ... query the server for a new password" or something
-		
 	}
+	
 	
 	/** calls the reset password HTTPAsync query. */
 	private void registerNewPassword(View view) {
 		doForgotPasswordRequest("http://beiwe.org/forgot_password");
 	}
 	
-	//  ######  Stub code, working on the new SimpleAsync class.  #### 
 	
 	/**Creates an SimpleAsync to make a HTTP Post Request  
-	 * @param url */
+	 * @param url the URL used in the HTTP Post Request*/
 	private void doForgotPasswordRequest(final String url) { new HTTPAsync(url, this) {  //This is a retarded spacing hack...
 
 		@Override
@@ -58,9 +52,7 @@ public class ForgotPasswordActivity extends Activity {
 		}
 		
 		@Override
-		/**
-		 * if the response from the server is received, the password is set to that value. Period.
-		 */
+		/** If the response from the server is received, the password is set to that value. Period. */
 		protected void onPostExecute(Void arg) {
 			super.onPostExecute(arg);
 			Log.i("ForgotPasswordActivity", "old password hash: " + LoginManager.getPassword() + " new password(unhashed): " + responseString);
