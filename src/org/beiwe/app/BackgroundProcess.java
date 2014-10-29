@@ -1,7 +1,5 @@
 package org.beiwe.app;
 
-import java.util.List;
-
 import org.beiwe.app.listeners.AccelerometerListener;
 import org.beiwe.app.listeners.BluetoothListener;
 import org.beiwe.app.listeners.CallLogger;
@@ -9,17 +7,13 @@ import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
 import org.beiwe.app.listeners.WifiListener;
-import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.QuestionsDownloader;
-import org.beiwe.app.survey.SurveyScheduler;
 import org.beiwe.app.survey.SurveyType.Type;
 import org.beiwe.app.ui.AppNotifications;
 
-import android.app.ActivityManager;
 import android.app.Service;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -52,19 +46,19 @@ public class BackgroundProcess extends Service {
 	
 	@Override
 	/** onCreate is essentially the constructor for the service, initialize variables here.*/
-	public void onCreate(){		
+	public void onCreate(){
 		appContext = this.getApplicationContext();
 		BackgroundHandle = this;
 		TextFileManager.start(appContext);
+		
+		// Download the survey questions and schedule the surveys
+		QuestionsDownloader downloader = new QuestionsDownloader(appContext);
+		downloader.downloadJsonQuestions();
 		
 		gpsListener = new GPSListener(appContext);
 		accelerometerListener = new AccelerometerListener( appContext );
 		startBluetooth();
 		
-//		bluetoothListener = new BluetoothListener( this.appContext );
-//		bluetoothListener = new BluetoothListener();
-		timer = new Timer(this);
-
 		startSmsSentLogger();
 		startCallLogger();
 		startPowerStateListener();
@@ -140,6 +134,8 @@ public class BackgroundProcess extends Service {
 	/** create timers that will trigger events throughout the program, and
 	 * register the custom Intents with the controlMessageReceiver. */
 	public void startTimers() {
+		timer = new Timer(this);
+
 		IntentFilter filter = new IntentFilter();
 		
 		filter.addAction( appContext.getString( R.string.accelerometer_off ) );
@@ -171,10 +167,6 @@ public class BackgroundProcess extends Service {
 		//timer.setupSingularFuzzyAlarm( 5000L, Timer.wifiLogTimerIntent, Timer.wifiLogIntent);				
 		// Start voice recording alarm
 		timer.setupDailyRepeatingAlarm(19, new Intent(appContext.getString(R.string.voice_recording)));
-
-		// TODO: Josh delete these; they're only for debugging while downloading from the server is broken
-		QuestionsDownloader downloader = new QuestionsDownloader(appContext);
-		downloader.downloadJsonQuestions();
 	}	
 	
 	

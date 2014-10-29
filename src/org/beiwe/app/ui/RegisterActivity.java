@@ -30,7 +30,7 @@ public class RegisterActivity extends Activity {
 	private Context appContext;
 	private EditText userID;
 	private EditText password;
-	private EditText passwordRepeat;
+	private EditText passwordRepeat; // TODO: Eli, remove the passwordRepeat field; we don't need it since the user already has a password assigned to them by the administrators
 
 	/** Users will go into this activity first to register information on the phone and on the server. */
 	@Override

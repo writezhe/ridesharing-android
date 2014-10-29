@@ -14,13 +14,9 @@ import android.content.Context;
 import android.content.res.Resources.NotFoundException;
 import android.os.AsyncTask;
 import android.util.Log;
-//import org.beiwe.app.networking.FileDownloader;
 
 public class QuestionsDownloader {
 
-	/*public enum SurveyType {
-		DAILY, WEEKLY
-	}*/
 	private Context appContext;
 	
 	public QuestionsDownloader(Context applicationContext) {
@@ -29,7 +25,7 @@ public class QuestionsDownloader {
 	
 	
 	public void downloadJsonQuestions() {
-		new GetUpToDateSurveys().execute(" ");
+		new GetUpToDateSurveys().execute();
 	}
 
 
@@ -53,7 +49,7 @@ public class QuestionsDownloader {
 	 * @throws IOException 
 	 * @throws JSONException 
 	 */
-	private String getSurveyQuestionsFromServer(String urlString) throws NotFoundException, IOException, JSONException {
+	private String getSurveyQuestionsFromServer(String urlString) throws NotFoundException, JSONException {
 		String parameters = "";
 		String surveyQuestions = PostRequest.asyncRequestString( parameters, urlString );
 		if (isValidJson(surveyQuestions)) {
@@ -106,10 +102,10 @@ public class QuestionsDownloader {
 	
 	
 	/**
-	 * Gets the most up-to-date versions of the surveys; does it on a separate,
+	 * Gets the most up-to-date versions of the surveys, writes them to files,
+	 * and schedules repeating notifications for them. Does it on a separate,
 	 * non-blocking thread, because it's a slow network request
 	 */
-	// TODO Josh: can we use the AsyncPostSender.java or AsyncTask.java for this?
 	class GetUpToDateSurveys extends AsyncTask<String, Integer, Map<String, String>> {
 
 		@Override
@@ -123,7 +119,7 @@ public class QuestionsDownloader {
 				return surveysDict;
 			}
 			catch (Exception e) {
-				Log.i("QUESTIONSDOWNLOADER", "getSurveyQuestionsFromServer() failed with exception " + e);
+				Log.i("QuestionsDownloader", "getSurveyQuestionsFromServer() failed with exception " + e);
 				return null;
 			}
 		}
