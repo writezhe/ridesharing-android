@@ -175,10 +175,10 @@ public class LoginManager {
 	 * the user's first time, therefore will start with {@link RegisterActivity}. */
 	public static Intent login(){
 //		Class debug = RegisterActivity.class;
-		    	Class debug = LoginActivity.class;
-//		    	Class debug = DebugInterfaceActivity.class;
-		//    	Class debug = MainMenuActivity.class;
-		//    	Class debug = ResetPasswordActivity.class;
+    	Class debug = LoginActivity.class;
+//    	Class debug = DebugInterfaceActivity.class;
+//    	Class debug = MainMenuActivity.class;
+//    	Class debug = ResetPasswordActivity.class;
 
 		//  What the hell does this log statement mean.
 		Log.i("LoginSessionManager", "Already logged in: " + isRegistered() );

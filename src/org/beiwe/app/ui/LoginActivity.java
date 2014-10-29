@@ -59,6 +59,7 @@ public class LoginActivity extends Activity {
 			//TODO: Eli (or Josh), this needs to point at the correct activity.
 			startActivity( new Intent( appContext, DebugInterfaceActivity.class ) ); // TODO: Eli. there was a "debug" comment here, why?
 			finish();
+			return;
 		}
 		AlertsManager.showAlert("Incorrect password", this);
 	}
