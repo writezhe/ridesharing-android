@@ -44,6 +44,14 @@ public class LoginManager {
 		appContext = context;
 		pref = appContext.getSharedPreferences(PREF_NAME, PRIVATE_MODE); //sets Shared Preferences private mode
 		editor = pref.edit();
+		
+		try { isRegistered(); }
+		catch (NullPointerException e) {
+			Log.e("this is", "bullshit");
+
+			setRegistered(false);
+			setLoggedIn(false);
+		}
 		editor.commit();
 	}
 
@@ -56,10 +64,16 @@ public class LoginManager {
 
 	/** Quick check for login. **/
 	public static boolean isLoggedIn(){ return pref.getBoolean(IS_LOGGED_IN, false); }
-	public static void setLoggedIn(boolean value) { editor.putBoolean(IS_LOGGED_IN, value); } 
+	public static void setLoggedIn(boolean value) { 
+		editor.putBoolean(IS_LOGGED_IN, value); 
+		editor.commit();
+	} 
 
 	public static boolean isRegistered() { return pref.getBoolean(IS_REGISTERED, false); }
-	public static void setRegistered(boolean value) { editor.putBoolean(IS_REGISTERED, value); }
+	public static void setRegistered(boolean value) { 
+		editor.putBoolean(IS_REGISTERED, value);
+		editor.commit();
+	}
 
 
 	/*###########################################################################################
@@ -131,6 +145,7 @@ public class LoginManager {
 	##################################### Log Out ###############################################
 	###########################################################################################*/
 
+	//TODO: Eli. udpate these to use local functions
 	/**Clears session details and SharedPreferences.  Sends user to {@link LoginActivity} */
 	public static void logoutUser(){
 		editor.putBoolean(IS_LOGGED_IN, false);
@@ -159,9 +174,9 @@ public class LoginManager {
 	 * SharedPreferences, the user will be transferred to {@link LoginActivity}. Otherwise, it is
 	 * the user's first time, therefore will start with {@link RegisterActivity}. */
 	public static Intent login(){
-		Class debug = RegisterActivity.class;
-		//    	Class debug = LoginActivity.class;
-		//    	Class debug = DebugInterfaceActivity.class;
+//		Class debug = RegisterActivity.class;
+		    	Class debug = LoginActivity.class;
+//		    	Class debug = DebugInterfaceActivity.class;
 		//    	Class debug = MainMenuActivity.class;
 		//    	Class debug = ResetPasswordActivity.class;
 
