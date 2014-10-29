@@ -93,7 +93,7 @@ public class AsyncPostSender extends AsyncTask<Void, Void, Void> {
 			}
 			// If the user wants to reset their password, log them in using the new password
 			if (newPassword != null) {
-				LoginManager.setLoginCredentialsAndLogIn( LoginManager.getPatientID(), EncryptionEngine.safeHash(newPassword));
+//				LoginManager.setLoginCredentialsAndLogIn( LoginManager.getPatientID(), EncryptionEngine.safeHash(newPassword));
 				newPassword = null;
 			}
 			// FIXME: Eli. This is terrible, change it.
@@ -114,8 +114,21 @@ public class AsyncPostSender extends AsyncTask<Void, Void, Void> {
 	private void alertUser(final Activity activity) {
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
-				AlertsManager.showAlert(PostRequest.handleServerResponseCodes(response), activity);
+				AlertsManager.showAlert(responseCodeAlert(response), activity);
 			}
 		});
 	}
+	
+	//only exists to make code compile, this will be deleted.
+	public static String responseCodeAlert(int responseCode) {
+		if (responseCode == 200) {return "OK";}
+		else if (responseCode == 403) { return "Patient ID did not match Password on the server";}
+		else if (responseCode == 405) { return "Phone is not registered to this user. Please contact research staff";}
+		else if (responseCode == 502) { return "Please connect to the internet and try again";}
+		//TODO: Eli. investigate what response code = 1 means in java? python?
+		else if (responseCode == 1) { return "Someone misconfigured the server, please contact staff";}
+		else { return "Internal server error..."; }
+	}
+
+	
 }
