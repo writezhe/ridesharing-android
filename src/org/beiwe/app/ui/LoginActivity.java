@@ -44,7 +44,7 @@ public class LoginActivity extends Activity {
 		
 		//TODO: Eli+Josh. this should never, ever happen.
 		if ( !LoginManager.isRegistered() ) {
-			Log.e("LoginActivity", "WOW you fucked something up, this device is not even registered.");
+			Log.e("LoginActivity", "this device is not registered, you need to run the register activity at least once before you can log in.");
 			System.exit(1);
 		}
 	}
