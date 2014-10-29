@@ -13,12 +13,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 /**
- * 
- * @author Dor Samet
- *
+ * @author Dor Samet, Eli Jones
  */
 public class ForgotPasswordActivity extends Activity {
 
@@ -27,7 +26,7 @@ public class ForgotPasswordActivity extends Activity {
 	private EditText newPassword;
 	private EditText newPasswordRepeat;
 	private String hashedNewPassword;
-	private String oldPasswordhash; // = LoginSessionManager.getPassword();
+//	private String oldPasswordhash; // = LoginSessionManager.getPassword();
 	
 	//TODO: Josh. (and maybe Eli, but I am working on other logic stuff sooo...
 	// This activity should display the user's id, it should probably also only have a single input for the reset key provided by the survey administrators.
@@ -41,39 +40,17 @@ public class ForgotPasswordActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_forgot_password);
 
+		//TODO: Josh/Eli. make some letters that say "your user ID is blah, press this button to ... query the server for a new password" or something
+		
 		// Variable assignment
 		appContext = getApplicationContext();
 		newPassword = (EditText) findViewById(R.id.forgot_password_enter_password);
 		newPasswordRepeat = (EditText) findViewById(R.id.forgot_password_enter_password_repeat);
-		
-		// Make keyboard behavior
-		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(appContext);
-		textFieldKeyboard.makeKeyboardBehave(newPassword);
-		textFieldKeyboard.makeKeyboardBehave(newPasswordRepeat);
-		
 	}
 	
-	/** This method is used when trying to access the app after a patient loses their password.
-	 * Users DO NOT have the ability to "reset" their password if they forget it.
-	 * The user must contact the study administrators and ask them to reset the password, and the
-	 * administrators provide them with a new password.
-	 * The user navigates to the forgot password activity and enters this new password.
-	 * The user will then be able to change their password. */
+	/** calls the reset password HTTPAsync query. */
 	private void registerNewPassword(View view) {
-		//FIXME: this absolutely needs to get a response from the asyncpostsender
-		// Variable assignments
-		String passwordStr = newPassword.getText().toString();
-		String passwordRepeatStr = newPasswordRepeat.getText().toString();
-		String encryptedPassword = EncryptionEngine.safeHash(passwordStr);
-		// TODO: Eli. make sure that checks here do not conflict with randomly generated passwords from the server.  Change length check 
-		if (passwordStr.length() < 0) {
-			AlertsManager.showAlert("Invalid password", this);
-		} else if (!passwordStr.equals(passwordRepeatStr)) {
-			AlertsManager.showAlert("Passwords mismatch", this);
-		} else {
-			LoginManager.setLoginCredentialsAndLogIn( LoginManager.getPatientID(), encryptedPassword);
-			new AsyncPostSender("http://beiwe.org/forgot_password", this).execute();
-		}
+		async_thing("http://beiwe.org/forgot_password");
 	}
 	
 	//  ######  Stub code, working on the new SimpleAsync class.  #### 
@@ -86,20 +63,27 @@ public class ForgotPasswordActivity extends Activity {
 		protected Void doInBackground(Void... arg0) {
 			
 			parameters = PostRequest.makeParameter( "new_password", hashedNewPassword );
-			response = PostRequest.asyncPostHandler( parameters, url );
+			responseString = PostRequest.asyncRequestString( parameters, url );
+			//TODO: make this function return the current password for the user.
 			return null; //hate.
 		}
 		
 		@Override
+		/**
+		 * if the response from the server is received, the password is set to that value. Period.
+		 */
 		protected void onPostExecute(Void arg) {
-			if (response == 200){
-				LoginManager.setLoginCredentialsAndLogIn( LoginManager.getPatientID(), hashedNewPassword);
-				activity.startActivity(new Intent(activity.getApplicationContext(), DebugInterfaceActivity.class));
-				activity.finish();
-				return;
-			}
-			
 			super.onPostExecute(arg);
+			Log.i("ForgotPasswordActivity", "old password hash: " + LoginManager.getPassword() + " new password(unhashed): " + responseString);
+			
+			
+			if ( responseString == null ) { return; } //this is the case where the network request has failed.
+			
+			LoginManager.setPassword(responseString);
+			
+			//TODO: Eli/Josh.  Throw an alert here saying "password has been successfully reset, they should try to log in with the new password, then send them to the login activity.
+			activity.startActivity( new Intent(activity.getApplicationContext(), LoginActivity.class) );
+			activity.finish();
 		}
 	};}
 }

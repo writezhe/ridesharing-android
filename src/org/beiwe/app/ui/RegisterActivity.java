@@ -70,7 +70,11 @@ public class RegisterActivity extends Activity {
 
 		// If the password length is too short, alert the user
 		else if ( LoginManager.validatePassword(passwordStr, this) ) {
-			LoginManager.setLoginCredentialsAndLogIn(userIDStr, EncryptionEngine.safeHash(passwordStr));
+			
+			LoginManager.setLoginCredentials(userIDStr, passwordStr);
+			LoginManager.setRegistered(true); //TODO: Eli. this line should be unnecessary.
+			LoginManager.setLoggedIn(true);
+			
 			Log.i("RegisterActivity", "trying \"" + LoginManager.getPatientID() + "\" with password \"" + LoginManager.getPassword() + "\"" );
 			doRegister("http://beiwe.org/register_user");
 		}
