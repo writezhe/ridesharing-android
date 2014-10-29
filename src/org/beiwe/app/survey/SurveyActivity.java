@@ -7,9 +7,7 @@ import org.beiwe.app.ui.AppNotifications;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -27,63 +25,26 @@ public class SurveyActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_survey);
-		
-		Log.i("SurveyActivity.java", "SurveyActivity was created");
-		
+				
+		QuestionsDownloader downloader = new QuestionsDownloader(getApplicationContext());
+
 		if (savedInstanceState == null) {
 			Bundle extras = getIntent().getExtras();
 			if (extras != null) {
 				String surveyTypeKey = extras.getString("SurveyType");
 				if (surveyTypeKey.equals(SurveyType.Type.DAILY.dictKey)) {
 					surveyType = Type.DAILY;
+					renderSurvey(downloader.getJsonSurveyString(surveyType));
 				}
 				else if (surveyTypeKey.equals(SurveyType.Type.WEEKLY.dictKey)) {
 					surveyType = Type.WEEKLY;
+					renderSurvey(downloader.getJsonSurveyString(surveyType));
 				}
-				Log.i("SurveyActivity.java", "Extras was not null; SurveyType = " + surveyType);
 			}
-		}		
-		
-		/* Show that the survey is "Loading..." (This was more important when the
-		 * survey had to be downloaded from the server while the user waited) */
-		showSurveyLoadingSpinner();
-		
-		// Display the survey
-		new DisplaySurvey().execute(" ");
-	}
-	
-	
-	/**
-	 * Display, in the survey's spot in the Activity/page, a spinning hourglass
-	 * equivalent, and a "loading/downloading" explanation message
-	 */
-	private void showSurveyLoadingSpinner() {
-		View loadingSpinner = getLayoutInflater().inflate(R.layout.survey_loading_spinner, null);
-		replaceSurveyPageContents(loadingSpinner);
-	}
-	
-	
-	/**
-	 * Gets the survey questions and renders them; does it on a separate,
-	 * non-blocking thread, because it may try to download them from the server
-	 * in a slow network operation
-	 */
-	class DisplaySurvey extends AsyncTask<String, String, String> {
-		@Override
-		protected String doInBackground(String... params) {
-			QuestionsDownloader downloader = new QuestionsDownloader(getApplicationContext());
-			return downloader.getJsonSurveyString(surveyType);
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-			super.onPostExecute(result);
-			renderSurvey(result);
 		}
 	}
-
 	
-
+	
 	/**
 	 * Display, in the survey's spot in the Activity/page, the survey itself
 	 * @param jsonSurveyString the JSON file, as a string, used to render the survey questions
@@ -123,7 +84,7 @@ public class SurveyActivity extends Activity {
 	 * saves the answers, and takes the user back to the main page.
 	 * @param v
 	 */
-	public void submitButtonPressed(View v) {		
+	public void submitButtonPressed(View v) {
 		AppNotifications.dismissNotificatoin(getApplicationContext(), surveyType.notificationCode);
 
 		SurveyTimingsRecorder.recordSubmit(getApplicationContext());
