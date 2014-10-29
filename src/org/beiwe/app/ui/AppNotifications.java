@@ -12,7 +12,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
 
 /**The purpose of this class is to deal with all that has to do with Survey Notifications.
  * This is a STATIC method, and is called from the background process
@@ -32,14 +31,12 @@ public class AppNotifications {
 	public static void displaySurveyNotification(Context appContext, SurveyType.Type surveyType) {
 		Notification surveyNotification = setupNotification(appContext, surveyType.notificationCode, R.drawable.survey_icon, surveyType);
 		surveyNotification.flags = Notification.FLAG_ONGOING_EVENT;
-		Log.i("SurveyNotification", "Set up intent with notification code " + surveyType.notificationCode);
 
 		// Get an instance of the notification manager
 		NotificationManager notificationManager = 
 				(NotificationManager) appContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
 		// Terrible naming for the method to post a notification
-		Log.i("SurveyNotification", "Notifying...");
 		notificationManager.cancel(surveyType.notificationCode);
 		
 		notificationManager.notify(
@@ -88,7 +85,6 @@ public class AppNotifications {
 	 * @param drawableCode
 	 * @return
 	 */
-	// FIXME Josh: there's a bug that I don't understand. When two notifications show up, if you tap on the higher one, it behaves fine. But if you tap on the lower one, it takes you to the survey for the higher one. Why???
 	private static Notification setupNotification(Context appContext, int notifCode, int drawableCode, SurveyType.Type surveyType) {
 		Notification.Builder builder = new Notification.Builder(appContext);
 		Intent intent;
@@ -100,8 +96,13 @@ public class AppNotifications {
 		} else { // Sets up a survey notification
 			builder.setContentText(appContext.getResources().getString(surveyType.notificationDetailsResource));
 			builder.setTicker(appContext.getResources().getString(surveyType.notificationMsgResource));
-	        intent = new Intent(appContext, SurveyActivity.class);
-	        // TODO: Josh, get SUrveyType from Enum
+			/* The intent needs an action string that is unique for each survey type, because the
+			 * flag PendingIntent.FLAG_UPDATE_CURRENT means that any time a new identical
+			 * PendingIntent gets created, it replaces the existing one of the same type. We want a
+			 * new Daily Survey PendingIntent to replace an existing PendingIntent, but NOT replace
+			 * an existing Weekly Survey PendingIntent. See here: http://stackoverflow.com/a/10538554 */ 
+			intent = new Intent(surveyType.dictKey); 
+	        intent.setClass(appContext, SurveyActivity.class);
 	        intent.putExtra("SurveyType", surveyType.dictKey);
 		}
 		// Sets up the two icons to be displayed
