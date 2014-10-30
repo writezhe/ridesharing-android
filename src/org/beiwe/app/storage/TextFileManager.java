@@ -156,7 +156,7 @@ public class TextFileManager {
 		if ( this.persistent ) { this.fileName = this.name; } 
 		else {
 			String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
-			this.fileName = LoginManager.getPatientID() + "_" + this.name + "_" + timecode + ".csv"; }
+			this.fileName = LoginManager.getPatientID(appContext) + "_" + this.name + "_" + timecode + ".csv"; }
 		this.write(header);
 	}
 	

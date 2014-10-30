@@ -138,7 +138,13 @@ public class LoginManager {
 
 	public static String getPassword() { return pref.getString( KEY_PASSWORD, null ); }
 
-	public static String getPatientID() { return pref.getString(KEY_ID, "NULLID"); }
+	public static String getPatientID(Context appContext) {
+		if (pref == null) {
+			Log.w("LoginManager", "pref == null");
+			pref = appContext.getSharedPreferences(PREF_NAME, PRIVATE_MODE);
+		}
+		return pref.getString(KEY_ID, "NULLID"); 		
+	}
 
 
 	/*###########################################################################################

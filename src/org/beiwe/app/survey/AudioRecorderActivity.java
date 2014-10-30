@@ -200,7 +200,7 @@ public class AudioRecorderActivity extends Activity {
      */
     private String getAudioFileName() {
 		String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
-		String fileName = fileDirectory + "/" + LoginManager.getPatientID() + "_voiceRecording" + "_" + timecode + ".mp4";
+		String fileName = fileDirectory + "/" + LoginManager.getPatientID(getApplicationContext()) + "_voiceRecording" + "_" + timecode + ".mp4";
 		
 		mFileName = fileName;
 		return fileName;
