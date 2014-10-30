@@ -1,5 +1,6 @@
 package org.beiwe.app.ui;
 
+import org.beiwe.app.LoadingActivity;
 import org.beiwe.app.R;
 import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.survey.AudioRecorderActivity;

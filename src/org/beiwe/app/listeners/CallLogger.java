@@ -57,7 +57,6 @@ public class CallLogger extends ContentObserver {
 		lastKnownSize = textsDBQuery.getCount();
 //		Log.i("CallLogger", "" + lastKnownSize);
 		// Record id of last made call and the date
-		//TODO: work out why this check is necessary.
 		if (lastKnownSize != 0) {
 			lastRecordedID = textsDBQuery.getInt(textsDBQuery.getColumnIndex(id));
 			textsDBQuery.getLong(textsDBQuery.getColumnIndex(android.provider.CallLog.Calls.DATE));

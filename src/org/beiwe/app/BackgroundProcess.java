@@ -28,7 +28,7 @@ public class BackgroundProcess extends Service {
 	
 	private Context appContext;
 	
-	// TODO: Eli. Make these private after killing DebugInterfaceActivity
+	// TODO: postproduction. Make these private after killing DebugInterfaceActivity
 	public GPSListener gpsListener;
 	public AccelerometerListener accelerometerListener;
 	public BluetoothListener bluetoothListener;
@@ -117,7 +117,7 @@ public class BackgroundProcess extends Service {
 	 * 
 	 */
 	// TODO: Eli/Josh deprecate this function? every activity calls finish() when it ends, so onPause() should only get called when the app is paused/no longer foreground.
-    // TODO: IN ORDER TO USE THIS FUNCTION, YOU MUST UNCOMMENT THE PERMISSION "GET_TASKS" IN MANIFEST.XML
+    // IN ORDER TO USE THIS FUNCTION, YOU MUST UNCOMMENT THE PERMISSION "GET_TASKS" IN MANIFEST.XML
 	/*public boolean isForeground(String myPackage){
 		ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
 		List < ActivityManager.RunningTaskInfo > runningTaskInfo = manager.getRunningTasks(1); 

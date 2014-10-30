@@ -9,6 +9,7 @@ import org.beiwe.app.survey.AudioRecorderActivity;
 import org.beiwe.app.survey.SurveyActivity;
 import org.beiwe.app.survey.SurveyType.Type;
 import org.beiwe.app.ui.AppNotifications;
+import org.beiwe.app.ui.LoginActivity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -82,13 +83,9 @@ public class DebugInterfaceActivity extends Activity {
 //		NetworkUtilities.initializeNetworkUtilities(appContext);
 		PostRequest.uploadAllFiles(); }
 	
-	public void goToAudioRecorder(View view) {
-		Intent audioRecorderIntent = new Intent(this, AudioRecorderActivity.class);
-		startActivity(audioRecorderIntent); }
+	public void goToAudioRecorder(View view) { startActivity( new Intent(this, AudioRecorderActivity.class) ); }
 	
-	public void goToSurvey(View view) {
-		Intent surveyIntent = new Intent(this, SurveyActivity.class);
-		startActivity(surveyIntent); }
+	public void goToSurvey(View view) { startActivity( new Intent(this, SurveyActivity.class) ); }
 	
 	public void deleteEverything(View view) {
 		Log.i("Delete Everything button pressed", "poke.");
@@ -146,8 +143,6 @@ public class DebugInterfaceActivity extends Activity {
 		TextFileManager.getKeyFile().write("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApTiH9gI0zXimSSX+lIsPVvsRDKj5+ebBKAxUJ/laWkfz59yDmfw9TkuLPRfU5cI4GWN/3kzyVdP72bt8p7ZU1LpL/WsSrRb3mzDXZtUnEnfKMTL2NvXUG/qJJyI0wzTmTNaY/hN4aKhITTBjX2Lo+8REtHuijxvaVVThbwlEg+Hmk5611f/BoHC29jHI1O6j4t+PdlO+2h+jBYthL7C0+Tfu74s0o3CLonCGNik8sLsZ6hps1sz0Gwn4f4ehLe7OwGviv4svZZAhufJebyPFNaIbWiO8bQN7ev8rEwnT9ROsBZvZ1AzoUYtewBxauBgpF8/NdvgcNqkILKbIFvscawIDAQAB");
 	}
 	
-	public void resetPassword(View view) { Log.i("DebugInterface", "reset password has been called?"); }
-	
-	//TODO: Eli.  What the hell is this test.
-	public void sendPostToTestURL(View view) { PostRequest.asyncRegisterHandler("", "http://beiwe.org/test"); }
+	public void resetPassword(View view) { startActivity(new Intent(appContext, LoginActivity.class) ); }
+
 }
