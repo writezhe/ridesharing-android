@@ -33,7 +33,7 @@ public class ForgotPasswordActivity extends Activity {
 	
 	
 	/** calls the reset password HTTPAsync query. */
-	private void registerNewPassword(View view) {
+	public void registerNewPassword(View view) {
 		doForgotPasswordRequest("http://beiwe.org/forgot_password");
 	}
 	

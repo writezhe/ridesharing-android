@@ -60,8 +60,13 @@ public class HTTPAsync extends AsyncTask<Void, Void, Void> {
 		activity.runOnUiThread(new Runnable() {
 			public void run() {
 				//TODO: Eli...  test this...
-				if (response == -1) AlertsManager.showAlert(responseCodeAlert( Integer.parseInt(responseString) ), activity); 
-				else if (response != 200) AlertsManager.showAlert( responseCodeAlert(response), activity);
+				if ((response == -1) && (responseString.length() == 3)) {
+					try {
+						AlertsManager.showAlert(responseCodeAlert( Integer.parseInt(responseString) ), activity);   }
+					catch (Exception e) {
+						AlertsManager.showAlert(responseCodeAlert( 1 ), activity);   }}
+				else if (response != 200) {
+					AlertsManager.showAlert(responseCodeAlert(response), activity);   }
 			}
 		} );
 	}
@@ -72,7 +77,7 @@ public class HTTPAsync extends AsyncTask<Void, Void, Void> {
 	 * @return String to be displayed on the Alert in case of a problem	 */
 	public static String responseCodeAlert(int responseCode) {
 		if (responseCode == 200) {return "OK";}
-		else if (responseCode == 403) { return "Patient ID did not match Password on the server";}
+		else if (responseCode == 403) { return "The patient ID or password did not match the patient ID or password on the server";}
 		else if (responseCode == 405) { return "Phone is not registered to this user. Please contact research staff";}
 		else if (responseCode == 502) { return "Please connect to the internet and try again";}
 		//TODO: Eli. investigate what response code = 1 means in java? python?
