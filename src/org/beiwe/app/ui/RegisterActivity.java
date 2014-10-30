@@ -3,10 +3,9 @@ package org.beiwe.app.ui;
 import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
-import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.networking.HTTPAsync;
+import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.LoginManager;
-import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
 import android.annotation.SuppressLint;
@@ -30,7 +29,6 @@ public class RegisterActivity extends Activity {
 	private Context appContext;
 	private EditText userID;
 	private EditText password;
-	private EditText passwordRepeat; // TODO: Eli, remove the passwordRepeat field; we don't need it since the user already has a password assigned to them by the administrators
 
 	/** Users will go into this activity first to register information on the phone and on the server. */
 	@Override
@@ -42,12 +40,10 @@ public class RegisterActivity extends Activity {
 		appContext = getApplicationContext();
 		userID = (EditText) findViewById(R.id.userID_box);
 		password = (EditText) findViewById(R.id.password_box);
-		passwordRepeat = (EditText) findViewById(R.id.repeat_password_box);
 
 		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(appContext);
 		textFieldKeyboard.makeKeyboardBehave(userID);
 		textFieldKeyboard.makeKeyboardBehave(password);
-		textFieldKeyboard.makeKeyboardBehave(passwordRepeat);
 	}
 
 	/**Registration sequence begins here, called when the submit button is pressed.
@@ -58,16 +54,11 @@ public class RegisterActivity extends Activity {
 	public synchronized void registrationSequence(View view) {
 		String userIDStr = userID.getText().toString();
 		String passwordStr = password.getText().toString();
-		String passwordRepeatStr = passwordRepeat.getText().toString();
 
 		// If the user id length is too short, alert the user
 		if(userIDStr.length() == 0) {
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_user_id), this); }
 		
-		// If the repeat password does not match the original password, alert the user
-		else if ( !passwordRepeatStr.equals(passwordStr) ) {
-			AlertsManager.showAlert(appContext.getResources().getString(R.string.password_mismatch), this);	}
-
 		// If the password length is too short, alert the user
 		else if ( LoginManager.validatePassword(passwordStr, this) ) {
 			

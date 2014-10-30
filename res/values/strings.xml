@@ -69,7 +69,6 @@
     <string name="register_activity_instructions">Please fill out the information below</string>
     <string name="register_activity_user_id">Please enter your user ID:</string>
     <string name="register_activity_password">Please enter your password:</string>
-    <string name="register_activity_password_verify">Please enter your password again:</string>
     <string name="register_activity_submit">Submit</string>
     <string name="title_activity_loading">LoadingActivity</string>
     <string name="invalid_user_id">Invalid user ID</string>

@@ -59,19 +59,6 @@
 		android:inputType="textPassword"
         android:ems="10" />
 
-    <TextView
-        android:id="@+id/repeat_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/register_activity_password_verify" />
-
-    <EditText
-        android:id="@+id/repeat_password_box"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:ems="10" />
-
     <Button
         android:id="@+id/submit_button"
         android:layout_width="wrap_content"
