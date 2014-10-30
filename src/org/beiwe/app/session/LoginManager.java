@@ -4,10 +4,8 @@ import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.R;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.ui.AlertsManager;
-import org.beiwe.app.ui.ForgotPasswordActivity;
 import org.beiwe.app.ui.LoginActivity;
 import org.beiwe.app.ui.RegisterActivity;
-import org.beiwe.app.ui.ResetPasswordActivity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -44,14 +42,7 @@ public class LoginManager {
 		appContext = context;
 		pref = appContext.getSharedPreferences(PREF_NAME, PRIVATE_MODE); //sets Shared Preferences private mode
 		editor = pref.edit();
-		
-		try { isRegistered(); }
-		catch (NullPointerException e) {
-			Log.e("this is", "bullshit");
-
-			setRegistered(false);
-			setLoggedIn(false);
-		}
+	
 		editor.commit();
 	}
 
@@ -180,9 +171,8 @@ public class LoginManager {
 	 * SharedPreferences, the user will be transferred to {@link LoginActivity}. Otherwise, it is
 	 * the user's first time, therefore will start with {@link RegisterActivity}. */
 	public static Intent login(){
-//		Class debug = RegisterActivity.class;
-    	Class debug = LoginActivity.class;
-//    	Class debug = DebugInterfaceActivity.class;
+		Class debug = RegisterActivity.class;
+//    	Class debug = LoginActivity.class;
 //    	Class debug = MainMenuActivity.class;
 //    	Class debug = ResetPasswordActivity.class;
 
