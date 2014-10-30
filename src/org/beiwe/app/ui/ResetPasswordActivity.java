@@ -2,15 +2,12 @@ package org.beiwe.app.ui;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
 
 import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.R;
-import org.beiwe.app.networking.AsyncPostSender;
 import org.beiwe.app.networking.HTTPAsync;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.LoginManager;
-import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
 import android.annotation.SuppressLint;
@@ -106,14 +103,7 @@ public class ResetPasswordActivity extends Activity {
 			response = PostRequest.asyncPostHandler( parameters, url );
 			return null; //haaaate
 		}
-		
-		//FIXME: Josh.  Help!  there is something going on here, I think it involves Activity IDs, a subject I am ignorant on.
-		// There is a 'Spinner' object that is defined in the HTTPAsync class, it is instantiated using this ResetPasswordActivity
-		// when the HTTPAsync object is instantiated/executed.
-		// Setting the spinner to visible breaks, but only with the ResetPasswordActivity, it works fine
-		// when the same behavior occurs with the RegisterActivity.
-		// (Otherwise, the logic here works and the password is successfully reset on both the server and the devic)
-		
+				
 		@Override
 		protected void onPostExecute(Void arg) {
 			if (response == 200) { 
@@ -125,7 +115,7 @@ public class ResetPasswordActivity extends Activity {
 			}
 			super.onPostExecute(arg);
 		}
-	};}
+	}; }
 	
 	
 	//TODO: Josh, see if possible to, in the Manifest.xml, set MainMenuActivity as the parent, so that when you press "Back", it takes you there.
