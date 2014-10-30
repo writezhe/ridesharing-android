@@ -61,7 +61,10 @@ public class HTTPAsync extends AsyncTask<Void, Void, Void> {
 			public void run() {
 				//TODO: Eli...  test this...
 				if ((response == -1) && (responseString.length() == 3)) {
-					AlertsManager.showAlert(responseCodeAlert( Integer.parseInt(responseString) ), activity);   }
+					try {
+						AlertsManager.showAlert(responseCodeAlert( Integer.parseInt(responseString) ), activity);   }
+					catch (Exception e) {
+						AlertsManager.showAlert(responseCodeAlert( 1 ), activity);   }}
 				else if (response != 200) {
 					AlertsManager.showAlert(responseCodeAlert(response), activity);   }
 			}
