@@ -283,7 +283,7 @@ public class PostRequest {
 	public static String makeParameter(String key, String value) { return key + "=" + value + "&"; }
 	
 	private static String securityParameters() { 
-		return makeParameter("patient_id", LoginManager.getPatientID(appContext) ) +
+		return makeParameter("patient_id", LoginManager.getPatientID() ) +
 				makeParameter("password", LoginManager.getPassword() ) +
 				makeParameter("device_id", DeviceInfo.getAndroidID() );
 	}

@@ -75,7 +75,7 @@ public class RegisterActivity extends Activity {
 			LoginManager.setRegistered(true); //TODO: Eli. this line should be unnecessary.
 			LoginManager.setLoggedIn(true);
 			
-			Log.i("RegisterActivity", "trying \"" + LoginManager.getPatientID(getApplicationContext()) + "\" with password \"" + LoginManager.getPassword() + "\"" );
+			Log.i("RegisterActivity", "trying \"" + LoginManager.getPatientID() + "\" with password \"" + LoginManager.getPassword() + "\"" );
 			doRegister("http://beiwe.org/register_user");
 		}
 	}
