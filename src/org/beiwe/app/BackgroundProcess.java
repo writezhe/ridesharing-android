@@ -7,6 +7,7 @@ import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
 import org.beiwe.app.listeners.WifiListener;
+import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.QuestionsDownloader;
 import org.beiwe.app.survey.SurveyType.Type;
@@ -49,7 +50,11 @@ public class BackgroundProcess extends Service {
 	public void onCreate(){
 		appContext = this.getApplicationContext();
 		BackgroundHandle = this;
-		TextFileManager.start(appContext);
+		
+		// TODO: Eli. investigate this crash, see email
+		// Proposed fix:
+		// LoginManager.initialize(appContext);
+		// TextFileManager.start(appContext); // CRASH HAPPENS HERE; NPE on LoginManager.getPatientID() because pref hasn't been initialized and is null
 		
 		// Download the survey questions and schedule the surveys
 		QuestionsDownloader downloader = new QuestionsDownloader(appContext);
