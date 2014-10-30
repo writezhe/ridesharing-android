@@ -122,6 +122,12 @@
 	        android:onClick="testEncrypt"
 	        android:text="ENCRYPT!~!!!" />
 		
-			
+		<Button
+	        android:id="@+id/loadMainMenu"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="loadMainMenu"
+	        android:text="Go To Main Menu" />
+		
 	</LinearLayout>
 </ScrollView>
