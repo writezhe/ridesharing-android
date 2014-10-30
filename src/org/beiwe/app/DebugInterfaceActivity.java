@@ -10,6 +10,7 @@ import org.beiwe.app.survey.SurveyActivity;
 import org.beiwe.app.survey.SurveyType.Type;
 import org.beiwe.app.ui.AppNotifications;
 import org.beiwe.app.ui.LoginActivity;
+import org.beiwe.app.ui.MainMenuActivity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -134,4 +135,5 @@ public class DebugInterfaceActivity extends Activity {
 	
 	public void resetPassword(View view) { startActivity(new Intent(appContext, LoginActivity.class) ); }
 
+	public void loadMainMenu(View view) { startActivity(new Intent(appContext, MainMenuActivity.class) ); }
 }
