@@ -40,17 +40,6 @@ public class DebugInterfaceActivity extends Activity {
 		appContext.startService(backgroundProcess);
 	}
 	
-	//TODO: Eli. this looks like junk, work out if it can be removed.
-//	@Override
-//	public void onResume() {
-//		super.onResume();
-//		sessionManager = new LoginSessionManager(appContext);
-//		if (!sessionManager.isLoggedIn()) {
-//			sessionManager.logoutUser();
-//			finish();
-//		}
-//	}
-	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; adds items to the action bar if it is present.
