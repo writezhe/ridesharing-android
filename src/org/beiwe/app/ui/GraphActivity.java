@@ -6,6 +6,7 @@ import org.apache.http.util.EncodingUtils;
 import org.beiwe.app.R;
 import org.beiwe.app.R.id;
 import org.beiwe.app.R.layout;
+import org.beiwe.app.networking.PostRequest;
 
 import android.app.Activity;
 import android.content.Context;
@@ -24,7 +25,6 @@ import android.webkit.WebViewClient;
  */
 public class GraphActivity extends Activity {
 
-	private Context appContext;
 	private String beiweGraph = "http://beiwe.org/graph";
 
 	/**
@@ -36,9 +36,6 @@ public class GraphActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_graph);
-
-		// Context
-		appContext = getApplicationContext();
 
 		// Instantiating web view to be embedded in the page
 		WebView browser = (WebView) findViewById(R.id.graph_pastResults);
@@ -55,14 +52,7 @@ public class GraphActivity extends Activity {
 		browserSettings.setJavaScriptEnabled(true);
 		browser.setInitialScale(200);
 
-		//TODO: Eli/Josh.  There was a debug reminder here.... debug?
-		// HTTP Post request set up, using the credentials saved on the phone
-//		LoginSessionManager sessionManager = new LoginSessionManager(appContext);
-//		HashMap<String, String> userDetails = sessionManager.getUserDetails();		
-//		String postData = "patientID=" + userDetails.get(LoginSessionManager.KEY_ID)
-//				+ "&pwd=" + userDetails.get(LoginSessionManager.KEY_PASSWORD);
-		String postData = "patient_id=mama&password=aaa";
-
+		String postData = PostRequest.securityParameters();
 		browser.postUrl(beiweGraph, EncodingUtils.getBytes(postData, "BASE64"));
 	}
 }
