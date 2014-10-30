@@ -23,6 +23,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <!-- network and upload -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- starting the background service at boot. -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
