@@ -29,30 +29,22 @@ import android.util.Log;
 
 public class LoadingActivity extends Activity{
 
-	// Private objects
-	private Context appContext;
-
-	/**
-	 * onCreate - right now it just calls on checkLogin() in SessionManager, and moves the activity
-	 * to the appropriate page. In the future it could hold a splash screen before redirecting activity.
-	 */
+	/**onCreate - right now it just calls on checkLogin() in SessionManager, and moves the activity
+	 * to the appropriate page. In the future it could hold a splash screen before redirecting activity. */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_loading);
 		
-		appContext = getApplicationContext();
-
 		if ( isAbleToHash() ) {
 			try { BackgroundProcess.getBackgroundHandle(); } 
 			catch (NullPointerException e) {
 				Log.i("LoadingActivity", e.getMessage() + "\n... Initializing app components." );
 				//Order DevicInfo, LoginSessionManager, TextFileManager, PoshRequest.
-				DeviceInfo.initialize(appContext);
-				LoginManager.initialize(appContext);
-				TextFileManager.start(appContext);
-				PostRequest.initialize(appContext);
-				WifiListener.initialize(appContext);
+				DeviceInfo.initialize( getApplicationContext() );
+				LoginManager.initialize( getApplicationContext() );
+				TextFileManager.start( getApplicationContext() );
+				PostRequest.initialize( getApplicationContext() );
 			}
 			
 			startActivity( LoginManager.login() );
@@ -64,8 +56,8 @@ public class LoadingActivity extends Activity{
 			 * case (LoginSessionManager.caseCode2) : startActivity(new Intent(LoginActivity));
 			 * case (LoginSessionManager.caseCode3) : startActivity(new Intent(MainMenuActivity));
 			 */
-			finish();
-		} else { failureExit(); }
+			finish(); }
+		else { failureExit(); }
 	}
 
 	private boolean isAbleToHash() {
@@ -73,10 +65,8 @@ public class LoadingActivity extends Activity{
 		try {
 			EncryptionEngine.unsafeHash("input");
 			return true; }
-		catch (NoSuchAlgorithmException noSuchAlgorithm) {
-			failureExit(); }
-		catch (UnsupportedEncodingException unSupportedEncoding) {
-			failureExit(); }
+		catch (NoSuchAlgorithmException noSuchAlgorithm) { failureExit(); }
+		catch (UnsupportedEncodingException unSupportedEncoding) { failureExit(); }
 		return false;
 	}
 
