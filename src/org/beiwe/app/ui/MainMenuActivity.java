@@ -46,7 +46,7 @@ public class MainMenuActivity extends Activity {
 	 *********************************************************************** */
 	public void signOutButton(View v) {
 		Intent signOutIntent = new Intent(appContext, LoadingActivity.class);
-		LoginManager.logoutUser();
+		LoginManager.logOutUser();
 		startActivity(signOutIntent);
 	    finish();
 	}

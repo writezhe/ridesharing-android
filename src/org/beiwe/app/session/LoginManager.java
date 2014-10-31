@@ -5,6 +5,7 @@ import org.beiwe.app.R;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.ui.AlertsManager;
 import org.beiwe.app.ui.LoginActivity;
+import org.beiwe.app.ui.MainMenuActivity;
 import org.beiwe.app.ui.RegisterActivity;
 
 import android.app.Activity;
@@ -27,14 +28,19 @@ public class LoginManager {
 	private static Editor editor;
 	private static Context appContext;
 
-	public static final String PREF_NAME = "BeiwePref";
+	// Editor key-strings
+	private static final String PREF_NAME = "BeiwePref";
 	private static final String IS_LOGGED_IN = "IsLoggedIn";
-
-	// Public names for when inspecting the user's details. Used to call from outside the class.
 	private static final String KEY_ID = "uid";
 	private static final String KEY_PASSWORD = "password";
 	private static final String IS_REGISTERED = "IsRegistered";
 
+	//Activity pointer. 
+	private static Activity currentActivity = null;
+	
+	/*#####################################################################################
+	######################### Constructor and Initializing ################################
+	#####################################################################################*/
 
 	/**Constructor method for the session manager class
 	 * @param context */
@@ -42,16 +48,14 @@ public class LoginManager {
 		appContext = context;
 		pref = appContext.getSharedPreferences(PREF_NAME, PRIVATE_MODE); //sets Shared Preferences private mode
 		editor = pref.edit();
-	
 		editor.commit();
 	}
 
 	public static void initialize( Context context ) { new LoginManager(context); } 
 
-
-	/*###########################################################################################
+	/*#####################################################################################
 	##################################### Booleans ########################################
-	###########################################################################################*/
+	#####################################################################################*/
 
 	/** Quick check for login. **/
 	public static boolean isLoggedIn(){ return pref.getBoolean(IS_LOGGED_IN, false); }
@@ -67,24 +71,23 @@ public class LoginManager {
 	}
 
 
-	/*###########################################################################################
+	/*######################################################################################
 	##################################### Passwords ########################################
-	###########################################################################################*/
+	######################################################################################*/
 
 
 	/**Checks that an input matches valid password requirements. (this only checks length)
 	 * Throws up an alert notifying the user if the password is not valid.
 	 * @param input
 	 * @param activity
-	 * @return */
-	//TODO: Eli. change the minimum value to ~6
+	 * @return true or false based on password requirements.*/
+	//TODO: Postproduction. change the minimum value to ~6
 	public static boolean validatePassword(String input, Activity activity) {
 		if (input.length() < 1) {  //do not set to less than 1, this check takes care of entering a length 0 password
 			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_password), activity );
 			return false; }
 		return true;
 	}
-
 
 	/**Takes an input string and returns a boolean value stating whether the input matches the current password.
 	 * @param input
@@ -107,25 +110,11 @@ public class LoginManager {
 	################################### User Credentials ########################################
 	###########################################################################################*/
 
-
-	//	/** Creates a new login session. Interacts with the SharedPreferences.
-	//	 * @param userID
-	//	 * @param password */
-	//	//TODO: Eli. Rename this function, probably split functionality between this and setLoginCredenctials
-	//	public static void setLoginCredentialsAndLogIn(String userID, String password){
-	//		setLoginCredentials(userID, password);
-	//		editor.putBoolean(IS_REGISTERED, true);
-	//		editor.putBoolean(IS_LOGGED_IN, true);
-	//		editor.commit();
-	//	}
-
-
 	public static void setLoginCredentials( String userID, String password ) {
 		editor.putString(KEY_ID, userID);
 		setPassword(password);
 		editor.commit();
 	}
-
 
 	public static String getPassword() { return pref.getString( KEY_PASSWORD, null ); }
 
@@ -137,23 +126,16 @@ public class LoginManager {
 	###########################################################################################*/
 
 	//TODO: Eli. udpate these to use local functions
-	/**Clears session details and SharedPreferences.  Sends user to {@link LoginActivity} */
-	public static void logoutUser(){
-		editor.putBoolean(IS_LOGGED_IN, false);
-		editor.commit();
+	/**Logs out user, sends user to {@link LoginActivity} */
+	public static void logOutUser(){
 		Intent intent = new Intent(appContext, LoginActivity.class);
 		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		appContext.startActivity(intent);
 	}
 
-
 	/** logs user out without forcing an activity change. */
-	public static void logoutUserPassive() {
-		editor.putBoolean(IS_LOGGED_IN, false);
-		editor.commit();
-	}
-
+	public static void logOutUserPassive() { setLoggedIn(false); }
 
 	/*###########################################################################################
 	##################################### Log In ################################################
@@ -170,16 +152,14 @@ public class LoginManager {
 //    	Class debug = MainMenuActivity.class;
 //    	Class debug = ResetPasswordActivity.class;
 
-		//  What the hell does this log statement mean.
-		Log.i("LoginSessionManager", "Already logged in: " + isRegistered() );
-
-		if(isLoggedIn()) {
+		if( isLoggedIn() ) {
 			// If already logged in, take user to the main menu screen
 			// TODO: postproduction. before launch, uncomment this line:
-			//Intent intent = new Intent(appContext, MainMenuActivity.class);
+			
+			Intent intent = new Intent(appContext, MainMenuActivity.class);
 			return new Intent(appContext, debug); }
 		else {
-			if (isRegistered()) {
+			if ( isRegistered() ) {
 				// If not logged in, but has registered, take user to the login screen
 				return new Intent(appContext, LoginActivity.class); }
 			else {
@@ -189,5 +169,9 @@ public class LoginManager {
 				//Intent intent = new Intent(appContext, RegisterActivity.class);
 				return new Intent(appContext, debug); }
 		}
+	}
+	
+	public void setCurrentPointer(Activity activity){
+		
 	}
 }
