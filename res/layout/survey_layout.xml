@@ -4,6 +4,7 @@
     android:id="@+id/surveyLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    style="@style/MainTextStyle"
     android:orientation="vertical" >
 
     <ScrollView
