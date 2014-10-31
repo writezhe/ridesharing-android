@@ -5,6 +5,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.Flushable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -14,7 +15,9 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.protocol.HttpDateGenerator;
 import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
 import org.beiwe.app.session.LoginManager;
@@ -34,27 +37,23 @@ import android.util.Log;
 
 public class PostRequest {
 
-	static String boundary = "gc0p4Jq0M2Yt08jU534c0p";
-	static String newLine = "\n"; //we will use unix-style new lines
-	static String attachmentName = "file";
-	
 	private static Context appContext;	
-	
+
 	//TODO: Eli. We do not appear to need the applicationContext in this class.
 	/**Uploads must be initialized with an appContext before they can access the wifi state or upload a _file_.
 	 * @param some applicationContext */
 	private PostRequest( Context applicationContext ) {
 		appContext = applicationContext;
 	}
-	
+
 	/** Simply runs the constructor, using the applcationContext to grab variables.  Idempotent. */
 	public static void initialize(Context applicationContext) { new PostRequest(applicationContext); }
-	
-	
+
+
 	/*##################################################################################
 	 ############################ Public Wrappers ######################################
 	 #################################################################################*/
-	
+
 
 	/**For use with Async tasks run from activities.
 	 * This opens a connection with the server, sends the HTTP parameters, then receives a response code, and returns it.
@@ -69,12 +68,12 @@ public class PostRequest {
 			return 0; }
 		catch (IOException e) {
 			e.printStackTrace();
-			
+
 			Log.e("PostRequest","Network error: " + e.getMessage());
 			return 502; }
 	}
-	
-	
+
+
 	/**For use with Async tasks run from activities.
 	 * Makes an HTTP post request with the provided URL and parameters, returns the server's response code from that request
 	 * @param parameters
@@ -102,19 +101,21 @@ public class PostRequest {
 			Log.e("PostRequest error cont.", "parameters: " + parameters);
 			Log.e("PostRequest error cont.", "url: " + urlString);
 			e.printStackTrace();
-			
+
 			throw new NullPointerException(); }
 	}
-	
+
 	/*##################################################################################
 	 ################################ Common Code ######################################
 	 #################################################################################*/
-	
-	/**Creates an HTTP connection with common settings (reduces code clutter).
+
+
+	/**Creates an HTTP connection with minimal settings.  Some network funcitonality
+	 * requires this minimal object.
 	 * @param url a URL object
-	 * @return a new HttpURLConnection with common settings
-	 * @throws IOException This function can throw 2 kinds of IO exceptions: IOExeptions ProtocolException*/
-	private static HttpURLConnection setupHTTP( String parameters, URL url ) throws IOException {
+	 * @return a new HttpURLConnection with minimal settings applied
+	 * @throws IOException This function can throw 2 kinds of IO exceptions: IOExeptions and ProtocolException*/
+	private static HttpURLConnection minimalHTTP(URL url) throws IOException{
 		// Create a new HttpURLConnection and set its parameters
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setUseCaches(false);
@@ -125,17 +126,26 @@ public class PostRequest {
 		//TODO: Eli. research if the timeouts below are compatible with the file upload function.  There is no reason they *shouldn't*, but it is untested.
 		connection.setConnectTimeout(3000);
 		connection.setReadTimeout(5000);
-		
-		if ( parameters.length() > 0 ) {
-			DataOutputStream request = new DataOutputStream(connection.getOutputStream());
-			request.write( securityParameters().getBytes() );
-			request.write( parameters.getBytes() );
-			request.flush();
-			request.close();
-		}
 		return connection;
 	}
-	
+
+
+	/**For use with functionality that requires additional parameters be added to an HTTP operation.
+	 * @param parameters a string that has been created using the makeParameters function
+	 * @param url a URL object
+	 * @return a new HttpURLConnection with common settings */
+	private static HttpURLConnection setupHTTP( String parameters, URL url ) throws IOException {
+		HttpURLConnection connection = minimalHTTP(url);
+
+		DataOutputStream request = new DataOutputStream( connection.getOutputStream() );
+		request.write( securityParameters().getBytes() );
+		request.write( parameters.getBytes() );
+		request.flush();
+		request.close();
+
+		return connection;
+	}
+
 	/**Reads in the response data from an HttpURLConnection, returns it as a String.
 	 * @param connection an HttpURLConnection
 	 * @return a String containing return data
@@ -151,12 +161,12 @@ public class PostRequest {
 		}
 		return responseCode.toString(); //FIXME: Eli, test this behavior wherever it is used of returning non-200 response codes as a string.
 	}
-	
-	
+
+
 	/*##################################################################################
 	 ####################### HTTP Post Request Handlers ################################
 	 #################################################################################*/
-	
+
 	private static String doPostRequestGetResponseString(String parameters, String urlString) throws IOException {
 		HttpURLConnection connection = setupHTTP( parameters, new URL( urlString ) );
 		connection.connect();
@@ -164,16 +174,16 @@ public class PostRequest {
 		connection.disconnect();
 		return data;
 	}
-	
-	
+
+
 	private static int doPostRequestGetResponseCode(String parameters, URL url) throws IOException {
 		HttpURLConnection connection = setupHTTP(parameters, url);
 		int response = connection.getResponseCode();
 		connection.disconnect();
 		return response;
 	}
-	
-	
+
+
 	private static int doRegisterRequest(String parameters, URL url) throws IOException {
 		HttpURLConnection connection = setupHTTP(parameters, url);
 		int response = connection.getResponseCode();
@@ -191,30 +201,29 @@ public class PostRequest {
 		return response;
 	}
 
-	
+
 	/** Constructs and sends a multipart HTTP POST request with a file attached.
+	 * This function uses minimalHTTP() directly because it needs to add a header (?) to the HttpURLConnection object before it writes a file to it.
 	 * Based on http://stackoverflow.com/a/11826317
 	 * @param file the File to be uploaded
 	 * @param uploadUrl the destination URL that receives the upload
 	 * @return HTTP Response code as int
 	 * @throws IOException */
-	private static int doFileUpload(File file, String parameters, URL uploadUrl) throws IOException {		
-		HttpURLConnection connection = setupHTTP( parameters, uploadUrl );
-		connection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+	private static int doFileUpload(File file, URL uploadUrl) throws IOException {
+		HttpURLConnection connection = minimalHTTP( uploadUrl );
 		DataOutputStream request = new DataOutputStream( connection.getOutputStream() );
-		
-		request.writeBytes("--" + boundary + newLine);
-		request.writeBytes("Content-Disposition: form-data; name=\""
-				+ attachmentName + "\";filename=\"" + file.getName() + "\"" + newLine + newLine);
+		DataInputStream inputStream = new DataInputStream( new FileInputStream(file) );
 
-		// Read in data from the file, and pour it into the POST request
-		DataInputStream inputStream = new DataInputStream(new FileInputStream(file));
+		request.writeBytes( securityParameters() );		
+		request.writeBytes( makeParameter("file_name", file.getName() ) );
+		request.writeBytes( "file=" );
+
+		// Read in data from the file, and pour it into the POST request stream
 		int data;
 		while( ( data = inputStream.read() ) != -1 ) request.write( (char) data );
 		inputStream.close();
-
-		// Add closing boundary etc. to mark the end of the POST request 
-		request.writeBytes( newLine + "--" + boundary + "--" + newLine );
+		
+		request.writeBytes("");
 		request.flush();
 		request.close();
 
@@ -224,34 +233,36 @@ public class PostRequest {
 		connection.disconnect();
 		return response;
 	}
-	
-	
+
+
 	//#######################################################################################
 	//################################## File Upload ########################################
 	//#######################################################################################
 
-	
+
 	/** Uploads all available files on a separate thread. */
 	public static void uploadAllFiles() {
 		// Run the HTTP POST on a separate thread
-		// FIXME: Eli+Josh. Run through ALL code that uses network, we need to be running this check.
+		// FIXME: Eli+Josh. Run through ALL code that uses network, we need to be running this check.		
 		if ( !NetworkUtility.getWifiState(appContext) ) { return; }
 		ExecutorService executor = Executors.newFixedThreadPool(1);
 		Callable <HttpPost> thread = new Callable<HttpPost>() {
 			@Override
 			public HttpPost call() {
+				Log.i("upload files", "uploading files");
 				doTryUploadDelete( TextFileManager.getAllUploadableFiles() ) ;
 				return null; //(indentation was stupid, made a function.)
 			}
 		};
 		executor.submit(thread);
 	}
-	
-	
+
+
 	/** For each file name given, tries to upload that file.  If successful it then deletes the file.*/
 	private static void doTryUploadDelete(String[] files) {
 		for (String fileName : files) {
 			try {
+				Log.i("upload files", "file name:" + fileName);
 				if ( tryToUploadFile(fileName) ) { TextFileManager.delete(fileName); } }
 			catch (IOException e) {
 				Log.i( "Upload", "Failed to upload file " + fileName + ".\n Raised exception " + e.getCause() );
@@ -260,28 +271,28 @@ public class PostRequest {
 		}
 		Log.i("NetworkUtilities", "Finished upload loop.");				
 	}
-	
-	
+
+
 	/**Try to upload a file to the server
 	 * @param filename the short name (not the full path) of the file to upload
 	 * @return TRUE if the server reported "200 OK"; FALSE otherwise */
-	private static Boolean tryToUploadFile(String filename) throws IOException{
+	private static Boolean tryToUploadFile(String filename) throws IOException {
 		URL uploadUrl = new URL( appContext.getResources().getString(R.string.data_upload_url) );
 		File file = new File( appContext.getFilesDir() + "/" + filename );
 		
 		// request was successful (returned "200 OK"), return TRUE
-		if ( PostRequest.doFileUpload( file, "", uploadUrl ) == 200 ) { return true; }
+		if ( PostRequest.doFileUpload( file, uploadUrl ) == 200 ) { return true; }
 		return false;
 		// request failed (returned something other than 200), return FALSE
 	}
-	
-	
+
+
 	//#######################################################################################
 	//############################### UTILITY FUNCTIONS #####################################
 	//#######################################################################################
 
 	public static String makeParameter(String key, String value) { return key + "=" + value + "&"; }
-	
+
 	public static String securityParameters() { 
 		return makeParameter("patient_id", LoginManager.getPatientID() ) +
 				makeParameter("password", LoginManager.getPassword() ) +
