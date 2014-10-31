@@ -77,7 +77,6 @@ public class HTTPAsync extends AsyncTask<Void, Void, Void> {
 		else if (responseCode == 403) { return "The patient ID or password did not match the patient ID or password on the server";}
 		else if (responseCode == 405) { return "Phone is not registered to this user. Please contact research staff";}
 		else if (responseCode == 502) { return "Please connect to the internet and try again";}
-		//TODO: Eli. investigate what response code = 1 means in java? python?
 		else if (responseCode == 1) { return "Someone misconfigured the server, please contact staff";}
 		else { return "An unknown error occured."; }
 	}
