@@ -51,7 +51,7 @@ public class QuestionsDownloader {
 	 */
 	private String getSurveyQuestionsFromServer(String urlString) throws NotFoundException, JSONException {
 		String parameters = "";
-		String surveyQuestions = PostRequest.asyncRequestString( parameters, urlString );
+		String surveyQuestions = PostRequest.httpRequestString( parameters, urlString );
 		if (isValidJson(surveyQuestions)) {
 			return surveyQuestions;
 		}

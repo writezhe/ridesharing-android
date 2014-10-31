@@ -77,7 +77,7 @@ public class RegisterActivity extends Activity {
 		@Override
 		protected Void doInBackground(Void... arg0) {
 			parameters = PostRequest.makeParameter("bluetooth_id", DeviceInfo.getBlootoothMAC() );
-			response = PostRequest.asyncRegisterHandler(parameters, url);
+			response = PostRequest.httpRegister(parameters, url);
 			return null; //hate
 		}
 		

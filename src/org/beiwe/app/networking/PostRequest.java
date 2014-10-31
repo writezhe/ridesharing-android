@@ -51,7 +51,7 @@ public class PostRequest {
 
 
 	/*##################################################################################
-	 ############################ Public Wrappers ######################################
+	 ##################### Publicly Accessible Functions ###############################
 	 #################################################################################*/
 
 
@@ -59,7 +59,7 @@ public class PostRequest {
 	 * This opens a connection with the server, sends the HTTP parameters, then receives a response code, and returns it.
 	 * @param parameters
 	 * @return serverResponseCode */
-	public static int asyncRegisterHandler( String parameters, String url ) {
+	public static int httpRegister( String parameters, String url ) {
 		try {
 			return doRegisterRequest( parameters, new URL(url) ); }
 		catch (MalformedURLException e) {
@@ -68,7 +68,6 @@ public class PostRequest {
 			return 0; }
 		catch (IOException e) {
 			e.printStackTrace();
-
 			Log.e("PostRequest","Network error: " + e.getMessage());
 			return 502; }
 	}
@@ -78,7 +77,7 @@ public class PostRequest {
 	 * Makes an HTTP post request with the provided URL and parameters, returns the server's response code from that request
 	 * @param parameters
 	 * @return an int of the server's response code from the HTTP request */
-	public static int asyncPostHandler( String parameters, String url ) {
+	public static int httpRequestcode( String parameters, String url ) {
 		try {
 			return doPostRequestGetResponseCode( parameters, new URL(url) ); }
 		catch (MalformedURLException e) {
@@ -94,21 +93,17 @@ public class PostRequest {
 	 * Makes an HTTP post request with the provided URL and parameters, returns a string of the server's entire response. 
 	 * @param urlString
 	 * @return a string of the contents of the return from an HTML request.*/
-	public static String asyncRequestString(String parameters, String urlString) throws NullPointerException {
-		try { return doPostRequestGetResponseString(parameters, urlString); }
+	public static String httpRequestString(String parameters, String urlString)  {
+		try { return doPostRequestGetResponseString( parameters, urlString ); }
 		catch (IOException e) {
 			Log.e("PostRequest error", "Download File failed with exception: " + e);
-			Log.e("PostRequest error cont.", "parameters: " + parameters);
-			Log.e("PostRequest error cont.", "url: " + urlString);
 			e.printStackTrace();
-
-			throw new NullPointerException(); }
+			throw new NullPointerException("Download File failed."); }
 	}
 
 	/*##################################################################################
 	 ################################ Common Code ######################################
 	 #################################################################################*/
-
 
 	/**Creates an HTTP connection with minimal settings.  Some network funcitonality
 	 * requires this minimal object.
@@ -164,7 +159,7 @@ public class PostRequest {
 
 
 	/*##################################################################################
-	 ####################### HTTP Post Request Handlers ################################
+	 ####################### Actual Post Request Functions #############################
 	 #################################################################################*/
 
 	private static String doPostRequestGetResponseString(String parameters, String urlString) throws IOException {
@@ -212,6 +207,7 @@ public class PostRequest {
 	private static int doFileUpload(File file, URL uploadUrl) throws IOException {
 		HttpURLConnection connection = minimalHTTP( uploadUrl );
 		DataOutputStream request = new DataOutputStream( connection.getOutputStream() );
+		//insert the multipart parameter here.
 		DataInputStream inputStream = new DataInputStream( new FileInputStream(file) );
 
 		request.writeBytes( securityParameters() );		
@@ -269,21 +265,19 @@ public class PostRequest {
 				e.printStackTrace();
 			}
 		}
-		Log.i("NetworkUtilities", "Finished upload loop.");				
+		Log.i("NetworkUtilities", "Finished upload loop.");		
 	}
 
 
-	/**Try to upload a file to the server
+	/**Try to upload a file to the serverp
 	 * @param filename the short name (not the full path) of the file to upload
 	 * @return TRUE if the server reported "200 OK"; FALSE otherwise */
 	private static Boolean tryToUploadFile(String filename) throws IOException {
 		URL uploadUrl = new URL( appContext.getResources().getString(R.string.data_upload_url) );
 		File file = new File( appContext.getFilesDir() + "/" + filename );
 		
-		// request was successful (returned "200 OK"), return TRUE
 		if ( PostRequest.doFileUpload( file, uploadUrl ) == 200 ) { return true; }
 		return false;
-		// request failed (returned something other than 200), return FALSE
 	}
 
 

@@ -56,19 +56,16 @@ public class HTTPAsync extends AsyncTask<Void, Void, Void> {
 	/**Pops up an alert with the interpreted message from the server, according to the 
 	 * response code received
 	 * @param the response HTTP code from the PostRequest */
-	protected void alertUser() {
-		activity.runOnUiThread(new Runnable() {
-			public void run() {
-				//TODO: Eli...  test this...
-				if ((response == -1) && (responseString.length() == 3)) {
-					try {
-						AlertsManager.showAlert(responseCodeAlert( Integer.parseInt(responseString) ), activity);   }
-					catch (Exception e) {
-						AlertsManager.showAlert(responseCodeAlert( 1 ), activity);   }}
-				else if (response != 200) {
-					AlertsManager.showAlert(responseCodeAlert(response), activity);   }
-			}
-		} );
+	protected void alertUser() {   activity.runOnUiThread(new Runnable() {
+		public void run() {
+			if ((response == -1) && (responseString.length() == 3)) {
+				try {
+					AlertsManager.showAlert(responseCodeAlert( Integer.parseInt(responseString) ), activity);   }
+				catch (Exception e) {
+					AlertsManager.showAlert(responseCodeAlert( 1 ), activity);   } }
+			else if (response != 200) {
+				AlertsManager.showAlert(responseCodeAlert(response), activity);   }
+		} }	);
 	}
 	
 	/**Checks a given response code sent from the server, and then returns a string corresponding to the code,
@@ -82,7 +79,7 @@ public class HTTPAsync extends AsyncTask<Void, Void, Void> {
 		else if (responseCode == 502) { return "Please connect to the internet and try again";}
 		//TODO: Eli. investigate what response code = 1 means in java? python?
 		else if (responseCode == 1) { return "Someone misconfigured the server, please contact staff";}
-		else { return "Internal server error..."; }
+		else { return "An unknown error occured."; }
 	}
 	
 }

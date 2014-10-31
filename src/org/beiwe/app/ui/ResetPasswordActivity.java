@@ -100,7 +100,7 @@ public class ResetPasswordActivity extends Activity {
 		protected Void doInBackground(Void... arg0) {
 			parameters = PostRequest.makeParameter( "new_password", newPassword );
 			Log.i("debugging", "about to send post request");
-			response = PostRequest.asyncPostHandler( parameters, url );
+			response = PostRequest.httpRequestcode( parameters, url );
 			return null; //haaaate
 		}
 				

@@ -46,7 +46,7 @@ public class ForgotPasswordActivity extends Activity {
 		protected Void doInBackground(Void... arg0) {
 			
 			parameters = PostRequest.makeParameter( "new_password", hashedNewPassword );
-			responseString = PostRequest.asyncRequestString( parameters, url );
+			responseString = PostRequest.httpRequestString( parameters, url );
 			//TODO: make this function return the current password for the user.
 			return null; //hate.
 		}
