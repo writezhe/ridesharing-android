@@ -95,9 +95,9 @@ public class DebugInterfaceActivity extends Activity {
 		LoginManager.logoutUser();
 		finish(); }
 	
-	public void bluetoothButtonStart (View view){ BackgroundProcess.getBackgroundHandle().bluetoothListener.enableBLEScan();	}
+	//public void bluetoothButtonStart (View view){ BackgroundProcess.getBackgroundHandle().bluetoothListener.enableBLEScan();	}
 
-	public void bluetoothButtonStop (View view){ BackgroundProcess.getBackgroundHandle().bluetoothListener.disableBLEScan();	}
+	//public void bluetoothButtonStop (View view){ BackgroundProcess.getBackgroundHandle().bluetoothListener.disableBLEScan();	}
 	
 	public void buttonTimer(View view) { BackgroundProcess.getBackgroundHandle().startTimers(); }
 	
