@@ -5,6 +5,7 @@ import org.beiwe.app.R;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.ui.AlertsManager;
 import org.beiwe.app.ui.LoginActivity;
+import org.beiwe.app.ui.MainMenuActivity;
 import org.beiwe.app.ui.RegisterActivity;
 
 import android.app.Activity;
@@ -159,35 +160,24 @@ public class LoginManager {
 	##################################### Log In ################################################
 	###########################################################################################*/
 
-	//TODO: Eli.  make this... less... dumb?  rewrite it...?
 	/**Checks which page the user should scroll to. If there was an active session, the user will
 	 * be transferred to {@link DebugInterfaceActivity}, otherwise if there was information saved in
 	 * SharedPreferences, the user will be transferred to {@link LoginActivity}. Otherwise, it is
 	 * the user's first time, therefore will start with {@link RegisterActivity}. */
 	public static Intent login(){
-		Class debug = RegisterActivity.class;
-//    	Class debug = LoginActivity.class;
-//    	Class debug = MainMenuActivity.class;
-//    	Class debug = ResetPasswordActivity.class;
-
-		//  What the hell does this log statement mean.
-		Log.i("LoginSessionManager", "Already logged in: " + isRegistered() );
 
 		if(isLoggedIn()) {
 			// If already logged in, take user to the main menu screen
 			// TODO: postproduction. before launch, uncomment this line:
-			//Intent intent = new Intent(appContext, MainMenuActivity.class);
-			return new Intent(appContext, debug); }
+			//return new Intent(appContext, MainMenuActivity.class); }
+			return new Intent(appContext, DebugInterfaceActivity.class); }
 		else {
 			if (isRegistered()) {
 				// If not logged in, but has registered, take user to the login screen
 				return new Intent(appContext, LoginActivity.class); }
 			else {
 				// If not logged in and hasn't registered, take user to registration screen
-				Log.i("LoginSessionManager", "First time logged in");
-				// TODO: DEBUG CODE. uncomment this line:
-				//Intent intent = new Intent(appContext, RegisterActivity.class);
-				return new Intent(appContext, debug); }
+				return new Intent(appContext, RegisterActivity.class); }
 		}
 	}
 }
