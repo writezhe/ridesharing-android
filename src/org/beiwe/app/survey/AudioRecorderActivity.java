@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.beiwe.app.R;
 import org.beiwe.app.session.LoginManager;
-import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.ui.AppNotifications;
 
 import android.app.Activity;
@@ -73,8 +72,8 @@ public class AudioRecorderActivity extends Activity {
 
 	    fileDirectory = getApplicationContext().getFilesDir().getAbsolutePath();
         
-    	playButton = (Button) findViewById(R.id.recording_activity_playback_button);
-    	recordingButton = (Button) findViewById(R.id.recording_activity_recording_button);
+    	playButton = (Button) findViewById(R.id.play_button);
+    	recordingButton = (Button) findViewById(R.id.recording_button);
         
     	// Each time the screen is flipped, the app checks if it's time to show the play button
     	checkPlayButtonVisibility(mFileName);
@@ -157,8 +156,8 @@ public class AudioRecorderActivity extends Activity {
     	currentlyPlaying = true;
     	
     	// Toggles button
-    	playButton.setText("Press to stop");
-    	playButton.setBackgroundResource(R.drawable.ic_scrubs_stop_recording);
+    	playButton.setText(getApplicationContext().getString(R.string.play_button_stop_text));
+    	playButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.stop_button, 0, 0);
     	
     	// Recording sequence
     	mPlayer = new MediaPlayer();
@@ -185,8 +184,8 @@ public class AudioRecorderActivity extends Activity {
     	currentlyPlaying = false;
     	
     	// Toggles button
-    	playButton.setText("Press to play");
-    	playButton.setBackgroundResource(R.drawable.ic_scrubs_record_play);
+    	playButton.setText(getApplicationContext().getString(R.string.play_button_text));
+    	playButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.play_button, 0, 0);
 
     	mPlayer.release();
         mPlayer = null;
@@ -214,8 +213,8 @@ public class AudioRecorderActivity extends Activity {
 		AppNotifications.dismissNotificatoin(getApplicationContext(), AppNotifications.recordingCode);
 
     	// Toggles button
-    	recordingButton.setText("Press to stop");
-    	recordingButton.setBackgroundResource(R.drawable.ic_scrubs_stop_recording);
+    	recordingButton.setText(getApplicationContext().getString(R.string.record_button_stop_text));
+    	recordingButton.setBackgroundResource(android.R.drawable.btn_default);
     	
     	// Note: AudioEncoder.AAC requires the phone to have api 10+.
         mRecorder = new MediaRecorder();
@@ -245,8 +244,8 @@ public class AudioRecorderActivity extends Activity {
     private void stopRecording() {
     	checkPlayButtonVisibility(mFileName);
     	currentlyRecording = false;
-    	recordingButton.setText("Press to record");
-    	recordingButton.setBackgroundResource(R.drawable.ic_scrubs_recording_button);
+    	recordingButton.setText(getApplicationContext().getString(R.string.record_button_text));
+    	recordingButton.setBackgroundResource(android.R.drawable.btn_default);
 
     	cancelTimerForRecordingTimeout();
     	

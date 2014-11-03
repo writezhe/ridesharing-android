@@ -20,55 +20,42 @@
     <View 
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.1"/>
+        android:layout_weight="1"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.34"
+        android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/recording_activity_recording_button"
+            android:id="@+id/recording_button"
             android:layout_width="wrap_content"
-            android:layout_height="137dp"
-            android:layout_gravity="center"
-            android:layout_weight="0.04"
-            android:background="@drawable/ic_scrubs_recording_button"
-            android:contentDescription="@string/record_activity_button"
-            android:gravity="top|center"
-            android:onClick="buttonRecordPressed"
-            android:paddingTop="10dp"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_scrubs_record"
-            android:text="@string/record_activity_record_button_text" />
-
+            android:layout_height="wrap_content"
+            android:text="@string/record_button_text"
+            android:drawableTop="@drawable/record_button"
+            android:background="@android:drawable/btn_default"
+            android:onClick="buttonRecordPressed" />
+        
         <View
             android:id="@+id/separator_view"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.10" />
+            android:layout_weight="1" />
 
         <Button
-            android:id="@+id/recording_activity_playback_button"
+            android:id="@+id/play_button"
             android:layout_width="wrap_content"
-            android:layout_height="137dp"
-            android:layout_gravity="center"
-            android:layout_weight="0.03"
-            android:background="@drawable/ic_scrubs_record_play"
-            android:contentDescription="@string/record_activity_playback"
-            android:gravity="top|center"
-            android:onClick="buttonPlayPressed"
-            android:paddingTop="10dp"
-            android:scaleType="fitCenter"
-            android:text="@string/record_activity_play_button_text" />
-
+            android:layout_height="wrap_content"
+            android:text="@string/play_button_text"
+            android:drawableTop="@drawable/play_button"
+            android:background="@android:drawable/btn_default"
+            android:onClick="buttonPlayPressed" />
+        
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_weight="0.00000005" />
+        android:layout_height="50dp" />
 
     <Button
         android:id="@+id/record_activity_hotline"
@@ -77,6 +64,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right|end"
         android:onClick="callHotline"
+        android:background="@android:drawable/btn_default"
         android:text="@string/main_menu_call_hotline" />
 
 </LinearLayout>
