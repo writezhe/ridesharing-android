@@ -5,7 +5,6 @@ import org.beiwe.app.R;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.ui.AlertsManager;
 import org.beiwe.app.ui.LoginActivity;
-import org.beiwe.app.ui.MainMenuActivity;
 import org.beiwe.app.ui.RegisterActivity;
 
 import android.app.Activity;
@@ -13,7 +12,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.util.Log;
 
 
 /**A class used to manage login sessions. Uses SharedPreferences in order to save
