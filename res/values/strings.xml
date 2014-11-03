@@ -126,5 +126,10 @@
     <string name="action_gps_timer">GPS Timer</string>
     <string name="action_signout_timer">Signout Timer</string>
     <string name="action_wifi_log">Wifi Log</string>
+
+    <string name="menu_sign_out">Sign Out</string>
+    <string name="menu_change_password">Change Password</string>
+    <string name="menu_about">About This App</string>
+    <string name="menu_call_hotline">Call Hotline</string>
     
 </resources>

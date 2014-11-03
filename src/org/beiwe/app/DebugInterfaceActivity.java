@@ -11,10 +11,12 @@ import org.beiwe.app.survey.SurveyType.Type;
 import org.beiwe.app.ui.AppNotifications;
 import org.beiwe.app.ui.LoginActivity;
 import org.beiwe.app.ui.MainMenuActivity;
+import org.beiwe.app.ui.ResetPasswordActivity;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -44,18 +46,37 @@ public class DebugInterfaceActivity extends Activity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.debug_interface, menu);
+		getMenuInflater().inflate(R.menu.common_menu, menu);
 		return true;
 	}
 	
 	@Override
+	// TODO Josh: put this into the Activity superclass, once it's built.
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) { return true; }
-		return super.onOptionsItemSelected(item);
+		switch (item.getItemId()) {
+		case R.id.menu_about:
+			// TODO Josh: create an about-the-app page/activity.
+			return true;
+		case R.id.menu_call_hotline:
+			// TODO Josh: if possible, maybe make this a static function somewhere, or just make sure it's only implemented once. Right now it's implemented like 3 times. Just ack for "R.string.hotline_phone_number" or something to figure out where else it's implemented.
+			Intent callIntent = new Intent(Intent.ACTION_CALL);
+			String phoneNum = (String) getApplicationContext().getResources().getText(R.string.hotline_phone_number);
+		    callIntent.setData(Uri.parse("tel:" + phoneNum));
+		    startActivity(callIntent);
+			return true;
+		case R.id.menu_change_password:
+			startActivity(new Intent(getApplicationContext(), ResetPasswordActivity.class));
+			return true;
+		case R.id.menu_signout:
+			LoginManager.logoutUser();
+			finish();			
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
 	
 	public void printInternalLog(View view) {
