@@ -92,13 +92,14 @@
     <string name="main_menu_reset_password">Reset Password</string>
     
     <!-- Recording Activity -->
-    <string name="record_activity_error_message">If you\'re seeing this, it means something broke. Please contact the administrator</string>
+    <string name="record_activity_default_message">Please press "Record" and speak for about 2 minutes, describing your day and how you are feeling.  A live person is not guaranteed to listen to your message!</string>
     <string name="record_activity_button">Press to record</string>
     <string name="record_activity_playback">Play recording</string>
     <string name="play_button_text">Play</string>
     <string name="play_button_stop_text">Stop</string>
     <string name="record_button_text">Record</string>
     <string name="record_button_stop_text">Stop</string>
+    <string name="done_button_text">Done</string>
     <string name="timeout_msg_1st_half">"The voice recording can't be longer than "</string>
     <string name="timeout_msg_2nd_half">" minutes, so your recording was automatically stopped and saved"</string>
 
