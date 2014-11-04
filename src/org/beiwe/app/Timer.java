@@ -82,12 +82,14 @@ public class Timer {
 		signoutIntent = setupIntent( appContext.getString(R.string.signout_intent) );
 		voiceRecordingIntent = setupIntent( appContext.getString(R.string.voice_recording) );
 		weeklySurveyIntent = setupIntent( appContext.getString(R.string.weekly_survey) );
+		wifiLogTimerIntent = setupIntent( appContext.getString( R.string.wifi_timer ) );
 		
 		// Set up timer intents
 		accelerometerTimerIntent = setupIntent( appContext.getString(R.string.action_accelerometer_timer) );
 		bluetoothTimerIntent = setupIntent( appContext.getString(R.string.action_bluetooth_timer) );
 		GPSTimerIntent = setupIntent( appContext.getString(R.string.action_gps_timer) );
 		signOutTimerIntent = setupIntent( appContext.getString(R.string.action_signout_timer) );
+		wifiLogIntent = setupIntent( appContext.getString(R.string.action_wifi_log) );
 		// TODO: Eli, determine if we need to add wifiLogIntent here?
 	}
 
