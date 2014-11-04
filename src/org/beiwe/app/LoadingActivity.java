@@ -56,6 +56,9 @@ public class LoadingActivity extends Activity{
 				PostRequest.initialize( getApplicationContext() );
 				WifiListener.initialize( getApplicationContext() );
 			}
+			else {
+				Log.d("LoadingActivity", "BackgroundProcess is currently running." );
+			}
 		}
 		else { failureExit(); }
 		
