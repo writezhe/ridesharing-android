@@ -54,6 +54,7 @@ public class LoadingActivity extends Activity{
 				LoginManager.initialize( getApplicationContext() );
 				TextFileManager.start( getApplicationContext() );
 				PostRequest.initialize( getApplicationContext() );
+				WifiListener.initialize( getApplicationContext() );
 			}
 		}
 		else { failureExit(); }
