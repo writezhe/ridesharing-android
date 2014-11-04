@@ -55,6 +55,9 @@ public class LoadingActivity extends Activity{
 				TextFileManager.start( getApplicationContext() );
 				PostRequest.initialize( getApplicationContext() );
 			}
+			else {
+				Log.d("LoadingActivity", "BackgroundProcess is currently running." );
+			}
 		}
 		else { failureExit(); }
 		

@@ -6,7 +6,6 @@ import org.beiwe.app.session.SessionActivity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 
@@ -25,10 +24,7 @@ public class MainMenuActivity extends SessionActivity {
 	
 	/**Calls... the hotline. */
 	public void callHotline(View v) {
-		Intent callIntent = new Intent(Intent.ACTION_CALL);
-		String phoneNum = (String) getApplicationContext().getResources().getText(R.string.hotline_phone_number);
-	    callIntent.setData(Uri.parse("tel:" + phoneNum));
-	    startActivity(callIntent);
+		super.callHotline();
 	}
 
 	/*#########################################################################

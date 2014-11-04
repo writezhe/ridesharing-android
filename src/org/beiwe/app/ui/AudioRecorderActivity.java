@@ -6,13 +6,10 @@ import org.beiwe.app.R;
 import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.session.SessionActivity;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaRecorder;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -296,19 +293,11 @@ public class AudioRecorderActivity extends SessionActivity {
     }
     
     
-    /*/////////////////////////////////////////////////*/
-    /*////////Hotline - consider making static/////////*/ 
-    /*/////////////////////////////////////////////////*/
     /**
-     * Places a call to the hotline.
-     * 
-     * Note: Consider making this a static function.
+     * Places a call to the emergency hotline.
      */
     public void callHotline(View v) {
-		Intent callIntent = new Intent(Intent.ACTION_CALL);
-		String phoneNum = (String) getApplicationContext().getResources().getText(R.string.hotline_phone_number);
-	    callIntent.setData(Uri.parse("tel:" + phoneNum));
-	    startActivity(callIntent);
+    	super.callHotline();
 	}
     
 }

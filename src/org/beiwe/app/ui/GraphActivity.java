@@ -1,19 +1,14 @@
 package org.beiwe.app.ui;
 
-import java.util.HashMap;
-
 import org.apache.http.util.EncodingUtils;
 import org.beiwe.app.R;
-import org.beiwe.app.R.id;
-import org.beiwe.app.R.layout;
 import org.beiwe.app.networking.PostRequest;
+import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.session.SessionActivity;
 
-import android.app.Activity;
-import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.service.textservice.SpellCheckerService.Session;
-import android.util.Log;
+import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -56,5 +51,14 @@ public class GraphActivity extends SessionActivity {
 
 		String postData = PostRequest.securityParameters();
 		browser.postUrl(beiweGraph, EncodingUtils.getBytes(postData, "BASE64"));
+	}
+	
+	public void callHotline(View v) {
+		super.callHotline();
+	}
+	
+	public void signOutButton(View v) {
+		LoginManager.setLoggedIn(false);
+		startActivity( new Intent(getApplicationContext(), LoginActivity.class) );
 	}
 }
