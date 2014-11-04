@@ -2,9 +2,8 @@ package org.beiwe.app.ui;
 
 import org.beiwe.app.R;
 import org.beiwe.app.session.LoginManager;
-import org.beiwe.app.survey.AudioRecorderActivity;
+import org.beiwe.app.session.SessionActivity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -13,7 +12,7 @@ import android.view.View;
 
 /**The main menu activity of the app. Currently displays 4 buttons - Audio Recording, Graph, Hotline, and Sign out.
  * @author Dor Samet, Eli Jones */
-public class MainMenuActivity extends Activity {
+public class MainMenuActivity extends SessionActivity {
 	//extends a SessionActivity
 	private Context appContext;	 
 	

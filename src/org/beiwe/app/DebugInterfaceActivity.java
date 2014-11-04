@@ -5,15 +5,15 @@ import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.TextFileManager;
-import org.beiwe.app.survey.AudioRecorderActivity;
-import org.beiwe.app.survey.SurveyActivity;
 import org.beiwe.app.survey.SurveyType.Type;
 import org.beiwe.app.ui.AlertsManager;
 import org.beiwe.app.ui.AppNotifications;
+import org.beiwe.app.ui.AudioRecorderActivity;
 import org.beiwe.app.ui.LoginActivity;
 import org.beiwe.app.ui.MainMenuActivity;
 import org.beiwe.app.ui.ResetPasswordActivity;
 import org.beiwe.app.ui.RegisterActivity;
+import org.beiwe.app.ui.SurveyActivity;
 
 import android.content.Context;
 import android.content.Intent;

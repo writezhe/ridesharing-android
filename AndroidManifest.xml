@@ -54,10 +54,10 @@
             android:name=".DebugInterfaceActivity"
             android:label="@string/app_name" />
         <activity
-            android:name=".survey.AudioRecorderActivity"
+            android:name="org.beiwe.app.ui.AudioRecorderActivity"
             android:label="@string/title_activity_audio_recorder" />
         <activity
-            android:name=".survey.SurveyActivity"
+            android:name="org.beiwe.app.ui.SurveyActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_survey" />
         <activity

@@ -1,8 +1,6 @@
 package org.beiwe.app.ui;
 
 import org.beiwe.app.R;
-import org.beiwe.app.survey.AudioRecorderActivity;
-import org.beiwe.app.survey.SurveyActivity;
 import org.beiwe.app.survey.SurveyType;
 
 import android.app.Notification;

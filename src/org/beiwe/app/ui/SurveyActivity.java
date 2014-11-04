@@ -1,10 +1,14 @@
-package org.beiwe.app.survey;
+package org.beiwe.app.ui;
 
 import org.beiwe.app.R;
+import org.beiwe.app.session.SessionActivity;
+import org.beiwe.app.survey.JsonParser;
+import org.beiwe.app.survey.QuestionsDownloader;
+import org.beiwe.app.survey.SurveyAnswersRecorder;
+import org.beiwe.app.survey.SurveyTimingsRecorder;
+import org.beiwe.app.survey.SurveyType;
 import org.beiwe.app.survey.SurveyType.Type;
-import org.beiwe.app.ui.AppNotifications;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -13,7 +17,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-public class SurveyActivity extends Activity {
+public class SurveyActivity extends SessionActivity {
 	
 	private LinearLayout surveyLayout;
 	private SurveyAnswersRecorder answersRecorder;

@@ -1,10 +1,10 @@
-package org.beiwe.app.survey;
+package org.beiwe.app.ui;
 
 import java.io.IOException;
 
 import org.beiwe.app.R;
 import org.beiwe.app.session.LoginManager;
-import org.beiwe.app.ui.AppNotifications;
+import org.beiwe.app.session.SessionActivity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -36,7 +36,7 @@ import android.widget.Toast;
  * 
  * @author Josh Zagorsky, May 2014
  */
-public class AudioRecorderActivity extends Activity {
+public class AudioRecorderActivity extends SessionActivity {
     private static final String LOG_TAG = "AudioRecorderActivity";
     private static String fileDirectory = null;
     private static String mFileName = null;
