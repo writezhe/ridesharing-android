@@ -17,15 +17,22 @@
         android:text="@string/record_activity_error_message"
         android:textAppearance="?android:attr/textAppearanceLarge" />
     
-    <View 
+    <View
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="0dp"
+        android:paddingTop="50dp"
         android:orientation="horizontal" >
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
 
         <Button
             android:id="@+id/recording_button"
@@ -37,10 +44,9 @@
             android:onClick="buttonRecordPressed" />
         
         <View
-            android:id="@+id/separator_view"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="2" />
 
         <Button
             android:id="@+id/play_button"
@@ -51,11 +57,17 @@
             android:background="@android:drawable/btn_default"
             android:onClick="buttonPlayPressed" />
         
+        <View
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
     </LinearLayout>
 
-    <View
+    <View 
         android:layout_width="match_parent"
-        android:layout_height="50dp" />
+        android:layout_height="0dp"
+        android:layout_weight="3"/>
 
     <Button
         android:id="@+id/record_activity_hotline"

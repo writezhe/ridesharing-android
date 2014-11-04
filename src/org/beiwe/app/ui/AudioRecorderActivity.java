@@ -211,7 +211,7 @@ public class AudioRecorderActivity extends SessionActivity {
 
     	// Toggles button
     	recordingButton.setText(getApplicationContext().getString(R.string.record_button_stop_text));
-    	recordingButton.setBackgroundResource(android.R.drawable.btn_default);
+    	recordingButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.stop_recording_button, 0, 0);
     	
     	// Note: AudioEncoder.AAC requires the phone to have api 10+.
         mRecorder = new MediaRecorder();
@@ -242,7 +242,7 @@ public class AudioRecorderActivity extends SessionActivity {
     	checkPlayButtonVisibility(mFileName);
     	currentlyRecording = false;
     	recordingButton.setText(getApplicationContext().getString(R.string.record_button_text));
-    	recordingButton.setBackgroundResource(android.R.drawable.btn_default);
+    	recordingButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.record_button, 0, 0);
 
     	cancelTimerForRecordingTimeout();
     	

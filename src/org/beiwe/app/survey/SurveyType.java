@@ -3,7 +3,6 @@ package org.beiwe.app.survey;
 import org.beiwe.app.R;
 
 public class SurveyType {
-	// TODO Josh: can this public enum _not_ be wrapped in a class?  That would make calling it easier
 	public enum Type {
 		DAILY (002,
 				"daily",
