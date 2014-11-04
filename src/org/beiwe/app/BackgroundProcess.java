@@ -34,7 +34,7 @@ public class BackgroundProcess extends Service {
 	public AccelerometerListener accelerometerListener;
 	public BluetoothListener bluetoothListener;
 	
-	private Timer timer;
+	private static Timer timer;
 	
 	//TODO: Eli. this [stupid hack] should only be necessary for debugging, comment out before production?
 	private static BackgroundProcess BackgroundHandle = null;
@@ -67,10 +67,7 @@ public class BackgroundProcess extends Service {
 		startCallLogger();
 		startPowerStateListener();
 		
-		
-		timer = new Timer(this);
-		//if we are going to comment out startTimers function we still have to initialize the timer object (un-comment the line above)
-//		startTimers();
+		startTimers();
 	}
 	
 	/*#############################################################################
@@ -106,33 +103,7 @@ public class BackgroundProcess extends Service {
 		registerReceiver( (BroadcastReceiver) new PowerStateListener(), filter);
 		PowerStateListener.start();
 	}
-		
-	/*#############################################################################
-	####################       Externally Accessed Functions       ################
-	#############################################################################*/
-	
-	
-	/** Checks whether the foreground app is Beiwe
-	 * @param myPackage
-	 * @return */
-	/*
-	 * Some things I found while researching this but never really got around to write:
-	 * http://stackoverflow.com/questions/8489993/check-android-application-is-in-foreground-or-not
-	 * http://stackoverflow.com/questions/2166961/determining-the-current-foreground-application-from-a-background-task-or-service
-	 * 
-	 * Basically this can be checked using an AsyncTask.
-	 * 
-	 */
-	// TODO: Eli/Josh deprecate this function? every activity calls finish() when it ends, so onPause() should only get called when the app is paused/no longer foreground.
-    // IN ORDER TO USE THIS FUNCTION, YOU MUST UNCOMMENT THE PERMISSION "GET_TASKS" IN MANIFEST.XML
-	/*public boolean isForeground(String myPackage){
-		ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
-		List < ActivityManager.RunningTaskInfo > runningTaskInfo = manager.getRunningTasks(1); 
-		
-		ComponentName componentInfo = runningTaskInfo.get(0).topActivity;
-		if(componentInfo.getPackageName().equals(myPackage)) return true;
-		return false;
-	}*/
+
 	
 	/*#############################################################################
 	####################            Timer Logic             #######################
@@ -160,23 +131,19 @@ public class BackgroundProcess extends Service {
 		filter.addAction( appContext.getString( R.string.signout_intent ) );
 		filter.addAction( appContext.getString( R.string.voice_recording ) );
 		filter.addAction( appContext.getString( R.string.weekly_survey ) );
-		
-		timer.setupExactHourlyAlarm(Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
-		timer.setupSingularExactAlarm( 5000L, Timer.signOutTimerIntent, Timer.signoutIntent);
 		registerReceiver(controlMessageReceiver, filter);
-	
-		//TODO: Josh, create timer for checking for a new survey. (I think you have done this)  
 		
-		timer.setupExactHourlyAlarm( Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
-		timer.setupSingularExactAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent);
-		timer.setupSingularFuzzyAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOnIntent);
-		// FIXME: Eli, setting up the WiFi log timer intent causes an NPE; please debug
-		//timer.setupSingularFuzzyAlarm( 5000L, Timer.wifiLogTimerIntent, Timer.wifiLogIntent);				
-		// Start voice recording alarm
-		timer.setupDailyRepeatingAlarm(19, new Intent(appContext.getString(R.string.voice_recording)));
+//		timer.setupSingularExactAlarm( 5000L, Timer.signOutTimerIntent, Timer.signoutIntent);
+//		timer.setupSingularExactAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent);
+//		timer.setupSingularFuzzyAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOnIntent);
+//		timer.setupExactHourlyAlarm(Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
+//		timer.setupSingularFuzzyAlarm( 5000L, Timer.wifiLogTimerIntent, Timer.wifiLogIntent);
+		
+		//FIXME: Josh, create timer for checking for a new survey.  
+//		timer.setupDailyRepeatingAlarm(19, new Intent(appContext.getString(R.string.voice_recording)));
 	}
 	
-	public void restartTimeout(){
+	public static void restartTimeout(){
 		timer.setupSingularExactAlarm( 5000L, Timer.signOutTimerIntent, Timer.signoutIntent);
 	}
 	
