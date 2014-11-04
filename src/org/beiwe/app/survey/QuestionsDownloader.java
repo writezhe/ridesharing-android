@@ -136,7 +136,7 @@ public class QuestionsDownloader {
 	
 	
 	private void writeSurveyToFile(String survey, TextFileManager file) {
-		Log.i("QuestionsDownloader.java", "writeSurveyToFile() called on " + file.name);
+		Log.d("QuestionsDownloader.java", "writeSurveyToFile() called on " + file.name);
 		if (survey != null) {
 			file.deleteSafely();
 			file.write(survey);

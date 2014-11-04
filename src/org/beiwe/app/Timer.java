@@ -139,8 +139,6 @@ public class Timer {
 	 * @param hourOfDay in 24-hr time, when the alarm should fire. E.g., "19" means 7pm every day
 	 * @param intentToBeBroadcast the intent to be broadcast when the alarm fires      */
 	public void setupDailyRepeatingAlarm(int hourOfDay, Intent intentToBeBroadcast) {
-		// TODO: Josh, use this log statement to test surveys downloaded from server
-		Log.i("Timer", "setupDailyRepeatingAlarm(" + hourOfDay + ", " + intentToBeBroadcast);
 		// TODO: Josh, purge existing alarms?
 		Calendar date = new GregorianCalendar();
 		date.set(Calendar.HOUR_OF_DAY, hourOfDay);
@@ -152,7 +150,7 @@ public class Timer {
 		
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
 		long oneDayInMillis = 24 * 60 * 60 * 1000L; // TODO: Josh use the line below for debugging
-		//long oneDayInMillis = 10 * 1000L;
+		//long oneDayInMillis = 20 * 1000L;
 		
 		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, triggerAtMillis, oneDayInMillis, pendingIntent);		
 	}
@@ -163,8 +161,6 @@ public class Timer {
 	 * @param hourOfDay in 24-hr time, when the alarm should fire. E.g., "19" means 7pm every day
 	 * @param intentToBeBroadcast the intent to be broadcast when the alarm fires      */
 	public void setupWeeklyRepeatingAlarm(int dayOfWeek, int hourOfDay, Intent intentToBeBroadcast) {
-		// TODO: Josh, use this log statement to test surveys downloaded from server
-		Log.i("Timer", "setupWeeklyRepeatingAlarm(" + dayOfWeek + ", " + hourOfDay + ", " + intentToBeBroadcast);
 		Calendar date = new GregorianCalendar();
 		date.set(Calendar.DAY_OF_WEEK, dayOfWeek);
 		date.set(Calendar.HOUR_OF_DAY, hourOfDay);

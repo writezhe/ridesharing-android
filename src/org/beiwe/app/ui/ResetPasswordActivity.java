@@ -8,6 +8,7 @@ import org.beiwe.app.R;
 import org.beiwe.app.networking.HTTPAsync;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.LoginManager;
+import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
 import android.annotation.SuppressLint;
@@ -28,8 +29,8 @@ import android.widget.EditText;
  */
 
 @SuppressLint("ShowToast")
-public class ResetPasswordActivity extends Activity {
-	//extends a SessionActivity
+public class ResetPasswordActivity extends SessionActivity {
+	// extends SessionActivity
 	private Context appContext;
 	private EditText oldPass;
 	private EditText newPassword;
@@ -108,7 +109,7 @@ public class ResetPasswordActivity extends Activity {
 		protected void onPostExecute(Void arg) {
 			if (response == 200) { 
 				LoginManager.setPassword(newPassword);
-				activity.finish();
+				this.activity.finish();
 			}
 			//TODO: Josh/Eli.  change to the app string thing.
 			AlertsManager.showAlert("could not reset password", activity);

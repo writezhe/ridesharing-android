@@ -53,7 +53,7 @@ public class LoginActivity extends Activity {
 	 * IF session is logged in (value in shared prefs), keep the session logged in.
 	 * IF session is not logged in, wait for user input.
 	 * @param view*/
-	public void loginSequence(View view) {		
+	public void loginButton(View view) {		
 		if ( LoginManager.checkPassword( password.getText().toString() ) ) {
 			LoginManager.setLoggedIn(true);
 			finish();

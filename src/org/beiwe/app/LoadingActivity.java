@@ -35,7 +35,7 @@ public class LoadingActivity extends Activity{
 	//extends a regular activity
 	
 	public static Class loadThisActivity = DebugInterfaceActivity.class;
-//	public static Class loadedActivity = MainMenuActivity.class;
+//	public static Class loadThisActivity = MainMenuActivity.class;
 	
 	
 	/**onCreate - right now it just calls on checkLogin() in SessionManager, and moves the activity
@@ -65,7 +65,7 @@ public class LoadingActivity extends Activity{
 		//if device is registered push user to the main menu.
 //		else { startActivity(new Intent(this, MainMenuActivity.class) ); }
 		else {
-			Log.i("something else", "anything");
+			Log.d("something else", "anything");
 			startActivity(new Intent(this, loadThisActivity) ); } 
 		finish(); //weird, but otherwise it may be possible for the user to actually see the loading screen.
 	}

@@ -44,7 +44,9 @@ public class SessionActivity extends Activity {
 		if ( BackgroundProcess.getBackgroundHandle() != null ){
 			Log.d("sessionmanager", "actually doing timer");
 			BackgroundProcess.getBackgroundHandle().restartTimeout();
-			LoginManager.setLoggedIn(true);
+			LoginManager.setLoggedIn(true); }
+		else {
+			Log.e("sessionmanager", "BackgroundProcess is not working!");
 		}
 	}
 	

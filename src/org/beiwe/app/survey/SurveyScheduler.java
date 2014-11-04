@@ -20,7 +20,6 @@ public class SurveyScheduler {
 	
 	
 	public void scheduleSurvey(String jsonSurveyString) {
-		Log.i("SurveyScheduler", "scheduleSurvey() called");
 		// TODO: Josh ask Eli, is it safe to grab the Background Handle like this?
 		// Answer: no, you always need to handle the case where the background handle is null.
 		if (BackgroundProcess.getBackgroundHandle() == null) {
@@ -37,16 +36,13 @@ public class SurveyScheduler {
 			// Schedule a daily survey
 			Intent intent = new Intent(appContext.getString(R.string.daily_survey));
 			timer.setupDailyRepeatingAlarm(hour, intent);
-			Log.i("SurveyScheduler", "Daily survey scheduled");
 		}
 		else {
 			// Schedule a weekly survey
 			int dayOfWeek = dayOfWeekToAskSurvey(jsonSurveyString);
 			Intent intent = new Intent(appContext.getString(R.string.weekly_survey));
 			timer.setupWeeklyRepeatingAlarm(dayOfWeek, hour, intent);
-			Log.i("SurveyScheduler", "Weekly survey scheduled");
 		}
-		Log.i("SurveyScheduler", "scheduleSurvey() finished");
 	}
 	
 	

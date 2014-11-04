@@ -49,7 +49,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="fill_horizontal"
-        android:onClick="loginSequence"
+        android:onClick="loginButton"
         android:text="@string/title_activity_login_string" />
 
     <Button
