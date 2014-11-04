@@ -22,6 +22,14 @@ public class SurveyScheduler {
 	public void scheduleSurvey(String jsonSurveyString) {
 		Log.i("SurveyScheduler", "scheduleSurvey() called");
 		// TODO: Josh ask Eli, is it safe to grab the Background Handle like this?
+		// Answer: no, you always need to handle the case where the background handle is null.
+		if (BackgroundProcess.getBackgroundHandle() == null) {
+			Log.i("SURVEYSCHEDULER", "BACKGROUND PROCESS IS NOT RUNNING");
+			Log.d("SURVEYSCHEDULER", "BACKGROUND PROCESS IS NOT RUNNING");
+			Log.e("SURVEYSCHEDULER", "BACKGROUND PROCESS IS NOT RUNNING");
+			return;
+		}
+			
 		Timer timer = new Timer(BackgroundProcess.getBackgroundHandle());
 		int hour = hourOfDayToAskSurvey(jsonSurveyString);
 

@@ -37,12 +37,11 @@ public class BackgroundProcess extends Service {
 	private Timer timer;
 	
 	//TODO: Eli. this [stupid hack] should only be necessary for debugging, comment out before production?
-	public static BackgroundProcess BackgroundHandle = null;
+	private static BackgroundProcess BackgroundHandle = null;
 
-	public static BackgroundProcess getBackgroundHandle() throws NullPointerException{
-		if (BackgroundHandle != null) { return BackgroundHandle; }
-		throw new NullPointerException("background process handle called for before background process had started.");
-	}
+	//returns the backgroundHandle
+	//always check to see if null before using.
+	public static BackgroundProcess getBackgroundHandle() throws NullPointerException{ return BackgroundHandle;	}
 	
 	
 	@Override
@@ -68,6 +67,9 @@ public class BackgroundProcess extends Service {
 		startCallLogger();
 		startPowerStateListener();
 		
+		
+		timer = new Timer(this);
+		//if we are going to comment out startTimers function we still have to initialize the timer object (un-comment the line above)
 //		startTimers();
 	}
 	
@@ -160,7 +162,7 @@ public class BackgroundProcess extends Service {
 		filter.addAction( appContext.getString( R.string.weekly_survey ) );
 		
 		timer.setupExactHourlyAlarm(Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
-		timer.setupSingularExactAlarm( 5000L, Timer.signOutTimerIntent, Timer.signoutIntent); // Automatic Signout, also this line is simply incorrect
+		timer.setupSingularExactAlarm( 5000L, Timer.signOutTimerIntent, Timer.signoutIntent);
 		registerReceiver(controlMessageReceiver, filter);
 	
 		//TODO: Josh, create timer for checking for a new survey. (I think you have done this)  
@@ -172,7 +174,11 @@ public class BackgroundProcess extends Service {
 		//timer.setupSingularFuzzyAlarm( 5000L, Timer.wifiLogTimerIntent, Timer.wifiLogIntent);				
 		// Start voice recording alarm
 		timer.setupDailyRepeatingAlarm(19, new Intent(appContext.getString(R.string.voice_recording)));
-	}	
+	}
+	
+	public void restartTimeout(){
+		timer.setupSingularExactAlarm( 5000L, Timer.signOutTimerIntent, Timer.signoutIntent);
+	}
 	
 	
 	BroadcastReceiver controlMessageReceiver = new BroadcastReceiver() {
@@ -217,26 +223,9 @@ public class BackgroundProcess extends Service {
 			if (intent.getAction().equals( appContext.getString(R.string.weekly_survey) ) ) {
 				AppNotifications.displaySurveyNotification(appContext, Type.WEEKLY); }
 			
-			// TODO: Eli. formerly dori. Find out when this needs to go off. Provide a function inside the logic that is "start logout timer"
-			// What needs to be done is to send the activity to the background process in case it is no longer used (onPause, onStop, etc...) 
-			// and then start the timer.. There has to be a simpler solution - will write it down as soon as I figuer it out.
 			if (intent.getAction().equals(appContext.getString(R.string.signout_intent) ) ) {
-				Log.i("BackgroundProcess", "Received Logout");
-				
-				// TODO: Eli. Add to all activities in either onCreate(), onDestroy() and/or onPause() to reset this loginSession timer.
-				// (onDestroy() is called whenever finish() is called), which is whenever a user leaves to go to another activity within the app.
-				// onPause() is called whenever a user leaves the app, but does not kill it. We should not use onDestroy(), because a user can
-				// also kill the app from the task manager. Therefore the timer call should probably be called onCreate() using a static function
-				// (handle signOutTimer() ).
-				// If onPause is called before onDestroy in the taskManager, we could put this in onPause or onDestroy.
-				// So, therefore the best solution is to have it in onPause and onDestroy.
-				// refinement:
-				//		in onPause and onDestroy call a function that...
-				//		...signs the user in (because... that is exactly the behavior we want), starts a fifteen minute logout timer.
-				// is t
-				/* if( isForeground("org.beiwe.app") ) {
-					LoginManager.logoutUser(); }
-				else { LoginManager.logoutUserPassive(); } */
+				Log.d("BackgroundProcess", "RECEIVED LOGOUT, LOGGING OUT");
+				LoginManager.setLoggedIn(false);
 			}
 		}
 	};
@@ -253,7 +242,7 @@ public class BackgroundProcess extends Service {
 	@Override
 	public void onDestroy() {
 		//this does not appear to run when the service or app are killed...
-		Log.i("BackgroundService", "BackgroundService Killed");
+		Log.e("BackgroundService", "BackgroundService Killed");
 		Long javaTimeCode = System.currentTimeMillis();
 		TextFileManager.getDebugLogFile().write(javaTimeCode.toString() + "," + "BackgroundService Killed" +"\n" ); }
 }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/menu_call_hotline"
+          android:title="@string/menu_call_hotline" />
+    <item android:id="@+id/menu_about"
+          android:title="@string/menu_about" />
+    <item android:id="@+id/menu_change_password"
+          android:title="@string/menu_change_password" />
+    <item android:id="@+id/menu_signout"
+          android:title="@string/menu_sign_out" />
+</menu>

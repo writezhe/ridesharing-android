@@ -11,28 +11,20 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-/**
- * The main menu activity of the app. Currently displays 4 buttons - Audio Recording, Graph, Hotline, and Sign out
- * @author Dor Samet
- *
- */
+/**The main menu activity of the app. Currently displays 4 buttons - Audio Recording, Graph, Hotline, and Sign out.
+ * @author Dor Samet, Eli Jones */
 public class MainMenuActivity extends Activity {
-
+	//extends a SessionActivity
 	private Context appContext;	 
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_menu);
-
-		// Context declaration
 		appContext = getApplicationContext();
 	}
 	
-	/**
-	 * Calls the hotline
-	 * @param v
-	 */
+	/**Calls... the hotline. */
 	public void callHotline(View v) {
 		Intent callIntent = new Intent(Intent.ACTION_CALL);
 		String phoneNum = (String) getApplicationContext().getResources().getText(R.string.hotline_phone_number);
@@ -40,29 +32,16 @@ public class MainMenuActivity extends Activity {
 	    startActivity(callIntent);
 	}
 
-
-	/* ***********************************************************************
-	 *****                   Activity transfer intents                ********
-	 *********************************************************************** */
+	/*#########################################################################
+	############################## Buttons ####################################
+	#########################################################################*/
+	
 	public void signOutButton(View v) {
-		Intent signOutIntent = new Intent(appContext, LoadingActivity.class);
-		LoginManager.logOutUser();
-		startActivity(signOutIntent);
-	    finish();
+		LoginManager.setLoggedIn(false);
+		startActivity( new Intent(appContext, LoadingActivity.class) );
 	}
 	
-	public void graphResults(View v) {
-		Intent graphIntent = new Intent(appContext, GraphActivity.class);
-		startActivity(graphIntent);
-	}
-	
-	public void recordMessage(View v) {
-		Intent audioRecordingIntent = new Intent(appContext, AudioRecorderActivity.class);
-		startActivity(audioRecordingIntent);
-	}
-	
-	public void resetPassword(View v) {
-		Intent resetPasswordIntent = new Intent(appContext, ResetPasswordActivity.class);
-		startActivity(resetPasswordIntent);
-	}
+	public void graphResults (View v) { startActivity( new Intent(appContext, GraphActivity.class) ); }
+	public void recordMessage(View v) { startActivity( new Intent(appContext, AudioRecorderActivity.class) );	}
+	public void resetPassword(View v) { startActivity( new Intent(appContext, ResetPasswordActivity.class) ); }
 }

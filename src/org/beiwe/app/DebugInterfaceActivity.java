@@ -1,62 +1,80 @@
 package org.beiwe.app;
 
-import org.beiwe.app.listeners.AccelerometerListener;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.LoginManager;
+import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.AudioRecorderActivity;
 import org.beiwe.app.survey.SurveyActivity;
 import org.beiwe.app.survey.SurveyType.Type;
+import org.beiwe.app.ui.AlertsManager;
 import org.beiwe.app.ui.AppNotifications;
 import org.beiwe.app.ui.LoginActivity;
 import org.beiwe.app.ui.MainMenuActivity;
+import org.beiwe.app.ui.ResetPasswordActivity;
+import org.beiwe.app.ui.RegisterActivity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Process;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 
-public class DebugInterfaceActivity extends Activity {
-	Context appContext = null;
-	AccelerometerListener anAccelerometerListener = null;
+public class DebugInterfaceActivity extends SessionActivity {
+	//extends a session activity.
+	Context appContext;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_debug_interface);
 		appContext = this.getApplicationContext();
-		
-		//start background service
-		//NOTE: the background service is started on a separate Thread (process? don't care)
-		// and if you attempt to grab any item from a FileManager in this pseudo-constructor
-		// the app will almost always crash immediately.  use the following construction to
-		// access a FileManager object: TextFileManager.getDebugLogFile().some_function();
-		Intent backgroundProcess = new Intent(this, BackgroundProcess.class);
-		appContext.startService(backgroundProcess);
 	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.debug_interface, menu);
+		getMenuInflater().inflate(R.menu.common_menu, menu);
 		return true;
 	}
 	
 	@Override
+	// TODO Josh: put this into the Activity superclass, once it's built.
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) { return true; }
-		return super.onOptionsItemSelected(item);
+		switch (item.getItemId()) {
+		case R.id.menu_about:
+			// TODO Josh: create an about-the-app page/activity.
+			return true;
+		case R.id.menu_call_hotline:
+			// TODO Josh: if possible, maybe make this a static function somewhere, or just make sure it's only implemented once. Right now it's implemented like 3 times. Just ack for "R.string.hotline_phone_number" or something to figure out where else it's implemented.
+			Intent callIntent = new Intent(Intent.ACTION_CALL);
+			String phoneNum = (String) getApplicationContext().getResources().getText(R.string.hotline_phone_number);
+		    callIntent.setData(Uri.parse("tel:" + phoneNum));
+		    startActivity(callIntent);
+			return true;
+		case R.id.menu_change_password:
+			startActivity(new Intent(getApplicationContext(), ResetPasswordActivity.class));
+			return true;
+		case R.id.menu_signout:
+			LoginManager.setLoggedIn(false);
+			startActivity( new Intent(this, LoginActivity.class) );
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
 	}
+	
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public void printInternalLog(View view) {
 		Log.i("print log button pressed", "press.");
@@ -70,7 +88,6 @@ public class DebugInterfaceActivity extends Activity {
 		TextFileManager.getDebugLogFile().deleteSafely(); }
 	
 	public void uploadDataFiles(View view) {
-//		NetworkUtilities.initializeNetworkUtilities(appContext);
 		PostRequest.uploadAllFiles(); }
 	
 	public void goToAudioRecorder(View view) { startActivity( new Intent(this, AudioRecorderActivity.class) ); }
@@ -92,12 +109,20 @@ public class DebugInterfaceActivity extends Activity {
 		Log.i("Toggle GPS button pressed", "GPS state: " + gps_state.toString() ); }
 	
 	public void signOut (View view) {
-		LoginManager.logOutUser();
-		finish(); }
+		LoginManager.setLoggedIn(false);
+		startActivity(new Intent(this, LoginActivity.class) );
+	}
 	
-	public void bluetoothButtonStart (View view){ BackgroundProcess.getBackgroundHandle().bluetoothListener.enableBLEScan();	}
+	public void unRegister (View view) {
+		LoginManager.setRegistered(false);
+		stopService( new Intent( appContext, BackgroundProcess.class) );
+		AlertsManager.showAlert("registered set to fals, you must go start the app manually.", this);
+		System.exit(0);
+	}
+	
+	//public void bluetoothButtonStart (View view){ BackgroundProcess.getBackgroundHandle().bluetoothListener.enableBLEScan();	}
 
-	public void bluetoothButtonStop (View view){ BackgroundProcess.getBackgroundHandle().bluetoothListener.disableBLEScan();	}
+	//public void bluetoothButtonStop (View view){ BackgroundProcess.getBackgroundHandle().bluetoothListener.disableBLEScan();	}
 	
 	public void buttonTimer(View view) { BackgroundProcess.getBackgroundHandle().startTimers(); }
 	

@@ -79,8 +79,15 @@
 	        android:layout_height="wrap_content"
 	        android:onClick="signOut"
 	        android:text="@string/signout" />
-
+	    
 	    <Button
+	        android:id="@+id/unregister"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="unRegister"
+	        android:text="unregister" />
+
+	    <!-- <Button
 	        android:id="@+id/buttonBluetoothStart"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
@@ -92,7 +99,7 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:onClick="bluetoothButtonStop"
-	        android:text="@string/bluetooth_button_stop" />
+	        android:text="@string/bluetooth_button_stop" /> -->
 	
 		<Button
 		    android:id="@+id/buttonTimer"

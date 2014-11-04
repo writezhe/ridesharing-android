@@ -1,9 +1,7 @@
 package org.beiwe.app.ui;
 
-import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.R;
 import org.beiwe.app.session.LoginManager;
-import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
 import android.annotation.SuppressLint;
@@ -24,6 +22,7 @@ import android.widget.EditText;
 
 @SuppressLint({ "CommitPrefEdits", "ShowToast" })
 public class LoginActivity extends Activity {
+	//extends a regular activity
 	
 	private EditText password;
 	private Context appContext;
@@ -50,14 +49,13 @@ public class LoginActivity extends Activity {
 	}
 	
 	
-	/**IF session is logged in (value in shared prefs), keep the session logged in.
+	/**The Login Button
+	 * IF session is logged in (value in shared prefs), keep the session logged in.
 	 * IF session is not logged in, wait for user input.
 	 * @param view*/
 	public void loginSequence(View view) {		
 		if ( LoginManager.checkPassword( password.getText().toString() ) ) {
 			LoginManager.setLoggedIn(true);
-			//TODO: Eli (or Josh), this needs to point at the correct activity.
-			startActivity( new Intent( appContext, DebugInterfaceActivity.class ) ); // TODO: Eli. there was a "debug" comment here, why?
 			finish();
 			return;
 		}
@@ -69,6 +67,8 @@ public class LoginActivity extends Activity {
 	 * @param view */
 	public void forgotPassword(View view) {
 		startActivity( new Intent(appContext, ForgotPasswordActivity.class) );
-		finish();
 	}
+	
+	@Override
+	public void onBackPressed() { }
 }

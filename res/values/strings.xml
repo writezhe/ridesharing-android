@@ -93,10 +93,12 @@
     
     <!-- Recording Activity -->
     <string name="record_activity_error_message">If you\'re seeing this, it means something broke. Please contact the administrator</string>
-    <string name="record_activity_button">Press here to record</string>
+    <string name="record_activity_button">Press to record</string>
     <string name="record_activity_playback">Play recording</string>
-    <string name="record_activity_play_button_text">Press to play</string>
-    <string name="record_activity_record_button_text">Press to record</string>
+    <string name="play_button_text">Play</string>
+    <string name="play_button_stop_text">Stop</string>
+    <string name="record_button_text">Record</string>
+    <string name="record_button_stop_text">Stop</string>
     <string name="timeout_msg_1st_half">"The voice recording can't be longer than "</string>
     <string name="timeout_msg_2nd_half">" minutes, so your recording was automatically stopped and saved"</string>
 
@@ -126,5 +128,10 @@
     <string name="action_gps_timer">GPS Timer</string>
     <string name="action_signout_timer">Signout Timer</string>
     <string name="action_wifi_log">Wifi Log</string>
+
+    <string name="menu_sign_out">Sign Out</string>
+    <string name="menu_change_password">Change Password</string>
+    <string name="menu_about">About This App</string>
+    <string name="menu_call_hotline">Call Hotline</string>
     
 </resources>

@@ -15,9 +15,10 @@ import android.view.View;
  * @author Dor Samet, Eli Jones
  */
 public class ForgotPasswordActivity extends Activity {
+	//extends a regular activity.
 
 	private String hashedNewPassword;
-//	private String oldPasswordhash; // = LoginSessionManager.getPassword();
+	private String oldPasswordhash; // = LoginSessionManager.getPassword();
 	
 	//TODO: Josh. (and maybe Eli, but I am working on other logic stuff sooo...
 	// This activity should display a single button.  On a successful network operation the password is set to the new value.

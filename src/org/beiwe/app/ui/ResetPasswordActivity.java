@@ -29,7 +29,7 @@ import android.widget.EditText;
 
 @SuppressLint("ShowToast")
 public class ResetPasswordActivity extends Activity {
-	
+	//extends a SessionActivity
 	private Context appContext;
 	private EditText oldPass;
 	private EditText newPassword;
@@ -108,30 +108,11 @@ public class ResetPasswordActivity extends Activity {
 		protected void onPostExecute(Void arg) {
 			if (response == 200) { 
 				LoginManager.setPassword(newPassword);
-				//TODO: Eli/Josh.  we need a "successfully changed password alert.
-				//TODO: postproduction. Change to point at regular activity.
-				activity.startActivity(new Intent(activity.getApplicationContext(), DebugInterfaceActivity.class));
 				activity.finish();
 			}
+			//TODO: Josh/Eli.  change to the app string thing.
+			AlertsManager.showAlert("could not reset password", activity);
 			super.onPostExecute(arg);
 		}
 	}; }
-	
-	
-	//TODO: Josh, see if possible to, in the Manifest.xml, set MainMenuActivity as the parent, so that when you press "Back", it takes you there.
-//	/**
-//	 * This happens when the user presses "back".
-//	 * 
-//	 * Moves the user back from this activity to the login activity.
-//	 * Will change this logic if I find out how to close an activity from another activity.
-//	 */
-//	@Override
-//	public boolean onKeyDown(int keyCode, KeyEvent event) {
-//	    if (keyCode == KeyEvent.KEYCODE_BACK) {
-//	        startActivity(new Intent(appContext, DebugInterfaceActivity.class));
-//	        finish();
-//	        return true;
-//	    }
-//	    return super.onKeyDown(keyCode, event);
-//	}
 }	

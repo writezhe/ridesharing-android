@@ -2,6 +2,7 @@ package org.beiwe.app.ui;
 
 import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.DeviceInfo;
+import org.beiwe.app.LoadingActivity;
 import org.beiwe.app.R;
 import org.beiwe.app.networking.HTTPAsync;
 import org.beiwe.app.networking.PostRequest;
@@ -24,7 +25,7 @@ import android.widget.EditText;
 
 @SuppressLint("ShowToast")
 public class RegisterActivity extends Activity {
-
+	//extends a regular activity
 	// Private fields
 	private Context appContext;
 	private EditText userID;
@@ -86,9 +87,10 @@ public class RegisterActivity extends Activity {
 			if (response == 200) { 
 				LoginManager.setRegistered(true);
 				//TODO: postproduction. Change to point at regular activity.
-				activity.startActivity(new Intent(activity.getApplicationContext(), DebugInterfaceActivity.class));
+				activity.startActivity(new Intent(activity.getApplicationContext(), LoadingActivity.loadThisActivity) );
 				activity.finish();
 			}
+			AlertsManager.showAlert( "could not register this device.", this.activity );
 			super.onPostExecute(arg);
 		}
 	};}

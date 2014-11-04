@@ -13,7 +13,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.util.Log;
 
 
 /**A class used to manage login sessions. Uses SharedPreferences in order to save
@@ -34,9 +33,6 @@ public class LoginManager {
 	private static final String KEY_ID = "uid";
 	private static final String KEY_PASSWORD = "password";
 	private static final String IS_REGISTERED = "IsRegistered";
-
-	//Activity pointer. 
-	private static Activity currentActivity = null;
 	
 	/*#####################################################################################
 	######################### Constructor and Initializing ################################
@@ -120,58 +116,4 @@ public class LoginManager {
 
 	public static String getPatientID() { return pref.getString(KEY_ID, "NULLID"); }
 
-
-	/*###########################################################################################
-	##################################### Log Out ###############################################
-	###########################################################################################*/
-
-	//TODO: Eli. udpate these to use local functions
-	/**Logs out user, sends user to {@link LoginActivity} */
-	public static void logOutUser(){
-		Intent intent = new Intent(appContext, LoginActivity.class);
-		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		appContext.startActivity(intent);
-	}
-
-	/** logs user out without forcing an activity change. */
-	public static void logOutUserPassive() { setLoggedIn(false); }
-
-	/*###########################################################################################
-	##################################### Log In ################################################
-	###########################################################################################*/
-
-	//TODO: Eli.  make this... less... dumb?  rewrite it...?
-	/**Checks which page the user should scroll to. If there was an active session, the user will
-	 * be transferred to {@link DebugInterfaceActivity}, otherwise if there was information saved in
-	 * SharedPreferences, the user will be transferred to {@link LoginActivity}. Otherwise, it is
-	 * the user's first time, therefore will start with {@link RegisterActivity}. */
-	public static Intent login(){
-		Class debug = RegisterActivity.class;
-//    	Class debug = LoginActivity.class;
-//    	Class debug = MainMenuActivity.class;
-//    	Class debug = ResetPasswordActivity.class;
-
-		if( isLoggedIn() ) {
-			// If already logged in, take user to the main menu screen
-			// TODO: postproduction. before launch, uncomment this line:
-			
-			Intent intent = new Intent(appContext, MainMenuActivity.class);
-			return new Intent(appContext, debug); }
-		else {
-			if ( isRegistered() ) {
-				// If not logged in, but has registered, take user to the login screen
-				return new Intent(appContext, LoginActivity.class); }
-			else {
-				// If not logged in and hasn't registered, take user to registration screen
-				Log.i("LoginSessionManager", "First time logged in");
-				// TODO: DEBUG CODE. uncomment this line:
-				//Intent intent = new Intent(appContext, RegisterActivity.class);
-				return new Intent(appContext, debug); }
-		}
-	}
-	
-	public void setCurrentPointer(Activity activity){
-		
-	}
 }

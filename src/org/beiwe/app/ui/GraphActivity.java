@@ -7,10 +7,12 @@ import org.beiwe.app.R;
 import org.beiwe.app.R.id;
 import org.beiwe.app.R.layout;
 import org.beiwe.app.networking.PostRequest;
+import org.beiwe.app.session.SessionActivity;
 
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.service.textservice.SpellCheckerService.Session;
 import android.util.Log;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -23,8 +25,8 @@ import android.webkit.WebViewClient;
  * @author Dor Samet
  *
  */
-public class GraphActivity extends Activity {
-
+public class GraphActivity extends SessionActivity {
+	//extends SessionActivity
 	private String beiweGraph = "http://beiwe.org/graph";
 
 	/**
