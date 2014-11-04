@@ -30,12 +30,15 @@ public class SessionActivity extends Activity {
 	protected void onDestroy() {
 		super.onDestroy();
 		loginStartTimer();
+		LoginManager.setLoggedIn(false);
+
 	}
 	
 	@Override
 	protected void onPause() {
 		super.onPause();
 		loginStartTimer();
+		LoginManager.setLoggedIn(true);
 	}
 	
 
@@ -43,8 +46,7 @@ public class SessionActivity extends Activity {
 		Log.d("sessionmanager", "trying timer");
 		if ( BackgroundProcess.getBackgroundHandle() != null ){
 			Log.d("sessionmanager", "actually doing timer");
-			BackgroundProcess.getBackgroundHandle().restartTimeout();
-			LoginManager.setLoggedIn(true); }
+			BackgroundProcess.restartTimeout(); }
 		else {
 			Log.e("sessionmanager", "BackgroundProcess is not working!");
 		}
