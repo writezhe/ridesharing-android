@@ -17,7 +17,11 @@ import android.content.SharedPreferences.Editor;
 
 /**A class used to manage login sessions. Uses SharedPreferences in order to save
  * username-password combinations.
- * @author Dor Samet */
+ * @author Dor Samet, Eli Jones
+ * 
+ *  
+ *  
+ *  */
 
 public class LoginManager {
 	private static int PRIVATE_MODE = 0;
