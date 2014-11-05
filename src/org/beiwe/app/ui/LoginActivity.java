@@ -2,6 +2,7 @@ package org.beiwe.app.ui;
 
 import org.beiwe.app.R;
 import org.beiwe.app.session.LoginManager;
+import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
 import android.annotation.SuppressLint;
@@ -35,15 +36,17 @@ public class LoginActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
 		appContext = getApplicationContext();
-		
+
+		setContentView(R.layout.activity_login);
 		password = (EditText) findViewById(R.id.editText2);
 		
 		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(appContext);
 		textFieldKeyboard.makeKeyboardBehave(password);
 		
-		//TODO: Eli+Josh. this should never, ever happen.
+		//this logic SHOULD never trigger
 		if ( !LoginManager.isRegistered() ) {
 			Log.e("LoginActivity", "this device is not registered, you need to run the register activity at least once before you can log in.");
+			TextFileManager.getDebugLogFile().write("loaded logis screen screen while unregistered.");
 			System.exit(1);
 		}
 	}
