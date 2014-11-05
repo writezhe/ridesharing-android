@@ -14,7 +14,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 public class SessionActivity extends Activity {
+	
 	protected boolean isLoginScreen = false;
+	
+	/*####################################################################
+	########################## Log in Logic ##############################
+	####################################################################*/
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +50,30 @@ public class SessionActivity extends Activity {
 		loginStartTimer();
 		LoginManager.setLoggedIn(true);
 	}
+
+	
+	protected void loginStartTimer(){
+		Log.d("sessionmanager", "trying timer");
+		if ( BackgroundProcess.getBackgroundHandle() != null ){
+			Log.d("sessionmanager", "actually doing timer");
+			BackgroundProcess.restartTimeout(); }
+		else {
+			Log.e("sessionmanager", "BackgroundProcess is not working!");
+			System.exit(1);
+		}
+	}
+	
+
+	protected void bounceToLogin() {
+		if ( !LoginManager.isLoggedIn() ) {
+			startActivity( new Intent(this, LoginActivity.class) );
+		}
+	}
+	
+	
+	/*####################################################################
+	########################## Common UI #################################
+	####################################################################*/
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -75,24 +104,6 @@ public class SessionActivity extends Activity {
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
-		}
-	}
-
-	
-	protected void loginStartTimer(){
-		Log.d("sessionmanager", "trying timer");
-		if ( BackgroundProcess.getBackgroundHandle() != null ){
-			Log.d("sessionmanager", "actually doing timer");
-			BackgroundProcess.restartTimeout(); }
-		else {
-			Log.e("sessionmanager", "BackgroundProcess is not working!");
-		}
-	}
-	
-
-	protected void bounceToLogin() {
-		if ( !LoginManager.isLoggedIn() ) {
-			startActivity( new Intent(this, LoginActivity.class) );
 		}
 	}
 	
