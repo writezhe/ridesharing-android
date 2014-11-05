@@ -45,6 +45,8 @@ public class LoadingActivity extends Activity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_loading);
 		
+		LoginManager.initialize( getApplicationContext() );
+		
 		if ( isAbleToHash() ) {
 			if ( BackgroundProcess.getBackgroundHandle() == null ){ 
 				//check that the background service is running, if not...
@@ -52,7 +54,7 @@ public class LoadingActivity extends Activity{
 				//Order: DevicInfo, LoginManager, TextFileManager, PostRequest.
 				DeviceInfo.initialize( getApplicationContext() );
 				LoginManager.initialize( getApplicationContext() );
-				TextFileManager.start( getApplicationContext() );
+				TextFileManager.initialize( getApplicationContext() );
 				PostRequest.initialize( getApplicationContext() );
 				WifiListener.initialize( getApplicationContext() );
 			}
@@ -90,8 +92,7 @@ public class LoadingActivity extends Activity{
 
 	
 	private void failureExit() {
-		//TODO: Eli.  Make this an android string.
-		AlertsManager.showErrorAlert("This device does not meet minimum specifications for this app, sorry.", this);
+		AlertsManager.showErrorAlert( getApplicationContext().getString( R.string.invalid_device), this);
 		System.exit(1);
 	}
 }

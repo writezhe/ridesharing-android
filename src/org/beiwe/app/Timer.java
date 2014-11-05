@@ -54,8 +54,7 @@ public class Timer {
 	public IntentFilter getSignoutIntentFilter() { return new IntentFilter( signoutIntent.getAction() ); }
 	public IntentFilter getVoiceRecordingIntentFilter() { return new IntentFilter( voiceRecordingIntent.getAction() ); }
 	public IntentFilter getWeeklySurveyIntentFilter() { return new IntentFilter( weeklySurveyIntent.getAction() ); }
-	public IntentFilter getWifiLogFilter() { return new IntentFilter( wifiLogTimerIntent.getAction() ); }
-	//TODO: Eli, is this supposed to be wifiLogIntent instead of wifiLogTimerIntent?	
+	public IntentFilter getWifiLogFilter() { return new IntentFilter( wifiLogTimerIntent.getAction() ); }	
 	
 	//The timer offset is a random value that is inserted into time calculations to make them occur at a variable time
 	private final static long EXACT_TIMER_OFFSET = 2856000;

@@ -39,31 +39,29 @@ import android.util.Log;
  * On construction you provide a boolean flag ("persistent").  Persistent files do not get overwritten on application start.
  * To access a file use the following construction: TextFileManager.getXXXFile()
  * @author Eli */
-public class TextFileManager {
-	
-	//TODO: Eli/Josh. We need to escape all separator values that get dumped into strings. 
+public class TextFileManager { 
 
 	//Delimiter and newline strings
 	public static String DELIMITER = ",";
 	
 	//Static instances of the individual FileManager objects.
-	private static TextFileManager GPSFile = null;
-	private static TextFileManager accelFile = null;
-	private static TextFileManager powerStateLog = null;
-	private static TextFileManager callLog = null;
-	private static TextFileManager textsLog = null;
-	private static TextFileManager bluetoothLog = null;
-	private static TextFileManager wifiLog = null;
+	private static TextFileManager GPSFile;
+	private static TextFileManager accelFile;
+	private static TextFileManager powerStateLog;
+	private static TextFileManager callLog;
+	private static TextFileManager textsLog;
+	private static TextFileManager bluetoothLog;
+	private static TextFileManager wifiLog;
 
-	private static TextFileManager surveyTimings = null;
-	private static TextFileManager surveyAnswers = null;
+	private static TextFileManager surveyTimings;
+	private static TextFileManager surveyAnswers;
 	
-	private static TextFileManager debugLogFile = null;
-	private static TextFileManager currentDailyQuestions = null;
-	private static TextFileManager currentWeeklyQuestions = null;
-	private static TextFileManager deviceInfo = null;
+	private static TextFileManager debugLogFile;
+	private static TextFileManager currentDailyQuestions;
+	private static TextFileManager currentWeeklyQuestions;
+	private static TextFileManager deviceInfo;
 	
-	private static TextFileManager keyFile = null;
+	private static TextFileManager keyFile;
 	
 	//"global" static variables
 	private static Context appContext;
@@ -104,7 +102,7 @@ public class TextFileManager {
 	 * Initializes all TextFileManager object instances.
 	 * Do not run more than once, it will error on you. 
 	 * @param appContext a Context, provided by the app. */
-	public static synchronized void start(Context appContext){
+	public static synchronized void initialize(Context appContext){
 		if ( started ) { return; }
 		
 		// TODO: Eli/Josh.  make sure file names are to-spec
@@ -276,7 +274,6 @@ public class TextFileManager {
 		wifiLog.newFile();
 	}
 	
-	//TODO: Eli. this function is/was originally only public for debugging purposes, getAllFilesSafely() should be used instead?
 	/** Very simple function, exists to make any function that needs to grab all extant files thread-safe.
 	 * DO NOT USE THIS FUNCTION, USE getAllFilesSafely() INSTEAD.
 	 * @return a string array of all files in the app's file directory. */

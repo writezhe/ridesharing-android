@@ -32,7 +32,8 @@
 
     <!-- Error Messages -->
     <string name="question_error_text">If you are reading this, something broke. Please contact the study administrators, and tell them that there is a bug in the survey!</string>
-
+	<string name="invalid_device">This device does not meet minimum specifications for this app, sorry.</string>
+    
     <!-- Survey Activity Strings -->
     <string name="survey_submit_button">Submit Answers</string>
     <string name="survey_submit_success_message">Thank you! Your answers have been recorded and saved.</string>

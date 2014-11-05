@@ -37,7 +37,7 @@ public class BackgroundProcess extends Service {
 	private static Timer timer;
 	
 	//TODO: Eli. this [stupid hack] should only be necessary for debugging, comment out before production?
-	private static BackgroundProcess BackgroundHandle = null;
+	private static BackgroundProcess BackgroundHandle;
 
 	//returns the backgroundHandle
 	//always check to see if null before using.
@@ -50,10 +50,10 @@ public class BackgroundProcess extends Service {
 		appContext = this.getApplicationContext();
 		BackgroundHandle = this;
 		
-		// TODO: Eli. investigate this crash, see email
-		// Proposed fix:
-		// LoginManager.initialize(appContext);
-		// TextFileManager.start(appContext); // CRASH HAPPENS HERE; NPE on LoginManager.getPatientID() because pref hasn't been initialized and is null
+		// FIXME: Eli + Josh.
+		// We have several crashes of similar origins, all of them having to do with the BackgroundProcess
+		// not running, or with one of the classes that requires a start or initialize function for some reason
+		// some variable inside it is null, when the initialize function has clearly been called.
 		
 		// Download the survey questions and schedule the surveys
 		QuestionsDownloader downloader = new QuestionsDownloader(appContext);
@@ -69,7 +69,22 @@ public class BackgroundProcess extends Service {
 		
 		startTimers();
 	}
+
+	@Override
+	public void onDestroy() {
+		//this does not run when the service is killed in a task manager, OR when the stopService() function is called from debugActivity.
+		BackgroundHandle = null;
+		Log.e("BackgroundService", "BACKGROUNDPROCESS WAS DESTROYED.");
+		Long javaTimeCode = System.currentTimeMillis();
+		TextFileManager.getDebugLogFile().write(javaTimeCode.toString() + "," + "BACKGROUNDPROCESS WAS DESTROYED" +"\n" );
+	}
+
+	@Override
+	/** The BackgroundService is meant to be all the time, so we return START_STICKY */
+	//testing start_redeliver_intent
+	public int onStartCommand(Intent intent, int flags, int startId){ return START_REDELIVER_INTENT; }
 	
+
 	/*#############################################################################
 	#########################         Starters              #######################
 	#############################################################################*/
@@ -200,16 +215,6 @@ public class BackgroundProcess extends Service {
 	/*##########################################################################################
 	################# onStartCommand, onBind, and onDesroy (ignore these)# #####################
 	##########################################################################################*/
-	
-	@Override
-	/** The BackgroundService is meant to be all the time, so we return START_STICKY */
-	public int onStartCommand(Intent intent, int flags, int startId){ return START_STICKY; }
 	@Override
 	public IBinder onBind(Intent arg0) { return null; }
-	@Override
-	public void onDestroy() {
-		//this does not appear to run when the service or app are killed...
-		Log.e("BackgroundService", "BackgroundService Killed");
-		Long javaTimeCode = System.currentTimeMillis();
-		TextFileManager.getDebugLogFile().write(javaTimeCode.toString() + "," + "BackgroundService Killed" +"\n" ); }
 }
