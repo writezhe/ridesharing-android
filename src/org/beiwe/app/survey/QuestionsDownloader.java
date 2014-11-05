@@ -68,7 +68,7 @@ public class QuestionsDownloader {
 	private String getSurveyQuestionsFromFilesystem(SurveyType.Type type) throws NullPointerException, JSONException {
 		Log.i("QuestionsDownloader", "Called getSurveyQuestionsFromFilesystem()");
 		
-		String surveyQuestions = type.file.read();
+		String surveyQuestions = getQuestionsFile(type).read();
 
 		if (isValidJson(surveyQuestions)) {
 			return surveyQuestions;
@@ -128,7 +128,7 @@ public class QuestionsDownloader {
 		protected void onPostExecute(Map<String, String> surveysDict) {
 			if (surveysDict != null && !surveysDict.isEmpty()) {
 				for (SurveyType.Type type : SurveyType.Type.values()) {
-					writeSurveyToFile(surveysDict.get(type.dictKey), type.file);
+					writeSurveyToFile(surveysDict.get(type.dictKey), getQuestionsFile(type));
 				}
 			}
 		}
@@ -143,6 +143,26 @@ public class QuestionsDownloader {
 			SurveyScheduler scheduler = new SurveyScheduler(appContext);
 			scheduler.scheduleSurvey(survey);
 		}		
+	}
+	
+	
+	/** Return the correct TextFileManager.surveyQuestionsFile JSON file from
+	 * the filesystem.
+	 * This was a part of the SurveyType enum, but that caused TextFileManager
+	 * to try creating files before it had been started, which caused an NPE
+	 * crash. 
+	 * @param type the SurveyType (DAILY or WEEKLY)
+	 * @return the correct (daily or weekly) surveyQuestionsFile */
+	private TextFileManager getQuestionsFile(SurveyType.Type type) {
+		switch (type) {
+			case DAILY:
+				return TextFileManager.getCurrentDailyQuestionsFile();				
+			case WEEKLY:
+				return TextFileManager.getCurrentWeeklyQuestionsFile();
+			default:
+				Log.e("QuestionsDownloader.java", "getQuestionsFile() found no matches");
+				return null;
+		}
 	}
 
 }

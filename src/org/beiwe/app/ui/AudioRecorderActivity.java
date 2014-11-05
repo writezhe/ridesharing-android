@@ -15,7 +15,6 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -47,8 +46,6 @@ public class AudioRecorderActivity extends SessionActivity {
     private Button playButton;
     private Button recordingButton;
     
-    private TextView surveyMessage;
-    
     private final Handler recordingTimeoutHandler = new Handler();
     // Number of milliseconds before the recording stops automatically:
     private final int maxRecordingTimeLength = 5 * 60 * 1000;
@@ -75,8 +72,11 @@ public class AudioRecorderActivity extends SessionActivity {
     	// Each time the screen is flipped, the app checks if it's time to show the play button
     	checkPlayButtonVisibility(mFileName);
     	
-    	surveyMessage = (TextView) findViewById(R.id.record_activity_textview);
-    	surveyMessage.setText("Please record what is on your mind. How are you feeling today?");
+    	/* Improvement idea: make the Audio Recording prompt a string that can
+    	 * be edited on the server, and then propagates via automatic downloads
+    	 * to all phones running the app, just like the survey questions. */
+    	//TextView surveyMessage = (TextView) findViewById(R.id.record_activity_textview);
+    	//surveyMessage.setText("Please record a statement about how you are feeling today.");
     }
 
     /**
@@ -211,7 +211,7 @@ public class AudioRecorderActivity extends SessionActivity {
 
     	// Toggles button
     	recordingButton.setText(getApplicationContext().getString(R.string.record_button_stop_text));
-    	recordingButton.setBackgroundResource(android.R.drawable.btn_default);
+    	recordingButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.stop_recording_button, 0, 0);
     	
     	// Note: AudioEncoder.AAC requires the phone to have api 10+.
         mRecorder = new MediaRecorder();
@@ -242,7 +242,7 @@ public class AudioRecorderActivity extends SessionActivity {
     	checkPlayButtonVisibility(mFileName);
     	currentlyRecording = false;
     	recordingButton.setText(getApplicationContext().getString(R.string.record_button_text));
-    	recordingButton.setBackgroundResource(android.R.drawable.btn_default);
+    	recordingButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.record_button, 0, 0);
 
     	cancelTimerForRecordingTimeout();
     	
@@ -290,6 +290,14 @@ public class AudioRecorderActivity extends SessionActivity {
      */
     private void cancelTimerForRecordingTimeout() {
     	recordingTimeoutHandler.removeCallbacksAndMessages(null);
+    }
+    
+    
+    /** When the user presses "Done", just kill this activity and take them
+     * back to the last one; the audio file should already be saved, so we
+     * don't need to do anything other than kill the activity.  */
+    public void buttonDonePressed(View v) {
+    	finish();
     }
     
     
