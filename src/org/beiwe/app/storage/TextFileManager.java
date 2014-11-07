@@ -1,9 +1,6 @@
 package org.beiwe.app.storage;
 
 import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -42,7 +39,7 @@ import android.util.Log;
 public class TextFileManager { 
 
 	//Delimiter and newline strings
-	public static String DELIMITER = ",";
+	public static final String DELIMITER = ",";
 	
 	//Static instances of the individual FileManager objects.
 	private static TextFileManager GPSFile;
@@ -59,13 +56,12 @@ public class TextFileManager {
 	private static TextFileManager debugLogFile;
 	private static TextFileManager currentDailyQuestions;
 	private static TextFileManager currentWeeklyQuestions;
-	private static TextFileManager deviceInfo;
 	
 	private static TextFileManager keyFile;
 	
 	//"global" static variables
 	private static Context appContext;
-	private static boolean started = false; 
+	private static boolean started = false;
 	private static String getter_error = "You tried to access a file before calling TextFileManager.start().";
 	
 	//public static getters.
@@ -83,7 +79,6 @@ public class TextFileManager {
 	public static TextFileManager getCurrentDailyQuestionsFile(){ if ( currentDailyQuestions == null ) throw new NullPointerException( getter_error ); return currentDailyQuestions; }
 	public static TextFileManager getCurrentWeeklyQuestionsFile(){ if ( currentWeeklyQuestions == null ) throw new NullPointerException( getter_error ); return currentWeeklyQuestions; }
 	public static TextFileManager getDebugLogFile(){ if ( debugLogFile == null ) throw new NullPointerException( getter_error ); return debugLogFile; }
-	public static TextFileManager getDeviceInfoFile(){ if ( deviceInfo == null ) throw new NullPointerException( getter_error ); return deviceInfo; }
 	public static TextFileManager getKeyFile() { if ( keyFile == null ) throw new NullPointerException( getter_error ); return keyFile; }
 	
 	//and (finally) the non-static object instance variables
@@ -96,7 +91,7 @@ public class TextFileManager {
 	######################## CONSTRUCTOR STUFF ######################################
 	###############################################################################*/
 	
-
+	
 	/**Starts the TextFileManager
 	 * This must be called before code attempts to access files using getXXXFile().
 	 * Initializes all TextFileManager object instances.
@@ -121,7 +116,6 @@ public class TextFileManager {
 		wifiLog = new TextFileManager(appContext, "wifiLog", WifiListener.header, false, true);
 		
 		// Files created upon specific events
-		deviceInfo = new TextFileManager(appContext, "phoneInfo", "", false, false);
 		surveyTimings = new TextFileManager(appContext, "surveyTimings", SurveyTimingsRecorder.header, false, false);
 		surveyAnswers = new TextFileManager(appContext, "surveyAnswers", SurveyAnswersRecorder.header, false, false);
 		
@@ -169,7 +163,6 @@ public class TextFileManager {
 		this.name = nameHolder;
 	}
 	
-	
 	/** Takes a string. writes that to the file, adds a new line to the string.
 	 * Prints a stacktrace on a write error, but does not crash. If there is no
 	 * file, a new file will be created.
@@ -178,9 +171,7 @@ public class TextFileManager {
 		//write the output, we always want mode append
 		FileOutputStream outStream;
 		try {
-			if (fileName == null) {
-				this.newFile();
-			}
+			if (fileName == null) { this.newFile(); }
 			outStream = appContext.openFileOutput(fileName, Context.MODE_APPEND);
 			outStream.write( ( data ).getBytes() );
 			outStream.write( "\n".getBytes() );
@@ -215,43 +206,18 @@ public class TextFileManager {
 		return inputStringBuffer.toString();
 	}
 	
-	/**Returns a byte array of the file contents
-	 * @return byte array of fie contents. */
-	public synchronized byte[] readDataFile() {
-		
-		DataInputStream dataInputStream;
-		String filePath = appContext.getFilesDir() + "/" + this.fileName;
-		byte[] data = null;
-		try {  //Read the (data) input stream, into a bytearray.  Catch exceptions.
-			File file = new File(filePath);
-			dataInputStream = new DataInputStream( new FileInputStream(file) );	
-			data = new byte[(int) file.length()];
-			try{ dataInputStream.readFully(data); }
-			catch (IOException e) { Log.i("DataFileManager", "error reading " + this.fileName);
-				e.printStackTrace(); }
-			dataInputStream.close(); }
-		catch (FileNotFoundException e) {
-			Log.i("DataFileManager", "file " + this.fileName + " does not exist");
-			e.printStackTrace(); }
-		catch (IOException e) {
-			Log.i("DataFileManager", "could not close " + this.fileName);
-			e.printStackTrace(); }
-		
-		return data;
-	}
-	
 	/** Creates a new instance of file, then delete the old file. */
 	public synchronized void deleteSafely() {
 		String oldFileName = this.fileName;
 		// For files that are persistant we have to do a slightly unsafe deletion, for everything else
 		// we allocate the new file and then delete the old file.
 		
-		if ( this.persistent ) { //delete then create (unsafe, potential threading issues) 
-			TextFileManager.delete(oldFileName); 
+		if ( this.persistent ) { //delete then create (unsafe, potential threading issues)
+			TextFileManager.delete(oldFileName);
 			this.newFile(); }
 		else { 					//create then delete
 			this.newFile();
-			TextFileManager.delete(oldFileName); } 
+			TextFileManager.delete(oldFileName); }
 	}
 	
 	/** Deletes a file.  Exists to make file deletion thread-safe.
@@ -306,9 +272,6 @@ public class TextFileManager {
 	######################## DEBUG STUFF ############################################
 	###############################################################################*/
 	
-	/** use the data read function, then converts it to a string. */
-	public synchronized String getDataString(){ return new String( this.readDataFile() ); }
-	
 	/**For Debug Only.  Deletes all files, creates new ones. */
 	public static synchronized void deleteEverything() {
 		//Get complete list of all files, then make new files, then delete all files from the old files list.
@@ -316,8 +279,6 @@ public class TextFileManager {
 		Collections.addAll(files, getAllFilesSafely());
 		
 		//Need to do this crap or else we end up deleting the persistent files repeatedly
-		files.remove(TextFileManager.getDeviceInfoFile().fileName);
-		TextFileManager.getDeviceInfoFile().deleteSafely();
 		files.remove(TextFileManager.getCurrentDailyQuestionsFile().fileName);
 		TextFileManager.getCurrentDailyQuestionsFile().deleteSafely();
 		files.remove(TextFileManager.getCurrentWeeklyQuestionsFile().fileName);
@@ -333,5 +294,4 @@ public class TextFileManager {
 				Log.i("TextFileManager", "could not delete file " + file_name); 
 				e.printStackTrace(); } }
 	}
-	
 }
