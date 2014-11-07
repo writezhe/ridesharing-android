@@ -24,39 +24,27 @@ public class SessionActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if ( BackgroundProcess.getBackgroundHandle() == null ) {
-			startService( new Intent( this.getApplicationContext(), BackgroundProcess.class ) );
-		}
-		bounceToLogin();
+		startService( new Intent( this.getApplicationContext(), BackgroundProcess.class ) );
 	}
 	
+	/**
+	 * onResume() is always called when the activity opens.
+	 * If the Activity gets created, onCreate gets called, and then onResume.
+	 * If the Activity was already created but was paused, onResume gets called.
+	 */
 	@Override
 	protected void onResume() {
 		super.onResume();
-		bounceToLogin();
+		authenticateAndLoginIfNecessary();
+		tryToStartAutomaticLogoutCountdownTimer();
 	}
 	
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		loginStartTimer();
-		LoginManager.setLoggedIn(false);
 
-	}
-	
-	@Override
-	protected void onPause() {
-		super.onPause();
-		loginStartTimer();
-		LoginManager.setLoggedIn(true);
-	}
-
-	
-	protected void loginStartTimer(){
+	protected void tryToStartAutomaticLogoutCountdownTimer(){
 		Log.d("sessionmanager", "trying timer");
 		if ( BackgroundProcess.getBackgroundHandle() != null ){
 			Log.d("sessionmanager", "actually doing timer");
-			BackgroundProcess.restartTimeout(); }
+			BackgroundProcess.resetAutomaticLogoutCountdownTimer(); }
 		else {
 			Log.e("sessionmanager", "BackgroundProcess is not working!");
 			System.exit(1);
@@ -64,7 +52,7 @@ public class SessionActivity extends Activity {
 	}
 	
 
-	protected void bounceToLogin() {
+	protected void authenticateAndLoginIfNecessary() {
 		if ( !LoginManager.isLoggedIn() ) {
 			startActivity( new Intent(this, LoginActivity.class) );
 		}

@@ -47,8 +47,9 @@ public class BackgroundProcess extends Service {
 	@Override
 	/** onCreate is essentially the constructor for the service, initialize variables here.*/
 	public void onCreate(){
-		appContext = this.getApplicationContext();
 		BackgroundHandle = this;
+		Log.w("AHHHHHHRRRRRRRGGGGGGGHHHHHHH!*************************", "YE BACKGROUND PROCESS HAS STARTED. YARRRRRRRRRR!");
+		appContext = this.getApplicationContext();
 		
 		// FIXME: Eli + Josh.
 		// We have several crashes of similar origins, all of them having to do with the BackgroundProcess
@@ -158,7 +159,7 @@ public class BackgroundProcess extends Service {
 //		timer.setupDailyRepeatingAlarm(19, new Intent(appContext.getString(R.string.voice_recording)));
 	}
 	
-	public static void restartTimeout(){
+	public static void resetAutomaticLogoutCountdownTimer(){
 		timer.setupSingularExactAlarm( 5000L, Timer.signOutTimerIntent, Timer.signoutIntent);
 	}
 	
@@ -207,6 +208,7 @@ public class BackgroundProcess extends Service {
 			
 			if (intent.getAction().equals(appContext.getString(R.string.signout_intent) ) ) {
 				Log.d("BackgroundProcess", "RECEIVED LOGOUT, LOGGING OUT");
+				// TODO Josh: take user to LoginActivity?
 				LoginManager.setLoggedIn(false);
 			}
 		}

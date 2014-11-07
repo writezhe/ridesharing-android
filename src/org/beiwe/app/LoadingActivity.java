@@ -48,7 +48,7 @@ public class LoadingActivity extends Activity{
 		LoginManager.initialize( getApplicationContext() );
 		
 		if ( isAbleToHash() ) {
-			if ( BackgroundProcess.getBackgroundHandle() == null ){ 
+			//if ( BackgroundProcess.getBackgroundHandle() == null ){ 
 				//check that the background service is running, if not...
 				Log.d("LoadingActivity", "BackgroundHandle null, initializing app components." );
 				//Order: DevicInfo, LoginManager, TextFileManager, PostRequest.
@@ -57,10 +57,10 @@ public class LoadingActivity extends Activity{
 				TextFileManager.initialize( getApplicationContext() );
 				PostRequest.initialize( getApplicationContext() );
 				WifiListener.initialize( getApplicationContext() );
-			}
+			/*}
 			else {
 				Log.d("LoadingActivity", "BackgroundProcess is currently running." );
-			}
+			}*/
 		}
 		else { failureExit(); }
 		
