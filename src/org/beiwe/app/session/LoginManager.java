@@ -1,14 +1,18 @@
 package org.beiwe.app.session;
 
+import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.R;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.ui.AlertsManager;
+import org.beiwe.app.ui.LoginActivity;
+import org.beiwe.app.ui.MainMenuActivity;
+import org.beiwe.app.ui.RegisterActivity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.util.Log;
 
 
 /**A class used to manage login sessions. Uses SharedPreferences in order to save
@@ -107,8 +111,6 @@ public class LoginManager {
 	###########################################################################################*/
 
 	public static void setLoginCredentials( String userID, String password ) {
-		if (editor == null) Log.e("LoginManager.java", "editor is null");
-		if (userID == null) Log.e("LoginManager.java", "userID is null");
 		editor.putString(KEY_ID, userID);
 		setPassword(password);
 		editor.commit();

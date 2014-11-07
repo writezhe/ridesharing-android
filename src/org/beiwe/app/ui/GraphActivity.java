@@ -22,7 +22,6 @@ import android.webkit.WebViewClient;
  */
 public class GraphActivity extends SessionActivity {
 	//extends SessionActivity
-	private String beiweGraph = "http://beiwe.org/graph";
 
 	/**
 	 * Loads the web view by sending an HTTP POST to the website. Currently not in HTTPS
@@ -50,7 +49,8 @@ public class GraphActivity extends SessionActivity {
 		browser.setInitialScale(200);
 
 		String postData = PostRequest.securityParameters();
-		browser.postUrl(beiweGraph, EncodingUtils.getBytes(postData, "BASE64"));
+		String graphUrl = getApplicationContext().getString(R.string.graph_url);
+		browser.postUrl(graphUrl, EncodingUtils.getBytes(postData, "BASE64"));
 	}
 	
 	public void callHotline(View v) {

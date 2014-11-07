@@ -5,19 +5,17 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.Flushable;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.apache.http.client.methods.HttpDelete;
+import javax.net.ssl.HttpsURLConnection;
+
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.protocol.HttpDateGenerator;
 import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
 import org.beiwe.app.session.LoginManager;
@@ -108,11 +106,11 @@ public class PostRequest {
 	/**Creates an HTTP connection with minimal settings.  Some network funcitonality
 	 * requires this minimal object.
 	 * @param url a URL object
-	 * @return a new HttpURLConnection with minimal settings applied
+	 * @return a new HttpsURLConnection with minimal settings applied
 	 * @throws IOException This function can throw 2 kinds of IO exceptions: IOExeptions and ProtocolException*/
-	private static HttpURLConnection minimalHTTP(URL url) throws IOException{
+	private static HttpsURLConnection minimalHTTP(URL url) throws IOException {		
 		// Create a new HttpURLConnection and set its parameters
-		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
 		connection.setUseCaches(false);
 		connection.setDoOutput(true);
 		connection.setRequestMethod("POST");
@@ -128,9 +126,9 @@ public class PostRequest {
 	/**For use with functionality that requires additional parameters be added to an HTTP operation.
 	 * @param parameters a string that has been created using the makeParameters function
 	 * @param url a URL object
-	 * @return a new HttpURLConnection with common settings */
-	private static HttpURLConnection setupHTTP( String parameters, URL url ) throws IOException {
-		HttpURLConnection connection = minimalHTTP(url);
+	 * @return a new HttpsURLConnection with common settings */
+	private static HttpsURLConnection setupHTTP( String parameters, URL url ) throws IOException {
+		HttpsURLConnection connection = minimalHTTP(url);
 
 		DataOutputStream request = new DataOutputStream( connection.getOutputStream() );
 		request.write( securityParameters().getBytes() );
@@ -141,11 +139,11 @@ public class PostRequest {
 		return connection;
 	}
 
-	/**Reads in the response data from an HttpURLConnection, returns it as a String.
-	 * @param connection an HttpURLConnection
+	/**Reads in the response data from an HttpsURLConnection, returns it as a String.
+	 * @param connection an HttpsURLConnection
 	 * @return a String containing return data
 	 * @throws IOException */
-	private static String readResponse(HttpURLConnection connection) throws IOException {
+	private static String readResponse(HttpsURLConnection connection) throws IOException {
 		Integer responseCode = connection.getResponseCode();
 		if (responseCode == 200) {
 			BufferedReader reader = new BufferedReader(new InputStreamReader( new DataInputStream( connection.getInputStream() ) ) );
@@ -163,7 +161,7 @@ public class PostRequest {
 	 #################################################################################*/
 
 	private static String doPostRequestGetResponseString(String parameters, String urlString) throws IOException {
-		HttpURLConnection connection = setupHTTP( parameters, new URL( urlString ) );
+		HttpsURLConnection connection = setupHTTP( parameters, new URL( urlString ) );
 		connection.connect();
 		String data = readResponse(connection);
 		connection.disconnect();
@@ -172,7 +170,7 @@ public class PostRequest {
 
 
 	private static int doPostRequestGetResponseCode(String parameters, URL url) throws IOException {
-		HttpURLConnection connection = setupHTTP(parameters, url);
+		HttpsURLConnection connection = setupHTTP(parameters, url);
 		int response = connection.getResponseCode();
 		connection.disconnect();
 		return response;
@@ -180,7 +178,7 @@ public class PostRequest {
 
 
 	private static int doRegisterRequest(String parameters, URL url) throws IOException {
-		HttpURLConnection connection = setupHTTP(parameters, url);
+		HttpsURLConnection connection = setupHTTP(parameters, url);
 		int response = connection.getResponseCode();
 		if ( response == 200 ) {
 			// TODO: Eli.  Determine why this statement is true: If the AsyncPostSender receives a 1, that means that someone misconfigured the server.
@@ -205,7 +203,7 @@ public class PostRequest {
 	 * @return HTTP Response code as int
 	 * @throws IOException */
 	private static int doFileUpload(File file, URL uploadUrl) throws IOException {
-		HttpURLConnection connection = minimalHTTP( uploadUrl );
+		HttpsURLConnection connection = minimalHTTP( uploadUrl );
 		DataOutputStream request = new DataOutputStream( connection.getOutputStream() );
 		//insert the multipart parameter here.
 		DataInputStream inputStream = new DataInputStream( new FileInputStream(file) );
