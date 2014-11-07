@@ -12,6 +12,15 @@
     <string name="button_clear_log">Clear Internal Log</string>
     <string name="hello_world">Hello world!</string>
 
+    <!-- API URLs -->
+    <string name="data_upload_url">https://beiwe.org/upload</string>
+    <string name="daily_survey_questions_url">https://beiwe.org/download_daily_survey</string>
+    <string name="weekly_survey_questions_url">https://beiwe.org/download_weekly_survey</string>
+    <string name="forgot_password_url">https://beiwe.org/forgot_password</string>
+    <string name="reset_password_url">https://beiwe.org/set_password</string>
+    <string name="graph_url">https://beiwe.org/graph</string>
+    <string name="register_url">https://beiwe.org/register_user</string>
+    
     <!-- Recording Options Strings -->
     <string name="title_activity_audio_recorder">Record Audio</string>
     <string name="button_go_to_audio_recorder_activity">Go to Audio Recorder</string>
@@ -38,9 +47,6 @@
     <string name="survey_submit_button">Submit Answers</string>
     <string name="survey_submit_success_message">Thank you! Your answers have been recorded and saved.</string>
     <string name="survey_submit_error_message">There has been an error; your answers may not have been recorded and saved</string>
-    <string name="data_upload_url">http://beiwe.org/upload</string>
-    <string name="daily_survey_questions_url">http://beiwe.org/download_daily_survey</string>
-    <string name="weekly_survey_questions_url">http://beiwe.org/download_weekly_survey</string>
     <string name="button_upload">Upload Data Files</string>
     <string name="survey_loading_text">Downloading the most up-to-date survey questions from the server...</string>
 

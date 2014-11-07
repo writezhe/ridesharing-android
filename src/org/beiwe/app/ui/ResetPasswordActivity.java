@@ -3,7 +3,6 @@ package org.beiwe.app.ui;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
-import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.R;
 import org.beiwe.app.networking.HTTPAsync;
 import org.beiwe.app.networking.PostRequest;
@@ -12,9 +11,7 @@ import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -85,7 +82,7 @@ public class ResetPasswordActivity extends SessionActivity {
 			//check that the proposed password is a valid password
 			if ( LoginManager.validatePassword(newPasswordStr, this) ){
 				Log.i("debugging", "validated password");
-				doResetPassword("http://beiwe.org/set_password", newPasswordStr);
+				doResetPassword(appContext.getString(R.string.reset_password_url), newPasswordStr);
 				//note: the reset password function expects a plaintext, unhashed password.
 			}
 			return;

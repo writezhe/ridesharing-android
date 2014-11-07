@@ -1,6 +1,5 @@
 package org.beiwe.app.ui;
 
-import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.LoadingActivity;
 import org.beiwe.app.R;
@@ -68,7 +67,7 @@ public class RegisterActivity extends Activity {
 			LoginManager.setLoggedIn(true);
 			
 			Log.i("RegisterActivity", "trying \"" + LoginManager.getPatientID() + "\" with password \"" + LoginManager.getPassword() + "\"" );
-			doRegister("http://beiwe.org/register_user");
+			doRegister(getApplicationContext().getString(R.string.register_url));
 		}
 	}
 	

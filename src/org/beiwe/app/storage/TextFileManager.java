@@ -262,6 +262,7 @@ public class TextFileManager {
 		files.remove(TextFileManager.getCurrentDailyQuestionsFile().fileName);
 		files.remove(TextFileManager.getCurrentWeeklyQuestionsFile().fileName);
 		files.remove(TextFileManager.getDebugLogFile().fileName);
+		files.remove(TextFileManager.getKeyFile().fileName);
 		
 		makeNewFilesForEverything();
 		

@@ -35,7 +35,7 @@ public class ForgotPasswordActivity extends Activity {
 	
 	/** calls the reset password HTTPAsync query. */
 	public void registerNewPassword(View view) {
-		doForgotPasswordRequest("http://beiwe.org/forgot_password");
+		doForgotPasswordRequest(getApplicationContext().getString(R.string.forgot_password_url));
 	}
 	
 	
