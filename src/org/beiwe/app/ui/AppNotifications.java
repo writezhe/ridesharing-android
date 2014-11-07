@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.v4.app.NotificationCompat;
 
 /**The purpose of this class is to deal with all that has to do with Survey Notifications.
  * This is a STATIC method, and is called from the background process
@@ -84,7 +85,7 @@ public class AppNotifications {
 	 * @return
 	 */
 	private static Notification setupNotification(Context appContext, int notifCode, int drawableCode, SurveyType.Type surveyType) {
-		Notification.Builder builder = new Notification.Builder(appContext);
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(appContext);
 		Intent intent;
 		builder.setContentTitle(appContext.getString(R.string.app_name));
 		if (notifCode == recordingCode) { // Sets up a voice recording notification
