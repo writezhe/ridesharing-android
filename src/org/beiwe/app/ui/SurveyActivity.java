@@ -30,7 +30,7 @@ public class SurveyActivity extends SessionActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_survey);
 				
-		QuestionsDownloader downloader = new QuestionsDownloader(getApplicationContext());
+		QuestionsDownloader downloader = new QuestionsDownloader(getApplicationContext(), backgroundProcess);
 
 		if (savedInstanceState == null) {
 			Bundle extras = getIntent().getExtras();

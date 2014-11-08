@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.beiwe.app.BackgroundProcess;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.storage.TextFileManager;
 import org.json.JSONArray;
@@ -18,9 +19,11 @@ import android.util.Log;
 public class QuestionsDownloader {
 
 	private Context appContext;
+	private BackgroundProcess backgroundProcess;
 	
-	public QuestionsDownloader(Context applicationContext) {
-		this.appContext = applicationContext; 
+	public QuestionsDownloader(Context applicationContext, BackgroundProcess backgroundProcess) {
+		this.appContext = applicationContext;
+		this.backgroundProcess = backgroundProcess;
 	}
 	
 	
@@ -140,7 +143,7 @@ public class QuestionsDownloader {
 		if (survey != null) {
 			file.deleteSafely();
 			file.write(survey);
-			SurveyScheduler scheduler = new SurveyScheduler(appContext);
+			SurveyScheduler scheduler = new SurveyScheduler(appContext, backgroundProcess);
 			scheduler.scheduleSurvey(survey);
 		}		
 	}

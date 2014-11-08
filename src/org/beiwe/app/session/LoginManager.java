@@ -1,18 +1,14 @@
 package org.beiwe.app.session;
 
-import org.beiwe.app.DebugInterfaceActivity;
 import org.beiwe.app.R;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.ui.AlertsManager;
-import org.beiwe.app.ui.LoginActivity;
-import org.beiwe.app.ui.MainMenuActivity;
-import org.beiwe.app.ui.RegisterActivity;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.util.Log;
 
 
 /**A class used to manage login sessions. Uses SharedPreferences in order to save
@@ -49,6 +45,7 @@ public class LoginManager {
 		pref = appContext.getSharedPreferences(PREF_NAME, PRIVATE_MODE); //sets Shared Preferences private mode
 		editor = pref.edit();
 		editor.commit();
+		Log.i("LoginManager", "LoginManager INITIALIZED");
 	}
 
 	public static void initialize( Context context ) { new LoginManager(context); } 
@@ -58,13 +55,19 @@ public class LoginManager {
 	#####################################################################################*/
 
 	/** Quick check for login. **/
-	public static boolean isLoggedIn(){ return pref.getBoolean(IS_LOGGED_IN, false); }
+	public static boolean isLoggedIn(){
+		if (pref == null) Log.w("LoginManager", "FAILED AT ISLOGGEDIN");
+		return pref.getBoolean(IS_LOGGED_IN, false); }
+	
 	public static void setLoggedIn(boolean value) { 
 		editor.putBoolean(IS_LOGGED_IN, value); 
 		editor.commit();
 	} 
 
-	public static boolean isRegistered() { return pref.getBoolean(IS_REGISTERED, false); }
+	public static boolean isRegistered() { 
+		if (pref == null) Log.w("LoginManager", "FAILED AT ISREGISTERED");
+		return pref.getBoolean(IS_REGISTERED, false); }
+	
 	public static void setRegistered(boolean value) { 
 		editor.putBoolean(IS_REGISTERED, value);
 		editor.commit();

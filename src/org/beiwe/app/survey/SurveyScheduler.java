@@ -8,28 +8,25 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 public class SurveyScheduler {
 
+	// End inserted code from session manager
+	
 	private Context appContext;
+	private BackgroundProcess backgroundProcess;
 	
-	public SurveyScheduler(Context applicationContext) {
+	public SurveyScheduler(Context applicationContext, BackgroundProcess backgroundProcess) {
 		appContext = applicationContext;
+		this.backgroundProcess = backgroundProcess;
 	}
-	
+
 	
 	public void scheduleSurvey(String jsonSurveyString) {
 		// TODO: Josh ask Eli, is it safe to grab the Background Handle like this?
 		// Answer: no, you always need to handle the case where the background handle is null.
-		if (BackgroundProcess.getBackgroundHandle() == null) {
-			Log.i("SURVEYSCHEDULER", "BACKGROUND PROCESS IS NOT RUNNING");
-			Log.d("SURVEYSCHEDULER", "BACKGROUND PROCESS IS NOT RUNNING");
-			Log.e("SURVEYSCHEDULER", "BACKGROUND PROCESS IS NOT RUNNING");
-			return;
-		}
-			
-		Timer timer = new Timer(BackgroundProcess.getBackgroundHandle());
+		
+		Timer timer = new Timer(backgroundProcess);
 		int hour = hourOfDayToAskSurvey(jsonSurveyString);
 
 		if (dayOfWeekToAskSurvey(jsonSurveyString) == -1) {

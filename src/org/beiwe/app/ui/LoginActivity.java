@@ -21,16 +21,16 @@ import android.widget.EditText;
  * Helper class {@link LoginManager.java}
  * @authors Dor Samet, Eli Jones */
 
-@SuppressLint({ "CommitPrefEdits", "ShowToast" })
 public class LoginActivity extends Activity {
-	//extends a regular activity
+	//Note: LoginActivity cannot be a SessionActivity (without some stupid hacks)
+	//because SessionActivities trigger a LoginActivity, which would cause an infinite loop.
+	// In addition the LoginActivity should never the only activity on the activity stack,
+	// so the existence of a BackgroundProcess is assured.
 	
 	private EditText password;
 	private Context appContext;
 	
-	
 	@Override
-	//TODO: move logic about determining where to send a user to the loadingActivity.
 	/**The login activity Always prompts the user for the password. */
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -42,13 +42,6 @@ public class LoginActivity extends Activity {
 		
 		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(appContext);
 		textFieldKeyboard.makeKeyboardBehave(password);
-		
-		//this logic SHOULD never trigger
-		if ( !LoginManager.isRegistered() ) {
-			Log.e("LoginActivity", "this device is not registered, you need to run the register activity at least once before you can log in.");
-			TextFileManager.getDebugLogFile().write("loaded logis screen screen while unregistered.");
-			System.exit(1);
-		}
 	}
 	
 	

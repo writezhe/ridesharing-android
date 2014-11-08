@@ -7,6 +7,7 @@ import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
 import org.beiwe.app.listeners.WifiListener;
+import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.QuestionsDownloader;
@@ -20,6 +21,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
@@ -36,56 +38,55 @@ public class BackgroundProcess extends Service {
 	
 	private static Timer timer;
 	
-	//TODO: Eli. this [stupid hack] should only be necessary for debugging, comment out before production?
-	private static BackgroundProcess BackgroundHandle;
-
-	//returns the backgroundHandle
-	//always check to see if null before using.
-	public static BackgroundProcess getBackgroundHandle() throws NullPointerException{ return BackgroundHandle;	}
-	
-	
 	@Override
 	/** onCreate is essentially the constructor for the service, initialize variables here.*/
 	public void onCreate(){
-		BackgroundHandle = this;
-		Log.w("AHHHHHHRRRRRRRGGGGGGGHHHHHHH!*************************", "YE BACKGROUND PROCESS HAS STARTED. YARRRRRRRRRR!");
 		appContext = this.getApplicationContext();
 		
-		// FIXME: Eli + Josh.
-		// We have several crashes of similar origins, all of them having to do with the BackgroundProcess
-		// not running, or with one of the classes that requires a start or initialize function for some reason
-		// some variable inside it is null, when the initialize function has clearly been called.
-		
-		// Download the survey questions and schedule the surveys
-		QuestionsDownloader downloader = new QuestionsDownloader(appContext);
-		downloader.downloadJsonQuestions();
+		DeviceInfo.initialize( getApplicationContext() );
+		LoginManager.initialize( getApplicationContext() );
+		TextFileManager.initialize( getApplicationContext() );
+		PostRequest.initialize( getApplicationContext() );
+		WifiListener.initialize( getApplicationContext() );
 		
 		gpsListener = new GPSListener(appContext);
 		accelerometerListener = new AccelerometerListener( appContext );
 		startBluetooth();
-		
 		startSmsSentLogger();
 		startCallLogger();
 		startPowerStateListener();
+		registerTimers();
 		
-		startTimers();
+		//If this device is both registered and timers have not already been started, start them!
+		//FIXME: this logic needs improvement, it currently resets timers whenever the backgroundservice is restarted.
+		if (LoginManager.isRegistered()) {
+			Log.i("BackgroundProcess", "starting timers");
+//			startTimers();
+		}
+		
+		// Download the survey questions and schedule the surveys
+		// TODO: Josh. onCreate is going to be called with some frequency, can you add some logic
+		// so it only downloads new surveys if ... there are no current files? (other logic is good)
+		QuestionsDownloader downloader = new QuestionsDownloader(appContext, this);
+		downloader.downloadJsonQuestions();
 	}
 
-	@Override
-	public void onDestroy() {
-		//this does not run when the service is killed in a task manager, OR when the stopService() function is called from debugActivity.
-		BackgroundHandle = null;
-		Log.e("BackgroundService", "BACKGROUNDPROCESS WAS DESTROYED.");
-		Long javaTimeCode = System.currentTimeMillis();
-		TextFileManager.getDebugLogFile().write(javaTimeCode.toString() + "," + "BACKGROUNDPROCESS WAS DESTROYED" +"\n" );
-	}
 
 	@Override
 	/** The BackgroundService is meant to be all the time, so we return START_STICKY */
 	//testing start_redeliver_intent
-	public int onStartCommand(Intent intent, int flags, int startId){ return START_REDELIVER_INTENT; }
+	public int onStartCommand(Intent intent, int flags, int startId){
+		Log.w("BackroundProcess onStartCommand", "started with flag " + flags );
+		return START_REDELIVER_INTENT; 
+	}
 	
-
+	@Override
+	public void onDestroy() {
+		//this does not run when the service is killed in a task manager, OR when the stopService() function is called from debugActivity.
+		Log.e("BackgroundService", "BACKGROUNDPROCESS WAS DESTROYED.");
+		Long javaTimeCode = System.currentTimeMillis();
+		TextFileManager.getDebugLogFile().write(javaTimeCode.toString() + "," + "BACKGROUNDPROCESS WAS DESTROYED" +"\n" );
+	}
 	/*#############################################################################
 	#########################         Starters              #######################
 	#############################################################################*/
@@ -119,7 +120,7 @@ public class BackgroundProcess extends Service {
 		registerReceiver( (BroadcastReceiver) new PowerStateListener(), filter);
 		PowerStateListener.start();
 	}
-
+	
 	
 	/*#############################################################################
 	####################            Timer Logic             #######################
@@ -127,11 +128,9 @@ public class BackgroundProcess extends Service {
 	
 	/** create timers that will trigger events throughout the program, and
 	 * register the custom Intents with the controlMessageReceiver. */
-	public void startTimers() {
+	private void registerTimers() {
 		timer = new Timer(this);
-
 		IntentFilter filter = new IntentFilter();
-		
 		filter.addAction( appContext.getString( R.string.accelerometer_off ) );
 		filter.addAction( appContext.getString( R.string.accelerometer_on ) );
 		filter.addAction( appContext.getString( R.string.action_accelerometer_timer ) );
@@ -148,12 +147,14 @@ public class BackgroundProcess extends Service {
 		filter.addAction( appContext.getString( R.string.voice_recording ) );
 		filter.addAction( appContext.getString( R.string.weekly_survey ) );
 		registerReceiver(controlMessageReceiver, filter);
-		
+	}
+	
+	public void startTimers(){
 //		timer.setupSingularExactAlarm( 5000L, Timer.signOutTimerIntent, Timer.signoutIntent);
 //		timer.setupSingularExactAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent);
 //		timer.setupSingularFuzzyAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOnIntent);
 //		timer.setupExactHourlyAlarm(Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
-//		timer.setupSingularFuzzyAlarm( 5000L, Timer.wifiLogTimerIntent, Timer.wifiLogIntent);
+		timer.setupSingularFuzzyAlarm( 5000L, Timer.wifiLogTimerIntent, Timer.wifiLogIntent);
 		
 		//FIXME: Josh, create timer for checking for a new survey.  
 //		timer.setupDailyRepeatingAlarm(19, new Intent(appContext.getString(R.string.voice_recording)));
@@ -218,5 +219,12 @@ public class BackgroundProcess extends Service {
 	################# onStartCommand, onBind, and onDesroy (ignore these)# #####################
 	##########################################################################################*/
 	@Override
-	public IBinder onBind(Intent arg0) { return null; }
+	public IBinder onBind(Intent arg0) { return new BackgroundProcessBinder(); }
+	
+	//this is the public "Binder" class, it provides a (safe) handle to the background process
+	public class BackgroundProcessBinder extends Binder {
+        public BackgroundProcess getService() {
+            return BackgroundProcess.this;
+        }
+    }
 }

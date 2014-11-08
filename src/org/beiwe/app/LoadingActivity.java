@@ -3,39 +3,57 @@ package org.beiwe.app;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
-import org.beiwe.app.R;
-import org.beiwe.app.listeners.WifiListener;
-import org.beiwe.app.networking.PostRequest;
+import org.beiwe.app.BackgroundProcess.BackgroundProcessBinder;
 import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.storage.EncryptionEngine;
-import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.ui.AlertsManager;
-import org.beiwe.app.ui.LoginActivity;
-import org.beiwe.app.ui.MainMenuActivity;
 import org.beiwe.app.ui.RegisterActivity;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 
-/**
- * This is a gateway activity - the point of this activity is to navigate in between the three
+//TODO: Eli. Update doc.
+/**This is a gateway activity - the point of this activity is to navigate in between the three
  * starting activities.
  * 
  * Right now all it does is to call on checkLogin, which is the actual transfer mechanism.
  * 
  * This activity is also designed for splash screens.
- * @author Eli Jones, Dor Samet
- *
- */
+ * @author Eli Jones, Dor Samet */
 
 public class LoadingActivity extends Activity{
-	//extends a regular activity
 	
+	//swap the commented line below to enable/disable the debuginterface
 	public static Class loadThisActivity = DebugInterfaceActivity.class;
 //	public static Class loadThisActivity = MainMenuActivity.class;
+	
+	protected BackgroundProcess backgroundProcess;
+	protected boolean isBound = false;
+	
+	/**The ServiceConnection Class is our trigger for events that rely on the BackgroundService */
+	protected ServiceConnection backgroundProcessConnection = new ServiceConnection() {
+	    @Override
+	    public void onServiceConnected(ComponentName name, IBinder binder) {
+	        Log.d("loading ServiceConnection", "Background Process Connected");
+	        BackgroundProcessBinder some_binder = (BackgroundProcessBinder) binder;
+	        backgroundProcess = some_binder.getService();
+	        isBound = true;
+	        loadingSequence();
+	    }
+
+	    @Override
+	    public void onServiceDisconnected(ComponentName name) {
+	        Log.d("loading ServiceConnection", "Background Process Disconnected");
+	        backgroundProcess = null;
+	        isBound = false;
+	    }
+	};
 	
 	
 	/**onCreate - right now it just calls on checkLogin() in SessionManager, and moves the activity
@@ -45,41 +63,23 @@ public class LoadingActivity extends Activity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_loading);
 		
-		LoginManager.initialize( getApplicationContext() );
-		
 		if ( isAbleToHash() ) {
-			//if ( BackgroundProcess.getBackgroundHandle() == null ){ 
-				//check that the background service is running, if not...
-				Log.d("LoadingActivity", "BackgroundHandle null, initializing app components." );
-				//Order: DevicInfo, LoginManager, TextFileManager, PostRequest.
-				DeviceInfo.initialize( getApplicationContext() );
-				LoginManager.initialize( getApplicationContext() );
-				TextFileManager.initialize( getApplicationContext() );
-				PostRequest.initialize( getApplicationContext() );
-				WifiListener.initialize( getApplicationContext() );
-			/*}
-			else {
-				Log.d("LoadingActivity", "BackgroundProcess is currently running." );
-			}*/
+			bindService( new Intent( this.getApplicationContext(), BackgroundProcess.class), backgroundProcessConnection, Context.BIND_AUTO_CREATE);
 		}
-		else { failureExit(); }
-		
+		else failureExit();
+	}
+	
+	private void loadingSequence() {		
 		//if the device is not registered, push the user to the register activity
-		if ( !LoginManager.isRegistered() ){
-			Log.i("something", "anything");
-			startActivity(new Intent(this, RegisterActivity.class) ); }
+		if ( !LoginManager.isRegistered() ){ startActivity(new Intent(this, RegisterActivity.class) ); }
 		//if device is registered push user to the main menu.
 //		else { startActivity(new Intent(this, MainMenuActivity.class) ); }
-		else {
-			Log.d("something else", "anything");
-			startActivity(new Intent(this, loadThisActivity) ); } 
-		finish(); //weird, but otherwise it may be possible for the user to actually see the loading screen.
+		else { startActivity(new Intent(this, loadThisActivity) ); } 
+		finish(); //destroy the loading screen
 	}
-
 	
 	
-	/**Tests whether the device can run the hash algorithm we need. 
-	 * @return */
+	/**Tests whether the device can run the hash algorithm the app requires @return */
 	private boolean isAbleToHash() {
 		// Runs the unsafe hashing function and catches errors, if it catches errors.
 		try {
@@ -92,7 +92,7 @@ public class LoadingActivity extends Activity{
 
 	
 	private void failureExit() {
-		AlertsManager.showErrorAlert( getApplicationContext().getString( R.string.invalid_device), this);
+		AlertsManager.showErrorAlert( getString( R.string.invalid_device), this);
 		System.exit(1);
 	}
 }

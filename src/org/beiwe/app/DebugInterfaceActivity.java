@@ -56,11 +56,11 @@ public class DebugInterfaceActivity extends SessionActivity {
 		TextFileManager.deleteEverything(); }
 	
 	public void toggleAccelerometer(View view) {
-		Boolean accel_state = BackgroundProcess.getBackgroundHandle().accelerometerListener.toggle();
+		Boolean accel_state = backgroundProcess.accelerometerListener.toggle();
 		Log.i("Toggle Accelerometer button pressed", "Accel state: " + accel_state.toString() ); }
 	
 	public void toggleGPS(View view) {
-		Boolean gps_state = BackgroundProcess.getBackgroundHandle().gpsListener.toggle();
+		Boolean gps_state = backgroundProcess.gpsListener.toggle();
 		Log.i("Toggle GPS button pressed", "GPS state: " + gps_state.toString() ); }
 	
 	public void signOut (View view) {
@@ -79,7 +79,7 @@ public class DebugInterfaceActivity extends SessionActivity {
 
 	//public void bluetoothButtonStop (View view){ BackgroundProcess.getBackgroundHandle().bluetoothListener.disableBLEScan();	}
 	
-	public void buttonTimer(View view) { BackgroundProcess.getBackgroundHandle().startTimers(); }
+	public void buttonTimer(View view) { backgroundProcess.startTimers(); }
 	
 	public void notificationSender (View view) {
 		AppNotifications.displaySurveyNotification(appContext, Type.DAILY);
