@@ -13,13 +13,11 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class SurveyActivity extends SessionActivity {
 	
-	private LinearLayout surveyLayout;
 	private SurveyAnswersRecorder answersRecorder;
 	private String surveyId;
 	private SurveyType.Type surveyType;
@@ -55,31 +53,14 @@ public class SurveyActivity extends SessionActivity {
 	 */
 	private void renderSurvey(String jsonSurveyString) {
 		// Get the survey layout objects that we'll add questions to
-		surveyLayout = (LinearLayout) getLayoutInflater().inflate(R.layout.survey_layout, null);
+		LinearLayout surveyLayout = (LinearLayout) findViewById(R.id.surveyLayout);
 		
 		// Parse the JSON list of questions and render them as Views
 		JsonParser jsonParser = new JsonParser(getApplicationContext());
 		surveyId = jsonParser.renderSurveyFromJSON(surveyLayout, jsonSurveyString);
 
-		// Display the survey instead of the "Loading..." wheel
-		replaceSurveyPageContents(surveyLayout);
-		
 		// Record the time that the survey was first visible to the user
 		SurveyTimingsRecorder.recordSurveyFirstDisplayed(surveyId);
-	}
-	
-	
-	/**
-	 * Delete/empty the contents of the Survey Activity/page, and replace
-	 * them with the View provided here. This is called because adding multiple
-	 * children to a ScrollView crashes the app; also, we want to show only the
-	 * loading wheel, or the survey, but not both at once.
-	 * @param newContents the View to display in the survey Activity/page
-	 */
-	private synchronized void replaceSurveyPageContents(View newContents) {
-		ViewGroup page = (ViewGroup) findViewById(R.id.scrollViewMain);
-		page.removeAllViews();
-		page.addView(newContents);
 	}
 	
 	
@@ -94,6 +75,7 @@ public class SurveyActivity extends SessionActivity {
 		SurveyTimingsRecorder.recordSubmit(getApplicationContext());
 		
 		answersRecorder = new SurveyAnswersRecorder();
+		LinearLayout surveyLayout = (LinearLayout) findViewById(R.id.surveyLayout);
 		String unansweredQuestions = answersRecorder.gatherAllAnswers(surveyLayout, getApplicationContext());
 		if (unansweredQuestions.length() > 0) {
 			// If there are unanswered questions, show a warning

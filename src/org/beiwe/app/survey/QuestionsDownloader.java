@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.beiwe.app.BackgroundProcess;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.storage.TextFileManager;
 import org.json.JSONArray;
