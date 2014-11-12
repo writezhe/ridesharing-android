@@ -67,7 +67,7 @@ public class BackgroundProcess extends Service {
 		// Download the survey questions and schedule the surveys
 		// TODO: Josh. onCreate is going to be called with some frequency, can you add some logic
 		// so it only downloads new surveys if ... there are no current files? (other logic is good)
-		QuestionsDownloader downloader = new QuestionsDownloader(appContext, this);
+		QuestionsDownloader downloader = new QuestionsDownloader(appContext);
 		downloader.downloadJsonQuestions();
 	}
 
@@ -156,14 +156,21 @@ public class BackgroundProcess extends Service {
 //		timer.setupExactHourlyAlarm(Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
 		timer.setupSingularFuzzyAlarm( 5000L, Timer.wifiLogTimerIntent, Timer.wifiLogIntent);
 		
-		//FIXME: Josh, create timer for checking for a new survey.  
-//		timer.setupDailyRepeatingAlarm(19, new Intent(appContext.getString(R.string.voice_recording)));
+		//FIXME: Josh, create timer for checking for a new survey.
+//		timer.setupDailyRepeatingAlarm(19, Timer.voiceRecordingIntent);
 	}
 	
 	public static void resetAutomaticLogoutCountdownTimer(){
 		timer.setupSingularExactAlarm( 5000L, Timer.signOutTimerIntent, Timer.signoutIntent);
 	}
 	
+	public static void setDailySurvey(int hour) {
+		timer.setupDailyRepeatingAlarm(hour, Timer.dailySurveyIntent);
+	}
+	
+	public static void setWeeklySurvey(int hour, int dayOfWeek) {
+		timer.setupWeeklyRepeatingAlarm(dayOfWeek, hour, Timer.weeklySurveyIntent);
+	}
 	
 	BroadcastReceiver controlMessageReceiver = new BroadcastReceiver() {
 		@Override

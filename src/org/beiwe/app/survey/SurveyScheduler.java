@@ -1,49 +1,28 @@
 package org.beiwe.app.survey;
 
 import org.beiwe.app.BackgroundProcess;
-import org.beiwe.app.R;
-import org.beiwe.app.Timer;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Context;
-import android.content.Intent;
-
 public class SurveyScheduler {
-
-	// End inserted code from session manager
 	
-	private Context appContext;
-	private BackgroundProcess backgroundProcess;
-	
-	public SurveyScheduler(Context applicationContext, BackgroundProcess backgroundProcess) {
-		appContext = applicationContext;
-		this.backgroundProcess = backgroundProcess;
-	}
-
-	
-	public void scheduleSurvey(String jsonSurveyString) {
-		// TODO: Josh ask Eli, is it safe to grab the Background Handle like this?
-		// Answer: no, you always need to handle the case where the background handle is null.
+	public static void scheduleSurvey(String jsonSurveyString) {
 		
-		Timer timer = new Timer(backgroundProcess);
 		int hour = hourOfDayToAskSurvey(jsonSurveyString);
 
 		if (dayOfWeekToAskSurvey(jsonSurveyString) == -1) {
 			// Schedule a daily survey
-			Intent intent = new Intent(appContext.getString(R.string.daily_survey));
-			timer.setupDailyRepeatingAlarm(hour, intent);
+			BackgroundProcess.setDailySurvey(hour);
 		}
 		else {
 			// Schedule a weekly survey
 			int dayOfWeek = dayOfWeekToAskSurvey(jsonSurveyString);
-			Intent intent = new Intent(appContext.getString(R.string.weekly_survey));
-			timer.setupWeeklyRepeatingAlarm(dayOfWeek, hour, intent);
+			BackgroundProcess.setWeeklySurvey(hour, dayOfWeek);
 		}
 	}
 	
 	
-	private int hourOfDayToAskSurvey(String jsonSurveyString) {
+	private static int hourOfDayToAskSurvey(String jsonSurveyString) {
 		try {
 			JSONObject surveyObject = new JSONObject(jsonSurveyString);
 			return surveyObject.getInt("hour_of_day");
@@ -54,7 +33,7 @@ public class SurveyScheduler {
 	}
 	
 	
-	private int dayOfWeekToAskSurvey(String jsonSurveyString) {
+	private static int dayOfWeekToAskSurvey(String jsonSurveyString) {
 		try {
 			JSONObject surveyObject = new JSONObject(jsonSurveyString);
 			return surveyObject.getInt("day_of_week");

@@ -19,11 +19,9 @@ import android.util.Log;
 public class QuestionsDownloader {
 
 	private Context appContext;
-	private BackgroundProcess backgroundProcess;
 	
-	public QuestionsDownloader(Context applicationContext, BackgroundProcess backgroundProcess) {
+	public QuestionsDownloader(Context applicationContext) {
 		this.appContext = applicationContext;
-		this.backgroundProcess = backgroundProcess;
 	}
 	
 	
@@ -143,8 +141,7 @@ public class QuestionsDownloader {
 		if (survey != null) {
 			file.deleteSafely();
 			file.write(survey);
-			SurveyScheduler scheduler = new SurveyScheduler(appContext, backgroundProcess);
-			scheduler.scheduleSurvey(survey);
+			SurveyScheduler.scheduleSurvey(survey);
 		}		
 	}
 	
