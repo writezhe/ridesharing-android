@@ -2,15 +2,12 @@ package org.beiwe.app.ui;
 
 import org.beiwe.app.R;
 import org.beiwe.app.session.LoginManager;
-import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 

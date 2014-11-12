@@ -81,6 +81,7 @@
     <string name="invalid_user_id">Invalid user ID</string>
     <string name="invalid_password">Invalid password</string>
     <string name="password_mismatch">Passwords mismatch</string>
+    <string name="couldnt_register">Coult not register this device</string>
 
     <!-- Loading Activity Strings -->
     <string name="loading_activity_loading_message">Loading...</string>

@@ -89,8 +89,10 @@ public class RegisterActivity extends Activity {
 				activity.startActivity(new Intent(activity.getApplicationContext(), LoadingActivity.loadThisActivity) );
 				activity.finish();
 			}
-			AlertsManager.showAlert( "could not register this device.", this.activity );
-			super.onPostExecute(arg);
+			else {
+				AlertsManager.showAlert( appContext.getString(R.string.couldnt_register), this.activity );
+				super.onPostExecute(arg);
+			}
 		}
 	};}
 }
