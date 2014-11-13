@@ -62,9 +62,9 @@ public class HTTPAsync extends AsyncTask<Void, Void, Void> {
 				try {
 					AlertsManager.showAlert(responseCodeAlert( Integer.parseInt(responseString) ), activity);   }
 				catch (Exception e) {
-					AlertsManager.showAlert(responseCodeAlert( 1 ), activity);   } }
+					AlertsManager.showAlert(responseCodeAlert( 1 ), activity); } }
 			else if (response != 200) {
-				AlertsManager.showAlert(responseCodeAlert(response), activity);   }
+				AlertsManager.showAlert(responseCodeAlert(response), activity); }
 		} }	);
 	}
 	
