@@ -40,9 +40,7 @@ public class PostRequest {
 	//TODO: Eli. We do not appear to need the applicationContext in this class.
 	/**Uploads must be initialized with an appContext before they can access the wifi state or upload a _file_.
 	 * @param some applicationContext */
-	private PostRequest( Context applicationContext ) {
-		appContext = applicationContext;
-	}
+	private PostRequest( Context applicationContext ) { appContext = applicationContext; }
 
 	/** Simply runs the constructor, using the applcationContext to grab variables.  Idempotent. */
 	public static void initialize(Context applicationContext) { new PostRequest(applicationContext); }
@@ -151,7 +149,7 @@ public class PostRequest {
 			while ( (line = reader.readLine() ) != null) { response.append(line); }
 			return response.toString();
 		}
-		return responseCode.toString(); //FIXME: Eli, test this behavior wherever it is used of returning non-200 response codes as a string.
+		return responseCode.toString();
 	}
 
 
