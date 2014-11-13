@@ -180,11 +180,10 @@ public class PostRequest {
 		HttpsURLConnection connection = setupHTTP(parameters, url);
 		int response = connection.getResponseCode();
 		if ( response == 200 ) {
-			// TODO: Eli.  Determine why this statement is true: If the AsyncPostSender receives a 1, that means that someone misconfigured the server.
 			String key = readResponse(connection) ;
 			if ( !key.startsWith("MIIBI") ) {
 				Log.e("PostRequest - register", " Received an invalid encryption key from server: " + key );
-			} //TODO: Eli.  This needs to alert the user or throw an exception that is caught and handled with a user error alert prompt.
+				return 2; }
 			Log.i( "POSTREQUEST", "Received a key: " + key );
 			TextFileManager.getKeyFile().deleteSafely();
 			TextFileManager.getKeyFile().write( key );

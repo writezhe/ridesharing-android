@@ -20,7 +20,7 @@ import android.widget.EditText;
 
 /**Activity used to log a user in to the application for the first time. This activity should only be called on ONCE,
  * as once the user is logged in, data is saved on the phone.
- * @author Dor Samet */
+ * @author Dor Samet, Eli Jones */
 
 @SuppressLint("ShowToast")
 public class RegisterActivity extends Activity {
@@ -86,7 +86,10 @@ public class RegisterActivity extends Activity {
 				 * to prepend to those files' names, instead of NULL_ID */
 				TextFileManager.makeNewFilesForEverything();
 				activity.startActivity(new Intent(activity.getApplicationContext(), LoadingActivity.loadThisActivity) );
-				activity.finish();
+				activity.finish(); }
+			else if (response == 2) {
+				AlertsManager.showAlert( "Received an invalid encryption key, please contact your administrator.", this.activity );
+				super.onPostExecute(arg);
 			}
 			else {
 				AlertsManager.showAlert( getString(R.string.couldnt_register), this.activity );
