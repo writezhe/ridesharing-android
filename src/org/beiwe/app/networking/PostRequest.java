@@ -31,8 +31,6 @@ import android.util.Log;
  * @author Josh, Eli, Dor
  */
 
-//FIXME: Eli.  determine if adding the parameters field to doFileUpload etc. broke things.  (I don't thiiiink it did...)
-
 public class PostRequest {
 
 	private static Context appContext;	
