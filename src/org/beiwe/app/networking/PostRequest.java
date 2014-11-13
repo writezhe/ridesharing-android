@@ -116,7 +116,6 @@ public class PostRequest {
 		connection.setRequestMethod("POST");
 		connection.setRequestProperty("Connection", "Keep-Alive");
 		connection.setRequestProperty("Cache-Control", "no-cache");
-		//TODO: Eli. research if the timeouts below are compatible with the file upload function.  There is no reason they *shouldn't*, but it is untested.
 		connection.setConnectTimeout(3000);
 		connection.setReadTimeout(5000);
 		return connection;
