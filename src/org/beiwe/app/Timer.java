@@ -58,7 +58,7 @@ public class Timer {
 	
 	//The timer offset is a random value that is inserted into time calculations to make them occur at a variable time
 	private final static long EXACT_TIMER_OFFSET = 2856000;
-	//TODO: Eli, implement, test.
+	//TODO: Eli. test.
 	private static int getRandomTimeOffset(){
 		Random random = new Random();
 		return random.nextInt(1800000);  //this would result in a half hour window, right?
@@ -205,8 +205,6 @@ public class Timer {
 	}
 	
 	
-	/* TODO: Eli, please think through whether this is OK.  I (Josh) set it up
-	 * this way because AlarmManager.setExact only exists for API 19 and above. */
 	/** Calls AlarmManager.set() for API < 19, and AlarmManager.setExact() for API 19+
 	 * For an exact alarm, it seems you need to use .set() for API 18 and below, and
 	 * .setExact() for API 19 (KitKat) and above. */
