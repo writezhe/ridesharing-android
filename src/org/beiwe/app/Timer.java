@@ -89,7 +89,6 @@ public class Timer {
 		GPSTimerIntent = setupIntent( appContext.getString(R.string.action_gps_timer) );
 		signOutTimerIntent = setupIntent( appContext.getString(R.string.action_signout_timer) );
 		wifiLogIntent = setupIntent( appContext.getString(R.string.action_wifi_log) );
-		// TODO: Eli, determine if we need to add wifiLogIntent here?
 	}
 
 	
