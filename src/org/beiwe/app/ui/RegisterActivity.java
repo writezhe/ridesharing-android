@@ -11,7 +11,6 @@ import org.beiwe.app.survey.TextFieldKeyboard;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,7 +26,6 @@ import android.widget.EditText;
 public class RegisterActivity extends Activity {
 	//extends a regular activity
 	// Private fields
-	private Context appContext;
 	private EditText userID;
 	private EditText password;
 
@@ -37,12 +35,10 @@ public class RegisterActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_register);
 
-		// onCreate set variables
-		appContext = getApplicationContext();
 		userID = (EditText) findViewById(R.id.userID_box);
 		password = (EditText) findViewById(R.id.password_box);
 
-		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(appContext);
+		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard( getApplicationContext() );
 		textFieldKeyboard.makeKeyboardBehave(userID);
 		textFieldKeyboard.makeKeyboardBehave(password);
 	}
@@ -58,13 +54,13 @@ public class RegisterActivity extends Activity {
 
 		// If the user id length is too short, alert the user
 		if(userIDStr.length() == 0) {
-			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_user_id), this); }
+			AlertsManager.showAlert( getString(R.string.invalid_user_id), this); }
 		
 		// If the password length is too short, alert the user
 		else if ( LoginManager.validatePassword(passwordStr, this) ) {
 			
 			LoginManager.setLoginCredentials(userIDStr, passwordStr);
-			LoginManager.setRegistered(true); //TODO: Eli. this line should be unnecessary.
+			LoginManager.setRegistered(true);
 			LoginManager.setLoggedIn(true);
 			
 			Log.i("RegisterActivity", "trying \"" + LoginManager.getPatientID() + "\" with password \"" + LoginManager.getPassword() + "\"" );
@@ -89,12 +85,11 @@ public class RegisterActivity extends Activity {
 				/* Create new data files, because now the app has a patientID
 				 * to prepend to those files' names, instead of NULL_ID */
 				TextFileManager.makeNewFilesForEverything();
-				//TODO: postproduction. Change to point at regular activity.
 				activity.startActivity(new Intent(activity.getApplicationContext(), LoadingActivity.loadThisActivity) );
 				activity.finish();
 			}
 			else {
-				AlertsManager.showAlert( appContext.getString(R.string.couldnt_register), this.activity );
+				AlertsManager.showAlert( getString(R.string.couldnt_register), this.activity );
 				super.onPostExecute(arg);
 			}
 		}
