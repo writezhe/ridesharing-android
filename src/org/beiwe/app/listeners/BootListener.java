@@ -33,21 +33,11 @@ public class BootListener extends BroadcastReceiver {
 			throw e; }
 	}
 	
-	/** Does what it says, starts the background service running, also loads log files.
-	 *  called when SDcard available and device startup. */	
+	/** Does what it says, starts the background service running.
+	 *  called when SDcard available and on device startup. */	
 	private void startBackgroundProcess(Context externalContext){
-		//FIXME: Eli. this does start the background service, but Thread.sleep() seems to... stop the wrong thread?
-		Log.i("thing", "trying to start background service");
-		//this is the construction for starting a service on reboot.
 		Intent intent_to_start_background_service = new Intent(externalContext, BackgroundProcess.class);
 	    externalContext.startService(intent_to_start_background_service);
-//	    Long javaTimeCode = System.currentTimeMillis();
-////	    BackgroundProcess.BackgroundHandle.
-//		try { Thread.sleep(30000); }
-//		catch(InterruptedException ex) { Thread.currentThread().interrupt(); }
-//		String message = "device reboot, app started.";
-//		TextFileManager.getDebugLogFile().write(javaTimeCode.toString() + TextFileManager.DELIMITER + message + "\n" ); 
-//		TextFileManager.getPowerStateFile().write(javaTimeCode.toString() + TextFileManager.DELIMITER + message + '\n');
 	}
 	
 	@Override
