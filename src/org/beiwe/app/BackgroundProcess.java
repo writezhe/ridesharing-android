@@ -217,6 +217,7 @@ public class BackgroundProcess extends Service {
 			if (intent.getAction().equals(appContext.getString(R.string.signout_intent) ) ) {
 				Log.d("BackgroundProcess", "RECEIVED LOGOUT, LOGGING OUT");
 				// TODO Josh: take user to LoginActivity?
+				// repy: Eli: that should not be necessary. the pattern of triggers of the SessionActivity's onPause, onResume, onDestroy expects this behavior
 				LoginManager.setLoggedIn(false);
 			}
 		}
