@@ -6,6 +6,7 @@ import org.beiwe.app.R;
 import org.beiwe.app.networking.HTTPAsync;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.LoginManager;
+import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
 import android.annotation.SuppressLint;
@@ -85,6 +86,9 @@ public class RegisterActivity extends Activity {
 		protected void onPostExecute(Void arg) {
 			if (response == 200) { 
 				LoginManager.setRegistered(true);
+				/* Create new data files, because now the app has a patientID
+				 * to prepend to those files' names, instead of NULL_ID */
+				TextFileManager.makeNewFilesForEverything();
 				//TODO: postproduction. Change to point at regular activity.
 				activity.startActivity(new Intent(activity.getApplicationContext(), LoadingActivity.loadThisActivity) );
 				activity.finish();
