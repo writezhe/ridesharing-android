@@ -70,6 +70,16 @@
     <string name="reset_password_submit">Submit</string>
     <string name="invalid_old_password">Old password incorrect</string>
     <string name="pass_reset_complete">Password reset complete</string>
+    <string name="password_mismatch">Passwords mismatch</string>
+    <string name="password_too_short">Your password must be longer than %d characters.</string>
+    
+    <!-- Forgot Password Activity Strings -->
+    <string name="forgot_password_title">Call the hotline to get a temporary password</string>
+    <string name="forgot_password_instructions_text">Please press the button to call the hotline and ask for a temporary password.  Then enter your temporary password and the new, permanent password you want to use.</string>
+    <string name="forgot_password_image_button_description">Call Button</string>
+    <string name="forgot_password_temporary_password_caption">Enter your temporary password (get this by calling the hotline)</string>
+    <string name="forgot_password_new_password_caption">Please enter your new permanent password (the one you want to use)</string>
+    <string name="forgot_password_confirm_new_password_caption">Enter your new permanent password again (the one you want to use)</string>
 
     <!-- Registration Activity Strings -->
     <string name="register_activity_welcoming_message">Welcome to the study</string>
@@ -80,7 +90,6 @@
     <string name="title_activity_loading">LoadingActivity</string>
     <string name="invalid_user_id">Invalid user ID</string>
     <string name="invalid_password">Invalid password</string>
-    <string name="password_mismatch">Passwords mismatch</string>
     <string name="couldnt_register">Coult not register this device</string>
 
     <!-- Loading Activity Strings -->

@@ -6,6 +6,7 @@ import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.session.SessionActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -20,6 +21,7 @@ import android.webkit.WebViewClient;
  * @author Dor Samet
  *
  */
+@SuppressLint("SetJavaScriptEnabled")
 public class GraphActivity extends SessionActivity {
 	//extends SessionActivity
 
@@ -48,7 +50,7 @@ public class GraphActivity extends SessionActivity {
 		browserSettings.setJavaScriptEnabled(true);
 		browser.setInitialScale(200);
 
-		String postData = PostRequest.securityParameters();
+		String postData = PostRequest.securityParameters(null);
 		String graphUrl = getApplicationContext().getString(R.string.graph_url);
 		browser.postUrl(graphUrl, EncodingUtils.getBytes(postData, "BASE64"));
 	}

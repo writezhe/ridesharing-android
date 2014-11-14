@@ -98,7 +98,7 @@ public class ResetPasswordActivity extends SessionActivity {
 		protected Void doInBackground(Void... arg0) {
 			parameters = PostRequest.makeParameter( "new_password", newPassword );
 			Log.i("debugging", "about to send post request");
-			response = PostRequest.httpRequestcode( parameters, url );
+			response = PostRequest.httpRequestcode( parameters, url, null );
 			return null; //haaaate
 		}
 				
