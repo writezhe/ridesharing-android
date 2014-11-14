@@ -57,7 +57,7 @@ public class RegisterActivity extends Activity {
 			AlertsManager.showAlert( getString(R.string.invalid_user_id), this); }
 		
 		// If the password length is too short, alert the user
-		else if ( LoginManager.validatePassword(passwordStr, this) ) {
+		else if ( LoginManager.passwordMeetsRequirements(passwordStr, this) ) {
 			
 			LoginManager.setLoginCredentials(userIDStr, passwordStr);
 			LoginManager.setRegistered(true);

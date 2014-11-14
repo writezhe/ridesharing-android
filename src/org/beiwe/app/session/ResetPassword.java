@@ -11,7 +11,18 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
-
+/**
+ * Code designed to be used in two very similar Activities: ResetPassword and ForgotPassword.
+ * Both Activities have three text-input fields (EditTexts): current password, new password, and
+ * confirm new password.
+ * This code checks the new password and confirm new password; if they're good, it sends the
+ * current password to the server.
+ * This differs from other authentication calls in the rest of the app in that current password
+ * comes from the text-input field, NOT from the app's storage.  This means that an admin can reset
+ * the password on the server, and the user can use that new password to reset the device's
+ * password, regardless of what password is currently saved on the device.
+ * @author Josh Zagorsky, Dor Samet
+ */
 public class ResetPassword {
 	
 	private Activity currentActivity;
@@ -37,13 +48,11 @@ public class ResetPassword {
 		}
 
 		// If the new password has too few characters, pop up an alert, and do nothing else
-		int minPasswordLength = 1; // TODO postproduction: set the minPasswordLength to something higher than 1
-		if (newPassword.length() < minPasswordLength) {
-			String alertMessage = String.format(appContext.getString(R.string.password_too_short), minPasswordLength);
-			AlertsManager.showAlert(alertMessage, currentActivity);
+		if (!LoginManager.passwordMeetsRequirements(newPassword, currentActivity)) {
 			return;
 		}
 		
+		// If new password and confirm new password are valid, try resetting them on the server
 		doResetPasswordRequest();
 	}
 	

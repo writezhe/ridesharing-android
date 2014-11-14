@@ -84,13 +84,18 @@ public class LoginManager {
 	 * @param input
 	 * @param activity
 	 * @return true or false based on password requirements.*/
-	//TODO: Postproduction. change the minimum value to ~6
-	public static boolean validatePassword(String input, Activity activity) {
-		if (input.length() < 1) {  //do not set to less than 1, this check takes care of entering a length 0 password
-			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_password), activity );
-			return false; }
+	public static boolean passwordMeetsRequirements(String password, Activity currentActivity) {
+		// If the password has too few characters, pop up an alert saying so
+		int minPasswordLength = 1; // TODO postproduction: set the minPasswordLength to something higher than 1
+		if (password.length() < minPasswordLength) {
+			String alertMessage = String.format(appContext.getString(R.string.password_too_short), minPasswordLength);
+			AlertsManager.showAlert(alertMessage, currentActivity);
+			return false;
+		}
+		// Improvement idea: set more password requirements (must have both letters and numbers)
 		return true;
 	}
+
 
 	/**Takes an input string and returns a boolean value stating whether the input matches the current password.
 	 * @param input
