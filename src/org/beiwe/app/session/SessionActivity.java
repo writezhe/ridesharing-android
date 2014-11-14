@@ -70,6 +70,7 @@ public class SessionActivity extends Activity {
 		super.onResume();
 		authenticateAndLoginIfNecessary();
 		bindService( new Intent( this.getApplicationContext(), BackgroundProcess.class), backgroundProcessConnection, Context.BIND_AUTO_CREATE);
+		startService(new Intent(this.getApplicationContext(), BackgroundProcess.class));
 	}
 	
 

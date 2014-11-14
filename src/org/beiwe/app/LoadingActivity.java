@@ -65,6 +65,7 @@ public class LoadingActivity extends Activity{
 		
 		if ( isAbleToHash() ) {
 			bindService( new Intent( this.getApplicationContext(), BackgroundProcess.class), backgroundProcessConnection, Context.BIND_AUTO_CREATE);
+			startService(new Intent(this.getApplicationContext(), BackgroundProcess.class));
 		}
 		else failureExit();
 	}
