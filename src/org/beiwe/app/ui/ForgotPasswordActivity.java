@@ -1,12 +1,14 @@
 package org.beiwe.app.ui;
 
 import org.beiwe.app.R;
+import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.session.ResetPassword;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 /**
  * @author Dor Samet, Eli Jones
@@ -19,7 +21,12 @@ public class ForgotPasswordActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_forgot_password);
 
-		//TODO: Josh/Eli. make some letters that say "your user ID is blah, press this button to ... query the server for a new password" or something
+		/* Add the user's Patient ID to the heading in the activity, so the user can tell it to the
+		 * administrator when the user calls the hotline asking for a temporary password. */
+		TextView title = (TextView) findViewById(R.id.forgotPasswordTitle);
+		String titleWithIdResource = getApplicationContext().getString(R.string.forgot_password_title_with_id);
+		String instructionsWithId = String.format(titleWithIdResource, LoginManager.getPatientID());
+		title.setText(instructionsWithId);
 	}
 	
 	

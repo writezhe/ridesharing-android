@@ -75,6 +75,7 @@
     
     <!-- Forgot Password Activity Strings -->
     <string name="forgot_password_title">Call the hotline to get a temporary password</string>
+    <string name="forgot_password_title_with_id">Call the hotline to get a temporary password. Your ID is \"%s\".</string>
     <string name="forgot_password_instructions_text">Please press the button to call the hotline and ask for a temporary password.  Then enter your temporary password and the new, permanent password you want to use.</string>
     <string name="forgot_password_image_button_description">Call Button</string>
     <string name="forgot_password_temporary_password_caption">Enter your temporary password (get this by calling the hotline)</string>
