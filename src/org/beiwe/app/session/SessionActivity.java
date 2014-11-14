@@ -74,11 +74,6 @@ public class SessionActivity extends Activity {
 	}
 	
 
-	protected void tryToStartAutomaticLogoutCountdownTimer(){
-		
-	}
-	
-
 	protected void authenticateAndLoginIfNecessary() {
 		if ( !LoginManager.isLoggedIn() ) {
 			startActivity( new Intent(this, LoginActivity.class) );
