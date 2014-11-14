@@ -1,19 +1,11 @@
 package org.beiwe.app.ui;
 
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
-
 import org.beiwe.app.R;
-import org.beiwe.app.networking.HTTPAsync;
-import org.beiwe.app.networking.PostRequest;
-import org.beiwe.app.session.LoginManager;
+import org.beiwe.app.session.ResetPassword;
 import org.beiwe.app.session.SessionActivity;
-import org.beiwe.app.survey.TextFieldKeyboard;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -28,89 +20,32 @@ import android.widget.EditText;
 @SuppressLint("ShowToast")
 public class ResetPasswordActivity extends SessionActivity {
 	// extends SessionActivity
-	private Context appContext;
-	private EditText oldPass;
-	private EditText newPassword;
-	private EditText newPasswordRepeat;
-	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_reset_password);
-		
-		// This is the variable assignment section
-		appContext = getApplicationContext();
-		oldPass = (EditText) findViewById(R.id.reset_password_old_password);
-		newPassword = (EditText) findViewById(R.id.reset_password_password);
-		newPasswordRepeat = (EditText) findViewById(R.id.reset_password_password_repeat);
-		
-		// Make keyboard behavior nicely - when clicking outside of the textbox, keyboard disappears
-		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(appContext);
-		textFieldKeyboard.makeKeyboardBehave(oldPass);
-		textFieldKeyboard.makeKeyboardBehave(newPassword);
-		textFieldKeyboard.makeKeyboardBehave(newPasswordRepeat);
 	}
 	
 	
-	
-	//TODO: Eli. update this doc
-	/** Each time there is an error, such like an incorrect username, the program will throw an alert,
-	 *  informing the user of the error.
-	 *  
-	 *  If the user succeeds in logging in, the activity finishes.
-	 * @param view
-	 * @throws UnsupportedEncodingException 
-	 * @throws NoSuchAlgorithmException */
-	public void resetPasswordSequence(View view) {
-		// Old password, and old password hashed
-		String oldPassStr = oldPass.getText().toString();
-		
-		// New password that will be pushed to the server
-		String newPasswordStr = newPassword.getText().toString();
-		String newPasswordRepeatStr = newPasswordRepeat.getText().toString();
+	/** calls the reset password HTTPAsync query. */
+	public void registerNewPassword(View view) {
+		// Get the user's current password
+		EditText currentPasswordInputField = (EditText) findViewById(R.id.resetPasswordCurrentPasswordInput);
+		String currentPassword = currentPasswordInputField.getText().toString();
 
-		// Cases: passwords mismatch, and repeat password with actual password mismatch.
-		//make sure the old password matches, then...
-		if ( LoginManager.checkPassword( oldPassStr ) ) {
-			
-			//check that both inputs are identical
-			if ( !newPasswordRepeatStr.equals(newPasswordStr) ) {
-				AlertsManager.showAlert(appContext.getResources().getString(R.string.password_mismatch), this);
-				return;
-			}
-			//check that the proposed password is a valid password
-			if ( LoginManager.validatePassword(newPasswordStr, this) ){
-				Log.i("debugging", "validated password");
-				doResetPassword(appContext.getString(R.string.reset_password_url), newPasswordStr);
-				//note: the reset password function expects a plaintext, unhashed password.
-			}
-			return;
-		}
-		AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_old_password), this);
+		// Get the new, permanent password the user wants
+		EditText newPasswordInput = (EditText) findViewById(R.id.resetPasswordNewPasswordInput);
+		String newPassword = newPasswordInput.getText().toString();
 		
-				
+		// Get the confirmation of the new, permanent password (should be the same as the previous field)
+		EditText confirmNewPasswordInput = (EditText) findViewById(R.id.resetPasswordConfirmNewPasswordInput);
+		String confirmNewPassword = confirmNewPasswordInput.getText().toString();
+
+		/* Pass all three to the ResetPassword class, which will check validity, and, if valid,
+		 * reset the permanent password */
+		ResetPassword resetPassword = new ResetPassword(this);
+		resetPassword.checkInputsAndTryToResetPassword(currentPassword, newPassword, confirmNewPassword);
 	}
-	
-	
-	private void doResetPassword(String url, final String newPassword) { new HTTPAsync(url, this) {
-		@Override
-		protected Void doInBackground(Void... arg0) {
-			parameters = PostRequest.makeParameter( "new_password", newPassword );
-			Log.i("debugging", "about to send post request");
-			response = PostRequest.httpRequestcode( parameters, url, null );
-			return null; //haaaate
-		}
-				
-		@Override
-		protected void onPostExecute(Void arg) {
-			if (response == 200) { 
-				LoginManager.setPassword(newPassword);
-				this.activity.finish();
-			}
-			//TODO: Josh/Eli.  change to the app string thing.
-			AlertsManager.showAlert("could not reset password", activity);
-			super.onPostExecute(arg);
-		}
-	}; }
-}	
+
+}

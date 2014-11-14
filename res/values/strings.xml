@@ -64,9 +64,9 @@
 
     <!-- Reset Password Activity Strings -->
     <string name="reset_password_title">Reset your password</string>
-    <string name="reset_password_enter_ID">Please enter your old password:</string>
-    <string name="reset_password_enter_password">Please enter your new password:</string>
-    <string name="reset_password_repeat_password">Enter your new password again:</string>
+    <string name="reset_password_current_password_caption">Please enter your old password:</string>
+    <string name="reset_password_new_password_caption">Please enter your new password:</string>
+    <string name="reset_password_confirm_new_password_caption">Enter your new password again:</string>
     <string name="reset_password_submit">Submit</string>
     <string name="invalid_old_password">Old password incorrect</string>
     <string name="pass_reset_complete">Password reset complete</string>
