@@ -61,7 +61,7 @@ public class RegisterActivity extends Activity {
 			
 			LoginManager.setLoginCredentials(userIDStr, passwordStr);
 			LoginManager.setRegistered(true);
-			LoginManager.setLoggedIn(true);
+			LoginManager.loginOrRefreshLogin();
 			
 			Log.i("RegisterActivity", "trying \"" + LoginManager.getPatientID() + "\" with password \"" + LoginManager.getPassword() + "\"" );
 			doRegister(getApplicationContext().getString(R.string.register_url));

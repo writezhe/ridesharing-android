@@ -29,10 +29,10 @@ public class LoginManager {
 
 	// Editor key-strings
 	private static final String PREF_NAME = "BeiwePref";
-	private static final String IS_LOGGED_IN = "IsLoggedIn";
 	private static final String KEY_ID = "uid";
 	private static final String KEY_PASSWORD = "password";
 	private static final String IS_REGISTERED = "IsRegistered";
+	private static final String LOGIN_EXPIRATION = "loginExpirationTimestamp";
 	
 	/*#####################################################################################
 	######################### Constructor and Initializing ################################
@@ -57,12 +57,21 @@ public class LoginManager {
 	/** Quick check for login. **/
 	public static boolean isLoggedIn(){
 		if (pref == null) Log.w("LoginManager", "FAILED AT ISLOGGEDIN");
-		return pref.getBoolean(IS_LOGGED_IN, false); }
+		// If the current time is earlier than the expiration time, return TRUE; else FALSE
+		return (System.currentTimeMillis() < pref.getLong(LOGIN_EXPIRATION, 0)); }
 	
-	public static void setLoggedIn(boolean value) { 
-		editor.putBoolean(IS_LOGGED_IN, value); 
+	/** Set the login session to expire a fixed amount of time in the future */
+	public static void loginOrRefreshLogin() {
+		Long millisecondsBeforeAutoLogout = 5000L;
+		editor.putLong(LOGIN_EXPIRATION, System.currentTimeMillis() + millisecondsBeforeAutoLogout);
 		editor.commit();
-	} 
+	}
+
+	/** Set the login session to "expired" */
+	public static void logout() {
+		editor.putLong(LOGIN_EXPIRATION, 0);
+		editor.commit();
+	}
 
 	public static boolean isRegistered() { 
 		if (pref == null) Log.w("LoginManager", "FAILED AT ISREGISTERED");
@@ -119,6 +128,7 @@ public class LoginManager {
 	###########################################################################################*/
 
 	public static void setLoginCredentials( String userID, String password ) {
+		if (editor == null) Log.e("LoginManager.java", "editor is null");
 		editor.putString(KEY_ID, userID);
 		setPassword(password);
 		editor.commit();

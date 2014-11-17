@@ -109,12 +109,17 @@ public class SessionActivity extends Activity {
 			startActivity(new Intent(getApplicationContext(), ResetPasswordActivity.class));
 			return true;
 		case R.id.menu_signout:
-			LoginManager.setLoggedIn(false);
-			startActivity( new Intent(this, LoginActivity.class) );
+			logoutUser();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+
+	protected void logoutUser() {
+		LoginManager.logout();
+		startActivity(new Intent(this, LoginActivity.class));
 	}
 	
 	

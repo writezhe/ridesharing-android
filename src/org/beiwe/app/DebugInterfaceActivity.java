@@ -64,8 +64,7 @@ public class DebugInterfaceActivity extends SessionActivity {
 		Log.i("Toggle GPS button pressed", "GPS state: " + gps_state.toString() ); }
 	
 	public void signOut (View view) {
-		LoginManager.setLoggedIn(false);
-		startActivity(new Intent(this, LoginActivity.class) );
+		super.logoutUser();
 	}
 	
 	public void unRegister (View view) {

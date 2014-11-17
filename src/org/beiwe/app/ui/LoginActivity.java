@@ -48,7 +48,7 @@ public class LoginActivity extends Activity {
 	 * @param view*/
 	public void loginButton(View view) {		
 		if ( LoginManager.checkPassword( password.getText().toString() ) ) {
-			LoginManager.setLoggedIn(true);
+			LoginManager.loginOrRefreshLogin();
 			finish();
 			return;
 		}
