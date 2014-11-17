@@ -60,6 +60,7 @@ public class LoginActivity extends Activity {
 	 * @param view */
 	public void forgotPassword(View view) {
 		startActivity( new Intent(appContext, ForgotPasswordActivity.class) );
+		finish();
 	}
 	
 	@Override

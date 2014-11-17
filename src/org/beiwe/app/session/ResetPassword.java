@@ -77,6 +77,9 @@ public class ResetPassword {
 					// Set the password on the device to the new permanent password
 					LoginManager.setPassword(newPassword);
 					
+					// Set the user to "logged in"
+					LoginManager.loginOrRefreshLogin();
+
 					// Show a Toast with a "Success!" message
 					String message = appContext.getString(R.string.pass_reset_complete);
 					Toast.makeText(appContext, message, Toast.LENGTH_LONG).show();
