@@ -40,7 +40,6 @@ public class Timer {
 	public static Intent accelerometerTimerIntent;
 	public static Intent bluetoothTimerIntent;
 	public static Intent GPSTimerIntent;
-	public static Intent signOutTimerIntent;
 	public static Intent wifiLogTimerIntent;
 	
 	// Intent filters
@@ -87,7 +86,6 @@ public class Timer {
 		accelerometerTimerIntent = setupIntent( appContext.getString(R.string.action_accelerometer_timer) );
 		bluetoothTimerIntent = setupIntent( appContext.getString(R.string.action_bluetooth_timer) );
 		GPSTimerIntent = setupIntent( appContext.getString(R.string.action_gps_timer) );
-		signOutTimerIntent = setupIntent( appContext.getString(R.string.action_signout_timer) );
 		wifiLogIntent = setupIntent( appContext.getString(R.string.action_wifi_log) );
 	}
 
@@ -126,12 +124,19 @@ public class Timer {
 		alarmManager.set( AlarmManager.ELAPSED_REALTIME_WAKEUP, nextTriggerTime, pendingTimerIntent);
 		Log.i("Timer", "singular fuzzy alarm started");
 	}
+	/** Single exact alarm for events that happen in pairs, e.g. [sensor on]-[sensor off]. */
 	public void setupSingularExactAlarm( Long milliseconds, Intent timerIntent, Intent intentToBeBroadcast ) {
 		Long nextTriggerTime = System.currentTimeMillis() + milliseconds;
 		PendingIntent pendingTimerIntent = registerAlarm( intentToBeBroadcast, timerIntent );
 		/* The alarmManager.setExact(*parameters*) operation makes exact alarms.  They are guaranteed
 		 * to go off at the precise/exact time that you specify. */
 		setAsExactAsPossible(alarmManager, AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingTimerIntent);
+	}
+	/** Single exact alarm for an event that happens once */
+	public void setupSingularExactAlarm(Long milliseconds, Intent intentToBeBroadcast) {
+		Long triggerTime = System.currentTimeMillis() + milliseconds;
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
+		setAsExactAsPossible(alarmManager, AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
 	}
 	
 	

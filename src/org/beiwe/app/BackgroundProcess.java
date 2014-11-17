@@ -136,7 +136,6 @@ public class BackgroundProcess extends Service {
 		filter.addAction( appContext.getString( R.string.action_accelerometer_timer ) );
 		filter.addAction( appContext.getString( R.string.action_bluetooth_timer ) );
 		filter.addAction( appContext.getString( R.string.action_gps_timer ) );
-		filter.addAction( appContext.getString( R.string.action_signout_timer ) );
 		filter.addAction( appContext.getString( R.string.action_wifi_log ) );
 		filter.addAction( appContext.getString( R.string.bluetooth_off ) );
 		filter.addAction( appContext.getString( R.string.bluetooth_on ) );
@@ -150,7 +149,6 @@ public class BackgroundProcess extends Service {
 	}
 	
 	public void startTimers(){
-//		timer.setupSingularExactAlarm( 5000L, Timer.signOutTimerIntent, Timer.signoutIntent);
 //		timer.setupSingularExactAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent);
 //		timer.setupSingularFuzzyAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOnIntent);
 //		timer.setupExactHourlyAlarm(Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
@@ -161,7 +159,7 @@ public class BackgroundProcess extends Service {
 	}
 	
 	public static void resetAutomaticLogoutCountdownTimer(){
-		timer.setupSingularExactAlarm( 5000L, Timer.signOutTimerIntent, Timer.signoutIntent);
+		timer.setupSingularExactAlarm( 5000L, Timer.signoutIntent);
 	}
 	
 	public static void setDailySurvey(int hour) {
