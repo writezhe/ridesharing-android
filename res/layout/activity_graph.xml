@@ -28,15 +28,6 @@
             android:onClick="callHotline"
             android:text="@string/main_menu_call_hotline" />
 
-        <Button
-            android:id="@+id/graph_signOutButton"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:onClick="signOutButton"
-            android:text="@string/main_menu_sign_out" />
     </RelativeLayout>
 
 </LinearLayout>
