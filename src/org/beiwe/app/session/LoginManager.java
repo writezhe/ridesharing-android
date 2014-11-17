@@ -20,6 +20,9 @@ import android.util.Log;
  *  */
 
 public class LoginManager {
+
+	public static final Long millisecondsBeforeAutoLogout = 5000L;  // TODO postproduction: change this to 5 or 15 minutes
+
 	private static int PRIVATE_MODE = 0;
 
 	// Private things that are encapsulated using functions in this class 
@@ -62,7 +65,6 @@ public class LoginManager {
 	
 	/** Set the login session to expire a fixed amount of time in the future */
 	public static void loginOrRefreshLogin() {
-		Long millisecondsBeforeAutoLogout = 5000L;
 		editor.putLong(LOGIN_EXPIRATION, System.currentTimeMillis() + millisecondsBeforeAutoLogout);
 		editor.commit();
 	}

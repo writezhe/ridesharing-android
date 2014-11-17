@@ -139,6 +139,11 @@ public class Timer {
 		setAsExactAsPossible(alarmManager, AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
 	}
 	
+	public void cancelAlarm(Intent intentToBeBroadcast) {
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
+		alarmManager.cancel(pendingIntent);
+	}
+
 	
 	/** Set a repeating, once-a-day alarm. Uses AlarmManager.setRepeating, which may not be precise
 	 * @param hourOfDay in 24-hr time, when the alarm should fire. E.g., "19" means 7pm every day

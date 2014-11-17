@@ -13,6 +13,7 @@ import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.QuestionsDownloader;
 import org.beiwe.app.survey.SurveyType.Type;
 import org.beiwe.app.ui.AppNotifications;
+import org.beiwe.app.ui.LoginActivity;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -158,8 +159,13 @@ public class BackgroundProcess extends Service {
 //		timer.setupDailyRepeatingAlarm(19, Timer.voiceRecordingIntent);
 	}
 	
-	public static void resetAutomaticLogoutCountdownTimer(){
-		timer.setupSingularExactAlarm( 5000L, Timer.signoutIntent);
+	public static void startAutomaticLogoutCountdownTimer(){
+		timer.setupSingularExactAlarm(LoginManager.millisecondsBeforeAutoLogout, Timer.signoutIntent);
+		LoginManager.loginOrRefreshLogin();
+	}
+
+	public static void clearAutomaticLogoutCountdownTimer() {
+		timer.cancelAlarm(Timer.signoutIntent);
 	}
 	
 	public static void setDailySurvey(int hour) {
@@ -213,9 +219,13 @@ public class BackgroundProcess extends Service {
 				AppNotifications.displaySurveyNotification(appContext, Type.WEEKLY); }
 			
 			if (intent.getAction().equals(appContext.getString(R.string.signout_intent) ) ) {
-				// TODO Josh: take user to LoginActivity?
-				// repy: Eli: that should not be necessary. the pattern of triggers of the SessionActivity's onPause, onResume, onDestroy expects this behavior
+				Log.d("BackgroundProcess.java", "signout_intent fired");
+				// Invalidate the user's login session
 				LoginManager.logout();
+				// Display the LoginActivity page
+				Intent loginPage = new Intent(appContext, LoginActivity.class);
+				loginPage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				appContext.startActivity(loginPage);
 			}
 		}
 	};

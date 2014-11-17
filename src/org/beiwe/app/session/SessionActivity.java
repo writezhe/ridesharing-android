@@ -34,7 +34,6 @@ public class SessionActivity extends Activity {
 	        BackgroundProcessBinder some_binder = (BackgroundProcessBinder) binder;
 	        backgroundProcess = some_binder.getService();
 	        isBound = true;
-	        BackgroundProcess.resetAutomaticLogoutCountdownTimer();
 	    }
 	    
 	    @Override
@@ -68,16 +67,34 @@ public class SessionActivity extends Activity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+
 		authenticateAndLoginIfNecessary();
-		bindService( new Intent( this.getApplicationContext(), BackgroundProcess.class), backgroundProcessConnection, Context.BIND_AUTO_CREATE);
+        BackgroundProcess.startAutomaticLogoutCountdownTimer();
+
+        bindService( new Intent( this.getApplicationContext(), BackgroundProcess.class), backgroundProcessConnection, Context.BIND_AUTO_CREATE);
 		startService(new Intent(this.getApplicationContext(), BackgroundProcess.class));
 	}
 	
 
+	@Override
+	protected void onPause() {
+		super.onPause();
+		BackgroundProcess.clearAutomaticLogoutCountdownTimer();
+	}
+
+
+	/** If the user is NOT logged in, take them to the login page */
 	protected void authenticateAndLoginIfNecessary() {
-		if ( !LoginManager.isLoggedIn() ) {
-			startActivity( new Intent(this, LoginActivity.class) );
+		if (!LoginManager.isLoggedIn()) {
+			startActivity(new Intent(this, LoginActivity.class));
 		}
+	}
+
+
+	/** Display the LoginActivity, and invalidate the login in SharedPreferences */
+	protected void logoutUser() {
+		LoginManager.logout();
+		startActivity(new Intent(this, LoginActivity.class));
 	}
 	
 	
@@ -116,12 +133,6 @@ public class SessionActivity extends Activity {
 		}
 	}
 
-
-	protected void logoutUser() {
-		LoginManager.logout();
-		startActivity(new Intent(this, LoginActivity.class));
-	}
-	
 	
 	protected void callHotline() {
 		Intent callIntent = new Intent(Intent.ACTION_CALL);
