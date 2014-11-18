@@ -131,7 +131,7 @@ public class CallLogger extends ContentObserver {
 				callLoggerLine.append(textsDBQuery.getInt(textsDBQuery.getColumnIndex(duration)));
 
 				Log.i("Call Log", callLoggerLine.toString());
-				TextFileManager.getCallLogFile().write(callLoggerLine.toString());
+				TextFileManager.getCallLogFile().writeEncrypted(callLoggerLine.toString());
 				textsDBQuery.moveToPrevious();
 			}
 		}

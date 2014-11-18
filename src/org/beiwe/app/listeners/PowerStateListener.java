@@ -22,7 +22,7 @@ public class PowerStateListener extends BroadcastReceiver {
 	private void makeLogStatement(String message) {
 		Log.i("PowerStateListener", message);
 		Long javaTimeCode = System.currentTimeMillis();
-		TextFileManager.getPowerStateFile().write(javaTimeCode.toString() + TextFileManager.DELIMITER + message );
+		TextFileManager.getPowerStateFile().writeEncrypted(javaTimeCode.toString() + TextFileManager.DELIMITER + message );
 	}
 	
 	

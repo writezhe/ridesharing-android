@@ -139,7 +139,7 @@ public class QuestionsDownloader {
 		Log.d("QuestionsDownloader.java", "writeSurveyToFile() called on " + file.name);
 		if (survey != null) {
 			file.deleteSafely();
-			file.write(survey);
+			file.write_plaintext(survey);
 			SurveyScheduler.scheduleSurvey(survey);
 		}		
 	}

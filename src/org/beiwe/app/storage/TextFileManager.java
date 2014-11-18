@@ -102,7 +102,7 @@ public class TextFileManager {
 		
 		// TODO: Eli/Josh.  make sure file names are to-spec
 		// Persistent files
-		debugLogFile = new TextFileManager(appContext, "logFile.txt", "THIS LINE IS A LOG FILE HEADER\n", true, true);
+		debugLogFile = new TextFileManager(appContext, "logFile.txt", "THIS LINE IS A LOG FILE HEADER", true, true);
 		currentDailyQuestions = new TextFileManager(appContext, "currentDailyQuestionsFile.json", "", true, true);
 		currentWeeklyQuestions = new TextFileManager(appContext, "currentWeeklyQuestionsFile.json", "", true, true);
 		
@@ -149,7 +149,7 @@ public class TextFileManager {
 		else {
 			String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
 			this.fileName = LoginManager.getPatientID() + "_" + this.name + "_" + timecode + ".csv"; }
-		this.write(header);
+		this.writeEncrypted(header);
 	}
 	
 	/** If it's a SurveyAnswers or SurveyTimings file, we want to append the
@@ -167,7 +167,7 @@ public class TextFileManager {
 	 * Prints a stacktrace on a write error, but does not crash. If there is no
 	 * file, a new file will be created.
 	 * @param data a string*/
-	public synchronized void write(String data){
+	public synchronized void writePlaintext(String data){
 		//write the output, we always want mode append
 		FileOutputStream outStream;
 		try {
@@ -181,17 +181,31 @@ public class TextFileManager {
 			Log.i("FileManager", "Write error: " + this.name);
 			e.printStackTrace(); }
 	}
+	
+	public synchronized void writeEncrypted(String data) {
+		//write the output, we always want mode append
+		FileOutputStream outStream;
+		try {
+			if (fileName == null) { this.newFile(); }
+			outStream = appContext.openFileOutput(fileName, Context.MODE_APPEND);
+			outStream.write( EncryptionEngine.encryptAES( data ).getBytes() );
+			outStream.write( "\n".getBytes() );
+			outStream.flush();
+			outStream.close(); }
+		catch (Exception e) {
+			Log.i("FileManager", "Write error: " + this.name);
+			e.printStackTrace(); }
+	}
 
-	/** Returns a string of the file contents. 
-	 * @return A string of the file contents. */
+	/**@return A string of the file contents. */
 	public synchronized String read() {
 		BufferedInputStream bufferedInputStream;
-		StringBuffer inputStringBuffer = new StringBuffer();
+		StringBuffer stringBuffer = new StringBuffer();
 		int data;
 		try {  //Read through the (buffered) input stream, append to a stringbuffer.  Catch exceptions
 			bufferedInputStream = new BufferedInputStream( appContext.openFileInput(fileName) );
 			try { while( (data = bufferedInputStream.read()) != -1)
-				inputStringBuffer.append((char)data); }
+				stringBuffer.append((char)data); }
 			catch (IOException e) {
 				Log.i("Upload", "read error in " + this.fileName);
 				e.printStackTrace(); }
@@ -203,7 +217,7 @@ public class TextFileManager {
 			Log.i("DataFileManager", "could not close " + this.fileName);
 			e.printStackTrace(); }
 		
-		return inputStringBuffer.toString();
+		return stringBuffer.toString();
 	}
 	
 	/** Creates a new instance of file, then delete the old file. */
@@ -245,13 +259,6 @@ public class TextFileManager {
 	 * @return a string array of all files in the app's file directory. */
 	public static synchronized String[] getAllFiles() { return appContext.getFilesDir().list(); }
 	
-	/** Returns a list of file names, all files in that list are retired and will not be written to again.
-	 * @return a string array of files*/
-	public static synchronized String[] getAllFilesSafely() {
-		String[] file_list = getAllFiles();
-		makeNewFilesForEverything();
-		return file_list;
-	}
 	
 	/** Returns all data files except for the persistent ones that shouldn't be uploaded
 	 * @return String[] a list of file names */
@@ -272,6 +279,15 @@ public class TextFileManager {
 	/*###############################################################################
 	######################## DEBUG STUFF ############################################
 	###############################################################################*/
+	
+	/** Returns a list of file names, all files in that list are retired and will not be written to again.
+	 * @return a string array of files*/
+	public static synchronized String[] getAllFilesSafely() {
+		String[] file_list = getAllFiles();
+		makeNewFilesForEverything();
+		return file_list;
+	}
+	
 	
 	/**For Debug Only.  Deletes all files, creates new ones. */
 	public static synchronized void deleteEverything() {

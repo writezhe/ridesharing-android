@@ -85,7 +85,7 @@ public class BackgroundProcess extends Service {
 		//this does not run when the service is killed in a task manager, OR when the stopService() function is called from debugActivity.
 		Log.e("BackgroundService", "BACKGROUNDPROCESS WAS DESTROYED.");
 		Long javaTimeCode = System.currentTimeMillis();
-		TextFileManager.getDebugLogFile().write(javaTimeCode.toString() + "," + "BACKGROUNDPROCESS WAS DESTROYED" +"\n" );
+		TextFileManager.getDebugLogFile().writeEncrypted(javaTimeCode.toString() + "," + "BACKGROUNDPROCESS WAS DESTROYED" +"\n" );
 	}
 	/*#############################################################################
 	#########################         Starters              #######################

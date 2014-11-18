@@ -1,5 +1,13 @@
 package org.beiwe.app;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.session.SessionActivity;
@@ -34,8 +42,34 @@ public class DebugInterfaceActivity extends SessionActivity {
 	public void printInternalLog(View view) {
 		Log.i("print log button pressed", "press.");
 		String log = TextFileManager.getDebugLogFile().read();
+		
+		
 		for( String line : log.split("\n") ) {
 			Log.i( "log file...", line ); }
+		
+		try {
+			Log.i("log file encrypted", EncryptionEngine.encryptAES(log) );
+		} catch (InvalidKeyException e) {
+			Log.e("log file encrypted", "1");
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			Log.e("log file encrypted", "2");
+			e.printStackTrace();
+		} catch (NoSuchPaddingException e) {
+			Log.e("log file encrypted", "3");
+			e.printStackTrace();
+		} catch (IllegalBlockSizeException e) {
+			Log.e("log file encrypted", "4");
+			e.printStackTrace();
+		} catch (BadPaddingException e) {
+			Log.e("log file encrypted", "5");
+			e.printStackTrace();
+		} catch (InvalidAlgorithmParameterException e){
+			Log.e("log file encrypted", "6");
+			e.printStackTrace();
+		}
+		
+		
 	}
 
 	public void clearInternalLog(View view) {
@@ -95,22 +129,15 @@ public class DebugInterfaceActivity extends SessionActivity {
 	
 	public void testEncrypt (View view) {
 		Log.i("Debug..", TextFileManager.getKeyFile().read());
-//		write_public();
 		String data = TextFileManager.getKeyFile().read();
 		Log.i("reading keyFile:", data );
 		
 		EncryptionEngine.readKey();
 
-		String encrypted = EncryptionEngine.encrypt("ThIs Is a TeSt");
+		String encrypted = EncryptionEngine.encryptRSA("ThIs Is a TeSt".getBytes() ).toString();
 		Log.i("test encrypt - length:", "" + encrypted.length() );
 		Log.i("test encrypt - output:", encrypted );
 		Log.i("test hash:", EncryptionEngine.safeHash( encrypted ) );
-	}
-	
-	
-	void write_public() {
-		TextFileManager.getKeyFile().deleteSafely();
-		TextFileManager.getKeyFile().write("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEApTiH9gI0zXimSSX+lIsPVvsRDKj5+ebBKAxUJ/laWkfz59yDmfw9TkuLPRfU5cI4GWN/3kzyVdP72bt8p7ZU1LpL/WsSrRb3mzDXZtUnEnfKMTL2NvXUG/qJJyI0wzTmTNaY/hN4aKhITTBjX2Lo+8REtHuijxvaVVThbwlEg+Hmk5611f/BoHC29jHI1O6j4t+PdlO+2h+jBYthL7C0+Tfu74s0o3CLonCGNik8sLsZ6hps1sz0Gwn4f4ehLe7OwGviv4svZZAhufJebyPFNaIbWiO8bQN7ev8rEwnT9ROsBZvZ1AzoUYtewBxauBgpF8/NdvgcNqkILKbIFvscawIDAQAB");
 	}
 	
 	public void resetPassword(View view) { startActivity(new Intent(appContext, LoginActivity.class) ); }

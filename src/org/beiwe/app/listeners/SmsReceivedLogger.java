@@ -56,7 +56,7 @@ public class SmsReceivedLogger extends BroadcastReceiver {
                      data += "MMS";
 
                      Log.i("SMSLogger", "data = " + data);
-                     TextFileManager.getTextsLogFile().write(data);
+                     TextFileManager.getTextsLogFile().writeEncrypted(data);
                  }
              }
          }
@@ -84,7 +84,7 @@ public class SmsReceivedLogger extends BroadcastReceiver {
 					data += timestamp;
 
 					Log.i("SMSLogger", "data = " + data);
-					TextFileManager.getTextsLogFile().write(data);
+					TextFileManager.getTextsLogFile().writeEncrypted(data);
 				}
 			}
 			catch (Exception e) {

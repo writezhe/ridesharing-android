@@ -68,7 +68,7 @@ public class SurveyTimingsRecorder {
 		String line = javaTimeCode.toString() + TextFileManager.DELIMITER + message; 
 
 		Log.i("SurveyTimingsRecorder", line);
-		TextFileManager.getSurveyTimingsFile().write(line);
+		TextFileManager.getSurveyTimingsFile().writeEncrypted(line);
 	}
 
 	

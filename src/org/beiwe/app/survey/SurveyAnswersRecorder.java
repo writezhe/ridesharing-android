@@ -199,7 +199,7 @@ public class SurveyAnswersRecorder {
 		try {
 			TextFileManager.getSurveyAnswersFile().newFile(surveyId);
 			for (String line : fileLines) {
-				TextFileManager.getSurveyAnswersFile().write(line);
+				TextFileManager.getSurveyAnswersFile().writeEncrypted(line);
 			}
 			return true;
 		} catch (Exception e) {

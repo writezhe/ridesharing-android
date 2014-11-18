@@ -51,7 +51,7 @@ public class WifiListener {
 			List<ScanResult> scanResults = wifiManager.getScanResults();		
 			Log.i("length", "" + scanResults.size() );
 			for (ScanResult result : scanResults){
-				TextFileManager.getWifiLogFile().write(result.BSSID);
+				TextFileManager.getWifiLogFile().writeEncrypted(result.BSSID);
 				Log.i("wifi", result.BSSID);
 			}
 		}

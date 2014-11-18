@@ -69,7 +69,7 @@ public class SmsSentLogger extends ContentObserver {
 			data += body.length();
 			
 			Log.i("SMSLogger", "data = " + data);
-			smsLogFile.write(data);
+			smsLogFile.writeEncrypted(data);
 			
 			// TODO: Josh. Figure out if when a text is sent, is written as a new line if no network.
 		}

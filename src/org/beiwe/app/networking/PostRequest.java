@@ -182,7 +182,7 @@ public class PostRequest {
 				return 2; }
 			Log.i( "POSTREQUEST", "Received a key: " + key );
 			TextFileManager.getKeyFile().deleteSafely();
-			TextFileManager.getKeyFile().write( key );
+			TextFileManager.getKeyFile().write_plaintext( key );
 		}
 		connection.disconnect();
 		return response;

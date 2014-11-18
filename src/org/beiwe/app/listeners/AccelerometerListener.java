@@ -85,6 +85,6 @@ public class AccelerometerListener implements SensorEventListener{
 		float[] values = arg0.values;
 		String data = javaTimeCode.toString() + ',' + accuracy + ',' + values[0] + ',' + values[1] + ',' + values[2];
 		
-		accelFile.write(data);
+		accelFile.writeEncrypted(data);
 	}
 }

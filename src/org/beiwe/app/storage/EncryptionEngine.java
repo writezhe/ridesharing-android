@@ -1,10 +1,12 @@
 package org.beiwe.app.storage;
 import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.KeyFactory;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
+import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 
@@ -13,7 +15,11 @@ import org.beiwe.app.storage.TextFileManager;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 import android.annotation.SuppressLint;
 import android.telephony.PhoneNumberUtils;
@@ -21,6 +27,7 @@ import android.util.Base64;
 import android.util.Log;
 
 
+@SuppressLint("SecureRandom")
 public class EncryptionEngine {
 	
 	private static PublicKey key = null;
@@ -46,13 +53,14 @@ public class EncryptionEngine {
 		try {
 			MessageDigest hasher = MessageDigest.getInstance("SHA-256"); //make a hasher (verb?) object, include the hash algorithm name.
 			hasher.update(standardizedPhoneNumber.getBytes("UTF-8")); //pass the hash object data (the string passed in)
-			return toBase64( hasher.digest() );
+			return toBase64String( hasher.digest() );
 		}
 		catch (Exception e) {
 			e.printStackTrace();
 			return "Phone number hashing failed";
 		}
 	}
+
 	
 	/**Put the phone number in a standardized format, so that, for example,
 	 * 2345678901 and +1-234-567-8901 have the same hash
@@ -73,7 +81,6 @@ public class EncryptionEngine {
 	 * ############################### Hashing ###################################
 	 * #########################################################################*/
 	
-	// TODO: Eli. Work out why this returns strings of varying length, they should definitely all be the same.
 	/** Takes a string as input, handles the usual thrown exceptions, and return a hash string of that input.  
 	 * @param input A String to hash
 	 * @return a Base64 String of the hash result. */
@@ -82,12 +89,10 @@ public class EncryptionEngine {
 			return unsafeHash( input ); }
 		catch (NoSuchAlgorithmException e) {
 			Log.e("Hashing function", "NoSuchAlgorithmException");
-			e.printStackTrace();
-			System.exit(1); }
+			e.printStackTrace(); }
 		catch (UnsupportedEncodingException e) {
 			Log.e("Hashing function", "UnsupportedEncodingException");
-			e.printStackTrace();
-			System.exit(2); }
+			e.printStackTrace(); }
 		Log.e("hash", "this line of code should absolutely never run.");
 		return null;
 	}
@@ -97,14 +102,12 @@ public class EncryptionEngine {
 	 * @param input A String to hash.
 	 * @return a Base64 String of the hash result. */
 	public static String unsafeHash (String input) throws NoSuchAlgorithmException, UnsupportedEncodingException{
-		if (input == null ) { Log.e("Hashing", "The hash function received a null string, it will now crash.");}
+		if (input == null ) { Log.e("Hashing", "The hash function received a null string, it should now crash...");}
 		MessageDigest hash = null;
-		byte[] return_data = null;
 
 		hash = MessageDigest.getInstance("SHA-256");
 		hash.update( input.getBytes("UTF-8") );
-		return_data = hash.digest();
-		return toBase64(return_data);		
+		return toBase64String( hash.digest() );		
 	}
 	
 	
@@ -114,10 +117,10 @@ public class EncryptionEngine {
 	
 	
 	/**Encrypts data using the RSA cipher and the public half of an RSA key pairing provided by the server. 
-	 * @param text to be encrypted
+	 * @param data to be encrypted
 	 * @return a hex string of the encrypted data. */
 	@SuppressLint("TrulyRandom")
-	public static String encrypt(String text) {
+	public static String encryptRSA(byte[] data) {
 		if (key == null) { EncryptionEngine.readKey(); }
 		
 		byte[] encryptedText = null;
@@ -130,11 +133,11 @@ public class EncryptionEngine {
 		try { rsaCipher.init(Cipher.ENCRYPT_MODE, key);	}
 		catch (InvalidKeyException e) { Log.e("Encryption Engine", "The key is not a valid public RSA key."); }
 		
-		try {  encryptedText = rsaCipher.doFinal( text.getBytes() ); }
+		try {  encryptedText = rsaCipher.doFinal( data ); }
 		catch (IllegalBlockSizeException e1) { Log.e("Encryption Engine", "The key is malformed."); } 
 		catch (BadPaddingException e2) { Log.e("Encryption Engine", "Something went wrong, go research Padding Exceptions. (BadPaddingException)"); }
 		
-		return toBase64(encryptedText);
+		return toBase64String(encryptedText);
 	}
 
 	
@@ -155,6 +158,37 @@ public class EncryptionEngine {
 			Log.e("Encryption Engine", "The provided RSA public key is NOT VALID." ); }
 	}
 	
+
+	public static String encryptAES(String someText) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException, InvalidAlgorithmParameterException {
+		// setup seed		
+		SecureRandom random = SecureRandom.getInstance("SHA1PRNG"); // try SHA-256 instead
+		random.setSeed( System.currentTimeMillis() ); //using a mildly insecure seed.
+		
+		//setup key generator object...
+		KeyGenerator aesKeyGen = KeyGenerator.getInstance("AES");
+		aesKeyGen.init( 128, random );
+		
+		//from key generator, generate a key!
+		SecretKey secretKey = aesKeyGen.generateKey();
+		byte[] aesKey = secretKey.getEncoded();
+		
+		//iv
+		byte[] iv = random.generateSeed(16); 
+		IvParameterSpec ivSpec = new IvParameterSpec(iv);
+		
+		//we will use cfb mode so that we do not need to care about input length
+		SecretKeySpec secretKeySpec = new SecretKeySpec( aesKey, "AES" );
+		Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+		cipher.init( Cipher.ENCRYPT_MODE, secretKeySpec, ivSpec );
+		
+		return  encryptRSA( aesKey ) + ":" +
+				toBase64String( ivSpec.getIV() ) + ":" +
+				toBase64String( cipher.doFinal(someText.getBytes() ) );
+	}
 	
-	private static String toBase64(byte[] data) { return Base64.encodeToString(data, Base64.NO_WRAP | Base64.URL_SAFE ); }
+	private static String toBase64String( byte[] data ) { return Base64.encodeToString(data, Base64.NO_WRAP | Base64.URL_SAFE ); }
+	private static String toBase64String( String data ) { return Base64.encodeToString(data.getBytes(), Base64.NO_WRAP | Base64.URL_SAFE ); }
+	private static byte[] toBase64Array( byte[] data ) { return Base64.encode(data, Base64.NO_WRAP | Base64.URL_SAFE ); }
+	private static byte[] toBase64Array( String data ) { return Base64.encode(data.getBytes(), Base64.NO_WRAP | Base64.URL_SAFE ); }
+	
 }
