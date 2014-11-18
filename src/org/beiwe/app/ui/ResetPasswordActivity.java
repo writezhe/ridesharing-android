@@ -1,10 +1,10 @@
 package org.beiwe.app.ui;
 
 import org.beiwe.app.R;
+import org.beiwe.app.RunningBackgroundProcessActivity;
 import org.beiwe.app.session.ResetPassword;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -18,8 +18,8 @@ import android.widget.EditText;
  */
 
 @SuppressLint("ShowToast")
-public class ResetPasswordActivity extends Activity {
-	// extends SessionActivity
+public class ResetPasswordActivity extends RunningBackgroundProcessActivity {
+	// extends RunningBackgroundProcessActivity
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

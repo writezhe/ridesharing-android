@@ -1,10 +1,10 @@
 package org.beiwe.app.ui;
 
 import org.beiwe.app.R;
+import org.beiwe.app.RunningBackgroundProcessActivity;
 import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.session.ResetPassword;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -13,8 +13,8 @@ import android.widget.TextView;
 /**
  * @author Dor Samet, Eli Jones
  */
-public class ForgotPasswordActivity extends Activity {
-	//extends a regular activity.
+public class ForgotPasswordActivity extends RunningBackgroundProcessActivity {
+	// extends RunningBackgroundProcessActivity
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

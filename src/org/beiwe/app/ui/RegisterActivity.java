@@ -3,6 +3,7 @@ package org.beiwe.app.ui;
 import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.LoadingActivity;
 import org.beiwe.app.R;
+import org.beiwe.app.RunningBackgroundProcessActivity;
 import org.beiwe.app.networking.HTTPAsync;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.LoginManager;
@@ -11,7 +12,6 @@ import org.beiwe.app.survey.QuestionsDownloader;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,8 +24,9 @@ import android.widget.EditText;
  * @author Dor Samet, Eli Jones */
 
 @SuppressLint("ShowToast")
-public class RegisterActivity extends Activity {
-	//extends a regular activity
+public class RegisterActivity extends RunningBackgroundProcessActivity {
+	// extends RunningBackgroundProcessActivity
+
 	// Private fields
 	private EditText userID;
 	private EditText password;
