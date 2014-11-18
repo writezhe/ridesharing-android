@@ -3,6 +3,7 @@ package org.beiwe.app;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Iterator;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -43,35 +44,31 @@ public class DebugInterfaceActivity extends SessionActivity {
 		Log.i("print log button pressed", "press.");
 		String log = TextFileManager.getDebugLogFile().read();
 		
-		
 		for( String line : log.split("\n") ) {
 			Log.i( "log file...", line ); }
 		
 		try {
-			Log.i("log file encrypted", EncryptionEngine.encryptAES(log) );
-		} catch (InvalidKeyException e) {
+			Log.i("log file encrypted", EncryptionEngine.encryptAES(log) );} 
+		catch (InvalidKeyException e) {
 			Log.e("log file encrypted", "1");
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();} 
+		catch (NoSuchAlgorithmException e) {
 			Log.e("log file encrypted", "2");
-			e.printStackTrace();
-		} catch (NoSuchPaddingException e) {
+			e.printStackTrace();} 
+		catch (NoSuchPaddingException e) {
 			Log.e("log file encrypted", "3");
-			e.printStackTrace();
-		} catch (IllegalBlockSizeException e) {
+			e.printStackTrace();} 
+		catch (IllegalBlockSizeException e) {
 			Log.e("log file encrypted", "4");
-			e.printStackTrace();
-		} catch (BadPaddingException e) {
+			e.printStackTrace();} 
+		catch (BadPaddingException e) {
 			Log.e("log file encrypted", "5");
-			e.printStackTrace();
-		} catch (InvalidAlgorithmParameterException e){
+			e.printStackTrace();} 
+		catch (InvalidAlgorithmParameterException e){
 			Log.e("log file encrypted", "6");
-			e.printStackTrace();
-		}
-		
-		
+			e.printStackTrace();}
 	}
-
+	
 	public void clearInternalLog(View view) {
 		Log.i("clear log button pressed", "poke.");
 		TextFileManager.getDebugLogFile().deleteSafely(); }
@@ -88,6 +85,11 @@ public class DebugInterfaceActivity extends SessionActivity {
 		for( String file : TextFileManager.getAllFiles() ) {
 			Log.i( "files...", file); }
 		TextFileManager.deleteEverything(); }
+	
+	public void listFiles(View view){
+		for( String file : TextFileManager.getAllFiles() ) {
+			Log.i( "files...", file); }
+	}
 	
 	public void toggleAccelerometer(View view) {
 		Boolean accel_state = backgroundProcess.accelerometerListener.toggle();

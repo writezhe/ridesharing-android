@@ -50,7 +50,14 @@
 	        android:layout_height="wrap_content"
 	        android:onClick="deleteEverything"
 	        android:text="@string/button_delete_everything" />
-
+		
+	    <Button
+	        android:id="@+id/buttonListFiles"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="listFiles"
+	        android:text="@string/button_list_files" />
+	    
 	    <Button
 	        android:id="@+id/buttonToggleGPS"
 	        android:layout_width="wrap_content"
