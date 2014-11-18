@@ -100,6 +100,9 @@ public class TextFileManager {
 	public static synchronized void initialize(Context appContext){
 		if ( started ) { return; }
 		
+		//the key file for encryption (it is persistent and never written to)
+		keyFile = new TextFileManager(appContext, "keyFile", "", true, true);
+
 		// TODO: Eli/Josh.  make sure file names are to-spec
 		// Persistent files
 		debugLogFile = new TextFileManager(appContext, "logFile.txt", "THIS LINE IS A LOG FILE HEADER", true, true);
@@ -119,8 +122,6 @@ public class TextFileManager {
 		surveyTimings = new TextFileManager(appContext, "surveyTimings", SurveyTimingsRecorder.header, false, false);
 		surveyAnswers = new TextFileManager(appContext, "surveyAnswers", SurveyAnswersRecorder.header, false, false);
 		
-		//the key file for encryption (it is persistent and never written to)
-		keyFile = new TextFileManager(appContext, "keyFile", "", true, true);
 		started = true;
 	}
 	
@@ -149,7 +150,9 @@ public class TextFileManager {
 		else {
 			String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
 			this.fileName = LoginManager.getPatientID() + "_" + this.name + "_" + timecode + ".csv"; }
-		this.writeEncrypted(header);
+		if ((header != null) || (header.length() < 1)) {
+			this.writeEncrypted(header);
+		}
 	}
 	
 	/** If it's a SurveyAnswers or SurveyTimings file, we want to append the

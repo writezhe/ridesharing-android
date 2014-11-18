@@ -40,7 +40,6 @@ public class Timer {
 	public static Intent wifiLogIntent;
 	public static Intent uploadDatafilesIntent;
 	public static Intent checkForNewSurveysIntent;
-	// FIXME: add an upload datafiles/download new survey timer; call it networkTimer or something
 	
 	// Timer intents
 	public static Intent accelerometerTimerIntent;
