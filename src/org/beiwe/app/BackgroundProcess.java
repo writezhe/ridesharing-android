@@ -10,6 +10,7 @@ import org.beiwe.app.listeners.WifiListener;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.storage.TextFileManager;
+import org.beiwe.app.survey.QuestionsDownloader;
 import org.beiwe.app.survey.SurveyType.Type;
 import org.beiwe.app.ui.AppNotifications;
 import org.beiwe.app.ui.LoginActivity;
@@ -61,7 +62,7 @@ public class BackgroundProcess extends Service {
 		//FIXME: this logic needs improvement, it currently resets timers whenever the backgroundservice is restarted.
 		if (LoginManager.isRegistered()) {
 			Log.i("BackgroundProcess", "starting timers");
-//			startTimers();
+			//startTimers();
 		}
 	}
 
@@ -139,17 +140,21 @@ public class BackgroundProcess extends Service {
 		filter.addAction( appContext.getString( R.string.signout_intent ) );
 		filter.addAction( appContext.getString( R.string.voice_recording ) );
 		filter.addAction( appContext.getString( R.string.weekly_survey ) );
+		filter.addAction( appContext.getString( R.string.upload_data_files_intent ) );
+		filter.addAction( appContext.getString( R.string.check_for_new_surveys_intent ) );
 		registerReceiver(controlMessageReceiver, filter);
 	}
 	
-	public void startTimers(){
+	public void startTimers() {
+		// TODO postproduction: comment these in to actually start timers
 //		timer.setupSingularExactAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent);
 //		timer.setupSingularFuzzyAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOnIntent);
 //		timer.setupExactHourlyAlarm(Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
 		timer.setupSingularFuzzyAlarm( 5000L, Timer.wifiLogTimerIntent, Timer.wifiLogIntent);
 		
-		//FIXME: Josh, create timer for checking for a new survey.
 //		timer.setupDailyRepeatingAlarm(19, Timer.voiceRecordingIntent);
+		timer.setupRepeatingAlarm(Timer.uploadDatafilesPeriod, Timer.uploadDatafilesIntent);
+		timer.setupRepeatingAlarm(Timer.checkForNewSurveysPeriod, Timer.checkForNewSurveysIntent);
 	}
 	
 	public static void startAutomaticLogoutCountdownTimer(){
@@ -211,15 +216,22 @@ public class BackgroundProcess extends Service {
 			if (intent.getAction().equals( appContext.getString(R.string.weekly_survey) ) ) {
 				AppNotifications.displaySurveyNotification(appContext, Type.WEEKLY); }
 			
-			if (intent.getAction().equals(appContext.getString(R.string.signout_intent) ) ) {
+			if (intent.getAction().equals( appContext.getString(R.string.signout_intent) ) ) {
 				Log.d("BackgroundProcess.java", "signout_intent fired");
 				// Invalidate the user's login session
 				LoginManager.logout();
 				// Display the LoginActivity page
 				Intent loginPage = new Intent(appContext, LoginActivity.class);
 				loginPage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				appContext.startActivity(loginPage);
-			}
+				appContext.startActivity(loginPage); }
+
+			if (intent.getAction().equals( appContext.getString(R.string.upload_data_files_intent) ) ) {
+				PostRequest.uploadAllFiles(); }
+
+			if (intent.getAction().equals( appContext.getString(R.string.check_for_new_surveys_intent))) {
+				// Download the survey questions and schedule the surveys
+				QuestionsDownloader downloader = new QuestionsDownloader(appContext);
+				downloader.downloadJsonQuestions(); }
 		}
 	};
 	

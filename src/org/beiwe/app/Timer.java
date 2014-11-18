@@ -22,6 +22,10 @@ public class Timer {
 	private BackgroundProcess backgroundProcess;
 	private Context appContext;
 
+	// TODO postproduction: change this to non-debug values
+	public static final long uploadDatafilesPeriod = 5 * 60 * 1000L;
+	public static final long checkForNewSurveysPeriod = 24 * 60 * 60 * 1000L;
+
 	// Control Message Intents
 	public static Intent accelerometerOffIntent;
 	public static Intent accelerometerOnIntent;
@@ -34,6 +38,8 @@ public class Timer {
 	public static Intent voiceRecordingIntent;
 	public static Intent weeklySurveyIntent;
 	public static Intent wifiLogIntent;
+	public static Intent uploadDatafilesIntent;
+	public static Intent checkForNewSurveysIntent;
 	// FIXME: add an upload datafiles/download new survey timer; call it networkTimer or something
 	
 	// Timer intents
@@ -53,7 +59,9 @@ public class Timer {
 	public IntentFilter getSignoutIntentFilter() { return new IntentFilter( signoutIntent.getAction() ); }
 	public IntentFilter getVoiceRecordingIntentFilter() { return new IntentFilter( voiceRecordingIntent.getAction() ); }
 	public IntentFilter getWeeklySurveyIntentFilter() { return new IntentFilter( weeklySurveyIntent.getAction() ); }
-	public IntentFilter getWifiLogFilter() { return new IntentFilter( wifiLogTimerIntent.getAction() ); }	
+	public IntentFilter getWifiLogFilter() { return new IntentFilter( wifiLogTimerIntent.getAction() ); }
+	public IntentFilter getUploadDatafilesIntent() { return new IntentFilter( uploadDatafilesIntent.getAction() ); }
+	public IntentFilter getCheckForNewSurveysIntent() { return new IntentFilter( checkForNewSurveysIntent.getAction() ); }
 	
 	//The timer offset is a random value that is inserted into time calculations to make them occur at a variable time
 	private final static long EXACT_TIMER_OFFSET = 2856000;
@@ -81,6 +89,8 @@ public class Timer {
 		voiceRecordingIntent = setupIntent( appContext.getString(R.string.voice_recording) );
 		weeklySurveyIntent = setupIntent( appContext.getString(R.string.weekly_survey) );
 		wifiLogTimerIntent = setupIntent( appContext.getString( R.string.wifi_timer ) );
+		uploadDatafilesIntent = setupIntent( appContext.getString(R.string.upload_data_files_intent) );
+		checkForNewSurveysIntent = setupIntent( appContext.getString(R.string.check_for_new_surveys_intent) );
 		
 		// Set up timer intents
 		accelerometerTimerIntent = setupIntent( appContext.getString(R.string.action_accelerometer_timer) );
@@ -144,6 +154,10 @@ public class Timer {
 		alarmManager.cancel(pendingIntent);
 	}
 
+	public void setupRepeatingAlarm(long millisecondsUntilRepeat, Intent intentToBeBroadcast) {
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
+		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), millisecondsUntilRepeat, pendingIntent);
+	}
 	
 	/** Set a repeating, once-a-day alarm. Uses AlarmManager.setRepeating, which may not be precise
 	 * @param hourOfDay in 24-hr time, when the alarm should fire. E.g., "19" means 7pm every day
