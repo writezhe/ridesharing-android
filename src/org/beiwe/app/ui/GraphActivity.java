@@ -3,10 +3,9 @@ package org.beiwe.app.ui;
 import org.apache.http.util.EncodingUtils;
 import org.beiwe.app.R;
 import org.beiwe.app.networking.PostRequest;
-import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.session.SessionActivity;
 
-import android.content.Intent;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebSettings;
@@ -20,6 +19,7 @@ import android.webkit.WebViewClient;
  * @author Dor Samet
  *
  */
+@SuppressLint("SetJavaScriptEnabled")
 public class GraphActivity extends SessionActivity {
 	//extends SessionActivity
 
@@ -48,7 +48,7 @@ public class GraphActivity extends SessionActivity {
 		browserSettings.setJavaScriptEnabled(true);
 		browser.setInitialScale(200);
 
-		String postData = PostRequest.securityParameters();
+		String postData = PostRequest.securityParameters(null);
 		String graphUrl = getApplicationContext().getString(R.string.graph_url);
 		browser.postUrl(graphUrl, EncodingUtils.getBytes(postData, "BASE64"));
 	}
@@ -56,9 +56,5 @@ public class GraphActivity extends SessionActivity {
 	public void callHotline(View v) {
 		super.callHotline();
 	}
-	
-	public void signOutButton(View v) {
-		LoginManager.setLoggedIn(false);
-		startActivity( new Intent(getApplicationContext(), LoginActivity.class) );
-	}
+
 }

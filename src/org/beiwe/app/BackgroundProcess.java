@@ -10,9 +10,9 @@ import org.beiwe.app.listeners.WifiListener;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.storage.TextFileManager;
-import org.beiwe.app.survey.QuestionsDownloader;
 import org.beiwe.app.survey.SurveyType.Type;
 import org.beiwe.app.ui.AppNotifications;
+import org.beiwe.app.ui.LoginActivity;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -63,12 +63,6 @@ public class BackgroundProcess extends Service {
 			Log.i("BackgroundProcess", "starting timers");
 //			startTimers();
 		}
-		
-		// Download the survey questions and schedule the surveys
-		// TODO: Josh. onCreate is going to be called with some frequency, can you add some logic
-		// so it only downloads new surveys if ... there are no current files? (other logic is good)
-		QuestionsDownloader downloader = new QuestionsDownloader(appContext);
-		downloader.downloadJsonQuestions();
 	}
 
 
@@ -136,7 +130,6 @@ public class BackgroundProcess extends Service {
 		filter.addAction( appContext.getString( R.string.action_accelerometer_timer ) );
 		filter.addAction( appContext.getString( R.string.action_bluetooth_timer ) );
 		filter.addAction( appContext.getString( R.string.action_gps_timer ) );
-		filter.addAction( appContext.getString( R.string.action_signout_timer ) );
 		filter.addAction( appContext.getString( R.string.action_wifi_log ) );
 		filter.addAction( appContext.getString( R.string.bluetooth_off ) );
 		filter.addAction( appContext.getString( R.string.bluetooth_on ) );
@@ -150,7 +143,6 @@ public class BackgroundProcess extends Service {
 	}
 	
 	public void startTimers(){
-//		timer.setupSingularExactAlarm( 5000L, Timer.signOutTimerIntent, Timer.signoutIntent);
 //		timer.setupSingularExactAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent);
 //		timer.setupSingularFuzzyAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOnIntent);
 //		timer.setupExactHourlyAlarm(Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
@@ -160,8 +152,13 @@ public class BackgroundProcess extends Service {
 //		timer.setupDailyRepeatingAlarm(19, Timer.voiceRecordingIntent);
 	}
 	
-	public static void resetAutomaticLogoutCountdownTimer(){
-		timer.setupSingularExactAlarm( 5000L, Timer.signOutTimerIntent, Timer.signoutIntent);
+	public static void startAutomaticLogoutCountdownTimer(){
+		timer.setupSingularExactAlarm(LoginManager.millisecondsBeforeAutoLogout, Timer.signoutIntent);
+		LoginManager.loginOrRefreshLogin();
+	}
+
+	public static void clearAutomaticLogoutCountdownTimer() {
+		timer.cancelAlarm(Timer.signoutIntent);
 	}
 	
 	public static void setDailySurvey(int hour) {
@@ -215,10 +212,13 @@ public class BackgroundProcess extends Service {
 				AppNotifications.displaySurveyNotification(appContext, Type.WEEKLY); }
 			
 			if (intent.getAction().equals(appContext.getString(R.string.signout_intent) ) ) {
-				Log.d("BackgroundProcess", "RECEIVED LOGOUT, LOGGING OUT");
-				// TODO Josh: take user to LoginActivity?
-				// repy: Eli: that should not be necessary. the pattern of triggers of the SessionActivity's onPause, onResume, onDestroy expects this behavior
-				LoginManager.setLoggedIn(false);
+				Log.d("BackgroundProcess.java", "signout_intent fired");
+				// Invalidate the user's login session
+				LoginManager.logout();
+				// Display the LoginActivity page
+				Intent loginPage = new Intent(appContext, LoginActivity.class);
+				loginPage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				appContext.startActivity(loginPage);
 			}
 		}
 	};

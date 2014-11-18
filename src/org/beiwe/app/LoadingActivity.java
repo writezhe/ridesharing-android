@@ -9,7 +9,6 @@ import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.ui.AlertsManager;
 import org.beiwe.app.ui.RegisterActivity;
 
-import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -27,7 +26,7 @@ import android.util.Log;
  * This activity is also designed for splash screens.
  * @author Eli Jones, Dor Samet */
 
-public class LoadingActivity extends Activity{
+public class LoadingActivity extends RunningBackgroundProcessActivity {
 	
 	//swap the commented line below to enable/disable the debuginterface
 	public static Class loadThisActivity = DebugInterfaceActivity.class;
@@ -65,6 +64,7 @@ public class LoadingActivity extends Activity{
 		
 		if ( isAbleToHash() ) {
 			bindService( new Intent( this.getApplicationContext(), BackgroundProcess.class), backgroundProcessConnection, Context.BIND_AUTO_CREATE);
+			startService(new Intent(this.getApplicationContext(), BackgroundProcess.class));
 		}
 		else failureExit();
 	}

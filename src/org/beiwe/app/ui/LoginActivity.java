@@ -1,10 +1,10 @@
 package org.beiwe.app.ui;
 
 import org.beiwe.app.R;
+import org.beiwe.app.RunningBackgroundProcessActivity;
 import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,7 +18,7 @@ import android.widget.EditText;
  * Helper class {@link LoginManager.java}
  * @authors Dor Samet, Eli Jones */
 
-public class LoginActivity extends Activity {
+public class LoginActivity extends RunningBackgroundProcessActivity {
 	//Note: LoginActivity cannot be a SessionActivity (without some stupid hacks)
 	//because SessionActivities trigger a LoginActivity, which would cause an infinite loop.
 	// In addition the LoginActivity should never the only activity on the activity stack,
@@ -48,7 +48,7 @@ public class LoginActivity extends Activity {
 	 * @param view*/
 	public void loginButton(View view) {		
 		if ( LoginManager.checkPassword( password.getText().toString() ) ) {
-			LoginManager.setLoggedIn(true);
+			LoginManager.loginOrRefreshLogin();
 			finish();
 			return;
 		}
@@ -60,6 +60,7 @@ public class LoginActivity extends Activity {
 	 * @param view */
 	public void forgotPassword(View view) {
 		startActivity( new Intent(appContext, ForgotPasswordActivity.class) );
+		finish();
 	}
 	
 	@Override

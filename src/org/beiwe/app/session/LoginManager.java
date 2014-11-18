@@ -20,6 +20,9 @@ import android.util.Log;
  *  */
 
 public class LoginManager {
+
+	public static final Long millisecondsBeforeAutoLogout = 5 * 60 * 1000L;
+
 	private static int PRIVATE_MODE = 0;
 
 	// Private things that are encapsulated using functions in this class 
@@ -29,10 +32,10 @@ public class LoginManager {
 
 	// Editor key-strings
 	private static final String PREF_NAME = "BeiwePref";
-	private static final String IS_LOGGED_IN = "IsLoggedIn";
 	private static final String KEY_ID = "uid";
 	private static final String KEY_PASSWORD = "password";
 	private static final String IS_REGISTERED = "IsRegistered";
+	private static final String LOGIN_EXPIRATION = "loginExpirationTimestamp";
 	
 	/*#####################################################################################
 	######################### Constructor and Initializing ################################
@@ -57,12 +60,20 @@ public class LoginManager {
 	/** Quick check for login. **/
 	public static boolean isLoggedIn(){
 		if (pref == null) Log.w("LoginManager", "FAILED AT ISLOGGEDIN");
-		return pref.getBoolean(IS_LOGGED_IN, false); }
+		// If the current time is earlier than the expiration time, return TRUE; else FALSE
+		return (System.currentTimeMillis() < pref.getLong(LOGIN_EXPIRATION, 0)); }
 	
-	public static void setLoggedIn(boolean value) { 
-		editor.putBoolean(IS_LOGGED_IN, value); 
+	/** Set the login session to expire a fixed amount of time in the future */
+	public static void loginOrRefreshLogin() {
+		editor.putLong(LOGIN_EXPIRATION, System.currentTimeMillis() + millisecondsBeforeAutoLogout);
 		editor.commit();
-	} 
+	}
+
+	/** Set the login session to "expired" */
+	public static void logout() {
+		editor.putLong(LOGIN_EXPIRATION, 0);
+		editor.commit();
+	}
 
 	public static boolean isRegistered() { 
 		if (pref == null) Log.w("LoginManager", "FAILED AT ISREGISTERED");
@@ -84,13 +95,18 @@ public class LoginManager {
 	 * @param input
 	 * @param activity
 	 * @return true or false based on password requirements.*/
-	//TODO: Postproduction. change the minimum value to ~6
-	public static boolean validatePassword(String input, Activity activity) {
-		if (input.length() < 1) {  //do not set to less than 1, this check takes care of entering a length 0 password
-			AlertsManager.showAlert(appContext.getResources().getString(R.string.invalid_password), activity );
-			return false; }
+	public static boolean passwordMeetsRequirements(String password, Activity currentActivity) {
+		// If the password has too few characters, pop up an alert saying so
+		int minPasswordLength = 1; // TODO postproduction: set the minPasswordLength to something higher than 1
+		if (password.length() < minPasswordLength) {
+			String alertMessage = String.format(appContext.getString(R.string.password_too_short), minPasswordLength);
+			AlertsManager.showAlert(alertMessage, currentActivity);
+			return false;
+		}
+		// Improvement idea: set more password requirements (must have both letters and numbers)
 		return true;
 	}
+
 
 	/**Takes an input string and returns a boolean value stating whether the input matches the current password.
 	 * @param input
@@ -114,6 +130,7 @@ public class LoginManager {
 	###########################################################################################*/
 
 	public static void setLoginCredentials( String userID, String password ) {
+		if (editor == null) Log.e("LoginManager.java", "editor is null");
 		editor.putString(KEY_ID, userID);
 		setPassword(password);
 		editor.commit();

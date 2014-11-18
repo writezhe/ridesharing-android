@@ -71,9 +71,9 @@ public class PostRequest {
 	 * Makes an HTTP post request with the provided URL and parameters, returns the server's response code from that request
 	 * @param parameters
 	 * @return an int of the server's response code from the HTTP request */
-	public static int httpRequestcode( String parameters, String url ) {
+	public static int httpRequestcode( String parameters, String url, String newPassword ) {
 		try {
-			return doPostRequestGetResponseCode( parameters, new URL(url) ); }
+			return doPostRequestGetResponseCode( parameters, new URL(url), newPassword ); }
 		catch (MalformedURLException e) {
 			Log.e("PosteRequestFileUpload", "malformed URL");
 			e.printStackTrace(); 
@@ -122,11 +122,11 @@ public class PostRequest {
 	 * @param parameters a string that has been created using the makeParameters function
 	 * @param url a URL object
 	 * @return a new HttpsURLConnection with common settings */
-	private static HttpsURLConnection setupHTTP( String parameters, URL url ) throws IOException {
+	private static HttpsURLConnection setupHTTP( String parameters, URL url, String newPassword ) throws IOException {
 		HttpsURLConnection connection = minimalHTTP(url);
 
 		DataOutputStream request = new DataOutputStream( connection.getOutputStream() );
-		request.write( securityParameters().getBytes() );
+		request.write( securityParameters(newPassword).getBytes() );
 		request.write( parameters.getBytes() );
 		request.flush();
 		request.close();
@@ -156,7 +156,7 @@ public class PostRequest {
 	 #################################################################################*/
 
 	private static String doPostRequestGetResponseString(String parameters, String urlString) throws IOException {
-		HttpsURLConnection connection = setupHTTP( parameters, new URL( urlString ) );
+		HttpsURLConnection connection = setupHTTP( parameters, new URL( urlString ), null );
 		connection.connect();
 		String data = readResponse(connection);
 		connection.disconnect();
@@ -164,8 +164,8 @@ public class PostRequest {
 	}
 
 
-	private static int doPostRequestGetResponseCode(String parameters, URL url) throws IOException {
-		HttpsURLConnection connection = setupHTTP(parameters, url);
+	private static int doPostRequestGetResponseCode(String parameters, URL url, String newPassword) throws IOException {
+		HttpsURLConnection connection = setupHTTP(parameters, url, newPassword);
 		int response = connection.getResponseCode();
 		connection.disconnect();
 		return response;
@@ -173,7 +173,7 @@ public class PostRequest {
 
 
 	private static int doRegisterRequest(String parameters, URL url) throws IOException {
-		HttpsURLConnection connection = setupHTTP(parameters, url);
+		HttpsURLConnection connection = setupHTTP(parameters, url, null);
 		int response = connection.getResponseCode();
 		if ( response == 200 ) {
 			String key = readResponse(connection) ;
@@ -202,7 +202,7 @@ public class PostRequest {
 		//insert the multipart parameter here.
 		DataInputStream inputStream = new DataInputStream( new FileInputStream(file) );
 
-		request.writeBytes( securityParameters() );		
+		request.writeBytes( securityParameters(null) );
 		request.writeBytes( makeParameter("file_name", file.getName() ) );
 		request.writeBytes( "file=" );
 
@@ -279,9 +279,18 @@ public class PostRequest {
 
 	public static String makeParameter(String key, String value) { return key + "=" + value + "&"; }
 
-	public static String securityParameters() { 
-		return makeParameter("patient_id", LoginManager.getPatientID() ) +
-				makeParameter("password", LoginManager.getPassword() ) +
-				makeParameter("device_id", DeviceInfo.getAndroidID() );
+	/** Create the 3 standard security parameters for POST request authentication.
+	 *  @param newPassword If this is a Forgot Password request, pass in a newPassword string from
+	 *  a text input field instead of from the device storage.
+	 *  @return a String of the securityParameters to append to the POST request */
+	public static String securityParameters(String newPassword) {
+		String patientId = LoginManager.getPatientID();
+		String deviceId = DeviceInfo.getAndroidID();
+		String password = LoginManager.getPassword();
+		if (newPassword != null) password = newPassword;
+
+		return makeParameter("patient_id", patientId) +
+				makeParameter("password", password) +
+				makeParameter("device_id", deviceId);
 	}
 }

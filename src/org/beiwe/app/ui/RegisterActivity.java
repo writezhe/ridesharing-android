@@ -3,14 +3,15 @@ package org.beiwe.app.ui;
 import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.LoadingActivity;
 import org.beiwe.app.R;
+import org.beiwe.app.RunningBackgroundProcessActivity;
 import org.beiwe.app.networking.HTTPAsync;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.storage.TextFileManager;
+import org.beiwe.app.survey.QuestionsDownloader;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,8 +24,9 @@ import android.widget.EditText;
  * @author Dor Samet, Eli Jones */
 
 @SuppressLint("ShowToast")
-public class RegisterActivity extends Activity {
-	//extends a regular activity
+public class RegisterActivity extends RunningBackgroundProcessActivity {
+	// extends RunningBackgroundProcessActivity
+
 	// Private fields
 	private EditText userID;
 	private EditText password;
@@ -57,11 +59,11 @@ public class RegisterActivity extends Activity {
 			AlertsManager.showAlert( getString(R.string.invalid_user_id), this); }
 		
 		// If the password length is too short, alert the user
-		else if ( LoginManager.validatePassword(passwordStr, this) ) {
+		else if ( LoginManager.passwordMeetsRequirements(passwordStr, this) ) {
 			
 			LoginManager.setLoginCredentials(userIDStr, passwordStr);
 			LoginManager.setRegistered(true);
-			LoginManager.setLoggedIn(true);
+			LoginManager.loginOrRefreshLogin();
 			
 			Log.i("RegisterActivity", "trying \"" + LoginManager.getPatientID() + "\" with password \"" + LoginManager.getPassword() + "\"" );
 			doRegister(getApplicationContext().getString(R.string.register_url));
@@ -82,11 +84,19 @@ public class RegisterActivity extends Activity {
 		protected void onPostExecute(Void arg) {
 			if (response == 200) { 
 				LoginManager.setRegistered(true);
-				/* Create new data files, because now the app has a patientID
-				 * to prepend to those files' names, instead of NULL_ID */
+
+				// Download the survey questions and schedule the surveys
+				QuestionsDownloader downloader = new QuestionsDownloader(activity.getApplicationContext());
+				downloader.downloadJsonQuestions();
+
+				/* Create new data files, because now the app now has a patientID to prepend to
+				 * those files' names, instead of NULL_ID */
 				TextFileManager.makeNewFilesForEverything();
+
+				// Start the Main Screen Activity, and kill the RegisterActivity screen
 				activity.startActivity(new Intent(activity.getApplicationContext(), LoadingActivity.loadThisActivity) );
-				activity.finish(); }
+				activity.finish();
+			}
 			else if (response == 2) {
 				AlertsManager.showAlert( "Received an invalid encryption key, please contact your administrator.", this.activity );
 				super.onPostExecute(arg);
