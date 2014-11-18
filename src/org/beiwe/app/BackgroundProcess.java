@@ -10,7 +10,6 @@ import org.beiwe.app.listeners.WifiListener;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.storage.TextFileManager;
-import org.beiwe.app.survey.QuestionsDownloader;
 import org.beiwe.app.survey.SurveyType.Type;
 import org.beiwe.app.ui.AppNotifications;
 import org.beiwe.app.ui.LoginActivity;
@@ -64,12 +63,6 @@ public class BackgroundProcess extends Service {
 			Log.i("BackgroundProcess", "starting timers");
 //			startTimers();
 		}
-		
-		// Download the survey questions and schedule the surveys
-		// TODO: Josh. onCreate is going to be called with some frequency, can you add some logic
-		// so it only downloads new surveys if ... there are no current files? (other logic is good)
-		QuestionsDownloader downloader = new QuestionsDownloader(appContext);
-		downloader.downloadJsonQuestions();
 	}
 
 

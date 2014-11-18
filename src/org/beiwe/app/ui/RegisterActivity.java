@@ -7,6 +7,7 @@ import org.beiwe.app.networking.HTTPAsync;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.storage.TextFileManager;
+import org.beiwe.app.survey.QuestionsDownloader;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
 import android.annotation.SuppressLint;
@@ -82,11 +83,19 @@ public class RegisterActivity extends Activity {
 		protected void onPostExecute(Void arg) {
 			if (response == 200) { 
 				LoginManager.setRegistered(true);
-				/* Create new data files, because now the app has a patientID
-				 * to prepend to those files' names, instead of NULL_ID */
+
+				// Download the survey questions and schedule the surveys
+				QuestionsDownloader downloader = new QuestionsDownloader(activity.getApplicationContext());
+				downloader.downloadJsonQuestions();
+
+				/* Create new data files, because now the app now has a patientID to prepend to
+				 * those files' names, instead of NULL_ID */
 				TextFileManager.makeNewFilesForEverything();
+
+				// Start the Main Screen Activity, and kill the RegisterActivity screen
 				activity.startActivity(new Intent(activity.getApplicationContext(), LoadingActivity.loadThisActivity) );
-				activity.finish(); }
+				activity.finish();
+			}
 			else if (response == 2) {
 				AlertsManager.showAlert( "Received an invalid encryption key, please contact your administrator.", this.activity );
 				super.onPostExecute(arg);
