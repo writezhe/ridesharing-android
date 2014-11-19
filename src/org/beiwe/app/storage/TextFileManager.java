@@ -150,7 +150,7 @@ public class TextFileManager {
 		else {
 			String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
 			this.fileName = LoginManager.getPatientID() + "_" + this.name + "_" + timecode + ".csv"; }
-		if ((header != null) || (header.length() < 1)) {
+		if ((header != null) && (header.length() > 0)) {
 			this.writeEncrypted(header);
 		}
 	}
