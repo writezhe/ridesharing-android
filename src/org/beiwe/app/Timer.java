@@ -153,6 +153,17 @@ public class Timer {
 		alarmManager.cancel(pendingIntent);
 	}
 
+	/** Returns TRUE if there is an alarm set for that intent; otherwise false */
+	public Boolean alarmIsSet(Intent intent) {
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intent, PendingIntent.FLAG_NO_CREATE);
+		if (pendingIntent == null) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+
 	public void setupRepeatingAlarm(long millisecondsUntilRepeat, Intent intentToBeBroadcast) {
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
 		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), millisecondsUntilRepeat, pendingIntent);

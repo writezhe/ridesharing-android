@@ -59,10 +59,9 @@ public class BackgroundProcess extends Service {
 		registerTimers();
 		
 		//If this device is both registered and timers have not already been started, start them!
-		//FIXME: this logic needs improvement, it currently resets timers whenever the backgroundservice is restarted.
 		if (LoginManager.isRegistered()) {
-			//Log.i("BackgroundProcess", "starting timers");
-			//startTimers();
+			Log.i("BackgroundProcess", "starting timers");
+			startTimers();
 		}
 	}
 
@@ -153,15 +152,20 @@ public class BackgroundProcess extends Service {
 	}
 	
 	public void startTimers() {
-		// TODO postproduction: comment these in to actually start timers
-//		timer.setupSingularExactAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent);
-//		timer.setupSingularFuzzyAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOnIntent);
-//		timer.setupExactHourlyAlarm(Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent);
-		timer.setupSingularFuzzyAlarm( 5000L, Timer.wifiLogTimerIntent, Timer.wifiLogIntent);
-		
-//		timer.setupDailyRepeatingAlarm(19, Timer.voiceRecordingIntent);
-		timer.setupRepeatingAlarm(Timer.uploadDatafilesPeriod, Timer.uploadDatafilesIntent);
-		timer.setupRepeatingAlarm(Timer.checkForNewSurveysPeriod, Timer.checkForNewSurveysIntent);
+		if (!timer.alarmIsSet(Timer.accelerometerTimerIntent)) {
+			timer.setupSingularExactAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent); }
+		if (!timer.alarmIsSet(Timer.GPSTimerIntent)) {
+			timer.setupSingularFuzzyAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOnIntent); }
+		if (!timer.alarmIsSet(Timer.bluetoothTimerIntent)) {
+			timer.setupExactHourlyAlarm(Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent); }
+		if (!timer.alarmIsSet(Timer.wifiLogTimerIntent)) {
+			timer.setupSingularFuzzyAlarm( 5000L, Timer.wifiLogTimerIntent, Timer.wifiLogIntent); }
+		if (!timer.alarmIsSet(Timer.voiceRecordingIntent)) {
+			timer.setupDailyRepeatingAlarm(19, Timer.voiceRecordingIntent); }
+		if (!timer.alarmIsSet(Timer.uploadDatafilesIntent)) {
+			timer.setupRepeatingAlarm(Timer.uploadDatafilesPeriod, Timer.uploadDatafilesIntent); }
+		if (!timer.alarmIsSet(Timer.checkForNewSurveysIntent)) {
+			timer.setupRepeatingAlarm(Timer.checkForNewSurveysPeriod, Timer.checkForNewSurveysIntent); }
 	}
 	
 	public static void startAutomaticLogoutCountdownTimer(){
