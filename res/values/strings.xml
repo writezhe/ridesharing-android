@@ -41,6 +41,8 @@
     <string name="button_delete_everything">Delete Everything (except encryption key)</string>
 	<string name="button_list_files">List All Files</string>
 	<string name="button_wifi_scan">Scan Wifi</string>
+    <string name="check_if_alarm_is_set">Check if alarm is set</string>
+    <string name="unregister_button">unregister</string>
 	
 
     <!-- Error Messages -->
