@@ -61,7 +61,7 @@ public class BackgroundProcess extends Service {
 		//If this device is both registered and timers have not already been started, start them!
 		//FIXME: this logic needs improvement, it currently resets timers whenever the backgroundservice is restarted.
 		if (LoginManager.isRegistered()) {
-			Log.i("BackgroundProcess", "starting timers");
+			//Log.i("BackgroundProcess", "starting timers");
 			//startTimers();
 		}
 	}
@@ -217,10 +217,7 @@ public class BackgroundProcess extends Service {
 				AppNotifications.displaySurveyNotification(appContext, Type.WEEKLY); }
 			
 			if (intent.getAction().equals( appContext.getString(R.string.signout_intent) ) ) {
-				Log.d("BackgroundProcess.java", "signout_intent fired");
-				// Invalidate the user's login session
 				LoginManager.logout();
-				// Display the LoginActivity page
 				Intent loginPage = new Intent(appContext, LoginActivity.class);
 				loginPage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				appContext.startActivity(loginPage); }
