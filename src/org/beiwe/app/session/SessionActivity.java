@@ -33,9 +33,7 @@ public class SessionActivity extends RunningBackgroundProcessActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-
 		authenticateAndLoginIfNecessary();
-        BackgroundProcess.startAutomaticLogoutCountdownTimer();
 	}
 	
 
@@ -48,7 +46,10 @@ public class SessionActivity extends RunningBackgroundProcessActivity {
 
 	/** If the user is NOT logged in, take them to the login page */
 	protected void authenticateAndLoginIfNecessary() {
-		if (!LoginManager.isLoggedIn()) {
+		if (LoginManager.isLoggedIn()) {
+			BackgroundProcess.startAutomaticLogoutCountdownTimer();
+		}
+		else {
 			startActivity(new Intent(this, LoginActivity.class));
 		}
 	}
