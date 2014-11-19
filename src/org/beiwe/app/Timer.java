@@ -162,8 +162,6 @@ public class Timer {
 	 * @param hourOfDay in 24-hr time, when the alarm should fire. E.g., "19" means 7pm every day
 	 * @param intentToBeBroadcast the intent to be broadcast when the alarm fires      */
 	public void setupDailyRepeatingAlarm(int hourOfDay, Intent intentToBeBroadcast) {
-		// TODO: Josh, purge existing alarms?
-		// reply: Eli. I don't Think that is necessary.  Alarms can only have 1 of a given name, so even if the app is for some reason rescheduling the new alarm should replace the old alarm.
 		Calendar date = new GregorianCalendar();
 		date.set(Calendar.HOUR_OF_DAY, hourOfDay);
 		date.set(Calendar.MINUTE, 0);
