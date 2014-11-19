@@ -71,6 +71,13 @@
 	        android:layout_height="wrap_content"
 	        android:onClick="toggleAccelerometer"
 	        android:text="@string/button_toggle_accelerometer" />
+	    
+	    <Button
+	        android:id="@+id/buttonWifiScan"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="scanWifi"
+	        android:text="@string/button_wifi_scan" />
 
 	    <Button
 	        android:id="@+id/Notify"

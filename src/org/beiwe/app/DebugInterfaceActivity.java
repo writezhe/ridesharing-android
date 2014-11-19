@@ -9,6 +9,7 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
+import org.beiwe.app.listeners.WifiListener;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.session.SessionActivity;
@@ -109,6 +110,8 @@ public class DebugInterfaceActivity extends SessionActivity {
 		AlertsManager.showAlert("registered set to fals, you must go start the app manually.", this);
 		System.exit(0);
 	}
+	
+	public void scanWifi (View view) { WifiListener.scanWifi(); }
 	
 	//public void bluetoothButtonStart (View view){ BackgroundProcess.getBackgroundHandle().bluetoothListener.enableBLEScan();	}
 

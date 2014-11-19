@@ -2,6 +2,7 @@ package org.beiwe.app.listeners;
 
 import java.util.List;
 
+import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.TextFileManager;
 
 import android.content.Context;
@@ -17,14 +18,13 @@ import android.util.Log;
 public class WifiListener {
 	static WifiManager wifiManager;
 	
-	public static String header = "timestamp, MAC";
+	public static String header = "hashed MAC";
 	
 	/** WifiListener requires an application context in order to access 
 	 * the devices wifi info.  
 	 * @param appContext */
 	private WifiListener (Context appContext){
-		wifiManager = (WifiManager) appContext.getSystemService(Context.WIFI_SERVICE);
-	}
+		wifiManager = (WifiManager) appContext.getSystemService(Context.WIFI_SERVICE); }
 	
 	public static void initialize( Context context ) { new WifiListener( context ); } 
 	
@@ -46,14 +46,15 @@ public class WifiListener {
 	}
 	
 	/** Writes to the wifiLog file all mac addresses of local wifi beacons. */
-	public static void scanWifi(){
+	public static void scanWifi() {
 		if ( checkState() ) {
-			List<ScanResult> scanResults = wifiManager.getScanResults();		
-			Log.i("length", "" + scanResults.size() );
+			TextFileManager.getWifiLogFile().newFile();
+			List<ScanResult> scanResults = wifiManager.getScanResults();
+			StringBuilder data = new StringBuilder();
 			for (ScanResult result : scanResults){
-				TextFileManager.getWifiLogFile().writeEncrypted(result.BSSID);
-				Log.i("wifi", result.BSSID);
-			}
+				data.append( EncryptionEngine.safeHash(result.BSSID) );
+				data.append("\n"); }
+			TextFileManager.getWifiLogFile().writeEncrypted( data.toString() );
 		}
 	}
 }

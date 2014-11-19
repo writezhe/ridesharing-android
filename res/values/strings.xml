@@ -26,8 +26,7 @@
     <string name="button_go_to_audio_recorder_activity">Go to Audio Recorder</string>
     <string name="button_play">Play Recording</string>
     <string name="button_record">Record</string>
-    <string name="button_delete_everything">Delete Everything</string>
-	<string name="button_list_files">List All Files</string>
+
 
     <!-- Debug Menu Strings -->
     <string name="title_activity_survey">SurveyActivity</string>
@@ -39,6 +38,10 @@
     <string name="bluetooth_button_start">Start Bluetooth Scan</string>
     <string name="bluetooth_button_stop">Stop Bluetooth Scan</string>
     <string name="timer_button">Timer Button?</string>
+    <string name="button_delete_everything">Delete Everything (except encryption key)</string>
+	<string name="button_list_files">List All Files</string>
+	<string name="button_wifi_scan">Scan Wifi</string>
+	
 
     <!-- Error Messages -->
     <string name="question_error_text">If you are reading this, something broke. Please contact the study administrators, and tell them that there is a bug in the survey!</string>
