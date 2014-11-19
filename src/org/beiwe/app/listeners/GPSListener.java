@@ -116,9 +116,9 @@ public class GPSListener implements LocationListener {
 	 *  have any corner cases where anything breaks.  We should be able to simply ignore these. */	
 	// arg0 for Provider Enabled/Disabled is a string saying "network" or "gps".
 	@Override
-	public void onProviderDisabled(String arg0) { Log.i("A location provider was disabled.", arg0); }
+	public void onProviderDisabled(String arg0) { Log.d("A location provider was disabled.", arg0); }
 	@Override
-	public void onProviderEnabled(String arg0) { Log.i("A location provider was enabled.", arg0); }
+	public void onProviderEnabled(String arg0) { Log.d("A location provider was enabled.", arg0); }
 	@Override
 	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
 		//Called when the provider status changes, when a provider is unable to fetch a location,

@@ -130,7 +130,6 @@ public class Timer {
 		/* The alarmManager.set(*parameters*) operation, as of API 19, makes "inexact" alarms.  They are guaranteed
 		 * to go off, but not at the precise/exact time that you specify.  This is to improve battery life. */
 		alarmManager.set( AlarmManager.ELAPSED_REALTIME_WAKEUP, nextTriggerTime, pendingTimerIntent);
-		Log.i("Timer", "singular fuzzy alarm started");
 	}
 	/** Single exact alarm for events that happen in pairs, e.g. [sensor on]-[sensor off]. */
 	public void setupSingularExactAlarm( Long milliseconds, Intent timerIntent, Intent intentToBeBroadcast ) {
