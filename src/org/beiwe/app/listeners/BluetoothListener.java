@@ -1,5 +1,6 @@
 package org.beiwe.app.listeners;
 
+import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.TextFileManager;
 
 import android.annotation.SuppressLint;
@@ -158,7 +159,7 @@ public class BluetoothListener extends BroadcastReceiver {
 	private LeScanCallback bluetoothCallback = new LeScanCallback() {
 		@Override
 		public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-			bluetoothLog.writeEncrypted( System.currentTimeMillis() + "," + device.toString() );
+			bluetoothLog.writeEncrypted( System.currentTimeMillis() + "," + EncryptionEngine.safeHash( device.toString() ) );
 //			Log.i("Bluetooth",  System.currentTimeMillis() + "," + device.toString() );
 		} }; 
 
