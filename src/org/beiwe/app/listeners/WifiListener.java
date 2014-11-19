@@ -8,7 +8,6 @@ import org.beiwe.app.storage.TextFileManager;
 import android.content.Context;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
-import android.util.Log;
 
 /**WifiListener
  * WifiListener houses a single public function, scanWifi.  This function grabs the mac
@@ -48,13 +47,15 @@ public class WifiListener {
 	/** Writes to the wifiLog file all mac addresses of local wifi beacons. */
 	public static void scanWifi() {
 		if ( checkState() ) {
-			TextFileManager.getWifiLogFile().newFile();
 			List<ScanResult> scanResults = wifiManager.getScanResults();
-			StringBuilder data = new StringBuilder();
-			for (ScanResult result : scanResults){
-				data.append( EncryptionEngine.safeHash(result.BSSID) );
-				data.append("\n"); }
-			TextFileManager.getWifiLogFile().writeEncrypted( data.toString() );
+			if (scanResults != null) {
+				TextFileManager.getWifiLogFile().newFile();
+				StringBuilder data = new StringBuilder();
+				for (ScanResult result : scanResults){
+					data.append( EncryptionEngine.safeHash(result.BSSID) );
+					data.append("\n"); }
+				TextFileManager.getWifiLogFile().writeEncrypted( data.toString() );
+			}
 		}
 	}
 }
