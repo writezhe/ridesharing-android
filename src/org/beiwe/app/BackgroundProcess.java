@@ -90,9 +90,16 @@ public class BackgroundProcess extends Service {
 	 * Note: Bluetooth needs several checks to make sure that it actually exists,
 	 * checking for Bluetooth LE is unlikely strictly necessary, but it should be done anyway. */
 	public void startBluetooth(){
+		// TODO Josh: log (to DeviceInfo or something) whether the device supports Bluetooth LE
 		if ( appContext.getPackageManager().hasSystemFeature( PackageManager.FEATURE_BLUETOOTH_LE ) ) {
-			this.bluetoothListener = new BluetoothListener(); }
-		else { this.bluetoothListener = null; } 
+			Log.d("BackgroundProcess.java", "This device supports Bluetooth LE; the app will log which other devices are in Bluetooth range.");
+			this.bluetoothListener = new BluetoothListener();
+		}
+		else {
+			// TODO Josh: show an alert saying "this device does not support Bluetooth LE; it won't be able to blahblahblah
+			Log.d("BackgroundProcess.java", "This device does not support Bluetooth LE; the app will not log which other devices are in Bluetooth range.");
+			this.bluetoothListener = null;
+		} 
 	}
 	
 	/** Initializes the sms logger. */
@@ -188,11 +195,11 @@ public class BackgroundProcess extends Service {
 				timer.setupSingularFuzzyAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOffIntent); }
 			
 			if (intent.getAction().equals( appContext.getString(R.string.bluetooth_off) ) ) {
-				bluetoothListener.disableBLEScan();
+				if (bluetoothListener != null) bluetoothListener.disableBLEScan();
 				timer.setupExactHourlyAlarm( Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent); }
 			
 			if (intent.getAction().equals( appContext.getString(R.string.bluetooth_on) ) ) {
-				bluetoothListener.enableBLEScan(); 
+				if (bluetoothListener != null) bluetoothListener.enableBLEScan(); 
 				timer.setupSingularExactAlarm( 5000L, Timer.bluetoothTimerIntent, Timer.bluetoothOffIntent ); }
 			
 			if (intent.getAction().equals( appContext.getString(R.string.gps_off) ) ) {

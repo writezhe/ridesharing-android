@@ -3,7 +3,6 @@ package org.beiwe.app;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Iterator;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -113,9 +112,17 @@ public class DebugInterfaceActivity extends SessionActivity {
 	
 	public void scanWifi (View view) { WifiListener.scanWifi(); }
 	
-	public void bluetoothButtonStart (View view){ backgroundProcess.bluetoothListener.enableBLEScan();	}
+	public void bluetoothButtonStart (View view) {
+		if (backgroundProcess.bluetoothListener != null) {
+			backgroundProcess.bluetoothListener.enableBLEScan();
+		}
+	}
 
-	public void bluetoothButtonStop (View view){ backgroundProcess.bluetoothListener.disableBLEScan();	}
+	public void bluetoothButtonStop (View view) {
+		if (backgroundProcess.bluetoothListener != null) {
+			backgroundProcess.bluetoothListener.disableBLEScan();
+		}
+	}
 	
 	public void buttonTimer(View view) { backgroundProcess.startTimers(); }
 	
