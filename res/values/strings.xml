@@ -35,8 +35,8 @@
     <string name="button_toggle_accelerometer">Toggle Accelerometer</string>
     <string name="button_notify">Notify</string>
     <string name="signout">Sign out</string>
-    <string name="bluetooth_button_start">Start Bluetooth Scan</string>
-    <string name="bluetooth_button_stop">Stop Bluetooth Scan</string>
+    <string name="button_bluetooth_start">Start Bluetooth Scan</string>
+    <string name="button_bluetooth_stop">Stop Bluetooth Scan</string>
     <string name="timer_button">Timer Button?</string>
     <string name="button_delete_everything">Delete Everything (except encryption key)</string>
 	<string name="button_list_files">List All Files</string>

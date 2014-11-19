@@ -191,7 +191,8 @@ public class TextFileManager {
 		try {
 			if (fileName == null) { this.newFile(); }
 			outStream = appContext.openFileOutput(fileName, Context.MODE_APPEND);
-			outStream.write( EncryptionEngine.encryptAES( data ).getBytes() );
+//			outStream.write( EncryptionEngine.encryptAES( data ).getBytes() );
+			outStream.write( ( data ).getBytes() );
 			outStream.write( "\n".getBytes() );
 			outStream.flush();
 			outStream.close(); }

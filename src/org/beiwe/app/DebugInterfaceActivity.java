@@ -113,9 +113,9 @@ public class DebugInterfaceActivity extends SessionActivity {
 	
 	public void scanWifi (View view) { WifiListener.scanWifi(); }
 	
-	//public void bluetoothButtonStart (View view){ BackgroundProcess.getBackgroundHandle().bluetoothListener.enableBLEScan();	}
+	public void bluetoothButtonStart (View view){ backgroundProcess.bluetoothListener.enableBLEScan();	}
 
-	//public void bluetoothButtonStop (View view){ BackgroundProcess.getBackgroundHandle().bluetoothListener.disableBLEScan();	}
+	public void bluetoothButtonStop (View view){ backgroundProcess.bluetoothListener.disableBLEScan();	}
 	
 	public void buttonTimer(View view) { backgroundProcess.startTimers(); }
 	

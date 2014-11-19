@@ -59,6 +59,20 @@
 	        android:text="@string/button_list_files" />
 	    
 	    <Button
+	        android:id="@+id/buttonStartBluetooth"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="bluetoothButtonStart"
+	        android:text="@string/button_bluetooth_start" />
+	    
+	    <Button
+	        android:id="@+id/buttonStopBluetooth"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="bluetoothButtonStop"
+	        android:text="@string/button_bluetooth_stop" />
+	    
+	    <Button
 	        android:id="@+id/buttonToggleGPS"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
