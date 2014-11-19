@@ -305,6 +305,7 @@ public class TextFileManager {
 		TextFileManager.getCurrentWeeklyQuestionsFile().deleteSafely();
 		files.remove(TextFileManager.getDebugLogFile().fileName);
 		TextFileManager.getDebugLogFile().deleteSafely();
+		files.remove(TextFileManager.getKeyFile().fileName);
 		
 		//and delete things
 		for (String file_name : files) {
