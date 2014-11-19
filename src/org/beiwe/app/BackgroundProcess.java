@@ -158,10 +158,10 @@ public class BackgroundProcess extends Service {
 			timer.setupSingularFuzzyAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOnIntent); }
 		if (!timer.alarmIsSet(Timer.bluetoothTimerIntent)) {
 			timer.setupExactHourlyAlarm(Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent); }
-		if (!timer.alarmIsSet(Timer.wifiLogTimerIntent)) {
-			timer.setupSingularFuzzyAlarm( 5000L, Timer.wifiLogTimerIntent, Timer.wifiLogIntent); }
+		if (!timer.alarmIsSet(Timer.wifiLogIntent)) {
+			timer.setupRepeatingAlarm(Timer.wifiLogPeriod, Timer.wifiLogIntent); }
 		if (!timer.alarmIsSet(Timer.voiceRecordingIntent)) {
-			timer.setupDailyRepeatingAlarm(19, Timer.voiceRecordingIntent); }
+			timer.setupDailyRepeatingAlarm(Timer.voiceRecordingHourOfDay, Timer.voiceRecordingIntent); }
 		if (!timer.alarmIsSet(Timer.uploadDatafilesIntent)) {
 			timer.setupRepeatingAlarm(Timer.uploadDatafilesPeriod, Timer.uploadDatafilesIntent); }
 		if (!timer.alarmIsSet(Timer.checkForNewSurveysIntent)) {
@@ -215,8 +215,7 @@ public class BackgroundProcess extends Service {
 				timer.setupSingularExactAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOffIntent); }
 		
 			if (intent.getAction().equals( appContext.getString(R.string.action_wifi_log) ) ) {
-				WifiListener.scanWifi();
-				timer.setupSingularFuzzyAlarm( 5000L, Timer.wifiLogTimerIntent, Timer.wifiLogIntent); }
+				WifiListener.scanWifi(); }
 			
 			if (intent.getAction().equals( appContext.getString(R.string.voice_recording) ) ) {
 				AppNotifications.displayRecordingNotification(appContext); }

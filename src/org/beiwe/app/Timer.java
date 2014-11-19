@@ -23,8 +23,10 @@ public class Timer {
 	private Context appContext;
 
 	// TODO postproduction: change this to non-debug values
-	public static final long uploadDatafilesPeriod = 5 * 60 * 1000L;
-	public static final long checkForNewSurveysPeriod = 24 * 60 * 60 * 1000L;
+	public static final long uploadDatafilesPeriod = 5 * 60 * 1000L;  // In milliseconds
+	public static final long checkForNewSurveysPeriod = 24 * 60 * 60 * 1000L;  // In milliseconds
+	public static final long wifiLogPeriod = 2 * 60 * 1000L;  // In milliseconds
+	public static final int voiceRecordingHourOfDay = 19;  // Hour, in 24-hour time
 
 	// Control Message Intents
 	public static Intent accelerometerOffIntent;
@@ -45,7 +47,6 @@ public class Timer {
 	public static Intent accelerometerTimerIntent;
 	public static Intent bluetoothTimerIntent;
 	public static Intent GPSTimerIntent;
-	public static Intent wifiLogTimerIntent;
 	
 	// Intent filters
 	public IntentFilter getAccelerometerOffIntentFilter() { return new IntentFilter( accelerometerOffIntent.getAction() ); }
@@ -58,7 +59,6 @@ public class Timer {
 	public IntentFilter getSignoutIntentFilter() { return new IntentFilter( signoutIntent.getAction() ); }
 	public IntentFilter getVoiceRecordingIntentFilter() { return new IntentFilter( voiceRecordingIntent.getAction() ); }
 	public IntentFilter getWeeklySurveyIntentFilter() { return new IntentFilter( weeklySurveyIntent.getAction() ); }
-	public IntentFilter getWifiLogFilter() { return new IntentFilter( wifiLogTimerIntent.getAction() ); }
 	public IntentFilter getUploadDatafilesIntent() { return new IntentFilter( uploadDatafilesIntent.getAction() ); }
 	public IntentFilter getCheckForNewSurveysIntent() { return new IntentFilter( checkForNewSurveysIntent.getAction() ); }
 	
@@ -87,7 +87,7 @@ public class Timer {
 		signoutIntent = setupIntent( appContext.getString(R.string.signout_intent) );
 		voiceRecordingIntent = setupIntent( appContext.getString(R.string.voice_recording) );
 		weeklySurveyIntent = setupIntent( appContext.getString(R.string.weekly_survey) );
-		wifiLogTimerIntent = setupIntent( appContext.getString( R.string.wifi_timer ) );
+		wifiLogIntent = setupIntent( appContext.getString(R.string.action_wifi_log) );
 		uploadDatafilesIntent = setupIntent( appContext.getString(R.string.upload_data_files_intent) );
 		checkForNewSurveysIntent = setupIntent( appContext.getString(R.string.check_for_new_surveys_intent) );
 		
@@ -95,7 +95,6 @@ public class Timer {
 		accelerometerTimerIntent = setupIntent( appContext.getString(R.string.action_accelerometer_timer) );
 		bluetoothTimerIntent = setupIntent( appContext.getString(R.string.action_bluetooth_timer) );
 		GPSTimerIntent = setupIntent( appContext.getString(R.string.action_gps_timer) );
-		wifiLogIntent = setupIntent( appContext.getString(R.string.action_wifi_log) );
 	}
 
 	
