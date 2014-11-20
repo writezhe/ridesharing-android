@@ -69,6 +69,14 @@ public class LoadingActivity extends RunningBackgroundProcessActivity {
 		else failureExit();
 	}
 	
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		unbindService(backgroundProcessConnection);
+	}
+
+
 	private void loadingSequence() {		
 		//if the device is not registered, push the user to the register activity
 		if ( !LoginManager.isRegistered() ){ startActivity(new Intent(this, RegisterActivity.class) ); }
