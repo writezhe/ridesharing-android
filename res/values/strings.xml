@@ -106,15 +106,12 @@
     <string name="survey_notification_placeholder_text_template">You said %1$s and lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam non enim magna. Morbi dictum, velit vel semper venenatis, magna odio volutpat velit, at ullamcorper nulla lacus sed turpis. Pellentesque vitae metus elit, nec tincidunt tellus. Integer sed nisl sem, ullamcorper ornare lacus. Duis ac mauris sed massa congue volutpat. Donec sed erat sit amet turpis viverra rhoncus sit amet nec magna. Donec lacinia ligula at libero volutpat volutpat nec nec tortor.</string>
     <string name="action_share">Share</string>
     <string name="action_reply">Reply</string>
-    <string name="title_activity_main_menu">MainMenuActivity</string>
 
     <!-- Main menu strings -->
-    <string name="main_menu_sign_out">Sign out</string>
-    <string name="main_menu_take_survey">Take Survey</string>
-    <string name="main_menu_record_message">Record something</string>
+    <string name="title_activity_main_menu">Beiwe</string>
+    <string name="main_menu_top_message">Welcome to Beiwe!</string>
+    <string name="main_menu_view_graph">View survey answers on graph</string>
     <string name="main_menu_call_hotline">Call Hotline</string>
-    <string name="main_menu_view_graph">View previous answers on graph</string>
-    <string name="main_menu_reset_password">Reset Password</string>
     
     <!-- Recording Activity -->
     <string name="record_activity_default_message">Please press "Record" and speak for about 2 minutes, describing your day and how you are feeling.  A live person is not guaranteed to listen to your message!</string>
