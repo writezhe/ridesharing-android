@@ -128,6 +128,10 @@
             android:name=".ui.ResetPasswordActivity"
             android:label="@string/title_activity_reset_password" >
         </activity>
+        <activity
+            android:name="org.beiwe.app.ui.AboutActivity"
+            android:label="@string/title_activity_about" >
+        </activity>
     </application>
 
 </manifest>

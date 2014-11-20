@@ -7,7 +7,6 @@ import org.beiwe.app.ui.LoginActivity;
 import org.beiwe.app.ui.ResetPasswordActivity;
 
 import android.content.Intent;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -81,11 +80,9 @@ public class SessionActivity extends RunningBackgroundProcessActivity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		switch (item.getItemId()) {
 		case R.id.menu_change_password:
-			Log.i("SessionActivity.java", "Called menu_change_password");
 			startActivity(new Intent(getApplicationContext(), ResetPasswordActivity.class));
 			return true;
 		case R.id.menu_signout:
-			Log.i("SessionActivity.java", "Called menu_signout");
 			logoutUser();
 			return true;
 		default:

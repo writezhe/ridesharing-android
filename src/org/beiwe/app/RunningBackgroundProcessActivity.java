@@ -1,6 +1,7 @@
 package org.beiwe.app;
 
 import org.beiwe.app.BackgroundProcess.BackgroundProcessBinder;
+import org.beiwe.app.ui.AboutActivity;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -91,12 +92,10 @@ public class RunningBackgroundProcessActivity extends Activity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		switch (item.getItemId()) {
 		case R.id.menu_about:
-			// TODO Josh: create an about-the-app page/activity.
-			Log.i("RunningBackgroundProcessActivity.java", "Called menu_about");
+			startActivity(new Intent(getApplicationContext(), AboutActivity.class));
 			return true;
 		case R.id.menu_call_hotline:
 			callHotline();
-			Log.i("RunningBackgroundProcessActivity.java", "Called menu_call_hotline");
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
