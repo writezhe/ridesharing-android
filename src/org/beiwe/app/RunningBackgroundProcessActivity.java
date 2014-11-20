@@ -53,14 +53,22 @@ public class RunningBackgroundProcessActivity extends Activity {
 	        isBound = false;
 	    }
 	};
-	
-	
+
+
 	@Override
 	protected void onResume() {
 		super.onResume();
-		
-        bindService( new Intent( this.getApplicationContext(), BackgroundProcess.class), backgroundProcessConnection, Context.BIND_AUTO_CREATE);
+
 		startService(new Intent(this.getApplicationContext(), BackgroundProcess.class));
+        bindService( new Intent( this.getApplicationContext(), BackgroundProcess.class), backgroundProcessConnection, Context.BIND_AUTO_CREATE);
+	}
+
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+
+		unbindService(backgroundProcessConnection);
 	}
 	
 	
