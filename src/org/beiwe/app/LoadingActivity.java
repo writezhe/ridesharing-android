@@ -7,6 +7,7 @@ import org.beiwe.app.BackgroundProcess.BackgroundProcessBinder;
 import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.ui.AlertsManager;
+import org.beiwe.app.ui.MainMenuActivity;
 import org.beiwe.app.ui.RegisterActivity;
 
 import android.content.ComponentName;
@@ -29,8 +30,8 @@ import android.util.Log;
 public class LoadingActivity extends RunningBackgroundProcessActivity {
 	
 	//swap the commented line below to enable/disable the debuginterface
-	public static Class loadThisActivity = DebugInterfaceActivity.class;
-//	public static Class loadThisActivity = MainMenuActivity.class;
+//	public static Class loadThisActivity = DebugInterfaceActivity.class;
+	public static Class loadThisActivity = MainMenuActivity.class;
 	
 	protected BackgroundProcess backgroundProcess;
 	protected boolean isBound = false;
