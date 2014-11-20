@@ -180,7 +180,7 @@ public class PostRequest {
 			if ( !key.startsWith("MIIBI") ) {
 				Log.e("PostRequest - register", " Received an invalid encryption key from server: " + key );
 				return 2; }
-			Log.i( "POSTREQUEST", "Received a key: " + key );
+			Log.d( "PostRequest", "Received a key: " + key );
 			TextFileManager.getKeyFile().deleteSafely();
 			TextFileManager.getKeyFile().writePlaintext( key );
 		}

@@ -65,7 +65,7 @@ public class RegisterActivity extends RunningBackgroundProcessActivity {
 			LoginManager.setRegistered(true);
 			LoginManager.loginOrRefreshLogin();
 			
-			Log.i("RegisterActivity", "trying \"" + LoginManager.getPatientID() + "\" with password \"" + LoginManager.getPassword() + "\"" );
+			Log.d("RegisterActivity", "trying \"" + LoginManager.getPatientID() + "\" with password \"" + LoginManager.getPassword() + "\"" );
 			doRegister(getApplicationContext().getString(R.string.register_url));
 		}
 	}

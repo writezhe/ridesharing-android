@@ -48,7 +48,7 @@ public class LoginManager {
 		pref = appContext.getSharedPreferences(PREF_NAME, PRIVATE_MODE); //sets Shared Preferences private mode
 		editor = pref.edit();
 		editor.commit();
-		Log.i("LoginManager", "LoginManager INITIALIZED");
+		Log.d("LoginManager", "LoginManager INITIALIZED");
 	}
 
 	public static void initialize( Context context ) { new LoginManager(context); } 

@@ -25,6 +25,7 @@ public class QuestionsDownloader {
 	
 	
 	public void downloadJsonQuestions() {
+		Log.d("QuestionsDownloader", "downloadJSONQuestions() called");
 		new GetUpToDateSurveys().execute();
 	}
 

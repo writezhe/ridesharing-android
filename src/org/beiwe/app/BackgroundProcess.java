@@ -70,7 +70,7 @@ public class BackgroundProcess extends Service {
 	/** The BackgroundService is meant to be all the time, so we return START_STICKY */
 	//testing start_redeliver_intent
 	public int onStartCommand(Intent intent, int flags, int startId){
-		Log.w("BackroundProcess onStartCommand", "started with flag " + flags );
+		Log.d("BackroundProcess onStartCommand", "started with flag " + flags );
 		return START_REDELIVER_INTENT; 
 	}
 	
