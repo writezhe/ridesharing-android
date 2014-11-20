@@ -89,6 +89,8 @@ public class RegisterActivity extends RunningBackgroundProcessActivity {
 				QuestionsDownloader downloader = new QuestionsDownloader(activity.getApplicationContext());
 				downloader.downloadJsonQuestions();
 
+				backgroundProcess.startTimers();
+
 				/* Create new data files, because now the app now has a patientID to prepend to
 				 * those files' names, instead of NULL_ID */
 				TextFileManager.makeNewFilesForEverything();
