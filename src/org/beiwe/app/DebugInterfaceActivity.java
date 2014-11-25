@@ -1,13 +1,5 @@
 package org.beiwe.app;
 
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-
 import org.beiwe.app.listeners.WifiListener;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.LoginManager;
@@ -46,27 +38,7 @@ public class DebugInterfaceActivity extends SessionActivity {
 		
 		for( String line : log.split("\n") ) {
 			Log.i( "log file...", line ); }
-		
-		try {
-			Log.i("log file encrypted", EncryptionEngine.encryptAES(log) );} 
-		catch (InvalidKeyException e) {
-			Log.e("log file encrypted", "1");
-			e.printStackTrace();} 
-		catch (NoSuchAlgorithmException e) {
-			Log.e("log file encrypted", "2");
-			e.printStackTrace();} 
-		catch (NoSuchPaddingException e) {
-			Log.e("log file encrypted", "3");
-			e.printStackTrace();} 
-		catch (IllegalBlockSizeException e) {
-			Log.e("log file encrypted", "4");
-			e.printStackTrace();} 
-		catch (BadPaddingException e) {
-			Log.e("log file encrypted", "5");
-			e.printStackTrace();} 
-		catch (InvalidAlgorithmParameterException e){
-			Log.e("log file encrypted", "6");
-			e.printStackTrace();}
+		Log.i("log file encrypted", EncryptionEngine.encryptAES(log) );
 	}
 	
 	public void clearInternalLog(View view) {
