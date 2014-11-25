@@ -35,7 +35,6 @@ public class PostRequest {
 
 	private static Context appContext;	
 
-	//TODO: Eli. We do not appear to need the applicationContext in this class.
 	/**Uploads must be initialized with an appContext before they can access the wifi state or upload a _file_.
 	 * @param some applicationContext */
 	private PostRequest( Context applicationContext ) { appContext = applicationContext; }
