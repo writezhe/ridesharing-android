@@ -8,6 +8,7 @@ import org.beiwe.app.storage.TextFileManager;
 import android.content.Context;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.util.Log;
 
 /**WifiListener
  * WifiListener houses a single public function, scanWifi.  This function grabs the mac
@@ -17,7 +18,7 @@ import android.net.wifi.WifiManager;
 public class WifiListener {
 	static WifiManager wifiManager;
 	
-	public static String header = "hashed MAC";
+	public static String header = "hashed MAC, frequency, RSSI";
 	
 	/** WifiListener requires an application context in order to access 
 	 * the devices wifi info.  
@@ -51,8 +52,10 @@ public class WifiListener {
 			if (scanResults != null) {
 				TextFileManager.getWifiLogFile().newFile();
 				StringBuilder data = new StringBuilder();
+				//we save some compute on the encryption here by dumping all the lines to print in one go.
 				for (ScanResult result : scanResults){
-					data.append( EncryptionEngine.safeHash(result.BSSID) );
+					data.append( EncryptionEngine.safeHash( result.BSSID) + "," + result.frequency + "," + result.level );
+//					Log.i("wifi", EncryptionEngine.safeHash( result.BSSID) + "," + result.frequency + "," + result.level );
 					data.append("\n"); }
 				TextFileManager.getWifiLogFile().writeEncrypted( data.toString() );
 			}
