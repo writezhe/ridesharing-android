@@ -30,8 +30,8 @@ import android.util.Log;
 public class LoadingActivity extends RunningBackgroundProcessActivity {
 	
 	//swap the commented line below to enable/disable the debuginterface
-//	public static Class loadThisActivity = DebugInterfaceActivity.class;
-	public static Class loadThisActivity = MainMenuActivity.class;
+	public static Class loadThisActivity = DebugInterfaceActivity.class;
+//	public static Class loadThisActivity = MainMenuActivity.class;
 	
 	protected BackgroundProcess backgroundProcess;
 	protected boolean isBound = false;

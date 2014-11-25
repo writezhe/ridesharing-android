@@ -38,10 +38,10 @@ If you want to declare that your app is available to BLE-capable devices only, i
  * a Bluetooth Low Energy scan and record any Bluetooth MAC addresses that show up, and then will
  * disable Bluetooth.  If the Bluetooth adaptor was already enabled it will not turn Bluetooth off.
  * 
- * @author elijones */
+ * @author Eli Jones */
 
 public class BluetoothListener extends BroadcastReceiver {
-	public static String header = "timestamp, MAC";
+	public static String header = "timestamp, MAC, RSSI";
 	//Base
 	private BluetoothAdapter bluetoothAdapter;
 	
@@ -144,7 +144,6 @@ public class BluetoothListener extends BroadcastReceiver {
 	 *  If Bluetooth is available, start scanning.  Makes verbose logging statements */
 	@SuppressLint("NewApi")
 	private void tryScanning() {
-	//If the bluetooth is actually
 		Log.i("bluetooth", "starting a scan: " + scanActive );
 		if ( isBluetoothEnabled() ) {
 			if ( bluetoothAdapter.startLeScan(bluetoothCallback) ) {
@@ -159,8 +158,8 @@ public class BluetoothListener extends BroadcastReceiver {
 	private LeScanCallback bluetoothCallback = new LeScanCallback() {
 		@Override
 		public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-			bluetoothLog.writeEncrypted( System.currentTimeMillis() + "," + EncryptionEngine.safeHash( device.toString() ) );
-//			Log.i("Bluetooth",  System.currentTimeMillis() + "," + device.toString() );
+			bluetoothLog.writeEncrypted( System.currentTimeMillis() + "," + EncryptionEngine.safeHash( device.toString() ) + "," + rssi );
+//			Log.i("Bluetooth",  System.currentTimeMillis() + "," + device.toString() + ", " + rssi );
 		} }; 
 
 		
@@ -186,15 +185,15 @@ public class BluetoothListener extends BroadcastReceiver {
 			else if ( state == BluetoothAdapter.STATE_OFF ) { Log.i("bluetooth", "state change: off"); }
 			
 			else if ( state == BluetoothAdapter.STATE_ON ) {
-				Log.i("bluetooth", "state change: on" );
+				//Log.i("bluetooth", "state change: on" );
 				if ( scanActive ) { enableBLEScan(); } }
 			
 			else if ( state == BluetoothAdapter.STATE_TURNING_ON ) {
-				Log.i("bluetooth", "state change: turning on");
+				//Log.i("bluetooth", "state change: turning on");
 				if (!this.internalBluetoothState){	externalBluetoothState = true; } }
 			
 			else if ( state == BluetoothAdapter.STATE_TURNING_OFF ) {
-				Log.i("bluetooth", "state change: turning off");
+				//Log.i("bluetooth", "state change: turning off");
 				if (this.internalBluetoothState){ externalBluetoothState = false; } }			
 		} }
 	
