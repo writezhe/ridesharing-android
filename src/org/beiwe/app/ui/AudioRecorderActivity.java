@@ -6,13 +6,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 
 import org.beiwe.app.R;
 import org.beiwe.app.session.LoginManager;
@@ -37,19 +30,14 @@ import android.widget.Toast;
  * Heavily based on code from:
  * http://developer.android.com/guide/topics/media/audio-capture.html
  * 
- * filename
- * type of data: "voice recording" or "acceleometer"
- * start timestamp
- * stop timestamp
- * user id #
- * 
- * @author Josh Zagorsky, May 2014 */
+ * @author Josh Zagorsky, Eli Jones */
 public class AudioRecorderActivity extends SessionActivity {
     private static final String LOG_TAG = "AudioRecorderActivity";
     
     private static String fileDirectory = null;
     private static String fullFileName = null;
     private static String fileName = null;
+    private static boolean displayPlayback = false;
     
     private MediaRecorder mRecorder = null;
     private MediaPlayer mediaPlayer = null;
@@ -63,7 +51,6 @@ public class AudioRecorderActivity extends SessionActivity {
     private final Handler recordingTimeoutHandler = new Handler();
     // Number of milliseconds before the recording stops automatically:
     private final int maxRecordingTimeLength = 5 * 60 * 1000;
-
     
     /*/////////////////////////////////////////////////*/
     /*///////////////Overrides go here/////////////////*/ 
@@ -82,7 +69,7 @@ public class AudioRecorderActivity extends SessionActivity {
     	recordingButton = (Button) findViewById(R.id.recording_button);
         
     	// Each time the screen is flipped, the app checks if it's time to show the play button
-    	checkPlayButtonVisibility(fullFileName);
+    	setPlayButtonVisibility();
     	
     	/* Improvement idea: make the Audio Recording prompt a string that can
     	 * be edited on the server, and then propagates via automatic downloads
@@ -98,48 +85,48 @@ public class AudioRecorderActivity extends SessionActivity {
         if (mRecorder != null) { stopRecording(); }
         if (mediaPlayer != null) { stopPlaying(); }
         // Make mFileName null, so that the play button will turn invisible
-    	fullFileName = null;
+        displayPlayback = false;
     }
 	
 	@Override
 	public void onResume() {
 		super.onResume();
-		fullFileName = null;
-		checkPlayButtonVisibility(fullFileName);
+		displayPlayback = false;
+		setPlayButtonVisibility();
 	}
 
 	
-    /*/////////////////////////////////////////////////*/
-    /*/////////////Button functionalities//////////////*/ 
-    /*/////////////////////////////////////////////////*/
+    /*/////////////////////////////////////////////////
+    ///////////////Button functionalities////////////// 
+    /////////////////////////////////////////////////*/
 	
     /** Checks if mFileName is null. If it is, then the play button will be invisible. Otherwise,
      * the button will be visible. 
      *@param fullFileName */
-    private void checkPlayButtonVisibility(String fileName) {
-    	if (fileName == null) { playButton.setVisibility(Button.INVISIBLE); }
+    private void setPlayButtonVisibility() {
+    	if (!displayPlayback) { playButton.setVisibility(Button.INVISIBLE); }
     	else { playButton.setVisibility(Button.VISIBLE) ; }
 	}
     
     
-    // When the user presses the "record" button, toggle (start/stop) recording
+    /** When the user presses the "record" button toggle (start/stop) recording. */
     public void buttonRecordPressed(View view) {
     	if (!currentlyRecording) { startRecording(); }
     	else { stopRecording(); }
     }
 
     
-    // When the user presses the "play" button, toggle (start/stop) playback
+    /** When the user presses the "play" button, toggle (start/stop) playback. */
     public void buttonPlayPressed(View view) {
     	if (!currentlyPlaying) { startPlaying(); }
     	else { stopPlaying(); }    	
     }
     
-    /*/////////////////////////////////////////////////*/
-    /*/////Recording and playing functionalities///////*/ 
-    /*/////////////////////////////////////////////////*/
+    /*/////////////////////////////////////////////////
+    ///////Recording and playing functionalities/////// 
+    /////////////////////////////////////////////////*/
 
-    // Start playing back the recording
+    /** Starts playing back the recording */
     private void startPlaying() {
     	currentlyPlaying = true;
     	
@@ -162,7 +149,7 @@ public class AudioRecorderActivity extends SessionActivity {
     }
 
     
-    // Stop playing back the recording, and reset the button to "play"
+    /** Stops playing back the recording, and reset the button to "play" */
     private void stopPlaying() {
     	currentlyPlaying = false;
     	
@@ -174,19 +161,16 @@ public class AudioRecorderActivity extends SessionActivity {
         mediaPlayer = null;
     }
 
-    /**Creates a new file, and names mFileName to that name. The name consists of the time the recording takes place.
-     * Returns the final file name.
-     * 
-     * @return fileName */
+    
+    /**Generates new file name variables. The name consists of the time the recording takes place. */
     private void setAudioFileName() {
 		String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
 		fileName = LoginManager.getPatientID() + "_voiceRecording" + "_" + timecode + ".mp4";
 		fullFileName = fileDirectory + "/" + fileName;
-//		return fileName;
     }
     
     
-    // Start recording from the device's microphone
+    /** Start recording from the device's microphone */
     private void startRecording() {
     	currentlyRecording = true;
 		AppNotifications.dismissNotificatoin( getApplicationContext(), AppNotifications.recordingCode );
@@ -210,19 +194,20 @@ public class AudioRecorderActivity extends SessionActivity {
         try { mRecorder.prepare(); }
         catch (IOException e) { Log.e(LOG_TAG, "prepare() failed"); }
 
-        startTimerForRecordingTimeout();
+        startRecordingTimeout();
         mRecorder.start();
     }
 
     
     // Stop recording, and reset the button to "record"
     private void stopRecording() {
-    	checkPlayButtonVisibility(fullFileName);
+    	displayPlayback = true;
+    	setPlayButtonVisibility();
     	currentlyRecording = false;
     	recordingButton.setText(getApplicationContext().getString(R.string.record_button_text));
     	recordingButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.record_button, 0, 0);
 
-    	cancelTimerForRecordingTimeout();
+    	cancelRecordingTimeout();
     	
     	mRecorder.stop();
         mRecorder.release();
@@ -236,7 +221,7 @@ public class AudioRecorderActivity extends SessionActivity {
     
     
     /** Automatically stop recording if the recording runs longer than n seconds. */
-    private void startTimerForRecordingTimeout() {
+    private void startRecordingTimeout() {
     	recordingTimeoutHandler.postDelayed(new Runnable() {    		
 			@Override
 			public void run() {
@@ -260,7 +245,7 @@ public class AudioRecorderActivity extends SessionActivity {
     /**Cancel the stop-recording timer (this should be called when 
      * stopRecording() has already been called somewhere else, so that we don't
      * call stopRecording twice. */
-    private void cancelTimerForRecordingTimeout() { recordingTimeoutHandler.removeCallbacksAndMessages(null); }
+    private void cancelRecordingTimeout() { recordingTimeoutHandler.removeCallbacksAndMessages(null); }
     
     /** When the user presses "Done", just kill this activity and take them
      * back to the last one; the audio file should already be saved, so we
@@ -269,57 +254,22 @@ public class AudioRecorderActivity extends SessionActivity {
     	//TODO: Eli/Josh.  pop up a spinner here.
     	
     	if (fullFileName == null) {
-    		Log.w("audiorecorder", "did not record");
+    		Log.w("audiorecorder", "did not record.");
     		finish();
     		return;
     	}
     	
-    	byte[] data = readInAudioFile();
-
-		String encrypted = null;
-		try {
-			encrypted = EncryptionEngine.encryptAES( new String(data) ); }
-		catch (InvalidKeyException e) {
-			Log.e("audio file encrypted", "1");
-			e.printStackTrace();} 
-		catch (NoSuchAlgorithmException e) {
-			Log.e("audio file encrypted", "2");
-			e.printStackTrace();} 
-		catch (NoSuchPaddingException e) {
-			Log.e("audio file encrypted", "3");
-			e.printStackTrace();} 
-		catch (IllegalBlockSizeException e) {
-			Log.e("audio file encrypted", "4");
-			e.printStackTrace();} 
-		catch (BadPaddingException e) {
-			Log.e("audio file encrypted", "5");
-			e.printStackTrace();} 
-		catch (InvalidAlgorithmParameterException e){
-			Log.e("audio file encrypted", "6");
-			e.printStackTrace();}
-		
-		String stuff = new String(data);
-		Log.i("audiorecorder 0", "length:" + stuff.length() + ": " + stuff );
-		Log.i("audiorecorder 1", "length:" +encrypted.length() +": " + encrypted );
-
-		writePlaintext(encrypted);
-//		Log.i("audiorecorder 2", new String(readInAudioFile()) );
-		
+		writePlaintext( EncryptionEngine.encryptAES( readInAudioFile() ) );		
     	finish();
     }
     
     
+    /** Writes string data to a the audio file. */
 	public synchronized void writePlaintext(String data){
-		//write the output, we always want mode append
 		FileOutputStream outStream;
 		
-		try { getApplicationContext().deleteFile(fileName); }
-		catch (Exception e) {
-			Log.i("audiorecorder", "cannot delete file " + fileName );
-			e.printStackTrace(); }
-		
-		try {
-			outStream = getApplicationContext().openFileOutput(fileName, Context.MODE_APPEND);
+		try {  //write the output, we want mode private because we want to overwrite the existing data
+			outStream = getApplicationContext().openFileOutput(fileName, Context.MODE_PRIVATE);
 			outStream.write( ( data ).getBytes() );
 			outStream.write( "\n".getBytes() );
 			outStream.flush();
@@ -330,7 +280,7 @@ public class AudioRecorderActivity extends SessionActivity {
 	}
     
 	
-	/**Returns a byte array of the file contents
+	/** Reads a byte array of the current audio file contents
 	 * @return byte array of file contents. */
 	public synchronized byte[] readInAudioFile() {
 		DataInputStream dataInputStream;
