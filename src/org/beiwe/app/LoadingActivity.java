@@ -64,8 +64,10 @@ public class LoadingActivity extends RunningBackgroundProcessActivity {
 		setContentView(R.layout.activity_loading);
 		
 		if ( isAbleToHash() ) {
-			bindService( new Intent( this.getApplicationContext(), BackgroundProcess.class), backgroundProcessConnection, Context.BIND_AUTO_CREATE);
-			startService(new Intent(this.getApplicationContext(), BackgroundProcess.class));
+			Intent startingIntent = new Intent(this.getApplicationContext(), BackgroundProcess.class);
+			startingIntent.addFlags(Intent.FLAG_FROM_BACKGROUND);
+			startService(startingIntent);
+			bindService( startingIntent, backgroundProcessConnection, Context.BIND_AUTO_CREATE);
 		}
 		else failureExit();
 	}

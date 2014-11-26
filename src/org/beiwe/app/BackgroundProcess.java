@@ -15,16 +15,20 @@ import org.beiwe.app.survey.SurveyType.Type;
 import org.beiwe.app.ui.AppNotifications;
 import org.beiwe.app.ui.LoginActivity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.util.Log;
 
 
@@ -42,6 +46,8 @@ public class BackgroundProcess extends Service {
 	@Override
 	/** onCreate is essentially the constructor for the service, initialize variables here.*/
 	public void onCreate(){
+		Log.d("backgroundprocess", "Backgroundprocess Created");
+		Log.e("backgroundprocess", "Backgroundprocess Created");
 		appContext = this.getApplicationContext();
 		
 		DeviceInfo.initialize( getApplicationContext() );
@@ -71,16 +77,45 @@ public class BackgroundProcess extends Service {
 	//testing start_redeliver_intent
 	public int onStartCommand(Intent intent, int flags, int startId){
 		Log.d("BackroundProcess onStartCommand", "started with flag " + flags );
-		return START_REDELIVER_INTENT; 
+		TextFileManager.getDebugLogFile().writePlaintext(System.currentTimeMillis()+" "+"started with flag " + flags);
+		return START_STICKY;
 	}
+	
+	@Override
+	public void onTaskRemoved(Intent rootIntent) {
+		Log.d("BackroundProcess onTaskRemoved", "onTaskRemoved called with intent: " + rootIntent.toString() );
+		TextFileManager.getDebugLogFile().writePlaintext(System.currentTimeMillis()+" "+"onTaskRemoved called with intent: " + rootIntent.toString());
+		restartOnDeath();
+	}
+	
 	
 	@Override
 	public void onDestroy() {
 		//this does not run when the service is killed in a task manager, OR when the stopService() function is called from debugActivity.
-		Log.e("BackgroundService", "BACKGROUNDPROCESS WAS DESTROYED.");
-		Long javaTimeCode = System.currentTimeMillis();
-		TextFileManager.getDebugLogFile().writeEncrypted(javaTimeCode.toString() + "," + "BACKGROUNDPROCESS WAS DESTROYED" +"\n" );
+		Log.e("BackgroundProcess", "BACKGROUNDPROCESS WAS DESTROYED.");
+		TextFileManager.getDebugLogFile().writePlaintext(System.currentTimeMillis()+" "+"BACKGROUNDPROCESS WAS DESTROYED.");
+		restartOnDeath();
+		super.onDestroy();
 	}
+	
+	@Override
+	public boolean onUnbind(Intent intent) {
+		TextFileManager.getDebugLogFile().writePlaintext(System.currentTimeMillis()+" "+"onUnbind called with intent: " + intent.toString());
+		Log.e("BackroundProcess onUnbind", "onUnbind called with intent: " + intent.toString() );
+		restartOnDeath();
+		return super.onUnbind(intent);
+	}
+	
+	private void restartOnDeath(){
+		//how does this even...
+		//whatever, 10 seconds later the background service will start.
+		Intent restartServiceIntent = new Intent( getApplicationContext(), this.getClass() );
+	    restartServiceIntent.setPackage( getPackageName() );
+	    PendingIntent restartServicePendingIntent = PendingIntent.getService( getApplicationContext(), 1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT );
+	    AlarmManager alarmService = (AlarmManager) getApplicationContext().getSystemService( Context.ALARM_SERVICE );
+	    alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 10000, restartServicePendingIntent);
+	}
+	
 	/*#############################################################################
 	#########################         Starters              #######################
 	#############################################################################*/
@@ -188,7 +223,8 @@ public class BackgroundProcess extends Service {
 	BroadcastReceiver controlMessageReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context appContext, Intent intent) {
-			//Log.i("BackgroundService - timers", "Received Broadcast: " + intent.toString());
+			Log.i("BackgroundService - timers", "Received Broadcast: " + intent.toString() );
+			TextFileManager.getDebugLogFile().writePlaintext(System.currentTimeMillis() + " Received Broadcast: " + intent.toString() );
 			
 			if (intent.getAction().equals( appContext.getString(R.string.accelerometer_off) ) ) {
 				accelerometerListener.turn_off();

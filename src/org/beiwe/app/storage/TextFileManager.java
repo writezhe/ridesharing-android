@@ -104,8 +104,11 @@ public class TextFileManager {
 		keyFile = new TextFileManager(appContext, "keyFile", "", true, true);
 
 		// TODO: Eli/Josh.  make sure file names are to-spec
+		
+		// The debug file is no longer persistent, so that we can upload it to the server associated with a user, otherwise it has the name "logfile.txt" and fails to upload.
+		debugLogFile = new TextFileManager(appContext, "logFile.txt", "THIS LINE IS A LOG FILE HEADER", false, true);
+		
 		// Persistent files
-		debugLogFile = new TextFileManager(appContext, "logFile.txt", "THIS LINE IS A LOG FILE HEADER", true, true);
 		currentDailyQuestions = new TextFileManager(appContext, "currentDailyQuestionsFile.json", "", true, true);
 		currentWeeklyQuestions = new TextFileManager(appContext, "currentWeeklyQuestionsFile.json", "", true, true);
 		
@@ -272,7 +275,7 @@ public class TextFileManager {
 		
 		files.remove(TextFileManager.getCurrentDailyQuestionsFile().fileName);
 		files.remove(TextFileManager.getCurrentWeeklyQuestionsFile().fileName);
-		files.remove(TextFileManager.getDebugLogFile().fileName);
+//		files.remove(TextFileManager.getDebugLogFile().fileName);
 		files.remove(TextFileManager.getKeyFile().fileName);
 		
 		makeNewFilesForEverything();

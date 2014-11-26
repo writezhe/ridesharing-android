@@ -38,7 +38,7 @@ public class DebugInterfaceActivity extends SessionActivity {
 		
 		for( String line : log.split("\n") ) {
 			Log.i( "log file...", line ); }
-		Log.i("log file encrypted", EncryptionEngine.encryptAES(log) );
+//		Log.i("log file encrypted", EncryptionEngine.encryptAES(log) );
 	}
 	
 	public void clearInternalLog(View view) {

@@ -37,6 +37,7 @@ public class BootListener extends BroadcastReceiver {
 	 *  called when SDcard available and on device startup. */	
 	private void startBackgroundProcess(Context externalContext){
 		Intent intent_to_start_background_service = new Intent(externalContext, BackgroundProcess.class);
+		intent_to_start_background_service.addFlags(Intent.FLAG_FROM_BACKGROUND);
 	    externalContext.startService(intent_to_start_background_service);
 	}
 	
