@@ -63,7 +63,7 @@ public class Timer {
 	
 	//The timer offset is a random value that is inserted into time calculations to make them occur at a variable time
 	private final static long EXACT_TIMER_OFFSET = 2856000;
-	//TODO: Eli. test.
+	//TODO: Eli. do this.
 	private static int getRandomTimeOffset(){
 		Random random = new Random();
 		return random.nextInt(1800000);  //this would result in a half hour window, right?
