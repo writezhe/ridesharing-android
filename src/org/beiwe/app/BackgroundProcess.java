@@ -187,23 +187,23 @@ public class BackgroundProcess extends Service {
 	
 	public void startTimers() {
 		if (!timer.alarmIsSet(Timer.accelerometerTimerIntent)) {
-			timer.setupSingularExactAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent); }
+			timer.setupExactDoubleAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent); }
 		if (!timer.alarmIsSet(Timer.GPSTimerIntent)) {
-			timer.setupSingularFuzzyAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOnIntent); }
+			timer.setupFuzzySinglePowerOptimizedAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOnIntent); }
 		if (!timer.alarmIsSet(Timer.bluetoothTimerIntent)) {
 			timer.setupExactHourlyAlarm(Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent); }
 		if (!timer.alarmIsSet(Timer.wifiLogIntent)) {
-			timer.setupRepeatingAlarm(Timer.wifiLogPeriod, Timer.wifiLogIntent); }
+			timer.setupInexactRepeatingAlarm(Timer.wifiLogPeriod, Timer.wifiLogIntent); }
 		if (!timer.alarmIsSet(Timer.voiceRecordingIntent)) {
 			timer.setupDailyRepeatingAlarm(Timer.voiceRecordingHourOfDay, Timer.voiceRecordingIntent); }
 		if (!timer.alarmIsSet(Timer.uploadDatafilesIntent)) {
-			timer.setupRepeatingAlarm(Timer.uploadDatafilesPeriod, Timer.uploadDatafilesIntent); }
+			timer.setupInexactRepeatingAlarm(Timer.uploadDatafilesPeriod, Timer.uploadDatafilesIntent); }
 		if (!timer.alarmIsSet(Timer.checkForNewSurveysIntent)) {
-			timer.setupRepeatingAlarm(Timer.checkForNewSurveysPeriod, Timer.checkForNewSurveysIntent); }
+			timer.setupInexactRepeatingAlarm(Timer.checkForNewSurveysPeriod, Timer.checkForNewSurveysIntent); }
 	}
 	
 	public static void startAutomaticLogoutCountdownTimer(){
-		timer.setupSingularExactAlarm(LoginManager.millisecondsBeforeAutoLogout, Timer.signoutIntent);
+		timer.setupExactSingleAlarm(LoginManager.millisecondsBeforeAutoLogout, Timer.signoutIntent);
 		LoginManager.loginOrRefreshLogin();
 	}
 
@@ -227,11 +227,11 @@ public class BackgroundProcess extends Service {
 			
 			if (intent.getAction().equals( appContext.getString(R.string.accelerometer_off) ) ) {
 				accelerometerListener.turn_off();
-				timer.setupSingularExactAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent); }
+				timer.setupExactDoubleAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent); }
 			
 			if (intent.getAction().equals( appContext.getString(R.string.accelerometer_on) ) ) {
 				accelerometerListener.turn_on();
-				timer.setupSingularFuzzyAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOffIntent); }
+				timer.setupFuzzySinglePowerOptimizedAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOffIntent); }
 			
 			if (intent.getAction().equals( appContext.getString(R.string.bluetooth_off) ) ) {
 				if (bluetoothListener != null) bluetoothListener.disableBLEScan();
@@ -239,15 +239,15 @@ public class BackgroundProcess extends Service {
 			
 			if (intent.getAction().equals( appContext.getString(R.string.bluetooth_on) ) ) {
 				if (bluetoothListener != null) bluetoothListener.enableBLEScan(); 
-				timer.setupSingularExactAlarm( 5000L, Timer.bluetoothTimerIntent, Timer.bluetoothOffIntent ); }
+				timer.setupExactDoubleAlarm( 5000L, Timer.bluetoothTimerIntent, Timer.bluetoothOffIntent ); }
 			
 			if (intent.getAction().equals( appContext.getString(R.string.gps_off) ) ) {
 				gpsListener.turn_off();
-				timer.setupSingularFuzzyAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOnIntent); }
+				timer.setupFuzzySinglePowerOptimizedAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOnIntent); }
 			
 			if (intent.getAction().equals( appContext.getString(R.string.gps_on) ) ) {
 				gpsListener.turn_on();
-				timer.setupSingularExactAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOffIntent); }
+				timer.setupExactDoubleAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOffIntent); }
 		
 			if (intent.getAction().equals( appContext.getString(R.string.action_wifi_log) ) ) {
 				WifiListener.scanWifi(); }
