@@ -193,13 +193,13 @@ public class BackgroundProcess extends Service {
 		if (!timer.alarmIsSet(Timer.bluetoothTimerIntent)) {
 			timer.setupExactHourlyAlarm(Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent); }
 		if (!timer.alarmIsSet(Timer.wifiLogIntent)) {
-			timer.setupInexactRepeatingAlarm(Timer.wifiLogPeriod, Timer.wifiLogIntent); }
+			timer.setupFuzzyPowerOptimizedRepeatingAlarm(Timer.wifiLogPeriod, Timer.wifiLogIntent); }
 		if (!timer.alarmIsSet(Timer.voiceRecordingIntent)) {
 			timer.setupDailyRepeatingAlarm(Timer.voiceRecordingHourOfDay, Timer.voiceRecordingIntent); }
 		if (!timer.alarmIsSet(Timer.uploadDatafilesIntent)) {
-			timer.setupInexactRepeatingAlarm(Timer.uploadDatafilesPeriod, Timer.uploadDatafilesIntent); }
+			timer.setupFuzzyPowerOptimizedRepeatingAlarm(Timer.uploadDatafilesPeriod, Timer.uploadDatafilesIntent); }
 		if (!timer.alarmIsSet(Timer.checkForNewSurveysIntent)) {
-			timer.setupInexactRepeatingAlarm(Timer.checkForNewSurveysPeriod, Timer.checkForNewSurveysIntent); }
+			timer.setupFuzzyPowerOptimizedRepeatingAlarm(Timer.checkForNewSurveysPeriod, Timer.checkForNewSurveysIntent); }
 	}
 	
 	public static void startAutomaticLogoutCountdownTimer(){
