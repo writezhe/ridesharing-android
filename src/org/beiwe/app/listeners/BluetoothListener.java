@@ -10,6 +10,7 @@ import android.bluetooth.BluetoothAdapter.LeScanCallback;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
 
@@ -63,10 +64,11 @@ public class BluetoothListener extends BroadcastReceiver {
 	/**The BluetoothListener needs to gracefully handle existence issues - we only want devices
 	 * with Bluetooth Low Energy to ever run our code. BLE/Bluetooth 4.0 was introduced in JELLY_BEAN_MR2,
 	 * so we check for that too, and we check that ANY bluetooth device exists. */
-	public BluetoothListener() {
+	public BluetoothListener(Context appContext) {
 		this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		//We have to check if the BluetoothAdaptor is null, or if the device is not running api 18+  
-		if ( bluetoothAdapter == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2 ) {
+		if ( bluetoothAdapter == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2 
+				|| !appContext.getPackageManager().hasSystemFeature( PackageManager.FEATURE_BLUETOOTH_LE) ) {
 			this.bluetoothExists = false;
 			return; }
 		else { bluetoothExists = true; }
