@@ -14,8 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-/**
- * All Activities in the app extend this Activity.  It ensures that the app's key services (i.e.
+/**All Activities in the app extend this Activity.  It ensures that the app's key services (i.e.
  * BackgroundProcess, LoginManager, PostRequest, DeviceInfo, and WifiListener) are running before
  * the interface tries to interact with any of those.
  * 
@@ -30,12 +29,14 @@ import android.view.MenuItem;
  */
 public class RunningBackgroundProcessActivity extends Activity {
 	
-	/** The backgroundProcess variable is an ActivitySession's connection to the ... BackgroundProcess
-	 * We manually ensure the BackgroundProcess is running in the onResume call, but it should trigger
-	 * even when that is not the case.
-	 * The isBound variable can be used in logic to check whether the BackgroundProcess is running.*/
+	/** The backgroundProcess variable is an Activity's connection to the ... BackgroundProcess.
+	 * We ensure the BackgroundProcess is running in the onResume call, and functionality that
+	 * relies on the BackgroundProcess is always tied to UI elements, reducing the chance of
+	 * a null backgroundProcess variable to essentially zero. */
 	protected BackgroundProcess backgroundProcess;
-	protected boolean isBound = false;
+	
+	//an unused variable for tracking whether the background process is connected, uncomment if we ever need that.
+//	protected boolean isBound = false;
 	
 	/**The ServiceConnection Class is our trigger for events that rely on the BackgroundService */
 	protected ServiceConnection backgroundProcessConnection = new ServiceConnection() {
@@ -44,14 +45,14 @@ public class RunningBackgroundProcessActivity extends Activity {
 	        Log.d("ServiceConnection", "Background Process Connected");
 	        BackgroundProcessBinder some_binder = (BackgroundProcessBinder) binder;
 	        backgroundProcess = some_binder.getService();
-	        isBound = true;
+//	        isBound = true;
 	    }
 	    
 	    @Override
 	    public void onServiceDisconnected(ComponentName name) {
 	        Log.d("ServiceConnection", "Background Process Disconnected");
 	        backgroundProcess = null;
-	        isBound = false;
+//	        isBound = false;
 	    }
 	};
 
@@ -70,7 +71,6 @@ public class RunningBackgroundProcessActivity extends Activity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-
 		unbindService(backgroundProcessConnection);
 	}
 	
@@ -111,5 +111,4 @@ public class RunningBackgroundProcessActivity extends Activity {
 	    callIntent.setData(Uri.parse("tel:" + phoneNum));
 	    startActivity(callIntent);		
 	}
-	
 }
