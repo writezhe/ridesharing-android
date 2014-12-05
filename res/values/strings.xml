@@ -77,7 +77,7 @@
     <string name="reset_password_submit">Submit</string>
     <string name="invalid_old_password">Old password incorrect</string>
     <string name="pass_reset_complete">Password reset complete</string>
-    <string name="password_mismatch">Passwords mismatch</string>
+    <string name="password_mismatch">Password does not match confirm password</string>
     <string name="password_too_short">Your password must be longer than %d characters.</string>
     
     <!-- Forgot Password Activity Strings -->
@@ -93,7 +93,9 @@
     <string name="register_activity_welcoming_message">Welcome to the study</string>
     <string name="register_activity_instructions">Please fill out the information below</string>
     <string name="register_activity_user_id">Please enter your user ID:</string>
-    <string name="register_activity_password">Please enter your password:</string>
+    <string name="register_activity_temp_password_caption">Please enter your temporary registration password:</string>
+    <string name="register_activity_new_password_caption">Please enter your new, permanent password:</string>
+    <string name="register_activity_confirm_new_password_caption">Enter your new, permanent password again:</string>
     <string name="register_activity_submit">Submit</string>
     <string name="title_activity_loading">LoadingActivity</string>
     <string name="invalid_user_id">Invalid user ID</string>

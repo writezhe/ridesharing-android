@@ -30,6 +30,7 @@ public class RegisterActivity extends RunningBackgroundProcessActivity {
 	// Private fields
 	private EditText userID;
 	private EditText password;
+	private String newPassword;
 
 	/** Users will go into this activity first to register information on the phone and on the server. */
 	@Override
@@ -37,8 +38,8 @@ public class RegisterActivity extends RunningBackgroundProcessActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_register);
 
-		userID = (EditText) findViewById(R.id.userID_box);
-		password = (EditText) findViewById(R.id.password_box);
+		userID = (EditText) findViewById(R.id.registerUserIdInput);
+		password = (EditText) findViewById(R.id.registerTempPasswordInput);
 
 		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard( getApplicationContext() );
 		textFieldKeyboard.makeKeyboardBehave(userID);
@@ -54,10 +55,23 @@ public class RegisterActivity extends RunningBackgroundProcessActivity {
 		String userIDStr = userID.getText().toString();
 		String passwordStr = password.getText().toString();
 
+		EditText newPasswordInput = (EditText) findViewById(R.id.registerNewPasswordInput);
+		EditText confirmNewPasswordInput = (EditText) findViewById(R.id.registerConfirmNewPasswordInput);
+		newPassword = newPasswordInput.getText().toString();
+		String confirmNewPassword = confirmNewPasswordInput.getText().toString();
+
 		// If the user id length is too short, alert the user
 		if(userIDStr.length() == 0) {
 			AlertsManager.showAlert( getString(R.string.invalid_user_id), this); }
+
+		// If the new password doesn't match the confirm new password
+		else if (!newPassword.equals(confirmNewPassword)) {
+			AlertsManager.showAlert( getString(R.string.password_mismatch), this); }
 		
+		// If the new password has too few characters, pop up an alert, and do nothing else
+		if (!LoginManager.passwordMeetsRequirements(newPassword, this)) {
+			return; }
+
 		// If the password length is too short, alert the user
 		else if ( LoginManager.passwordMeetsRequirements(passwordStr, this) ) {
 			
@@ -75,7 +89,8 @@ public class RegisterActivity extends RunningBackgroundProcessActivity {
 	private void doRegister(final String url) { new HTTPAsync(url, this) {
 		@Override
 		protected Void doInBackground(Void... arg0) {
-			parameters = PostRequest.makeParameter("bluetooth_id", DeviceInfo.getBlootoothMAC() );
+			parameters = PostRequest.makeParameter("bluetooth_id", DeviceInfo.getBlootoothMAC()) +
+					PostRequest.makeParameter("new_password", newPassword);
 			response = PostRequest.httpRegister(parameters, url);
 			return null; //hate
 		}
@@ -84,6 +99,7 @@ public class RegisterActivity extends RunningBackgroundProcessActivity {
 		protected void onPostExecute(Void arg) {
 			if (response == 200) { 
 				LoginManager.setRegistered(true);
+				LoginManager.setPassword(newPassword);
 
 				// Download the survey questions and schedule the surveys
 				QuestionsDownloader downloader = new QuestionsDownloader(activity.getApplicationContext());
