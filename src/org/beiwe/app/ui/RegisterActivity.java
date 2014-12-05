@@ -76,8 +76,6 @@ public class RegisterActivity extends RunningBackgroundProcessActivity {
 		else if ( LoginManager.passwordMeetsRequirements(passwordStr, this) ) {
 			
 			LoginManager.setLoginCredentials(userIDStr, passwordStr);
-			LoginManager.setRegistered(true);
-			LoginManager.loginOrRefreshLogin();
 			
 			Log.d("RegisterActivity", "trying \"" + LoginManager.getPatientID() + "\" with password \"" + LoginManager.getPassword() + "\"" );
 			doRegister(getApplicationContext().getString(R.string.register_url));
@@ -100,6 +98,7 @@ public class RegisterActivity extends RunningBackgroundProcessActivity {
 			if (response == 200) { 
 				LoginManager.setRegistered(true);
 				LoginManager.setPassword(newPassword);
+				LoginManager.loginOrRefreshLogin();
 
 				// Download the survey questions and schedule the surveys
 				QuestionsDownloader downloader = new QuestionsDownloader(activity.getApplicationContext());
