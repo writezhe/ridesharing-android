@@ -53,7 +53,7 @@ public class QuestionsDownloader {
 	private String getSurveyQuestionsFromServer(String urlString) throws NotFoundException, JSONException {
 		String parameters = "";
 		String surveyQuestions = PostRequest.httpRequestString( parameters, urlString );
-		if (isValidJson(surveyQuestions)) {
+		if (isValidSurveyJson(surveyQuestions)) {
 			return surveyQuestions;
 		}
 		else {
@@ -71,7 +71,7 @@ public class QuestionsDownloader {
 		
 		String surveyQuestions = getQuestionsFile(type).read();
 
-		if (isValidJson(surveyQuestions)) {
+		if (isValidSurveyJson(surveyQuestions)) {
 			return surveyQuestions;
 		}
 		else {
@@ -86,9 +86,14 @@ public class QuestionsDownloader {
 	 * @param
 	 * @return true if valid JSON; false otherwise
 	 */
-	private boolean isValidJson(String input) {
+	private boolean isValidSurveyJson(String input) {
 		try {
-			new JSONObject(input);
+			JSONObject wholeSurveyObject = new JSONObject(input);
+			String surveyId = wholeSurveyObject.getString("survey_id");
+			JSONArray jsonQuestions = wholeSurveyObject.getJSONArray("questions");
+			if ((surveyId != null) && (jsonQuestions != null)) {
+				return true;
+			}
 		}
 		catch (JSONException e) {
 			try {
@@ -98,7 +103,7 @@ public class QuestionsDownloader {
 				return false;
 			}
 		}
-		return true;
+		return false;
 	}
 	
 	
@@ -111,25 +116,27 @@ public class QuestionsDownloader {
 
 		@Override
 		protected Map<String, String> doInBackground(String... params) {
-			try {
-				Map<String, String> surveysDict = new HashMap<String, String>();
-				for (SurveyType.Type type : SurveyType.Type.values()) {
+			Map<String, String> surveysDict = new HashMap<String, String>();
+			for (SurveyType.Type type : SurveyType.Type.values()) {
+				try {
 					String urlString = appContext.getResources().getString(type.urlResource);
 					surveysDict.put(type.dictKey, getSurveyQuestionsFromServer(urlString));
 				}
-				return surveysDict;
+				catch (Exception e) {
+					Log.d("QuestionsDownloader", "getSurveyQuestionsFromServer() failed with exception " + e);
+				}
 			}
-			catch (Exception e) {
-				Log.i("QuestionsDownloader", "getSurveyQuestionsFromServer() failed with exception " + e);
-				return null;
-			}
+			return surveysDict;
 		}
 		
 		@Override
 		protected void onPostExecute(Map<String, String> surveysDict) {
 			if (surveysDict != null && !surveysDict.isEmpty()) {
 				for (SurveyType.Type type : SurveyType.Type.values()) {
-					writeSurveyToFile(surveysDict.get(type.dictKey), getQuestionsFile(type));
+					String survey = surveysDict.get(type.dictKey);
+					if (survey != null) {
+						writeSurveyToFile(survey, getQuestionsFile(type));
+					}
 				}
 			}
 		}
