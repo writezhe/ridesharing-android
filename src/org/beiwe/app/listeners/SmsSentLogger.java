@@ -45,14 +45,10 @@ public class SmsSentLogger extends ContentObserver {
 	
 	@Override
 	public void onChange(boolean selfChange) {
-		super.onChange(selfChange);
-		final String[] projection = new String[]{"_id", "ct_t"};
-		
-		Cursor cursor = appContext.getContentResolver().query( Uri.parse("content://mms-sms/conversations"), projection, null, null, null );
+		super.onChange(selfChange);		
+		Cursor cursor = appContext.getContentResolver().query( Uri.parse("content://sms"), null, null, null, null );
 		cursor.moveToNext();
-		
-		Log.i("SMSes", " stuff?"  );
-		
+				
 		String address = cursor.getString(cursor.getColumnIndex("address"));
 		String body = cursor.getString(cursor.getColumnIndex("body"));
 		String date = cursor.getString(cursor.getColumnIndex("date"));

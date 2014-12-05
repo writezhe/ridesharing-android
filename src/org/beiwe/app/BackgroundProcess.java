@@ -4,6 +4,7 @@ import org.beiwe.app.listeners.AccelerometerListener;
 import org.beiwe.app.listeners.BluetoothListener;
 import org.beiwe.app.listeners.CallLogger;
 import org.beiwe.app.listeners.GPSListener;
+import org.beiwe.app.listeners.MMSMonitor;
 import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
 import org.beiwe.app.listeners.WifiListener;
@@ -58,6 +59,7 @@ public class BackgroundProcess extends Service {
 		accelerometerListener = new AccelerometerListener( appContext );
 		startBluetooth();
 		startSmsSentLogger();
+		startMmsSentLogger();
 		startCallLogger();
 		startPowerStateListener();
 		registerTimers();
@@ -148,12 +150,16 @@ public class BackgroundProcess extends Service {
 	/** Initializes the sms logger. */
 	public void startSmsSentLogger() {
 		SmsSentLogger smsSentLogger = new SmsSentLogger(new Handler(), appContext);
-		this.getContentResolver().registerContentObserver(Uri.parse("content://sms/"), true, smsSentLogger);	}
+		this.getContentResolver().registerContentObserver(Uri.parse("content://sms/"), true, smsSentLogger); }
+	
+	public void startMmsSentLogger(){
+		MMSMonitor mmsMonitor = new MMSMonitor(new Handler(), appContext);
+		this.getContentResolver().registerContentObserver(Uri.parse("content://mms-sms"), true, mmsMonitor); }
 	
 	/** Initializes the call logger. */
 	private void startCallLogger() {
 		CallLogger callLogger = new CallLogger(new Handler(), appContext);
-		this.getContentResolver().registerContentObserver(Uri.parse("content://call_log/calls/"), true, callLogger);	}
+		this.getContentResolver().registerContentObserver(Uri.parse("content://call_log/calls/"), true, callLogger); }
 	
 	/** Initializes the PowerStateListener. 
 	 * The PowerStateListener required the ACTION_SCREEN_OFF and ACTION_SCREEN_ON intents
