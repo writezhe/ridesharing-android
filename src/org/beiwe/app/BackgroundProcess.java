@@ -236,7 +236,7 @@ public class BackgroundProcess extends Service {
 	private BroadcastReceiver timerReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context appContext, Intent intent) {
-			Log.i("BackgroundService - timers", "Received Broadcast: " + intent.toString() );
+			Log.d("BackgroundService - timers", "Received Broadcast: " + intent.toString() );
 			TextFileManager.getDebugLogFile().writePlaintext(System.currentTimeMillis() + " Received Broadcast: " + intent.toString() );
 			
 			//sets the next trigger time for the accelerometer to record data 
