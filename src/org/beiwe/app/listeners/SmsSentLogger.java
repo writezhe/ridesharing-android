@@ -33,7 +33,6 @@ public class SmsSentLogger extends ContentObserver {
 	private TextFileManager smsLogFile = null;
 	private Handler handler = null;
 	Context appContext = null;
-
 	
 	public SmsSentLogger(Handler theHandler, Context context) {
 		super(theHandler);
@@ -70,10 +69,7 @@ public class SmsSentLogger extends ContentObserver {
 			
 			// TODO: Josh. Figure out if when a text is sent, is written as a new line if no network.
 		}
-		
-		// TODO: Josh. check how MMS messages are handled
-	}
-	
+	}	
 }
 
 ///* This is a more brittle way to check if a message is a sent message: check if the
