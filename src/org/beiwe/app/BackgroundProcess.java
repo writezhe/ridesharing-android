@@ -4,7 +4,7 @@ import org.beiwe.app.listeners.AccelerometerListener;
 import org.beiwe.app.listeners.BluetoothListener;
 import org.beiwe.app.listeners.CallLogger;
 import org.beiwe.app.listeners.GPSListener;
-import org.beiwe.app.listeners.MMSMonitor;
+import org.beiwe.app.listeners.MMSSentLogger;
 import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
 import org.beiwe.app.listeners.WifiListener;
@@ -153,7 +153,7 @@ public class BackgroundProcess extends Service {
 		this.getContentResolver().registerContentObserver(Uri.parse("content://sms/"), true, smsSentLogger); }
 	
 	public void startMmsSentLogger(){
-		MMSMonitor mmsMonitor = new MMSMonitor(new Handler(), appContext);
+		MMSSentLogger mmsMonitor = new MMSSentLogger(new Handler(), appContext);
 		this.getContentResolver().registerContentObserver(Uri.parse("content://mms-sms"), true, mmsMonitor); }
 	
 	/** Initializes the call logger. */
