@@ -157,6 +157,8 @@ public class AudioRecorderActivity extends SessionActivity {
     	playButton.setText(getApplicationContext().getString(R.string.play_button_text));
     	playButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.play_button, 0, 0);
 
+    	mediaPlayer.stop();
+    	mediaPlayer.reset();
     	mediaPlayer.release();
         mediaPlayer = null;
     }
@@ -209,7 +211,8 @@ public class AudioRecorderActivity extends SessionActivity {
 
     	cancelRecordingTimeout();
     	
-    	mRecorder.stop();
+        mRecorder.stop();
+        mRecorder.reset();
         mRecorder.release();
         mRecorder = null;
     }
