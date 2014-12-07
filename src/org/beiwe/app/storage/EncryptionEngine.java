@@ -42,7 +42,7 @@ public class EncryptionEngine {
 	public static String hashPhoneNumber(String phoneNumber) {
 		
 		String standardizedPhoneNumber = standardizePhoneNumber(phoneNumber);
-		
+
 		// Functionality to test various phone number formats:
 		//		String[] formats = {"1-617-123-4567", "+1-617-123-4567", "16171234567", "6171234567", "+16171234567", "1617-123-4567"};
 		//		Log.i("EncryptionEngine.java", "formats.length = " + formats.length);
@@ -67,9 +67,10 @@ public class EncryptionEngine {
 	 * @param rawNumber the not-yet-standardized number
 	 * @return the hopefully standardized number */
 	private static String standardizePhoneNumber(String rawNumber) {
-		// TODO: Eli/Josh. check many cases, and see if this works for non-US phone numbers.
-		// explore Eli's idea of just grabbing the last 10 numeric digits and using those.
-		// If it doesn't, make declaration about false negative phone number matches.
+		/* Note: this is only tested for US & Canadian phone numbers, and will probably break on
+		 * international phone numbers.
+		 * Improvement idea: make this work worldwide, perhaps using tools in Google's
+		 * libphonenumber library: https://github.com/googlei18n/libphonenumber */
 		String formattedNumber = PhoneNumberUtils.formatNumber(rawNumber);
 
 		if (formattedNumber.startsWith("+1-"))     { return formattedNumber; }
