@@ -182,12 +182,12 @@ public class Timer {
 		date.set(Calendar.MINUTE, 0);
 		date.set(Calendar.SECOND, 0);
 		date.set(Calendar.MILLISECOND, 0);
-		//long triggerAtMillis = date.getTimeInMillis(); // TODO: Josh use the below line for debugging
-		long triggerAtMillis = System.currentTimeMillis() - 5000L;
+		long triggerAtMillis = date.getTimeInMillis();
+		//long triggerAtMillis = System.currentTimeMillis() - 5000L;  // For debugging only
 		
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
-		//long oneDayInMillis = 24 * 60 * 60 * 1000L; // TODO: Josh use the line below for debugging
-		long oneDayInMillis = 5 * 60 * 1000L;
+		long oneDayInMillis = 24 * 60 * 60 * 1000L;
+		//long oneDayInMillis = 5 * 60 * 1000L;  // For debugging only
 		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, triggerAtMillis, oneDayInMillis, pendingIntent);		
 	}
 	
@@ -203,12 +203,12 @@ public class Timer {
 		date.set(Calendar.MINUTE, 0);
 		date.set(Calendar.SECOND, 0);
 		date.set(Calendar.MILLISECOND, 0);
-		//long triggerAtMillis = date.getTimeInMillis(); // TODO: Josh, use the line below for debugging
-		long triggerAtMillis = System.currentTimeMillis() - 5000L;
+		long triggerAtMillis = date.getTimeInMillis();
+		//long triggerAtMillis = System.currentTimeMillis() - 5000L;  // For debugging only
 		
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
-		//long oneWeekInMillis = 7 * 24 * 60 * 60 * 1000L; // TODO: Josh use the line below for debugging
-		long oneWeekInMillis = 30 * 60 * 1000L;
+		long oneWeekInMillis = 7 * 24 * 60 * 60 * 1000L;
+		//long oneWeekInMillis = 30 * 60 * 1000L;  // For debugging only
 		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, triggerAtMillis, oneWeekInMillis, pendingIntent);		
 	}
 	
