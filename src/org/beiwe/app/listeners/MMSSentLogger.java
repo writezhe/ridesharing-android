@@ -1,6 +1,12 @@
 package org.beiwe.app.listeners;
 
-import java.util.logging.Logger;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import org.beiwe.app.storage.EncryptionEngine;
+import org.beiwe.app.storage.TextFileManager;
 
 import android.content.Context;
 import android.database.ContentObserver;
@@ -22,63 +28,107 @@ public class MMSSentLogger extends ContentObserver{
 	@Override
 	public void onChange(boolean selfChange){
 		super.onChange(selfChange);
-		String message_type = android.provider.Telephony.BaseMmsColumns.MESSAGE_TYPE;
 
 //		Cursor cursor = appContext.getContentResolver().query( Uri.parse("content://mms"), null, "msg_box = 4", null, "_id");
-		Cursor cursor = appContext.getContentResolver().query( Uri.parse("content://mms"), null, null, null, "date");
-		//we want to grab only message type == MESSAGE_TYPE_SENT, which is 2.
-		if (cursor == null) {
-			Log.i("MMS 0","null cursor");
+		Cursor mmsCursor = appContext.getContentResolver().query( Uri.parse("content://mms/"), null, null, null, "date DESC");
+		Cursor smsCursor = appContext.getContentResolver().query( Uri.parse("content://mms-sms/conversations?simple=true"), null, null, null, "date");
+		
+		if ( !check_and_position_cursor(mmsCursor) || !check_and_position_cursor(smsCursor) ){ return; }
+		
+		if ( !smsCursor.getString(smsCursor.getColumnIndex( "transport_type" )).equals("mms") ) {
+//			Log.i("MMS stuff", "that was not an mms, ignoring.!");
 			return;
 		}
-		if (cursor.getCount() < 1){
-			Log.i("MMS 0","0 length cursor");
-			return;
-		}
-		cursor.moveToFirst();
-		Log.i("MMS 1", "Count: " + cursor.getCount());
 		
-		String columns = "";
-		for (String column : cursor.getColumnNames() ) {
-			int index = cursor.getColumnIndex(column);
-			Log.i("mmscrap", "index: " + index);
-			try {
-				
-				Log.i("mmscrap", "data\t" + column + ":" + index + ", " + cursor.getType( index )  + "\n");
-			}
-			catch (Exception e) { 
-				Log.e("mms stuff", "bad index: " + index);
-				e.printStackTrace();
-			}
-		}
-		Log.i("mms 2", "column names: " + columns );
-
-//		String id = cursor.getString(cursor.getColumnIndex("_id") );
-//		String date = cursor.getString (cursor.getColumnIndex ("date") );
+		int date = mmsCursor.getInt( mmsCursor.getColumnIndex("date") );
+		String recipient = smsCursor.getString( smsCursor.getColumnIndex("recipient_address") );
 		
-//		int id = cursor.getColumnIndex("_id") ;
-//		int date = cursor.getColumnIndex ("date") ;
+		String[] recipients = recipient.split(";");
+		for (String number : recipients) {
+			String ident = EncryptionEngine.hashPhoneNumber(number);
+			String write_to_file = date + TextFileManager.DELIMITER + ident + TextFileManager.DELIMITER + "sent" + TextFileManager.DELIMITER + "unknown";
+			Log.i("mms", write_to_file);
+			TextFileManager.getTextsLogFile().writeEncrypted(write_to_file);
+		}
+//		String message = getMmsText( "" + mmsCursor.getInt( mmsCursor.getColumnIndex("_id")) );
+//		Log.e("MMS message", "message length = " + message.length() );
+//		Log.e("MMS message", "message = " + message);
 //		
-//		int address = cursor.getColumnIndex("address");
-//		byte[] data = cursor.getBlob(address);
-//		Log.i("mms 4", "id: " + id + ", date: " + date + ", address: " + address); // + ", data: " + new String(data) );
-		
+//		Log.e("MMS stuff", "MMS:");
+//		print_things_from_valid_sources(mmsCursor);
+//		Log.e("MMS stuff", "SMS:");
+//		print_things_from_valid_sources(smsCursor);
 		
 	}
-//	      try {
-//	         monitorStatus = false;
-//	         if (!monitorStatus) {
-//	            contentResolver.registerContentObserver(Uri.parse("content://mms-sms"), true, mmsObserver);
+	
+	public boolean check_and_position_cursor(Cursor cursor){
+		if (cursor == null || cursor.getCount() < 1) {
+//			Log.e("MMS validity check","invalid cursor");
+			return false; }
+		
+		cursor.moveToFirst();
+//		Log.i("MMS COUNT", "Count: " + cursor.getCount());
+	
+		if (cursor.getInt( cursor.getColumnIndex("msg_box") ) != 2) {
+//			Log.e("MMS DUMP", "NOPE! :D");
+			return false; }
+		return true;
+	}
+	
+//	public void print_things_from_valid_sources( Cursor cursor ){
+//		
+//		for (String column : cursor.getColumnNames() ) {
+//			int index = cursor.getColumnIndex(column);
+//			try {
+//				switch ( cursor.getType( index ) ) {
 //
-//	            Uri uriMMSURI = Uri.parse("content://mms");
-//	            Cursor mmsCur = mainActivity.getContentResolver().query(uriMMSURI, null, "msg_box = 4", null, "_id");
-//	            if (mmsCur != null && mmsCur.getCount() > 0) {
-//	               mmsCount = mmsCur.getCount();
-//	               Log("", "MMSMonitor :: Init MMSCount ==" + mmsCount);
+//				case android.database.Cursor.FIELD_TYPE_BLOB:
+//					Log.i("MMS DUMP", "name: " + column + ", index: " + index + ", type: blob - " + new String(cursor.getBlob(index) ) );
+//					break;
+//				case android.database.Cursor.FIELD_TYPE_FLOAT:
+//					Log.i("MMS DUMP", "name: " + column + ", index: " + index + ", type: float, " + cursor.getFloat(index) );
+//					break;
+//				case android.database.Cursor.FIELD_TYPE_INTEGER:
+//					Log.i("MMS DUMP", "name: " + column + ", index: " + index + ", type: int, " + cursor.getInt(index) );
+//					break;
+//				case android.database.Cursor.FIELD_TYPE_NULL:
+//					Log.i("MMS DUMP", "name: " + column + ", index: " + index + ", type: null" );
+//					break;
+//				case android.database.Cursor.FIELD_TYPE_STRING:
+//					Log.i("MMS DUMP", "name: " + column + ", index: " + index + ", type: string - " + cursor.getString(index) );
+//					break;
+//				default:
+//					Log.i("MMS DUMP", "name: " + column + ", index: " + index + " did not match a type.");
+//				}
+//			}
+//			catch (Exception e) { 
+//				Log.e("MMS CRAP?", "SOMETHING BAD HAPPEND!");
+//				e.printStackTrace();
+//			}
+//		}
+//	}
+//	
+//	private String getMmsText(String mmsid) {
+//	    InputStream inputStream = null;
+//	    StringBuilder builder = new StringBuilder();
+//	    try {
+//	        inputStream = appContext.getContentResolver().openInputStream( Uri.parse("content://mms/part/" + mmsid) );
+//	        if (inputStream != null) { 
+//	            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8") );
+//	            String temp = reader.readLine();
+//	            while (temp != null) {
+//	                builder.append(temp);
+//	                temp = reader.readLine();
 //	            }
-//	         }
-//	      } catch (Exception e) {
-//	         Log("", "MMSMonitor :: startMMSMonitoring Exception== "+ e.getMessage());
-//	      }
-//	   }
+//	        }
+//	    } catch (IOException e) {}
+//	    finally {
+//	        if (inputStream != null) { try { inputStream.close(); }
+//	            catch (IOException e) {}
+//	        }
+//	    }
+//	    return builder.toString();
+//	}
+	
+	
 }

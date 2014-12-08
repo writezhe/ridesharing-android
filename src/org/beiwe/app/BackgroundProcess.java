@@ -154,7 +154,8 @@ public class BackgroundProcess extends Service {
 	
 	public void startMmsSentLogger(){
 		MMSSentLogger mmsMonitor = new MMSSentLogger(new Handler(), appContext);
-		this.getContentResolver().registerContentObserver(Uri.parse("content://mms-sms"), true, mmsMonitor); }
+		//this is retarded, it needs to be mms-sms here, and just "mms" in the mms code
+		this.getContentResolver().registerContentObserver(Uri.parse("content://mms-sms/conversation?simple=true"), true, mmsMonitor); }
 	
 	/** Initializes the call logger. */
 	private void startCallLogger() {
