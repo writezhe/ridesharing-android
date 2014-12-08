@@ -6,7 +6,6 @@ import java.util.Random;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -18,7 +17,6 @@ import android.os.SystemClock;
  * @author Eli, Dor */
 public class Timer {
 	private AlarmManager alarmManager;
-	private BackgroundProcess backgroundProcess;
 	private Context appContext;
 
 	// TODO postproduction: change this to non-debug values
@@ -28,6 +26,10 @@ public class Timer {
 	public static final long BLUETOOTH_ON_DURATION = 10 * 1000L;  // In milliseconds
 	public static final long BLUETOOTH_PERIOD = 60 * 1000L;  // In milliseconds
 	public static final long BLUETOOTH_START_TIME_IN_PERIOD = 37 * 1000L;  // In milliseconds
+	public static final long ACCELEROMETER_ON_DURATION = 5 * 1000L;  // In milliseconds
+	public static final long ACCELEROMETER_OFF_MINIMUM_DURATION = 12 * 1000L;  // In milliseconds
+	public static final long GPS_ON_DURATION = 3 * 1000L;  // In milliseconds
+	public static final long GPS_OFF_MINIMUM_DURATION = 7 * 1000L;  // In milliseconds
 	public static final int VOICE_RECORDING_HOUR_OF_DAY = 19;  // Hour, in 24-hour time
 
 	// Control Message Intents
@@ -45,10 +47,6 @@ public class Timer {
 	public static Intent uploadDatafilesIntent;
 	public static Intent checkForNewSurveysIntent;
 	
-	// Timer intents
-	public static Intent accelerometerTimerIntent;
-	public static Intent GPSTimerIntent;
-	
 	// Intent filters
 	public IntentFilter getAccelerometerOffIntentFilter() { return new IntentFilter( accelerometerOffIntent.getAction() ); }
 	public IntentFilter getAccelerometerOnIntentFilter() { return new IntentFilter( accelerometerOnIntent.getAction() ); }
@@ -65,7 +63,6 @@ public class Timer {
 		
 	// Constructor
 	public Timer( BackgroundProcess backgroundProcess ) {
-		this.backgroundProcess = backgroundProcess;
 		appContext = backgroundProcess.getApplicationContext();
 		alarmManager = (AlarmManager)( backgroundProcess.getSystemService( Context.ALARM_SERVICE ));
 		
@@ -78,8 +75,6 @@ public class Timer {
 		gpsOnIntent = setupIntent( appContext.getString(R.string.gps_on) );
 		
 		// Set up event triggering alarm intents
-		accelerometerTimerIntent = setupIntent( appContext.getString(R.string.action_accelerometer_timer) );
-		GPSTimerIntent = setupIntent( appContext.getString(R.string.action_gps_timer) );
 		dailySurveyIntent = setupIntent( appContext.getString(R.string.daily_survey) );
 		signoutIntent = setupIntent( appContext.getString(R.string.signout_intent) );
 		voiceRecordingIntent = setupIntent( appContext.getString(R.string.voice_recording) );
@@ -99,30 +94,6 @@ public class Timer {
 		newIntent.setAction( action );
 		return newIntent; }
 	
-	/**alarmReceiver: a BroadcastReceiver (that we will register with the background service) that receives alarms.
-	 * BroadcastReceivers are registered along with an IntentFilter.  When an Intent matching that IntentFilter
-	 * is broadcast this code block's onReceive function will be called.  This onReceive function triggers
-	 * our own intent to be Broadcast. 
-	 * @param intentToBeBroadcast An Intent that will be broadcast if the onReceive function is triggered. 
-	 * @return the BroadcastReceiver object */
-	private BroadcastReceiver alarmReceiver (final Intent intentToBeBroadcast) {		
-		return new BroadcastReceiver() {
-			@Override
-			public void onReceive(Context appContext, Intent receivedIntent) {
-				backgroundProcess.unregisterReceiver(this);
-				appContext.sendBroadcast( intentToBeBroadcast );
-			} }; }
-	
-	/** This function handles the common elements for any alarm creation.
-	 * @param intentToBeBroadcast is the intent that the Alarm will broadcast when it goes off.
-	 * @param timerIntent registers the alarm under the correct alarm label.
-	 * @return a PendingIntent of the timerIntent, which is needed to set an alarm.	 */
-	private PendingIntent registerAlarm( Intent intentToBeBroadcast, Intent timerIntent) {
-		PendingIntent pendingTimerIntent = PendingIntent.getBroadcast(appContext, 0, timerIntent, PendingIntent.FLAG_ONE_SHOT);
-		BroadcastReceiver broadcastReceiver = alarmReceiver(intentToBeBroadcast);
-		backgroundProcess.registerReceiver( broadcastReceiver, new IntentFilter( timerIntent.getAction() ) );
-		return pendingTimerIntent;
-	}
 	
 	/* ###############################################################################################
 	 * ############################ The Various Types of Alarms Creation #############################
@@ -142,9 +113,9 @@ public class Timer {
 	 *  Double: a specific, common pattern in this code base, where one alarm triggers a second alarm.
 	 *  Repeating: an alarm that will repeat based on some well defined interval. */
 	
-	public void setupFuzzySinglePowerOptimizedAlarm(Long milliseconds, Intent timerIntent, Intent intentToBeBroadcast) {
+	public void setupFuzzySinglePowerOptimizedAlarm(Long milliseconds, Intent intentToBeBroadcast) {
 		long nextTriggerTime = SystemClock.elapsedRealtime() + milliseconds + getRandomTimeOffset(); 
-		PendingIntent pendingTimerIntent = registerAlarm(intentToBeBroadcast, timerIntent);
+		PendingIntent pendingTimerIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
 		alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, nextTriggerTime, pendingTimerIntent);
 	}
 	
@@ -161,13 +132,6 @@ public class Timer {
 		Long triggerTime = System.currentTimeMillis() + milliseconds;
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
 		setExactAlarm(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
-	}
-	
-	/** Single exact alarm for events that happen in pairs, e.g. [sensor on]-[sensor off]. */
-	public void setupExactDoubleAlarm( Long milliseconds, Intent timerIntent, Intent intentToBeBroadcast ) {
-		Long nextTriggerTime = System.currentTimeMillis() + milliseconds;
-		PendingIntent pendingTimerIntent = registerAlarm( intentToBeBroadcast, timerIntent );
-		setExactAlarm(AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingTimerIntent);
 	}
 	
 	

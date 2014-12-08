@@ -179,17 +179,15 @@ public class BackgroundProcess extends Service {
 		IntentFilter filter = new IntentFilter();
 		filter.addAction( appContext.getString( R.string.accelerometer_off ) );
 		filter.addAction( appContext.getString( R.string.accelerometer_on ) );
-		filter.addAction( appContext.getString( R.string.action_accelerometer_timer ) );
-		filter.addAction( appContext.getString( R.string.action_gps_timer ) );
-		filter.addAction( appContext.getString( R.string.run_wifi_log ) );
 		filter.addAction( appContext.getString( R.string.bluetooth_off ) );
 		filter.addAction( appContext.getString( R.string.bluetooth_on ) );
-		filter.addAction( appContext.getString( R.string.daily_survey ) );
 		filter.addAction( appContext.getString( R.string.gps_off ) );
 		filter.addAction( appContext.getString( R.string.gps_on ) );
 		filter.addAction( appContext.getString( R.string.signout_intent ) );
 		filter.addAction( appContext.getString( R.string.voice_recording ) );
+		filter.addAction( appContext.getString( R.string.daily_survey ) );
 		filter.addAction( appContext.getString( R.string.weekly_survey ) );
+		filter.addAction( appContext.getString( R.string.run_wifi_log ) );
 		filter.addAction( appContext.getString( R.string.upload_data_files_intent ) );
 		filter.addAction( appContext.getString( R.string.check_for_new_surveys_intent ) );
 		registerReceiver(timerReceiver, filter);
@@ -200,12 +198,12 @@ public class BackgroundProcess extends Service {
 	#############################################################################*/
 	
 	public void startTimers() {
-//		Log.i("BackgroundProcess", "starting timers");
-		//TODO: Postproduction: set timer intervals to their real values. (hourly? I think?)
-		if (!timer.alarmIsSet(Timer.accelerometerTimerIntent)) {
-			timer.setupExactDoubleAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent); }
-		if (!timer.alarmIsSet(Timer.GPSTimerIntent)) {
-			timer.setupFuzzySinglePowerOptimizedAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOnIntent); }
+		// If there isn't a timer set for accelerometer ON or OFF, set the accelerometer to turn ON sometime in the future
+		if (!timer.alarmIsSet(Timer.accelerometerOnIntent) && !timer.alarmIsSet(Timer.accelerometerOffIntent)) {
+			timer.setupFuzzySinglePowerOptimizedAlarm( Timer.ACCELEROMETER_OFF_MINIMUM_DURATION, Timer.accelerometerOnIntent); }
+		// If there isn't a timer set for GPS ON or OFF, set the GPS to turn ON sometime in the future
+		if (!timer.alarmIsSet(Timer.gpsOnIntent) && !timer.alarmIsSet(Timer.gpsOffIntent)) {
+			timer.setupFuzzySinglePowerOptimizedAlarm( Timer.GPS_OFF_MINIMUM_DURATION, Timer.gpsOnIntent); }
 		if (!timer.alarmIsSet(Timer.bluetoothOnIntent) && !timer.alarmIsSet(Timer.bluetoothOffIntent)) {
 			timer.setupExactTimeAlarm(Timer.BLUETOOTH_PERIOD, Timer.BLUETOOTH_START_TIME_IN_PERIOD, Timer.bluetoothOnIntent); }
 		if (!timer.alarmIsSet(Timer.wifiLogIntent)) {
@@ -241,12 +239,12 @@ public class BackgroundProcess extends Service {
 			//sets the next trigger time for the accelerometer to record data 
 			if (intent.getAction().equals( appContext.getString(R.string.accelerometer_off) ) ) {
 				accelerometerListener.turn_off();
-				timer.setupExactDoubleAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent); }
+				timer.setupFuzzySinglePowerOptimizedAlarm(Timer.ACCELEROMETER_OFF_MINIMUM_DURATION, Timer.accelerometerOnIntent); }
 			
 			//sets a timer that will turn off the accelerometer
 			if (intent.getAction().equals( appContext.getString(R.string.accelerometer_on) ) ) {
 				accelerometerListener.turn_on();
-				timer.setupFuzzySinglePowerOptimizedAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOffIntent); }
+				timer.setupExactSingleAlarm(Timer.ACCELEROMETER_ON_DURATION, Timer.accelerometerOffIntent); }
 			
 			//sets the next trigger time for the bluetooth scan to record data
 			if (intent.getAction().equals( appContext.getString(R.string.bluetooth_off) ) ) {
@@ -261,12 +259,12 @@ public class BackgroundProcess extends Service {
 			//sets the next trigger time for the gps to record data
 			if (intent.getAction().equals( appContext.getString(R.string.gps_off) ) ) {
 				gpsListener.turn_off();
-				timer.setupFuzzySinglePowerOptimizedAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOnIntent); }
+				timer.setupFuzzySinglePowerOptimizedAlarm(Timer.GPS_OFF_MINIMUM_DURATION, Timer.gpsOnIntent); }
 			
 			//sets a timer that will turn off the gps
 			if (intent.getAction().equals( appContext.getString(R.string.gps_on) ) ) {
 				gpsListener.turn_on();
-				timer.setupExactDoubleAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOffIntent); }
+				timer.setupExactSingleAlarm(Timer.GPS_ON_DURATION, Timer.gpsOffIntent); }
 			
 			//runs a wifi scan
 			if (intent.getAction().equals( appContext.getString(R.string.run_wifi_log) ) ) {
