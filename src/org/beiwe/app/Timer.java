@@ -20,17 +20,17 @@ public class Timer {
 	private Context appContext;
 
 	// TODO postproduction: change this to non-debug values
-	public static final long UPLOAD_DATA_FILES_PERIOD = 10 * 1000L;  // In milliseconds
-	public static final long CREATE_NEW_DATA_FILES_PERIOD = 20 * 1000L;  // In milliseconds
+	public static final long UPLOAD_DATA_FILES_PERIOD = 60 * 1000L;  // In milliseconds
+	public static final long CREATE_NEW_DATA_FILES_PERIOD = 15 * 60 * 1000L;  // In milliseconds
 	public static final long CHECK_FOR_NEW_SURVEYS_PERIOD = 24 * 60 * 60 * 1000L;  // In milliseconds
 	public static final long WIFI_LOG_PERIOD = 5 * 1000L;  // In milliseconds
-	public static final long BLUETOOTH_ON_DURATION = 10 * 1000L;  // In milliseconds
-	public static final long BLUETOOTH_PERIOD = 60 * 1000L;  // In milliseconds
-	public static final long BLUETOOTH_START_TIME_IN_PERIOD = 37 * 1000L;  // In milliseconds
+	public static final long BLUETOOTH_ON_DURATION = 3 * 1000L;  // In milliseconds
+	public static final long BLUETOOTH_PERIOD = 15 * 60 * 1000L;  // In milliseconds
+	public static final long BLUETOOTH_START_TIME_IN_PERIOD = 6 * 1000L;  // In milliseconds
 	public static final long ACCELEROMETER_ON_DURATION = 5 * 1000L;  // In milliseconds
 	public static final long ACCELEROMETER_OFF_MINIMUM_DURATION = 12 * 1000L;  // In milliseconds
 	public static final long GPS_ON_DURATION = 3 * 1000L;  // In milliseconds
-	public static final long GPS_OFF_MINIMUM_DURATION = 7 * 1000L;  // In milliseconds
+	public static final long GPS_OFF_MINIMUM_DURATION = 30 * 1000L;  // In milliseconds
 	public static final int VOICE_RECORDING_HOUR_OF_DAY = 19;  // Hour, in 24-hour time
 
 	// Control Message Intents
