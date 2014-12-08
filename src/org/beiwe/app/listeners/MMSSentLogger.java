@@ -1,10 +1,5 @@
 package org.beiwe.app.listeners;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.TextFileManager;
 
@@ -17,7 +12,6 @@ import android.util.Log;
 
 public class MMSSentLogger extends ContentObserver{
 	
-	private Handler handler = null;
 	Context appContext = null;
 	
 	public MMSSentLogger (Handler handler, Context context ) {
@@ -40,13 +34,13 @@ public class MMSSentLogger extends ContentObserver{
 			return;
 		}
 		
-		int date = mmsCursor.getInt( mmsCursor.getColumnIndex("date") );
+		long date = mmsCursor.getInt( mmsCursor.getColumnIndex("date") ) * 1000L;
 		String recipient = smsCursor.getString( smsCursor.getColumnIndex("recipient_address") );
 		
 		String[] recipients = recipient.split(";");
 		for (String number : recipients) {
 			String ident = EncryptionEngine.hashPhoneNumber(number);
-			String write_to_file = date + TextFileManager.DELIMITER + ident + TextFileManager.DELIMITER + "sent" + TextFileManager.DELIMITER + "unknown";
+			String write_to_file = date + TextFileManager.DELIMITER + ident + TextFileManager.DELIMITER + "sent" + TextFileManager.DELIMITER + "MMS";
 			Log.i("mms", write_to_file);
 			TextFileManager.getTextsLogFile().writeEncrypted(write_to_file);
 		}
