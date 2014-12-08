@@ -20,9 +20,10 @@ public class Timer {
 	private Context appContext;
 
 	// TODO postproduction: change this to non-debug values
-	public static final long UPLOAD_DATA_FILES_PERIOD = 5 * 60 * 1000L;  // In milliseconds
+	public static final long UPLOAD_DATA_FILES_PERIOD = 10 * 1000L;  // In milliseconds
+	public static final long CREATE_NEW_DATA_FILES_PERIOD = 20 * 1000L;  // In milliseconds
 	public static final long CHECK_FOR_NEW_SURVEYS_PERIOD = 24 * 60 * 60 * 1000L;  // In milliseconds
-	public static final long WIFI_LOG_PERIOD = 2 * 60 * 1000L;  // In milliseconds
+	public static final long WIFI_LOG_PERIOD = 5 * 1000L;  // In milliseconds
 	public static final long BLUETOOTH_ON_DURATION = 10 * 1000L;  // In milliseconds
 	public static final long BLUETOOTH_PERIOD = 60 * 1000L;  // In milliseconds
 	public static final long BLUETOOTH_START_TIME_IN_PERIOD = 37 * 1000L;  // In milliseconds
@@ -45,6 +46,7 @@ public class Timer {
 	public static Intent weeklySurveyIntent;
 	public static Intent wifiLogIntent;
 	public static Intent uploadDatafilesIntent;
+	public static Intent createNewDataFilesIntent;
 	public static Intent checkForNewSurveysIntent;
 	
 	// Intent filters
@@ -59,6 +61,7 @@ public class Timer {
 	public IntentFilter getVoiceRecordingIntentFilter() { return new IntentFilter( voiceRecordingIntent.getAction() ); }
 	public IntentFilter getWeeklySurveyIntentFilter() { return new IntentFilter( weeklySurveyIntent.getAction() ); }
 	public IntentFilter getUploadDatafilesIntent() { return new IntentFilter( uploadDatafilesIntent.getAction() ); }
+	public IntentFilter getCreateNewDataFilesIntent() { return new IntentFilter( createNewDataFilesIntent.getAction() ); }
 	public IntentFilter getCheckForNewSurveysIntent() { return new IntentFilter( checkForNewSurveysIntent.getAction() ); }
 		
 	// Constructor
@@ -81,6 +84,7 @@ public class Timer {
 		weeklySurveyIntent = setupIntent( appContext.getString(R.string.weekly_survey) );
 		wifiLogIntent = setupIntent( appContext.getString(R.string.run_wifi_log) );
 		uploadDatafilesIntent = setupIntent( appContext.getString(R.string.upload_data_files_intent) );
+		createNewDataFilesIntent = setupIntent( appContext.getString(R.string.create_new_data_files_intent) );
 		checkForNewSurveysIntent = setupIntent( appContext.getString(R.string.check_for_new_surveys_intent) );
 	}
 	

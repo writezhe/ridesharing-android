@@ -189,6 +189,7 @@ public class BackgroundProcess extends Service {
 		filter.addAction( appContext.getString( R.string.weekly_survey ) );
 		filter.addAction( appContext.getString( R.string.run_wifi_log ) );
 		filter.addAction( appContext.getString( R.string.upload_data_files_intent ) );
+		filter.addAction( appContext.getString( R.string.create_new_data_files_intent ) );
 		filter.addAction( appContext.getString( R.string.check_for_new_surveys_intent ) );
 		registerReceiver(timerReceiver, filter);
 	}
@@ -212,6 +213,8 @@ public class BackgroundProcess extends Service {
 			timer.setupDailyRepeatingAlarm(Timer.VOICE_RECORDING_HOUR_OF_DAY, Timer.voiceRecordingIntent); }
 		if (!timer.alarmIsSet(Timer.uploadDatafilesIntent)) {
 			timer.setupFuzzyPowerOptimizedRepeatingAlarm(Timer.UPLOAD_DATA_FILES_PERIOD, Timer.uploadDatafilesIntent); }
+		if (!timer.alarmIsSet(Timer.createNewDataFilesIntent)) {
+			timer.setupFuzzyPowerOptimizedRepeatingAlarm(Timer.CREATE_NEW_DATA_FILES_PERIOD, Timer.createNewDataFilesIntent); }
 		if (!timer.alarmIsSet(Timer.checkForNewSurveysIntent)) {
 			timer.setupFuzzyPowerOptimizedRepeatingAlarm(Timer.CHECK_FOR_NEW_SURVEYS_PERIOD, Timer.checkForNewSurveysIntent); }
 	}
@@ -292,6 +295,10 @@ public class BackgroundProcess extends Service {
 			//starts a data upload attempt.
 			if (intent.getAction().equals( appContext.getString(R.string.upload_data_files_intent) ) ) {
 				PostRequest.uploadAllFiles(); }
+
+			//creates new data files
+			if (intent.getAction().equals( appContext.getString(R.string.create_new_data_files_intent) ) ) {
+				TextFileManager.makeNewFilesForEverything(); }
 
 			//Downloads the most recent survey questions and schedules the surveys.
 			if (intent.getAction().equals( appContext.getString(R.string.check_for_new_surveys_intent))) {
