@@ -180,9 +180,8 @@ public class BackgroundProcess extends Service {
 		filter.addAction( appContext.getString( R.string.accelerometer_off ) );
 		filter.addAction( appContext.getString( R.string.accelerometer_on ) );
 		filter.addAction( appContext.getString( R.string.action_accelerometer_timer ) );
-		filter.addAction( appContext.getString( R.string.action_bluetooth_timer ) );
 		filter.addAction( appContext.getString( R.string.action_gps_timer ) );
-		filter.addAction( appContext.getString( R.string.action_wifi_log ) );
+		filter.addAction( appContext.getString( R.string.run_wifi_log ) );
 		filter.addAction( appContext.getString( R.string.bluetooth_off ) );
 		filter.addAction( appContext.getString( R.string.bluetooth_on ) );
 		filter.addAction( appContext.getString( R.string.daily_survey ) );
@@ -207,7 +206,7 @@ public class BackgroundProcess extends Service {
 			timer.setupExactDoubleAlarm( 5000L, Timer.accelerometerTimerIntent, Timer.accelerometerOnIntent); }
 		if (!timer.alarmIsSet(Timer.GPSTimerIntent)) {
 			timer.setupFuzzySinglePowerOptimizedAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOnIntent); }
-		if (!timer.alarmIsSet(Timer.bluetoothTimerIntent)) {
+		if (!timer.alarmIsSet(Timer.bluetoothOnIntent) && !timer.alarmIsSet(Timer.bluetoothOffIntent)) {
 			timer.setupExactTimeAlarm(Timer.BLUETOOTH_PERIOD, Timer.BLUETOOTH_START_TIME_IN_PERIOD, Timer.bluetoothOnIntent); }
 		if (!timer.alarmIsSet(Timer.wifiLogIntent)) {
 			timer.setupFuzzyPowerOptimizedRepeatingAlarm(Timer.WIFI_LOG_PERIOD, Timer.wifiLogIntent); }
@@ -270,7 +269,7 @@ public class BackgroundProcess extends Service {
 				timer.setupExactDoubleAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOffIntent); }
 			
 			//runs a wifi scan
-			if (intent.getAction().equals( appContext.getString(R.string.action_wifi_log) ) ) {
+			if (intent.getAction().equals( appContext.getString(R.string.run_wifi_log) ) ) {
 				WifiListener.scanWifi(); }
 			
 			//registers a notification for the user to make an audio recording.

@@ -146,15 +146,13 @@
     <string name="voice_recording">Voice Recording</string>
     <string name="daily_survey">Daily Survey</string>
     <string name="weekly_survey">Weekly Survey</string>
-    <string name="wifi_timer">Wifi Timer</string>
     <string name="upload_data_files_intent">Upload data files</string>
     <string name="check_for_new_surveys_intent">Check for new surveys</string>
+    <string name="run_wifi_log">Wifi Log</string>
     
     <!-- Timer Identifiers -->
     <string name="action_accelerometer_timer">Accelerometer Timer</string>
-    <string name="action_bluetooth_timer">Bluetooth Timer</string>
     <string name="action_gps_timer">GPS Timer</string>
-    <string name="action_wifi_log">Wifi Log</string>
 
     <!-- Menu Items -->
     <string name="menu_sign_out">Sign Out</string>

@@ -25,9 +25,9 @@ public class Timer {
 	public static final long UPLOAD_DATA_FILES_PERIOD = 5 * 60 * 1000L;  // In milliseconds
 	public static final long CHECK_FOR_NEW_SURVEYS_PERIOD = 24 * 60 * 60 * 1000L;  // In milliseconds
 	public static final long WIFI_LOG_PERIOD = 2 * 60 * 1000L;  // In milliseconds
-	public static final long BLUETOOTH_ON_DURATION = 2 * 60 * 1000L;  // In milliseconds
-	public static final long BLUETOOTH_PERIOD = 5 * 60 * 1000L;  // In milliseconds
-	public static final long BLUETOOTH_START_TIME_IN_PERIOD = 90 * 1000L;  // In milliseconds
+	public static final long BLUETOOTH_ON_DURATION = 10 * 1000L;  // In milliseconds
+	public static final long BLUETOOTH_PERIOD = 60 * 1000L;  // In milliseconds
+	public static final long BLUETOOTH_START_TIME_IN_PERIOD = 37 * 1000L;  // In milliseconds
 	public static final int VOICE_RECORDING_HOUR_OF_DAY = 19;  // Hour, in 24-hour time
 
 	// Control Message Intents
@@ -47,7 +47,6 @@ public class Timer {
 	
 	// Timer intents
 	public static Intent accelerometerTimerIntent;
-	public static Intent bluetoothTimerIntent;
 	public static Intent GPSTimerIntent;
 	
 	// Intent filters
@@ -80,13 +79,12 @@ public class Timer {
 		
 		// Set up event triggering alarm intents
 		accelerometerTimerIntent = setupIntent( appContext.getString(R.string.action_accelerometer_timer) );
-		bluetoothTimerIntent = setupIntent( appContext.getString(R.string.action_bluetooth_timer) );
 		GPSTimerIntent = setupIntent( appContext.getString(R.string.action_gps_timer) );
 		dailySurveyIntent = setupIntent( appContext.getString(R.string.daily_survey) );
 		signoutIntent = setupIntent( appContext.getString(R.string.signout_intent) );
 		voiceRecordingIntent = setupIntent( appContext.getString(R.string.voice_recording) );
 		weeklySurveyIntent = setupIntent( appContext.getString(R.string.weekly_survey) );
-		wifiLogIntent = setupIntent( appContext.getString(R.string.action_wifi_log) );
+		wifiLogIntent = setupIntent( appContext.getString(R.string.run_wifi_log) );
 		uploadDatafilesIntent = setupIntent( appContext.getString(R.string.upload_data_files_intent) );
 		checkForNewSurveysIntent = setupIntent( appContext.getString(R.string.check_for_new_surveys_intent) );
 	}
