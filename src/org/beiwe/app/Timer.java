@@ -22,10 +22,13 @@ public class Timer {
 	private Context appContext;
 
 	// TODO postproduction: change this to non-debug values
-	public static final long uploadDatafilesPeriod = 5 * 60 * 1000L;  // In milliseconds
-	public static final long checkForNewSurveysPeriod = 24 * 60 * 60 * 1000L;  // In milliseconds
-	public static final long wifiLogPeriod = 2 * 60 * 1000L;  // In milliseconds
-	public static final int voiceRecordingHourOfDay = 19;  // Hour, in 24-hour time
+	public static final long UPLOAD_DATA_FILES_PERIOD = 5 * 60 * 1000L;  // In milliseconds
+	public static final long CHECK_FOR_NEW_SURVEYS_PERIOD = 24 * 60 * 60 * 1000L;  // In milliseconds
+	public static final long WIFI_LOG_PERIOD = 2 * 60 * 1000L;  // In milliseconds
+	public static final long BLUETOOTH_ON_DURATION = 2 * 60 * 1000L;  // In milliseconds
+	public static final long BLUETOOTH_PERIOD = 5 * 60 * 1000L;  // In milliseconds
+	public static final long BLUETOOTH_START_TIME_IN_PERIOD = 90 * 1000L;  // In milliseconds
+	public static final int VOICE_RECORDING_HOUR_OF_DAY = 19;  // Hour, in 24-hour time
 
 	// Control Message Intents
 	public static Intent accelerometerOffIntent;
@@ -61,9 +64,6 @@ public class Timer {
 	public IntentFilter getUploadDatafilesIntent() { return new IntentFilter( uploadDatafilesIntent.getAction() ); }
 	public IntentFilter getCheckForNewSurveysIntent() { return new IntentFilter( checkForNewSurveysIntent.getAction() ); }
 		
-	/** this offset is a shared "random" value used for the synchronized random events, like the bluetooth scan.*/ 
-	private final static long EXACT_REPEAT_TIMER_OFFSET = 2856000;
-	
 	// Constructor
 	public Timer( BackgroundProcess backgroundProcess ) {
 		this.backgroundProcess = backgroundProcess;
@@ -74,7 +74,7 @@ public class Timer {
 		accelerometerOffIntent = setupIntent( appContext.getString(R.string.accelerometer_off) );
 		accelerometerOnIntent = setupIntent( appContext.getString(R.string.accelerometer_on) );
 		bluetoothOffIntent = setupIntent( appContext.getString(R.string.bluetooth_off) );
-		bluetoothOnIntent = setupIntent( appContext.getString(R.string.accelerometer_on) );
+		bluetoothOnIntent = setupIntent( appContext.getString(R.string.bluetooth_on) );
 		gpsOffIntent = setupIntent( appContext.getString(R.string.gps_off) );
 		gpsOnIntent = setupIntent( appContext.getString(R.string.gps_on) );
 		
@@ -212,16 +212,16 @@ public class Timer {
 		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, triggerAtMillis, oneWeekInMillis, pendingIntent);		
 	}
 	
-	/** setupExactHourlyAlarm creates an Exact Alarm that will go off at a specific hourly offset,
-	 * based on the EXACT_REPEAT_TIMER_OFFSET variable defined above.
-	 * setupExactHourlyAlarm is used for the Bluetooth timer, so that the trigger is
-	 * synchronized across all devices in the study. */
-	public void setupExactHourlyAlarm( Intent timerIntent, Intent intentToBeBroadcast ) {	
+	/** setupExactTimeAlarm creates an Exact Alarm that will go off at a specific time within a
+	 * period, e.g. every hour (period), at 47 minutes past the hour (start time within period).
+	 * setupExactTimeAlarm is used for the Bluetooth timer, so that every device that has this app
+	 * turns on its Bluetooth at the same moment. */
+	public void setupExactTimeAlarm(long period, long startTimeInPeriod, Intent intentToBeBroadcast) {
 		long currentTime = System.currentTimeMillis();
 		// current unix time (mod) 3,600,000 milliseconds = the next hour-boundry, to which we add the EXACT_REPEAT_TIMER_OFFSET.
-		Long nextTriggerTime = currentTime - ( currentTime % (long) 3600000 ) + EXACT_REPEAT_TIMER_OFFSET;
-		if (nextTriggerTime < currentTime) { nextTriggerTime += 3600000; }
-		PendingIntent pendingTimerIntent = registerAlarm( intentToBeBroadcast, timerIntent );
+		Long nextTriggerTime = currentTime - ( currentTime % period ) + startTimeInPeriod;
+		if (nextTriggerTime < currentTime) { nextTriggerTime += period; }
+		PendingIntent pendingTimerIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
 		setExactAlarm(AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingTimerIntent);
 	}
 	

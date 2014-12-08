@@ -208,15 +208,15 @@ public class BackgroundProcess extends Service {
 		if (!timer.alarmIsSet(Timer.GPSTimerIntent)) {
 			timer.setupFuzzySinglePowerOptimizedAlarm( 5000L, Timer.GPSTimerIntent, Timer.gpsOnIntent); }
 		if (!timer.alarmIsSet(Timer.bluetoothTimerIntent)) {
-			timer.setupExactHourlyAlarm(Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent); }
+			timer.setupExactTimeAlarm(Timer.BLUETOOTH_PERIOD, Timer.BLUETOOTH_START_TIME_IN_PERIOD, Timer.bluetoothOnIntent); }
 		if (!timer.alarmIsSet(Timer.wifiLogIntent)) {
-			timer.setupFuzzyPowerOptimizedRepeatingAlarm(Timer.wifiLogPeriod, Timer.wifiLogIntent); }
+			timer.setupFuzzyPowerOptimizedRepeatingAlarm(Timer.WIFI_LOG_PERIOD, Timer.wifiLogIntent); }
 		if (!timer.alarmIsSet(Timer.voiceRecordingIntent)) {
-			timer.setupDailyRepeatingAlarm(Timer.voiceRecordingHourOfDay, Timer.voiceRecordingIntent); }
+			timer.setupDailyRepeatingAlarm(Timer.VOICE_RECORDING_HOUR_OF_DAY, Timer.voiceRecordingIntent); }
 		if (!timer.alarmIsSet(Timer.uploadDatafilesIntent)) {
-			timer.setupFuzzyPowerOptimizedRepeatingAlarm(Timer.uploadDatafilesPeriod, Timer.uploadDatafilesIntent); }
+			timer.setupFuzzyPowerOptimizedRepeatingAlarm(Timer.UPLOAD_DATA_FILES_PERIOD, Timer.uploadDatafilesIntent); }
 		if (!timer.alarmIsSet(Timer.checkForNewSurveysIntent)) {
-			timer.setupFuzzyPowerOptimizedRepeatingAlarm(Timer.checkForNewSurveysPeriod, Timer.checkForNewSurveysIntent); }
+			timer.setupFuzzyPowerOptimizedRepeatingAlarm(Timer.CHECK_FOR_NEW_SURVEYS_PERIOD, Timer.checkForNewSurveysIntent); }
 	}
 	
 	public static void startAutomaticLogoutCountdownTimer(){
@@ -252,12 +252,12 @@ public class BackgroundProcess extends Service {
 			//sets the next trigger time for the bluetooth scan to record data
 			if (intent.getAction().equals( appContext.getString(R.string.bluetooth_off) ) ) {
 				if (bluetoothListener != null) bluetoothListener.disableBLEScan();
-				timer.setupExactHourlyAlarm( Timer.bluetoothTimerIntent, Timer.bluetoothOnIntent); }
+				timer.setupExactTimeAlarm(Timer.BLUETOOTH_PERIOD, Timer.BLUETOOTH_START_TIME_IN_PERIOD, Timer.bluetoothOnIntent); }
 			
 			//sets a timer that will turn off the bluetooth scan
 			if (intent.getAction().equals( appContext.getString(R.string.bluetooth_on) ) ) {
-				if (bluetoothListener != null) bluetoothListener.enableBLEScan(); 
-				timer.setupExactDoubleAlarm( 5000L, Timer.bluetoothTimerIntent, Timer.bluetoothOffIntent ); }
+				if (bluetoothListener != null) bluetoothListener.enableBLEScan();
+				timer.setupExactSingleAlarm(Timer.BLUETOOTH_ON_DURATION, Timer.bluetoothOffIntent); }
 			
 			//sets the next trigger time for the gps to record data
 			if (intent.getAction().equals( appContext.getString(R.string.gps_off) ) ) {
