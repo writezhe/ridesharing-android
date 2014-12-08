@@ -230,7 +230,6 @@ public class PostRequest {
 	/** Uploads all available files on a separate thread. */
 	public static void uploadAllFiles() {
 		// Run the HTTP POST on a separate thread
-		// FIXME: Eli+Josh. Run through ALL code that uses network, we need to be running this check.		
 		if ( !NetworkUtility.getWifiState(appContext) ) { return; }
 		ExecutorService executor = Executors.newFixedThreadPool(1);
 		Callable <HttpPost> thread = new Callable<HttpPost>() {
