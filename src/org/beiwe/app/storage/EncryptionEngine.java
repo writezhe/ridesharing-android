@@ -10,8 +10,6 @@ import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 
-import org.beiwe.app.storage.TextFileManager;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -22,7 +20,6 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import android.annotation.SuppressLint;
-import android.telephony.PhoneNumberUtils;
 import android.util.Base64;
 import android.util.Log;
 
@@ -36,46 +33,32 @@ public class EncryptionEngine {
 	 * ############################ Phone Numbers ################################
 	 * #########################################################################*/
 	
-	/**Converts a phone number into a 64-character hexadecimal string
+	/**Converts a phone number into a 64-character hexadecimal string.
+	 * First standardizes the phone numbers by grabbing the last 10 digits, so
+	 * that hopefully, two identical phone numbers will get identical hashes,
+	 * even if one has dashes and a country code and the other doesn't.
+	 * 
+	 * Grabbing the last 10 characters is much simpler than using something like this:
+	 * https://github.com/googlei18n/libphonenumber
+	 * 
 	 * @param phoneNumber
 	 * @return a hexadecimal string, or an error message string */
 	public static String hashPhoneNumber(String phoneNumber) {
-		
-		String standardizedPhoneNumber = standardizePhoneNumber(phoneNumber);
-		
-		// Functionality to test various phone number formats:
-		//		String[] formats = {"1-617-123-4567", "+1-617-123-4567", "16171234567", "6171234567", "+16171234567", "1617-123-4567"};
-		//		Log.i("EncryptionEngine.java", "formats.length = " + formats.length);
-		//		for (int i = 0; i < formats.length; i++) {
-		//			Log.i("EncryptionEngine.java", "String " + formats[i] + " converted to: " + standardizePhoneNumber(formats[i]));
-		//		}
-		
-		try {
-			MessageDigest hasher = MessageDigest.getInstance("SHA-256"); //make a hasher (verb?) object, include the hash algorithm name.
-			hasher.update(standardizedPhoneNumber.getBytes("UTF-8")); //pass the hash object data (the string passed in)
-			return toBase64String( hasher.digest() );
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			return "Phone number hashing failed";
-		}
+
+		// Strip from the string any characters that aren't digits 0-9
+		String justDigits = phoneNumber.replaceAll("\\D+", "");
+
+		// Grab the last 10 digits
+		String last10;
+		if (justDigits.length() > 10) {
+			last10 = justDigits.substring(justDigits.length() - 10); }
+		else {
+			last10 = justDigits; }
+
+		// Hash the last 10 digits
+		return safeHash(last10);
 	}
 
-	
-	/**Put the phone number in a standardized format, so that, for example,
-	 * 2345678901 and +1-234-567-8901 have the same hash
-	 * @param rawNumber the not-yet-standardized number
-	 * @return the hopefully standardized number */
-	private static String standardizePhoneNumber(String rawNumber) {
-		// TODO: Eli/Josh. check many cases, and see if this works for non-US phone numbers.
-		// explore Eli's idea of just grabbing the last 10 numeric digits and using those.
-		// If it doesn't, make declaration about false negative phone number matches.
-		String formattedNumber = PhoneNumberUtils.formatNumber(rawNumber);
-
-		if (formattedNumber.startsWith("+1-"))     { return formattedNumber; }
-		else if (formattedNumber.startsWith("1-")) { return "+1-" + formattedNumber.substring(2); }
-		else { return "+1-" + formattedNumber; }
-	}
 	
 	/*############################################################################
 	 * ############################### Hashing ###################################

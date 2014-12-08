@@ -252,13 +252,13 @@ public class TextFileManager {
 	
 	/** Make new files for all the non-persistent files. */
 	public static synchronized void makeNewFilesForEverything() {
+		Log.d("TextFileManager.java", "makeNewFilesForEverything() called");
 		GPSFile.newFile();
 		accelFile.newFile();
 		powerStateLog.newFile();
 		callLog.newFile();
 		textsLog.newFile();
 		bluetoothLog.newFile();
-		wifiLog.newFile();
 	}
 	
 	/** Very simple function, exists to make any function that needs to grab all extant files thread-safe.
@@ -278,7 +278,13 @@ public class TextFileManager {
 //		files.remove(TextFileManager.getDebugLogFile().fileName);
 		files.remove(TextFileManager.getKeyFile().fileName);
 		
-		makeNewFilesForEverything();
+		files.remove(TextFileManager.getGPSFile().fileName);
+		files.remove(TextFileManager.getAccelFile().fileName);
+		files.remove(TextFileManager.getPowerStateFile().fileName);
+		files.remove(TextFileManager.getCallLogFile().fileName);
+		files.remove(TextFileManager.getTextsLogFile().fileName);
+		files.remove(TextFileManager.getBluetoothLogFile().fileName);
+		files.remove(TextFileManager.getWifiLogFile().fileName);
 		
 		return files.toArray(new String[files.size()]);
 	}
