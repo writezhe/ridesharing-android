@@ -215,7 +215,7 @@ public class PostRequest {
 		request.close();
 
 		// Get HTTP Response
-		Log.i("POSTREQUESTFILEUPLOAD", "RESPONSE = " + connection.getResponseMessage());
+		Log.i("PostRequest.java", "File: " + file.getName() + " Response: " + connection.getResponseMessage());
 		int response = connection.getResponseCode();
 		connection.disconnect();
 		return response;
@@ -234,9 +234,9 @@ public class PostRequest {
 		ExecutorService executor = Executors.newFixedThreadPool(1);
 		Callable <HttpPost> thread = new Callable<HttpPost>() {
 			@Override
-			public HttpPost call() {
-				Log.i("upload files", "uploading files");
-				doTryUploadDelete( TextFileManager.getAllUploadableFiles() ) ;
+			public synchronized HttpPost call() {
+				Log.i("PostRequest.java", "Uploading files");
+				doTryUploadDelete();
 				return null; //(indentation was stupid, made a function.)
 			}
 		};
@@ -245,17 +245,16 @@ public class PostRequest {
 
 
 	/** For each file name given, tries to upload that file.  If successful it then deletes the file.*/
-	private static void doTryUploadDelete(String[] files) {
+	private static synchronized void doTryUploadDelete() {
+		String[] files = TextFileManager.getAllUploadableFiles();
 		for (String fileName : files) {
 			try {
-				Log.i("upload files", "file name:" + fileName);
 				if ( tryToUploadFile(fileName) ) { TextFileManager.delete(fileName); } }
 			catch (IOException e) {
-				Log.i( "Upload", "Failed to upload file " + fileName + ".\n Raised exception " + e.getCause() );
-				e.printStackTrace();
+				Log.w( "PostRequest.java", "Failed to upload file " + fileName + ". Raised exception " + e.getCause() );
 			}
 		}
-		Log.i("NetworkUtilities", "Finished upload loop.");		
+		Log.i("PostRequest.java", "Finished upload loop.");
 	}
 
 
