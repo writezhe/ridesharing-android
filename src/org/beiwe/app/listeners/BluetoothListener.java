@@ -64,11 +64,13 @@ public class BluetoothListener extends BroadcastReceiver {
 	/**The BluetoothListener needs to gracefully handle existence issues - we only want devices
 	 * with Bluetooth Low Energy to ever run our code. BLE/Bluetooth 4.0 was introduced in JELLY_BEAN_MR2,
 	 * so we check for that too, and we check that ANY bluetooth device exists. */
-	public BluetoothListener(Context appContext) {
+	public BluetoothListener() {
 		this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		//We have to check if the BluetoothAdaptor is null, or if the device is not running api 18+  
-		if ( bluetoothAdapter == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2 
-				|| !appContext.getPackageManager().hasSystemFeature( PackageManager.FEATURE_BLUETOOTH_LE) ) {
+		if ( bluetoothAdapter == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
+//	it would be nice to insert this check as well, but the constructors for broadcast receivers must
+//  be empty or else android cannot correctly instantiate them on demand.  We do this check in the background process.		
+//	|| !appContext.getPackageManager().hasSystemFeature( PackageManager.FEATURE_BLUETOOTH_LE) ) {
 			this.bluetoothExists = false;
 			return; }
 		else { bluetoothExists = true; }

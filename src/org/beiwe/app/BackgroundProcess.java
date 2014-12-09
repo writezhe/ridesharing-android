@@ -132,11 +132,9 @@ public class BackgroundProcess extends Service {
 	 * Checking for Bluetooth LE is necessary because it is an optional extension to Bluetooth 4.0. */
 	public void startBluetooth(){
 		// TODO Josh: log (to DeviceInfo or something) whether the device supports Bluetooth LE
-		//  Josh: I have inserted into the bluetooth listener an additional check for this device feature.
-		//  we may be able to remove the logging.
 		if ( appContext.getPackageManager().hasSystemFeature( PackageManager.FEATURE_BLUETOOTH_LE ) ) {
 			Log.d("BackgroundProcess.java", "This device supports Bluetooth LE; the app will log which other devices are in Bluetooth range.");
-			this.bluetoothListener = new BluetoothListener( appContext );
+			this.bluetoothListener = new BluetoothListener();
 		}
 		else {
 			// TODO Josh: show an alert saying "this device does not support Bluetooth LE; it won't be able to blahblahblah

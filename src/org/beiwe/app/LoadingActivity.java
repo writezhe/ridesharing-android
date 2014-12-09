@@ -31,8 +31,8 @@ public class LoadingActivity extends RunningBackgroundProcessActivity {
 	
 	//swap the commented line below to enable/disable the debuginterface
 	@SuppressWarnings("rawtypes")
-//	public static Class loadThisActivity = DebugInterfaceActivity.class;
-	public static Class loadThisActivity = MainMenuActivity.class;
+	public static Class loadThisActivity = DebugInterfaceActivity.class;
+//	public static Class loadThisActivity = MainMenuActivity.class;
 	
 	protected BackgroundProcess backgroundProcess;
 	protected boolean isBound = false;
