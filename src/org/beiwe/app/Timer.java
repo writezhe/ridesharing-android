@@ -163,18 +163,19 @@ public class Timer {
 	 * @param hourOfDay in 24-hr time, when the alarm should fire. E.g., "19" means 7pm every day
 	 * @param intentToBeBroadcast the intent to be broadcast when the alarm fires      */
 	public void setupWeeklyRepeatingAlarm(int dayOfWeek, int hourOfDay, Intent intentToBeBroadcast) {
+		long oneWeekInMillis = 7 * 24 * 60 * 60 * 1000L;
+		//long oneWeekInMillis = 30 * 60 * 1000L;  // For debugging only
+
 		Calendar date = new GregorianCalendar();
 		date.set(Calendar.DAY_OF_WEEK, dayOfWeek);
 		date.set(Calendar.HOUR_OF_DAY, hourOfDay);
 		date.set(Calendar.MINUTE, 0);
 		date.set(Calendar.SECOND, 0);
 		date.set(Calendar.MILLISECOND, 0);
-		long triggerAtMillis = date.getTimeInMillis();
+		long triggerAtMillis = date.getTimeInMillis() - oneWeekInMillis;
 		//long triggerAtMillis = System.currentTimeMillis() - 5000L;  // For debugging only
 		
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
-		long oneWeekInMillis = 7 * 24 * 60 * 60 * 1000L;
-		//long oneWeekInMillis = 30 * 60 * 1000L;  // For debugging only
 		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, triggerAtMillis, oneWeekInMillis, pendingIntent);		
 	}
 	
