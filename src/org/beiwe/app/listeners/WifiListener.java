@@ -49,7 +49,7 @@ public class WifiListener {
 		if ( checkState() ) {
 			List<ScanResult> scanResults = wifiManager.getScanResults();
 			if (scanResults != null) {
-				TextFileManager.getWifiLogFile().newFile();
+				TextFileManager.getWifiLogFile().newFile(); //note: the file name's timestamp is actually relevant, so we always make a new file.
 				StringBuilder data = new StringBuilder();
 				//we save some compute on the encryption here by dumping all the lines to print in one go.
 				for (ScanResult result : scanResults){
