@@ -172,7 +172,7 @@ public class TextFileManager {
 	/** Takes a string. writes that to the file, adds a new line to the string.
 	 * Prints a stacktrace on a write error, but does not crash. If there is no
 	 * file, a new file will be created.
-	 * @param data a string*/
+	 * @param data any unicode valid string*/
 	public synchronized void writePlaintext(String data){
 		//write the output, we always want mode append
 		FileOutputStream outStream;
