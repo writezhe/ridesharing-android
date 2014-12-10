@@ -172,6 +172,7 @@ public class Timer {
 		date.set(Calendar.MINUTE, 0);
 		date.set(Calendar.SECOND, 0);
 		date.set(Calendar.MILLISECOND, 0);
+		// The trigger date is in the past so that when you register, a survey is immediately available
 		long triggerAtMillis = date.getTimeInMillis() - oneWeekInMillis;
 		//long triggerAtMillis = System.currentTimeMillis() - 5000L;  // For debugging only
 		
