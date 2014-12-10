@@ -188,20 +188,11 @@ public class TextFileManager {
 			e.printStackTrace(); }
 	}
 	
+	/**Encrypts string data and writes it to a file.
+	 * @param data any unicode valid string */
 	public synchronized void writeEncrypted(String data) {
-		//write the output, we always want mode append
-		FileOutputStream outStream;
-		try {
-			if (fileName == null) { this.newFile(); }
-			outStream = appContext.openFileOutput(fileName, Context.MODE_APPEND);
-//			outStream.write( EncryptionEngine.encryptAES( data ).getBytes() );
-			outStream.write( ( data ).getBytes() );
-			outStream.write( "\n".getBytes() );
-			outStream.flush();
-			outStream.close(); }
-		catch (Exception e) {
-			Log.i("FileManager", "Write error: " + this.name);
-			e.printStackTrace(); }
+		//this.writePlaintext( EncryptionEngine.encryptAES( data ) );
+		this.writePlaintext(data);
 	}
 
 	/**@return A string of the file contents. */
@@ -227,7 +218,7 @@ public class TextFileManager {
 		return stringBuffer.toString();
 	}
 	
-	/** Creates a new instance of file, then delete the old file. */
+	/** Deletes a file in the safest possible way, based on the file type (persistent-nonpersistent). */
 	public synchronized void deleteSafely() {
 		String oldFileName = this.fileName;
 		// For files that are persistant we have to do a slightly unsafe deletion, for everything else
@@ -267,7 +258,7 @@ public class TextFileManager {
 	public static synchronized String[] getAllFiles() { return appContext.getFilesDir().list(); }
 	
 	
-	/** Returns all data files except for the persistent ones that shouldn't be uploaded
+	/** Returns all data that are not currently in use
 	 * @return String[] a list of file names */
 	public static synchronized String[] getAllUploadableFiles() {
 		Set<String> files = new HashSet<String>();
