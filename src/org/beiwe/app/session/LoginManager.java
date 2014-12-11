@@ -1,6 +1,7 @@
 package org.beiwe.app.session;
 
 import org.beiwe.app.R;
+import org.beiwe.app.Timer;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.ui.AlertsManager;
 
@@ -20,8 +21,6 @@ import android.util.Log;
  *  */
 
 public class LoginManager {
-
-	public static final Long millisecondsBeforeAutoLogout = 5 * 60 * 1000L;
 
 	private static int PRIVATE_MODE = 0;
 
@@ -65,7 +64,7 @@ public class LoginManager {
 	
 	/** Set the login session to expire a fixed amount of time in the future */
 	public static void loginOrRefreshLogin() {
-		editor.putLong(LOGIN_EXPIRATION, System.currentTimeMillis() + millisecondsBeforeAutoLogout);
+		editor.putLong(LOGIN_EXPIRATION, System.currentTimeMillis() + Timer.MILLISECONDS_BEFORE_AUTO_LOGOUT);
 		editor.commit();
 	}
 

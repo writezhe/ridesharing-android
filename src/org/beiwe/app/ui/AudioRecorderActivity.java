@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.beiwe.app.R;
+import org.beiwe.app.Timer;
 import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.storage.EncryptionEngine;
@@ -49,8 +50,6 @@ public class AudioRecorderActivity extends SessionActivity {
     private Button recordingButton;
     
     private final Handler recordingTimeoutHandler = new Handler();
-    // Number of milliseconds before the recording stops automatically:
-    private final int maxRecordingTimeLength = 5 * 60 * 1000;
     
     /*/////////////////////////////////////////////////*/
     /*///////////////Overrides go here/////////////////*/ 
@@ -231,7 +230,7 @@ public class AudioRecorderActivity extends SessionActivity {
 				showTimeoutToast();
 				stopRecording();
 			}
-		}, maxRecordingTimeLength);
+		}, Timer.VOICE_RECORDING_MAX_TIME_LENGTH);
     }
     
     
@@ -239,7 +238,7 @@ public class AudioRecorderActivity extends SessionActivity {
     private void showTimeoutToast() {
     	Resources resources = getApplicationContext().getResources();
     	String msg = (String) resources.getText(R.string.timeout_msg_1st_half);
-    	msg += ((float) maxRecordingTimeLength / 60 / 1000);
+    	msg += ((float) Timer.VOICE_RECORDING_MAX_TIME_LENGTH / 60 / 1000);
     	msg += resources.getText(R.string.timeout_msg_2nd_half);
     	Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
     }
