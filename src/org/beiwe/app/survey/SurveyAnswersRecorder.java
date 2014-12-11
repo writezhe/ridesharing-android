@@ -201,6 +201,7 @@ public class SurveyAnswersRecorder {
 			for (String line : fileLines) {
 				TextFileManager.getSurveyAnswersFile().writeEncrypted(line);
 			}
+			TextFileManager.getSurveyAnswersFile().closeFile();
 			return true;
 		} catch (Exception e) {
 			return false;

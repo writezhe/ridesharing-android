@@ -48,12 +48,12 @@ public class TextFileManager {
 	private static TextFileManager callLog;
 	private static TextFileManager textsLog;
 	private static TextFileManager bluetoothLog;
-	private static TextFileManager wifiLog;
+	private static TextFileManager debugLogFile;
 
 	private static TextFileManager surveyTimings;
 	private static TextFileManager surveyAnswers;
+	private static TextFileManager wifiLog;
 	
-	private static TextFileManager debugLogFile;
 	private static TextFileManager currentDailyQuestions;
 	private static TextFileManager currentWeeklyQuestions;
 	
@@ -103,11 +103,6 @@ public class TextFileManager {
 		//the key file for encryption (it is persistent and never written to)
 		keyFile = new TextFileManager(appContext, "keyFile", "", true, true);
 
-		// TODO: Eli/Josh.  make sure file names are to-spec
-		
-		// The debug file is no longer persistent, so that we can upload it to the server associated with a user, otherwise it has the name "logfile.txt" and fails to upload.
-		debugLogFile = new TextFileManager(appContext, "logFile.txt", "THIS LINE IS A LOG FILE HEADER", false, true);
-		
 		// Persistent files
 		currentDailyQuestions = new TextFileManager(appContext, "currentDailyQuestionsFile.json", "", true, true);
 		currentWeeklyQuestions = new TextFileManager(appContext, "currentWeeklyQuestionsFile.json", "", true, true);
@@ -119,11 +114,12 @@ public class TextFileManager {
 		callLog = new TextFileManager(appContext, "callLog", CallLogger.header, false, true);
 		powerStateLog = new TextFileManager(appContext, "powerState", PowerStateListener.header, false, true);
 		bluetoothLog = new TextFileManager(appContext, "bluetoothLog", BluetoothListener.header, false, true);
-		wifiLog = new TextFileManager(appContext, "wifiLog", WifiListener.header, false, true);
+		debugLogFile = new TextFileManager(appContext, "logFile", "THIS LINE IS A LOG FILE HEADER", false, true);
 		
 		// Files created upon specific events
 		surveyTimings = new TextFileManager(appContext, "surveyTimings", SurveyTimingsRecorder.header, false, false);
 		surveyAnswers = new TextFileManager(appContext, "surveyAnswers", SurveyAnswersRecorder.header, false, false);
+		wifiLog = new TextFileManager(appContext, "wifiLog", WifiListener.header, false, true);
 		
 		started = true;
 	}
@@ -169,6 +165,11 @@ public class TextFileManager {
 		this.name = nameHolder;
 	}
 	
+	/** Delete the reference to the file so that it can be uploaded */
+	public synchronized void closeFile() {
+		this.fileName = null;
+	}
+
 	/** Takes a string. writes that to the file, adds a new line to the string.
 	 * Prints a stacktrace on a write error, but does not crash. If there is no
 	 * file, a new file will be created.
@@ -250,6 +251,7 @@ public class TextFileManager {
 		callLog.newFile();
 		textsLog.newFile();
 		bluetoothLog.newFile();
+		debugLogFile.newFile();
 	}
 	
 	/** Very simple function, exists to make any function that needs to grab all extant files thread-safe.
@@ -264,19 +266,25 @@ public class TextFileManager {
 		Set<String> files = new HashSet<String>();
 		Collections.addAll(files, getAllFiles());
 		
+		// These files should never be uploaded
 		files.remove(TextFileManager.getCurrentDailyQuestionsFile().fileName);
 		files.remove(TextFileManager.getCurrentWeeklyQuestionsFile().fileName);
-//		files.remove(TextFileManager.getDebugLogFile().fileName);
 		files.remove(TextFileManager.getKeyFile().fileName);
 		
+		// These files are currently being written to, so they shouldn't be uploaded now
 		files.remove(TextFileManager.getGPSFile().fileName);
 		files.remove(TextFileManager.getAccelFile().fileName);
 		files.remove(TextFileManager.getPowerStateFile().fileName);
 		files.remove(TextFileManager.getCallLogFile().fileName);
 		files.remove(TextFileManager.getTextsLogFile().fileName);
+		files.remove(TextFileManager.getDebugLogFile().fileName);
 		files.remove(TextFileManager.getBluetoothLogFile().fileName);
+
+		// These files are only occasionally open, but they may be currently open. If they are, don't upload them
+		files.remove(TextFileManager.getSurveyAnswersFile().fileName);
+		files.remove(TextFileManager.getSurveyTimingsFile().fileName);
 		files.remove(TextFileManager.getWifiLogFile().fileName);
-		
+
 		return files.toArray(new String[files.size()]);
 	}
 	
