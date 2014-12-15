@@ -3,7 +3,6 @@ package org.beiwe.app.survey;
 import org.beiwe.app.storage.TextFileManager;
 
 import android.content.Context;
-import android.util.Log;
 
 public class SurveyTimingsRecorder {
 	
@@ -40,7 +39,6 @@ public class SurveyTimingsRecorder {
 		message += sanitizeString(questionDescription.getText()) + TextFileManager.DELIMITER;
 		message += sanitizeString(questionDescription.getOptions()) + TextFileManager.DELIMITER;
 		message += sanitizeString(answer);
-		Log.i("SurveyTimingsRecorder", message);
 		
 		appendLineToLogFile(message);
 	}
@@ -53,7 +51,8 @@ public class SurveyTimingsRecorder {
 	 */
 	public static void recordSubmit(Context appContext) {
 		String message = "User hit submit";
-		appendLineToLogFile(message);		
+		appendLineToLogFile(message);
+		TextFileManager.getSurveyTimingsFile().closeFile();
 	}
 	
 	
@@ -67,7 +66,6 @@ public class SurveyTimingsRecorder {
 		Long javaTimeCode = System.currentTimeMillis();
 		String line = javaTimeCode.toString() + TextFileManager.DELIMITER + message; 
 
-		Log.i("SurveyTimingsRecorder", line);
 		TextFileManager.getSurveyTimingsFile().writeEncrypted(line);
 	}
 

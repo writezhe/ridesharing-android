@@ -219,7 +219,7 @@ public class BackgroundProcess extends Service {
 	}
 	
 	public static void startAutomaticLogoutCountdownTimer(){
-		timer.setupExactSingleAlarm(LoginManager.millisecondsBeforeAutoLogout, Timer.signoutIntent);
+		timer.setupExactSingleAlarm(Timer.MILLISECONDS_BEFORE_AUTO_LOGOUT, Timer.signoutIntent);
 		LoginManager.loginOrRefreshLogin();
 	}
 

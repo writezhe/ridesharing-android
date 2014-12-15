@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.beiwe.app.R;
+import org.beiwe.app.Timer;
 import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.storage.EncryptionEngine;
@@ -35,8 +36,7 @@ public class AudioRecorderActivity extends SessionActivity {
     private static final String LOG_TAG = "AudioRecorderActivity";
     
     private static String fileDirectory = null;
-    private static String fullFileName = null;
-    private static String fileName = null;
+    private static String filePath = null;
     private static boolean displayPlayback = false;
     
     private MediaRecorder mRecorder = null;
@@ -49,8 +49,6 @@ public class AudioRecorderActivity extends SessionActivity {
     private Button recordingButton;
     
     private final Handler recordingTimeoutHandler = new Handler();
-    // Number of milliseconds before the recording stops automatically:
-    private final int maxRecordingTimeLength = 5 * 60 * 1000;
     
     /*/////////////////////////////////////////////////*/
     /*///////////////Overrides go here/////////////////*/ 
@@ -78,23 +76,25 @@ public class AudioRecorderActivity extends SessionActivity {
     	//surveyMessage.setText("Please record a statement about how you are feeling today.");
     }
 
-    /** Makes sure nothing is recording */
 	@Override
-    public void onPause() {
-        super.onPause();
-        if (mRecorder != null) { stopRecording(); }
-        if (mediaPlayer != null) { stopPlaying(); }
-        // Make mFileName null, so that the play button will turn invisible
-        displayPlayback = false;
-    }
-	
-	@Override
-	public void onResume() {
-		super.onResume();
-		displayPlayback = false;
-		setPlayButtonVisibility();
-	}
+	public void onDestroy() {
+		super.onDestroy();
 
+		if (isFinishing()) {
+			// If the activity is being finished()
+	        if (mRecorder != null) { stopRecording(); }
+	        if (mediaPlayer != null) { stopPlaying(); }
+	        displayPlayback = false;
+
+			if (filePath != null) {
+				// If the audio file has been written to, encrypt the audio file
+		        writePlaintext( EncryptionEngine.encryptAES( readInAudioFile() ) );
+			}
+		}
+		else {
+			// The activity is probably just getting restarted because the screen rotated
+		}
+	}
 	
     /*/////////////////////////////////////////////////
     ///////////////Button functionalities////////////// 
@@ -137,7 +137,7 @@ public class AudioRecorderActivity extends SessionActivity {
     	// Recording sequence
     	mediaPlayer = new MediaPlayer();
     	try {
-            mediaPlayer.setDataSource(fullFileName);
+            mediaPlayer.setDataSource(filePath);
             mediaPlayer.prepare();
             mediaPlayer.start();
             mediaPlayer.setOnCompletionListener(new OnCompletionListener() {
@@ -167,8 +167,8 @@ public class AudioRecorderActivity extends SessionActivity {
     /**Generates new file name variables. The name consists of the time the recording takes place. */
     private void setAudioFileName() {
 		String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
-		fileName = LoginManager.getPatientID() + "_voiceRecording" + "_" + timecode + ".mp4";
-		fullFileName = fileDirectory + "/" + fileName;
+		String fileName = LoginManager.getPatientID() + "_voiceRecording" + "_" + timecode + ".mp4";
+		filePath = fileDirectory + "/" + fileName;
     }
     
     
@@ -187,7 +187,7 @@ public class AudioRecorderActivity extends SessionActivity {
         mRecorder.reset();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-        mRecorder.setOutputFile( fullFileName );
+        mRecorder.setOutputFile( filePath );
         mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         mRecorder.setAudioChannels(1);
         mRecorder.setAudioSamplingRate(44100);
@@ -231,7 +231,7 @@ public class AudioRecorderActivity extends SessionActivity {
 				showTimeoutToast();
 				stopRecording();
 			}
-		}, maxRecordingTimeLength);
+		}, Timer.VOICE_RECORDING_MAX_TIME_LENGTH);
     }
     
     
@@ -239,7 +239,7 @@ public class AudioRecorderActivity extends SessionActivity {
     private void showTimeoutToast() {
     	Resources resources = getApplicationContext().getResources();
     	String msg = (String) resources.getText(R.string.timeout_msg_1st_half);
-    	msg += ((float) maxRecordingTimeLength / 60 / 1000);
+    	msg += ((float) Timer.VOICE_RECORDING_MAX_TIME_LENGTH / 60 / 1000);
     	msg += resources.getText(R.string.timeout_msg_2nd_half);
     	Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
     }
@@ -254,15 +254,6 @@ public class AudioRecorderActivity extends SessionActivity {
      * back to the last one; the audio file should already be saved, so we
      * don't need to do anything other than kill the activity.  */
     public void buttonDonePressed(View v) {
-    	//TODO: Eli/Josh.  pop up a spinner here.
-    	
-    	if (fullFileName == null) {
-    		Log.w("audiorecorder", "did not record.");
-    		finish();
-    		return;
-    	}
-    	
-		writePlaintext( EncryptionEngine.encryptAES( readInAudioFile() ) );		
     	finish();
     }
     
@@ -272,13 +263,14 @@ public class AudioRecorderActivity extends SessionActivity {
 		FileOutputStream outStream;
 		
 		try {  //write the output, we want mode private because we want to overwrite the existing data
+			String fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
 			outStream = getApplicationContext().openFileOutput(fileName, Context.MODE_PRIVATE);
 			outStream.write( ( data ).getBytes() );
 			outStream.write( "\n".getBytes() );
 			outStream.flush();
 			outStream.close(); }
 		catch (Exception e) {
-			Log.i("audiorecorder", "Write error: " + fullFileName);
+			Log.i("audiorecorder", "Write error: " + filePath);
 			e.printStackTrace(); }
 	}
     
@@ -289,18 +281,18 @@ public class AudioRecorderActivity extends SessionActivity {
 		DataInputStream dataInputStream;
 		byte[] data = null;
 		try {  //Read the (data) input stream, into a bytearray.  Catch exceptions.
-			File file = new File(fullFileName);
+			File file = new File(filePath);
 			dataInputStream = new DataInputStream( new FileInputStream( file ) );	
 			data = new byte[ (int) file.length() ];
 			try{ dataInputStream.readFully(data); }
-			catch (IOException e) { Log.i("DataFileManager", "error reading " + fullFileName);
+			catch (IOException e) { Log.i("DataFileManager", "error reading " + filePath);
 				e.printStackTrace(); }
 			dataInputStream.close(); }
 		catch (FileNotFoundException e) {
-			Log.i("audiorecorder", "file " + fullFileName + " does not exist");
+			Log.i("audiorecorder", "file " + filePath + " does not exist");
 			e.printStackTrace(); }
 		catch (IOException e) {
-			Log.i("audiorecorder", "could not close " + fullFileName);
+			Log.i("audiorecorder", "could not close " + filePath);
 			e.printStackTrace(); }
 		return data;
 	}

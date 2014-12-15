@@ -19,19 +19,35 @@ public class Timer {
 	private AlarmManager alarmManager;
 	private Context appContext;
 
-	// TODO postproduction: change this to non-debug values
-	public static final long UPLOAD_DATA_FILES_PERIOD = 60 * 1000L;  // In milliseconds
-	public static final long CREATE_NEW_DATA_FILES_PERIOD = 15 * 60 * 1000L;  // In milliseconds
-	public static final long CHECK_FOR_NEW_SURVEYS_PERIOD = 24 * 60 * 60 * 1000L;  // In milliseconds
-	public static final long WIFI_LOG_PERIOD = 5 * 60 * 1000L;  // In milliseconds
-	public static final long BLUETOOTH_ON_DURATION = 5 * 60 * 1000L;  // In milliseconds
-	public static final long BLUETOOTH_PERIOD = 15 * 60 * 1000L;  // In milliseconds
-	public static final long BLUETOOTH_START_TIME_IN_PERIOD = 6 * 60 * 1000L;  // In milliseconds
-	public static final long ACCELEROMETER_ON_DURATION = 10 * 60 * 1000L;  // In milliseconds
-	public static final long ACCELEROMETER_OFF_MINIMUM_DURATION = 10 * 1000L;  // In milliseconds
-	public static final long GPS_ON_DURATION = 5 * 60 * 1000L;  // In milliseconds
-	public static final long GPS_OFF_MINIMUM_DURATION = 5 * 60 * 1000L;  // In milliseconds
-	public static final int VOICE_RECORDING_HOUR_OF_DAY = 19;  // Hour, in 24-hour time
+	// TODO postproduction: change these to non-debug values
+	// How frequently it attempts to upload data files
+	public static final long UPLOAD_DATA_FILES_PERIOD = 60 * 1000L;
+	// How frequently new data files are created
+	public static final long CREATE_NEW_DATA_FILES_PERIOD = 15 * 60 * 1000L;
+	// How frequently it tries to download new surveys
+	public static final long CHECK_FOR_NEW_SURVEYS_PERIOD = 24 * 60 * 60 * 1000L;
+	// How frequently the WiFi log runs
+	public static final long WIFI_LOG_PERIOD = 5 * 60 * 1000L;
+	// How long Bluetooth is on for, each time Bluetooth is turned on
+	public static final long BLUETOOTH_ON_DURATION = 5 * 60 * 1000L;
+	// How long full Bluetooth on/off cycle period is
+	public static final long BLUETOOTH_PERIOD = 15 * 60 * 1000L;
+	// When Bluetooth turns on, in terms of how many milliseconds into the Bluetooth period 
+	public static final long BLUETOOTH_START_TIME_IN_PERIOD = 6 * 60 * 1000L;
+	// How long the accelerometer runs for, each time it's turned on:
+	public static final long ACCELEROMETER_ON_DURATION = 10 * 60 * 1000L;
+	// The minimum amount of time for which the accelerometer is turned off, each time it's turned off
+	public static final long ACCELEROMETER_OFF_MINIMUM_DURATION = 10 * 1000L;
+	// How long the GPS runs for, each time the GPS is turned on:
+	public static final long GPS_ON_DURATION = 5 * 60 * 1000L;
+	// The minimum amount of time for which the GPS is turned off, each time it's turned off
+	public static final long GPS_OFF_MINIMUM_DURATION = 5 * 60 * 1000L;
+	// Hour, in 24-hour time, that the voice recording notification appears
+	public static final int VOICE_RECORDING_HOUR_OF_DAY = 19;
+	// Amount of time before the voice recording stops automatically
+	public static final long VOICE_RECORDING_MAX_TIME_LENGTH = 2 * 60 * 1000L;
+	// Time between when the user last loads a new screen and when the app automatically logs out
+	public static final long MILLISECONDS_BEFORE_AUTO_LOGOUT = 5 * 60 * 1000L;
 
 	// Control Message Intents
 	public static Intent accelerometerOffIntent;

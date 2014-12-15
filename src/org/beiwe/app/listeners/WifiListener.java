@@ -49,14 +49,16 @@ public class WifiListener {
 		if ( checkState() ) {
 			List<ScanResult> scanResults = wifiManager.getScanResults();
 			if (scanResults != null) {
-				TextFileManager.getWifiLogFile().newFile(); //note: the file name's timestamp is actually relevant, so we always make a new file.
-				StringBuilder data = new StringBuilder();
 				//we save some compute on the encryption here by dumping all the lines to print in one go.
+				StringBuilder data = new StringBuilder();
 				for (ScanResult result : scanResults){
 					data.append( EncryptionEngine.safeHash( result.BSSID) + "," + result.frequency + "," + result.level );
-//					Log.i("wifi", EncryptionEngine.safeHash( result.BSSID) + "," + result.frequency + "," + result.level );
 					data.append("\n"); }
+
+				// Create a new file, write the data to it, and close the file
+				TextFileManager.getWifiLogFile().newFile(); //note: the file name's timestamp is actually relevant, so we always make a new file.
 				TextFileManager.getWifiLogFile().writeEncrypted( data.toString() );
+				TextFileManager.getWifiLogFile().closeFile();
 			}
 		}
 	}
