@@ -108,7 +108,6 @@ public class GPSListener implements LocationListener {
 				+ location.getAccuracy();
 		//note, altitude is notoriously inaccurate, getAccuracy only applies to latitude/longitude
 		GPSFile.writeEncrypted(data);
-//		logFile.write("GPS: " + data);
 	}
 	
 	/** We do not actually need to implement any of these default overrides
