@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.spec.InvalidKeySpecException;
 
 import org.beiwe.app.R;
 import org.beiwe.app.Timer;
@@ -88,7 +89,13 @@ public class AudioRecorderActivity extends SessionActivity {
 
 			if (filePath != null) {
 				// If the audio file has been written to, encrypt the audio file
+				try {
 		        writePlaintext( EncryptionEngine.encryptAES( readInAudioFile() ) );
+				}
+		        catch (InvalidKeySpecException e) {
+					Log.e("AudioFileManager", "encrypted write operation to the audio file without a keyFile.");
+//					e.printStackTrace();
+				}
 			}
 		}
 		else {
