@@ -103,9 +103,11 @@ public class EncryptionEngine {
 	 * @param data to be encrypted
 	 * @return a hex string of the encrypted data. */
 	@SuppressLint("TrulyRandom")
-	public static String encryptRSA(byte[] data) {
+	public static String encryptRSA(byte[] data) throws InvalidKeySpecException {
 		if (key == null) { EncryptionEngine.readKey(); }
-		
+		Log.d("lennngth...", ""+data.length);
+		if (data.length != 16) throw new NullPointerException("received data that was " + data.length + " long");
+
 		byte[] encryptedText = null;
 		Cipher rsaCipher = null;
 		
@@ -125,8 +127,9 @@ public class EncryptionEngine {
 
 	
 	/**Looks for the public key file and imports it.
-	 * Spews out human readable errors to the Log if something seems wrong. */
-	public static void readKey() {
+	 * Spews out human readable errors to the Log if something seems wrong. 
+	 * @throws InvalidKeySpecException */
+	public static void readKey() throws InvalidKeySpecException {
 		String key_content = TextFileManager.getKeyFile().read();
 		byte[] key_bytes = Base64.decode(key_content, Base64.DEFAULT);
 		X509EncodedKeySpec x509EncodedKey = new X509EncodedKeySpec( key_bytes );
@@ -139,13 +142,13 @@ public class EncryptionEngine {
 			e1.printStackTrace(); }
 		catch (InvalidKeySpecException e2) {
 			Log.e("Encryption Engine", "The provided RSA public key is NOT VALID." );
-			e2.printStackTrace(); }
+			throw e2; }
 	}
 	
 	
-	public static String encryptAES(String someText) { return encryptAES( someText.getBytes() ); }
+	public static String encryptAES(String someText) throws InvalidKeySpecException { return encryptAES( someText.getBytes() ); }
 	
-	public static String encryptAES(byte[] someText) {
+	public static String encryptAES(byte[] someText) throws InvalidKeySpecException  {
 		// setup seed		
 		SecureRandom random = null;
 		try { random = SecureRandom.getInstance("SHA1PRNG");}
@@ -171,7 +174,7 @@ public class EncryptionEngine {
 		//iv
 		byte[] iv = random.generateSeed(16); 
 		IvParameterSpec ivSpec = new IvParameterSpec(iv);
-
+		
 		//we will use cfb mode so that we do not need to care about input length
 		SecretKeySpec secretKeySpec = new SecretKeySpec( aesKey, "AES" );
 		Cipher cipher = null;
