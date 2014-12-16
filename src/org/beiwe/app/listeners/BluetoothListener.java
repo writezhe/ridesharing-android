@@ -34,7 +34,11 @@ If you want to declare that your app is available to BLE-capable devices only, i
  * The BluetoothListener handles the location of nearby patients in the study, but is limited by
  * the way Android handles Bluetooth interactions.
  * 
- * BluetoothListener keeps track of the state of the device's Bluetooth Adaptor, and will
+ * BluetoothListener keeps track of the state of th
+ * 
+ * 
+ * 
+ * e device's Bluetooth Adaptor, and will
  * intelligently enable/disable Bluetooth as needed.  It only enables Bluetooth in order to make
  * a Bluetooth Low Energy scan and record any Bluetooth MAC addresses that show up, and then will
  * disable Bluetooth.  If the Bluetooth adaptor was already enabled it will not turn Bluetooth off.

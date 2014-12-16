@@ -45,7 +45,7 @@ public class BackgroundProcess extends Service {
 	
 	@Override
 	/** onCreate is essentially the constructor for the service, initialize variables here.*/
-	public void onCreate(){
+	public void onCreate() {
 //		Log.d("backgroundprocess", "Backgroundprocess Created");
 		appContext = this.getApplicationContext();
 		
@@ -77,21 +77,21 @@ public class BackgroundProcess extends Service {
 	// We could also use, and may change it if we encounter problems, START_REDELIVER_INTENT, which has nearly identical behavior.
 	public int onStartCommand(Intent intent, int flags, int startId){
 //		Log.d("BackroundProcess onStartCommand", "started with flag " + flags );
-		TextFileManager.getDebugLogFile().writePlaintext(System.currentTimeMillis()+" "+"started with flag " + flags);
+		TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis()+" "+"started with flag " + flags);
 		return START_STICKY;
 	}
 	
 	@Override
 	public void onTaskRemoved(Intent rootIntent) {
 //		Log.d("BackroundProcess onTaskRemoved", "onTaskRemoved called with intent: " + rootIntent.toString() );
-		TextFileManager.getDebugLogFile().writePlaintext(System.currentTimeMillis()+" "+"onTaskRemoved called with intent: " + rootIntent.toString());
+		TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis()+" "+"onTaskRemoved called with intent: " + rootIntent.toString());
 		restartService();
 	}
 	
 	@Override
 	public boolean onUnbind(Intent intent) {
 //		Log.d("BackroundProcess onUnbind", "onUnbind called with intent: " + intent.toString() );
-		TextFileManager.getDebugLogFile().writePlaintext(System.currentTimeMillis()+" "+"onUnbind called with intent: " + intent.toString());
+		TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis()+" "+"onUnbind called with intent: " + intent.toString());
 		restartService();
 		return super.onUnbind(intent);
 	}
@@ -100,7 +100,7 @@ public class BackgroundProcess extends Service {
 	public void onDestroy() {
 		//this does not run when the service is killed in a task manager, OR when the stopService() function is called from debugActivity.
 //		Log.w("BackgroundProcess", "BACKGROUNDPROCESS WAS DESTROYED.");
-		TextFileManager.getDebugLogFile().writePlaintext(System.currentTimeMillis()+" "+"BACKGROUNDPROCESS WAS DESTROYED.");
+		TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis()+" "+"BACKGROUNDPROCESS WAS DESTROYED.");
 		restartService();
 		super.onDestroy();
 	}
@@ -108,7 +108,7 @@ public class BackgroundProcess extends Service {
 	@Override
 	public void onLowMemory() {
 //		Log.w("BackroundProcess onLowMemory", "Low memory conditions encountered");
-		TextFileManager.getDebugLogFile().writePlaintext(System.currentTimeMillis()+" "+"onLowMemory called.");
+		TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis()+" "+"onLowMemory called.");
 		restartService();
 	}
 	
@@ -236,7 +236,7 @@ public class BackgroundProcess extends Service {
 		@Override
 		public void onReceive(Context appContext, Intent intent) {
 			Log.d("BackgroundService - timers", "Received Broadcast: " + intent.toString() );
-			TextFileManager.getDebugLogFile().writePlaintext(System.currentTimeMillis() + " Received Broadcast: " + intent.toString() );
+			TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis() + " Received Broadcast: " + intent.toString() );
 			
 			//sets the next trigger time for the accelerometer to record data 
 			if (intent.getAction().equals( appContext.getString(R.string.accelerometer_off) ) ) {

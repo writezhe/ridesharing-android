@@ -105,9 +105,7 @@ public class EncryptionEngine {
 	@SuppressLint("TrulyRandom")
 	public static String encryptRSA(byte[] data) throws InvalidKeySpecException {
 		if (key == null) { EncryptionEngine.readKey(); }
-		Log.d("lennngth...", ""+data.length);
-		if (data.length != 16) throw new NullPointerException("received data that was " + data.length + " long");
-
+		
 		byte[] encryptedText = null;
 		Cipher rsaCipher = null;
 		
@@ -124,7 +122,7 @@ public class EncryptionEngine {
 		
 		return toBase64String(encryptedText);
 	}
-
+	public static String encryptRSA (String data) throws InvalidKeySpecException { return encryptRSA( data.getBytes() ); }
 	
 	/**Looks for the public key file and imports it.
 	 * Spews out human readable errors to the Log if something seems wrong. 
@@ -193,9 +191,9 @@ public class EncryptionEngine {
 		catch (InvalidAlgorithmParameterException e) { //seems unlikely, iv generation failed?
 			Log.e("Encryption Engine", "an unknown error occured during AES encryption" );
 			e.printStackTrace(); }
-
+		
 		try {
-			return  encryptRSA( aesKey ) + ":" +
+			return  encryptRSA( toBase64String(aesKey) ) + ":" +
 			toBase64String( ivSpec.getIV() ) + ":" +
 			toBase64String( cipher.doFinal( someText ) ); }
 		catch (IllegalBlockSizeException e) { //not possible, block size is hardcoded.
