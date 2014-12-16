@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -102,10 +103,13 @@ public class TextFileManager {
 		
 		//the key file for encryption (it is persistent and never written to)
 		keyFile = new TextFileManager(appContext, "keyFile", "", true, true);
-
+		
 		// Persistent files
 		currentDailyQuestions = new TextFileManager(appContext, "currentDailyQuestionsFile.json", "", true, true);
 		currentWeeklyQuestions = new TextFileManager(appContext, "currentWeeklyQuestionsFile.json", "", true, true);
+		
+		// The debug file is no longer persistent, so that we can upload it to the server associated with a user, otherwise it has the name "logfile.txt" and fails to upload.
+		debugLogFile = new TextFileManager(appContext, "logFile.txt", "THIS LINE IS A LOG FILE HEADER", false, true);
 		
 		// Regularly/periodically-created files
 		GPSFile = new TextFileManager(appContext, "gps", GPSListener.header, false, true);
@@ -184,16 +188,23 @@ public class TextFileManager {
 			outStream.write( "\n".getBytes() );
 			outStream.flush();
 			outStream.close(); }
-		catch (Exception e) {
-			Log.i("FileManager", "Write error: " + this.name);
+		catch (FileNotFoundException e) {
+			Log.e("TextFileManager", "could not find file to right to, " + this.fileName);
 			e.printStackTrace(); }
+		catch (IOException e) {
+			Log.e("TextFileManager", "error in the write operation: " + e.getMessage() );
+			e.printStackTrace();
+		}
 	}
 	
 	/**Encrypts string data and writes it to a file.
 	 * @param data any unicode valid string */
 	public synchronized void writeEncrypted(String data) {
-		//this.writePlaintext( EncryptionEngine.encryptAES( data ) );
-		this.writePlaintext(data);
+		try { this.writePlaintext( EncryptionEngine.encryptAES( data ) ); }
+		catch (InvalidKeySpecException e) {
+			Log.e("TextFileManager", "encrypted write operation without a keyFile: " + data);
+//			e.printStackTrace();
+		}
 	}
 
 	/**@return A string of the file contents. */
