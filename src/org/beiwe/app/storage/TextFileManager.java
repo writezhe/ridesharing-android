@@ -87,7 +87,7 @@ public class TextFileManager {
 	public String fileName = null;
 	private String header = null;
 	private Boolean persistent = null;
-		
+	public byte[] AESKey = null;	
 	/*###############################################################################
 	######################## CONSTRUCTOR STUFF ######################################
 	###############################################################################*/
@@ -139,6 +139,7 @@ public class TextFileManager {
 		this.name = name;
 		this.header = header;
 		this.persistent = persistent;
+		this.AESKey = EncryptionEngine.newAESKey();
 		if (createNow) { this.newFile(); }
 	}
 	
@@ -151,9 +152,10 @@ public class TextFileManager {
 	public synchronized void newFile(){
 		if ( this.persistent ) { this.fileName = this.name; } 
 		else {
-			String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
+			String timecode = ((Long)(System.currentTimeMillis() )).toString();
 			this.fileName = LoginManager.getPatientID() + "_" + this.name + "_" + timecode + ".csv"; }
 		if ((header != null) && (header.length() > 0)) {
+			this.writeRSAEncryptedAESKey();
 			this.writeEncrypted(header);
 		}
 	}
@@ -200,9 +202,20 @@ public class TextFileManager {
 	/**Encrypts string data and writes it to a file.
 	 * @param data any unicode valid string */
 	public synchronized void writeEncrypted(String data) {
-		try { this.writePlaintext( EncryptionEngine.encryptAES( data ) ); }
+		this.writePlaintext( EncryptionEngine.encryptAES( data, this.AESKey ) );
+//		try { this.writePlaintext( EncryptionEngine.encryptAES( data, this.AESKey ) ); }
+//		catch (InvalidKeySpecException e) {
+//			Log.e("TextFileManager", "encrypted write operation without a keyFile: " + data);
+////			e.printStackTrace();
+//		}
+	}
+	
+	/**Encrypts byte[] data and writes it to a file.
+	 * @param data any unicode valid string */
+	public synchronized void writeRSAEncryptedAESKey() {
+		try { this.writePlaintext( EncryptionEngine.encryptRSA( this.AESKey ) ); }
 		catch (InvalidKeySpecException e) {
-			Log.e("TextFileManager", "encrypted write operation without a keyFile: " + data);
+			Log.e("TextFileManager", "encrypted write operation without a keyFile, " + this.fileName);
 //			e.printStackTrace();
 		}
 	}
@@ -268,6 +281,7 @@ public class TextFileManager {
 	/** Very simple function, exists to make any function that needs to grab all extant files thread-safe.
 	 * DO NOT USE THIS FUNCTION, USE getAllFilesSafely() INSTEAD.
 	 * @return a string array of all files in the app's file directory. */
+	//TODO: postproduction.  change this to private or comment out entirely
 	public static synchronized String[] getAllFiles() { return appContext.getFilesDir().list(); }
 	
 	

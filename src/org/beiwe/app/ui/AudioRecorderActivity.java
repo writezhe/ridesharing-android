@@ -90,7 +90,9 @@ public class AudioRecorderActivity extends SessionActivity {
 			if (filePath != null) {
 				// If the audio file has been written to, encrypt the audio file
 				try {
-		        writePlaintext( EncryptionEngine.encryptAES( readInAudioFile() ) );
+					byte[] aesKey = EncryptionEngine.newAESKey();
+					writePlaintext( EncryptionEngine.encryptRSA( aesKey ) );
+					writePlaintext( EncryptionEngine.encryptAES( readInAudioFile(), aesKey ) );
 				}
 		        catch (InvalidKeySpecException e) {
 					Log.e("AudioFileManager", "encrypted write operation to the audio file without a keyFile.");
@@ -266,7 +268,7 @@ public class AudioRecorderActivity extends SessionActivity {
     
     
     /** Writes string data to a the audio file. */
-	public synchronized void writePlaintext(String data){
+	private synchronized void writePlaintext(String data){
 		FileOutputStream outStream;
 		
 		try {  //write the output, we want mode private because we want to overwrite the existing data
@@ -284,7 +286,7 @@ public class AudioRecorderActivity extends SessionActivity {
 	
 	/** Reads a byte array of the current audio file contents
 	 * @return byte array of file contents. */
-	public synchronized byte[] readInAudioFile() {
+	private synchronized byte[] readInAudioFile() {
 		DataInputStream dataInputStream;
 		byte[] data = null;
 		try {  //Read the (data) input stream, into a bytearray.  Catch exceptions.
