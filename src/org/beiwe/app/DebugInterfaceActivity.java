@@ -111,16 +111,17 @@ public class DebugInterfaceActivity extends SessionActivity {
 	}
 	
 	public void testEncrypt (View view) {
-		Log.i("Debug..", TextFileManager.getKeyFile().read());
-		String data = TextFileManager.getKeyFile().read();
-		Log.i("reading keyFile:", data );
-		
-		EncryptionEngine.readKey();
-
-		String encrypted = EncryptionEngine.encryptRSA("ThIs Is a TeSt".getBytes() ).toString();
-		Log.i("test encrypt - length:", "" + encrypted.length() );
-		Log.i("test encrypt - output:", encrypted );
-		Log.i("test hash:", EncryptionEngine.safeHash( encrypted ) );
+		//code commented out because would have to catch an error
+//		Log.i("Debug..", TextFileManager.getKeyFile().read());
+//		String data = TextFileManager.getKeyFile().read();
+//		Log.i("reading keyFile:", data );
+//		
+//		EncryptionEngine.readKey();
+//
+//		String encrypted = EncryptionEngine.encryptRSA("ThIs Is a TeSt".getBytes() ).toString();
+//		Log.i("test encrypt - length:", "" + encrypted.length() );
+//		Log.i("test encrypt - output:", encrypted );
+//		Log.i("test hash:", EncryptionEngine.safeHash( encrypted ) );
 	}
 	
 	public void resetPassword(View view) { startActivity(new Intent(appContext, LoginActivity.class) ); }
