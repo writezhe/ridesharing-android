@@ -29,6 +29,13 @@
 	        android:layout_height="wrap_content"
 	        android:onClick="uploadDataFiles"
 	        android:text="@string/button_upload" />
+	    
+	    <Button
+	        android:id="@+id/makeNewFiles"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="makeNewFiles"
+	        android:text="Make New Files." />
 
 	    <Button
 	        android:id="@+id/buttonGoToAudioRecorder"

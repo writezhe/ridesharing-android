@@ -127,4 +127,6 @@ public class DebugInterfaceActivity extends SessionActivity {
 	public void resetPassword(View view) { startActivity(new Intent(appContext, LoginActivity.class) ); }
 
 	public void loadMainMenu(View view) { startActivity(new Intent(appContext, MainMenuActivity.class) ); }
+	
+	public void makeNewFiles(View view) { TextFileManager.makeNewFilesForEverything(); }
 }
