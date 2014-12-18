@@ -23,7 +23,11 @@ import android.annotation.SuppressLint;
 import android.util.Base64;
 import android.util.Log;
 
-
+/**The EncryptionEngine handles all encryption and hashing duties for the app.
+ * Per-file AES encryption keys are generated and encrypted with the provided RSA key.
+ * The RSA key is provided by the administrating server.
+ * Hashing uses the SHA256 hashing algorithm.
+ * @author Eli Jones, Josh Zagorsky */
 public class EncryptionEngine {
 	
 	private static PublicKey RSAkey = null;
@@ -129,10 +133,15 @@ public class EncryptionEngine {
 	}
 	
 	
+	/**Encrypts data using provided AES key
+	 * @param plainText Any plain text data.
+	 * @param aesKey A byte array, must contain 128 bits, used as the AES key.
+	 * @return a string containing colon separated url-safe Base64 encoded data. First value is the Initialization Vector, second is the encrypted data.
+	 * @throws InvalidKeyException
+	 * @throws InvalidKeySpecException */
 	public static String encryptAES(String someText, byte[] aesKey) throws InvalidKeyException, InvalidKeySpecException { return encryptAES( someText.getBytes(), aesKey ); }
 	
-	//TODO: Eli. Document.
-	public static String encryptAES(byte[] someText, byte[] aesKey) throws InvalidKeyException, InvalidKeySpecException {
+	public static String encryptAES(byte[] plainText, byte[] aesKey) throws InvalidKeyException, InvalidKeySpecException {
 		if (RSAkey == null) readKey(); 
 		
 		//create an iv, 16 bytes of data
@@ -159,7 +168,7 @@ public class EncryptionEngine {
 		
 		//encrypt the data
 		try { return toBase64String( ivSpec.getIV() ) + ":" +
-					 toBase64String( cipher.doFinal( someText ) ); }
+					 toBase64String( cipher.doFinal( plainText ) ); }
 		catch (IllegalBlockSizeException e) { //not possible, block size is coded to use the pkcs5 spec
 			Log.e("Encryption Engine", "an impossible error ocurred" );
 			e.printStackTrace(); 
@@ -174,9 +183,8 @@ public class EncryptionEngine {
 	 * ########################## Key Management #############################  
 	 * #####################################################################*/
 	
-	/**Looks for the public key file and imports it.
-	 * Spews out human readable errors to the Log if something seems wrong. 
-	 * @throws InvalidKeySpecException */
+	/**Checks for and reads in the RSA key file. 
+	 * @throws InvalidKeySpecException Thrown most commonly when there is no key file, this is expected behavior.*/
 	public static void readKey() throws InvalidKeySpecException {
 		String key_content = TextFileManager.getKeyFile().read();
 		byte[] key_bytes = Base64.decode(key_content, Base64.DEFAULT);
@@ -215,7 +223,8 @@ public class EncryptionEngine {
 	/* #######################################################################
 	 * ########################## Data Wrapping ##############################  
 	 * #####################################################################*/
-	
+
+	/* converts data into url-safe Base64 encoded blobs, as either a string or a byte array. */
 	private static String toBase64String( byte[] data ) { return Base64.encodeToString(data, Base64.NO_WRAP | Base64.URL_SAFE ); }
 //	private static String toBase64String( String data ) { return Base64.encodeToString(data.getBytes(), Base64.NO_WRAP | Base64.URL_SAFE ); }
 	private static byte[] toBase64Array( byte[] data ) { return Base64.encode(data, Base64.NO_WRAP | Base64.URL_SAFE ); }
