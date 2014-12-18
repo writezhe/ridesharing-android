@@ -14,6 +14,7 @@ import org.beiwe.app.Timer;
 import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.storage.EncryptionEngine;
+import org.beiwe.app.storage.TextFileManager;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -36,10 +37,10 @@ import android.widget.Toast;
  * @author Josh Zagorsky, Eli Jones */
 public class AudioRecorderActivity extends SessionActivity {
     private static final String LOG_TAG = "AudioRecorderActivity";
-    
-    private static String fileDirectory = null;
-    private static String filePath = null;
-    private static boolean displayPlayback = false;
+    private static boolean displayPlaybackButton = false;
+
+    public static final String unencryptedTempAudioFileName = "unencryptedTempAudioFile.mp4";
+    private String unencryptedTempAudioFilePath;
     
     private MediaRecorder mRecorder = null;
     private MediaPlayer mediaPlayer = null;
@@ -59,11 +60,12 @@ public class AudioRecorderActivity extends SessionActivity {
     /**On create, the activity presents the message to the user, and only a record button.
      * After recording, the app will present the user with the play button. */
     @Override
-    public void onCreate(Bundle icicle) {
-        super.onCreate(icicle);
-        setContentView(R.layout.activity_audio_recorder);        
+    public void onCreate(Bundle bundle) {
+        super.onCreate(bundle);
+        setContentView(R.layout.activity_audio_recorder);
 
-	    fileDirectory = getApplicationContext().getFilesDir().getAbsolutePath();
+        String fileDirectory = getApplicationContext().getFilesDir().getAbsolutePath() + "/";
+        unencryptedTempAudioFilePath = fileDirectory + unencryptedTempAudioFileName;
         
     	playButton = (Button) findViewById(R.id.play_button);
     	recordingButton = (Button) findViewById(R.id.recording_button);
@@ -78,7 +80,8 @@ public class AudioRecorderActivity extends SessionActivity {
     	//surveyMessage.setText("Please record a statement about how you are feeling today.");
     }
 
-	@Override
+
+    @Override
 	public void onDestroy() {
 		super.onDestroy();
 
@@ -86,30 +89,40 @@ public class AudioRecorderActivity extends SessionActivity {
 			// If the activity is being finished()
 	        if (mRecorder != null) { stopRecording(); }
 	        if (mediaPlayer != null) { stopPlaying(); }
-	        displayPlayback = false;
+	        displayPlaybackButton = false;
 
-			if (filePath != null) {
-				// If the audio file has been written to, encrypt the audio file
-				try {
-					byte[] aesKey = EncryptionEngine.newAESKey();
-					writePlaintext( EncryptionEngine.encryptRSA( aesKey ) );
-					writePlaintext( EncryptionEngine.encryptAES( readInAudioFile(), aesKey ) );
-				}
-		        catch (InvalidKeyException e) {
-		        	Log.e("AudioFileManager", "encrypted write operation to the audio file without an aes key? how is that even...");
-					e.printStackTrace();
-					throw new NullPointerException(e.getMessage()); }
-				catch (InvalidKeySpecException e) {
-					Log.e("AudioFileManager", "encrypted write operation to the audio file without a keyFile.");
-					e.printStackTrace();
-					throw new NullPointerException(e.getMessage());
-				}
-			}
+	        /* Delete the temporary, unencrypted audio file so that nobody can play it back after
+	         * the user leaves this screen */
+	        TextFileManager.delete(unencryptedTempAudioFileName);
 		}
 		else {
 			// The activity is probably just getting restarted because the screen rotated
 		}
 	}
+
+
+	private void encryptAudioFile() {
+		if (unencryptedTempAudioFilePath != null) {
+			// If the audio file has been written to, encrypt the audio file
+			String fileName = generateNewEncryptedAudioFileName();
+
+			try {
+				byte[] aesKey = EncryptionEngine.newAESKey();
+				writePlaintext( EncryptionEngine.encryptRSA( aesKey ), fileName );
+				writePlaintext( EncryptionEngine.encryptAES( readInAudioFile(), aesKey ), fileName );
+			}
+	        catch (InvalidKeyException e) {
+	        	Log.e("AudioFileManager", "encrypted write operation to the audio file without an aes key? how is that even...");
+				e.printStackTrace();
+				throw new NullPointerException(e.getMessage()); }
+			catch (InvalidKeySpecException e) {
+				Log.e("AudioFileManager", "encrypted write operation to the audio file without a keyFile.");
+				e.printStackTrace();
+				throw new NullPointerException(e.getMessage());
+			}
+		}
+	}
+
 	
     /*/////////////////////////////////////////////////
     ///////////////Button functionalities////////////// 
@@ -119,7 +132,7 @@ public class AudioRecorderActivity extends SessionActivity {
      * the button will be visible. 
      *@param fullFileName */
     private void setPlayButtonVisibility() {
-    	if (!displayPlayback) { playButton.setVisibility(Button.INVISIBLE); }
+    	if (!displayPlaybackButton) { playButton.setVisibility(Button.INVISIBLE); }
     	else { playButton.setVisibility(Button.VISIBLE) ; }
 	}
     
@@ -152,7 +165,8 @@ public class AudioRecorderActivity extends SessionActivity {
     	// Recording sequence
     	mediaPlayer = new MediaPlayer();
     	try {
-            mediaPlayer.setDataSource(filePath);
+    		// Play the temporary unencrypted file, because you can't read the encrypted file
+            mediaPlayer.setDataSource(unencryptedTempAudioFilePath);
             mediaPlayer.prepare();
             mediaPlayer.start();
             mediaPlayer.setOnCompletionListener(new OnCompletionListener() {
@@ -180,10 +194,9 @@ public class AudioRecorderActivity extends SessionActivity {
 
     
     /**Generates new file name variables. The name consists of the time the recording takes place. */
-    private void setAudioFileName() {
+    private String generateNewEncryptedAudioFileName() {
 		String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
-		String fileName = LoginManager.getPatientID() + "_voiceRecording" + "_" + timecode + ".mp4";
-		filePath = fileDirectory + "/" + fileName;
+		return LoginManager.getPatientID() + "_voiceRecording" + "_" + timecode + ".mp4";
     }
     
     
@@ -196,13 +209,11 @@ public class AudioRecorderActivity extends SessionActivity {
     	recordingButton.setText( getApplicationContext().getString(R.string.record_button_stop_text) );
     	recordingButton.setCompoundDrawablesWithIntrinsicBounds( 0, R.drawable.stop_recording_button, 0, 0 );
     	
-    	setAudioFileName();
-    	
         mRecorder = new MediaRecorder();
         mRecorder.reset();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-        mRecorder.setOutputFile( filePath );
+        mRecorder.setOutputFile( unencryptedTempAudioFilePath );
         mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         mRecorder.setAudioChannels(1);
         mRecorder.setAudioSamplingRate(44100);
@@ -218,7 +229,7 @@ public class AudioRecorderActivity extends SessionActivity {
     
     // Stop recording, and reset the button to "record"
     private void stopRecording() {
-    	displayPlayback = true;
+    	displayPlaybackButton = true;
     	setPlayButtonVisibility();
     	currentlyRecording = false;
     	recordingButton.setText(getApplicationContext().getString(R.string.record_button_text));
@@ -230,6 +241,9 @@ public class AudioRecorderActivity extends SessionActivity {
         mRecorder.reset();
         mRecorder.release();
         mRecorder = null;
+
+        // Encrypt the audio file as soon as recording is finished
+        encryptAudioFile();
     }
     
     
@@ -274,18 +288,17 @@ public class AudioRecorderActivity extends SessionActivity {
     
     
     /** Writes string data to a the audio file. */
-	private synchronized void writePlaintext(String data){
+	private synchronized void writePlaintext(String data, String outputFileName){
 		FileOutputStream outStream;
 		
 		try {  //write the output, we want mode private because we want to overwrite the existing data
-			String fileName = filePath.substring(filePath.lastIndexOf('/') + 1);
-			outStream = getApplicationContext().openFileOutput(fileName, Context.MODE_PRIVATE);
+			outStream = getApplicationContext().openFileOutput(outputFileName, Context.MODE_PRIVATE);
 			outStream.write( ( data ).getBytes() );
 			outStream.write( "\n".getBytes() );
 			outStream.flush();
 			outStream.close(); }
 		catch (Exception e) {
-			Log.i("audiorecorder", "Write error: " + filePath);
+			Log.i("audiorecorder", "Write error: " + outputFileName);
 			e.printStackTrace(); }
 	}
     
@@ -296,18 +309,18 @@ public class AudioRecorderActivity extends SessionActivity {
 		DataInputStream dataInputStream;
 		byte[] data = null;
 		try {  //Read the (data) input stream, into a bytearray.  Catch exceptions.
-			File file = new File(filePath);
+			File file = new File(unencryptedTempAudioFilePath);
 			dataInputStream = new DataInputStream( new FileInputStream( file ) );	
 			data = new byte[ (int) file.length() ];
 			try{ dataInputStream.readFully(data); }
-			catch (IOException e) { Log.i("DataFileManager", "error reading " + filePath);
+			catch (IOException e) { Log.i("DataFileManager", "error reading " + unencryptedTempAudioFilePath);
 				e.printStackTrace(); }
 			dataInputStream.close(); }
 		catch (FileNotFoundException e) {
-			Log.i("audiorecorder", "file " + filePath + " does not exist");
+			Log.i("audiorecorder", "file " + unencryptedTempAudioFilePath + " does not exist");
 			e.printStackTrace(); }
 		catch (IOException e) {
-			Log.i("audiorecorder", "could not close " + filePath);
+			Log.i("audiorecorder", "could not close " + unencryptedTempAudioFilePath);
 			e.printStackTrace(); }
 		return data;
 	}
