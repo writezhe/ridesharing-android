@@ -4,7 +4,6 @@ import org.beiwe.app.listeners.WifiListener;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.session.SessionActivity;
-import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.SurveyType.Type;
 import org.beiwe.app.ui.AlertsManager;

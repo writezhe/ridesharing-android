@@ -70,7 +70,7 @@ public class AppNotifications {
 	 * @param appContext
 	 * @param notifCode
 	 */
-	public static void dismissNotificatoin(Context appContext, int notifCode) {
+	public static void dismissNotification(Context appContext, int notifCode) {
 		NotificationManager notificationManager = (NotificationManager) appContext.getSystemService(Context.NOTIFICATION_SERVICE);
 		notificationManager.cancel(notifCode);
 	}

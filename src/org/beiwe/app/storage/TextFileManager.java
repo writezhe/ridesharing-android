@@ -20,6 +20,7 @@ import org.beiwe.app.listeners.WifiListener;
 import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.survey.SurveyAnswersRecorder;
 import org.beiwe.app.survey.SurveyTimingsRecorder;
+import org.beiwe.app.ui.AudioRecorderActivity;
 
 import android.content.Context;
 import android.util.Log;
@@ -306,6 +307,7 @@ public class TextFileManager {
 		files.remove(TextFileManager.getCurrentDailyQuestionsFile().fileName);
 		files.remove(TextFileManager.getCurrentWeeklyQuestionsFile().fileName);
 		files.remove(TextFileManager.getKeyFile().fileName);
+		files.remove(AudioRecorderActivity.unencryptedTempAudioFileName);
 		
 		// These files are currently being written to, so they shouldn't be uploaded now
 		files.remove(TextFileManager.getGPSFile().fileName);

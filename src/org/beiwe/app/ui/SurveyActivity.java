@@ -70,7 +70,7 @@ public class SurveyActivity extends SessionActivity {
 	 * @param v
 	 */
 	public void submitButtonPressed(View v) {
-		AppNotifications.dismissNotificatoin(getApplicationContext(), surveyType.notificationCode);
+		AppNotifications.dismissNotification(getApplicationContext(), surveyType.notificationCode);
 
 		SurveyTimingsRecorder.recordSubmit(getApplicationContext());
 		
