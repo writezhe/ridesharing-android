@@ -10,7 +10,7 @@ import android.bluetooth.BluetoothAdapter.LeScanCallback;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+//import android.content.pm.PackageManager;
 import android.os.Build;
 import android.util.Log;
 
@@ -40,30 +40,28 @@ If you want to declare that your app is available to BLE-capable devices only, i
  * disable Bluetooth.  If the Bluetooth adaptor was already enabled it will not turn Bluetooth off.
  * 
  * @author Eli Jones */
-
 public class BluetoothListener extends BroadcastReceiver {
 	public static String header = "timestamp, MAC, RSSI";
-	//Base
-	private BluetoothAdapter bluetoothAdapter;
 	
+	private BluetoothAdapter bluetoothAdapter;
 	//bluetoothExists can be set to false if the device does not meet our needs.
 	private Boolean bluetoothExists;
 	private static Boolean scanActive = false;
-	
 	//Stateful variables
-	private Boolean externalBluetoothState;
 	private Boolean internalBluetoothState;
-	//Log file
-	private TextFileManager bluetoothLog;
-	
+	private Boolean externalBluetoothState;
+
+	/**Checks that bluetooth exists and is enabled
+	 * @return */
 	public Boolean isBluetoothEnabled() {
 		if ( bluetoothExists ) { return bluetoothAdapter.isEnabled(); }
-		else { return false; } }
+		else { return false; }
+	}
 	
 	
-	/**The BluetoothListener needs to gracefully handle existence issues - we only want devices
+	/**The BluetoothListener constructor needs to gracefully handle Bluetooth existence issues - we only want devices
 	 * with Bluetooth Low Energy to ever run our code. BLE/Bluetooth 4.0 was introduced in JELLY_BEAN_MR2,
-	 * so we check for that too, and we check that ANY bluetooth device exists. */
+	 * so we check for that and we check that ANY Bluetooth device exists. */
 	public BluetoothListener() {
 		this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		Log.i("bluetooth", "required: " + Build.VERSION_CODES.JELLY_BEAN_MR2  + ", SDK INT: " + Build.VERSION.SDK_INT);
@@ -80,13 +78,10 @@ public class BluetoothListener extends BroadcastReceiver {
 		//and set the internernal state variable to be the same.
 		this.externalBluetoothState = this.isBluetoothEnabled();
 		this.internalBluetoothState = this.externalBluetoothState;
-		
-		this.bluetoothLog = TextFileManager.getBluetoothLogFile();
-//		Log.i("BluetoothListener", "bluetooth constructor finished");
 	}
 	
 	
-	/** Intelligently disables the bluetooth adaptor.
+	/** Intelligently and safely disables the Bluetooth adaptor.
 	 * @return True if bluetooth exists, false if bluetooth does not exist */
 	private Boolean disableBluetooth() {
 		if (!bluetoothExists) { return false; }
@@ -103,7 +98,7 @@ public class BluetoothListener extends BroadcastReceiver {
 	}
 	
 	
-	/** Intelligently enables the bluetooth adaptor. 
+	/** Intelligently and safely enables the bluetooth adaptor. 
 	 * @return True if bluetooth exists, false if bluetooth does not exist. */
 	private Boolean enableBluetooth() {
 		if (!bluetoothExists) { return false; }
@@ -116,7 +111,7 @@ public class BluetoothListener extends BroadcastReceiver {
 	}
 	
 	
-	/** Intelligently starts a bluetooth LE scan.
+	/** Intelligently and safely starts a Bluetooth LE scan.
 	 * Sets the scanActive variable to true, then checks if bluetooth is already on.
 	 * If Bluetooth is already on start the scan, otherwise depend on the Bluetooth
 	 * State Change On broadcast.  This can take a few seconds. */
@@ -128,10 +123,10 @@ public class BluetoothListener extends BroadcastReceiver {
 		scanActive = true;
 		if ( isBluetoothEnabled() ) { tryScanning(); }
 		else { enableBluetooth(); }
-		bluetoothLog.newFile();
+		TextFileManager.getBluetoothLogFile().newFile();
 	}
 	
-	/** Intelligently disables bluetooth.
+	/** Intelligently and safely disables bluetooth.
 	 * Sets the scanActive variable to false, and stops any running Bluetooth LE scan,
 	 * then disable Bluetooth (intelligently).
 	 * Note: we cannot actually guarantee the scan has stopped, that function returns void. */
@@ -145,7 +140,7 @@ public class BluetoothListener extends BroadcastReceiver {
 	}
 	
 	
-	/** Intelligently STARTS a Bluetooth LE scan.
+	/** Intelligently ACTUALLY STARTS a Bluetooth LE scan.
 	 *  If Bluetooth is available, start scanning.  Makes verbose logging statements */
 	@SuppressLint("NewApi")
 	private void tryScanning() {
@@ -163,13 +158,13 @@ public class BluetoothListener extends BroadcastReceiver {
 	private LeScanCallback bluetoothCallback = new LeScanCallback() {
 		@Override
 		public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-			bluetoothLog.writeEncrypted( System.currentTimeMillis() + "," + EncryptionEngine.safeHash( device.toString() ) + "," + rssi );
+			TextFileManager.getBluetoothLogFile().writeEncrypted( System.currentTimeMillis() + "," + EncryptionEngine.safeHash( device.toString() ) + "," + rssi );
 //			Log.i("Bluetooth",  System.currentTimeMillis() + "," + device.toString() + ", " + rssi );
 		} }; 
 
 		
 /*####################################################################################
-################# the onReceive Stack for bluetooth state messages ###################
+################# the onReceive Stack for Bluetooth state messages ###################
 ####################################################################################*/
 	
 	@Override
@@ -185,9 +180,8 @@ public class BluetoothListener extends BroadcastReceiver {
 		if ( action.equals( BluetoothAdapter.ACTION_STATE_CHANGED ) ) {
 			int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
 			
-			if ( state == BluetoothAdapter.ERROR) { Log.i("bluetooth", "BLUETOOTH ADAPTOR ERROR?"); }
-			
-			else if ( state == BluetoothAdapter.STATE_OFF ) { Log.d("bluetooth", "state change: off"); }
+			if ( state == BluetoothAdapter.ERROR) { Log.e("bluetooth", "BLUETOOTH ADAPTOR ERROR?"); }
+//			else if ( state == BluetoothAdapter.STATE_OFF ) { Log.d("bluetooth", "state change: off"); }
 			
 			else if ( state == BluetoothAdapter.STATE_ON ) {
 				//Log.i("bluetooth", "state change: on" );
@@ -203,19 +197,19 @@ public class BluetoothListener extends BroadcastReceiver {
 		} }
 	
 /*###############################################################################
-########################## Probably Debug? ######################################
+############################# Debugging Code ####################################
 ###############################################################################*/
 	
-	public String getState() {
-		if (!bluetoothExists) return "does not exist.";
-//		STATE_OFF, STATE_TURNING_ON, STATE_ON, STATE_TURNING_OFF
-		int state = bluetoothAdapter.getState();
-		if ( state == BluetoothAdapter.STATE_OFF ) return "off";
-		if ( state == BluetoothAdapter.STATE_TURNING_ON ) return "turning on";
-		if ( state == BluetoothAdapter.STATE_ON) return "on";
-		if ( state == BluetoothAdapter.STATE_TURNING_OFF ) return "turning off";
-		return "getstate is broken, value was " + state;
-	}
+//	public String getState() {
+//		if (!bluetoothExists) return "does not exist.";
+////		STATE_OFF, STATE_TURNING_ON, STATE_ON, STATE_TURNING_OFF
+//		int state = bluetoothAdapter.getState();
+//		if ( state == BluetoothAdapter.STATE_OFF ) return "off";
+//		if ( state == BluetoothAdapter.STATE_TURNING_ON ) return "turning on";
+//		if ( state == BluetoothAdapter.STATE_ON) return "on";
+//		if ( state == BluetoothAdapter.STATE_TURNING_OFF ) return "turning off";
+//		return "getstate is broken, value was " + state;
+//	}
 	
 //	public void bluetoothInfo() {
 //		Log.i("bluetooth", "bluetooth existence: " + bluetoothExists.toString() );
