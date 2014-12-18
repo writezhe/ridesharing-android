@@ -29,11 +29,11 @@ public class Timer {
 	// How frequently the WiFi log runs
 	public static final long WIFI_LOG_PERIOD = 5 * 60 * 1000L;
 	// How long Bluetooth is on for, each time Bluetooth is turned on
-	public static final long BLUETOOTH_ON_DURATION = 5 * 60 * 1000L;
+	public static final long BLUETOOTH_ON_DURATION = 1 * 60 * 1000L;
 	// How long full Bluetooth on/off cycle period is
-	public static final long BLUETOOTH_PERIOD = 15 * 60 * 1000L;
+	public static final long BLUETOOTH_PERIOD = 5 * 60 * 1000L;
 	// When Bluetooth turns on, in terms of how many milliseconds into the Bluetooth period 
-	public static final long BLUETOOTH_START_TIME_IN_PERIOD = 6 * 60 * 1000L;
+	public static final long BLUETOOTH_START_TIME_IN_PERIOD = 0 * 60 * 1000L;
 	// How long the accelerometer runs for, each time it's turned on:
 	public static final long ACCELEROMETER_ON_DURATION = 10 * 60 * 1000L;
 	// The minimum amount of time for which the accelerometer is turned off, each time it's turned off

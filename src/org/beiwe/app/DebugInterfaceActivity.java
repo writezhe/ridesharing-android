@@ -13,6 +13,7 @@ import org.beiwe.app.ui.AudioRecorderActivity;
 import org.beiwe.app.ui.LoginActivity;
 import org.beiwe.app.ui.MainMenuActivity;
 import org.beiwe.app.ui.SurveyActivity;
+import org.beiwe.app.Timer;
 
 import android.content.Context;
 import android.content.Intent;
@@ -85,15 +86,11 @@ public class DebugInterfaceActivity extends SessionActivity {
 	public void scanWifi (View view) { WifiListener.scanWifi(); }
 	
 	public void bluetoothButtonStart (View view) {
-		if (backgroundProcess.bluetoothListener != null) {
-			backgroundProcess.bluetoothListener.enableBLEScan();
-		}
+		appContext.sendBroadcast(Timer.bluetoothOnIntent);
 	}
 
 	public void bluetoothButtonStop (View view) {
-		if (backgroundProcess.bluetoothListener != null) {
-			backgroundProcess.bluetoothListener.disableBLEScan();
-		}
+		appContext.sendBroadcast(Timer.bluetoothOffIntent);
 	}
 	
 	public void buttonTimer(View view) { backgroundProcess.startTimers(); }

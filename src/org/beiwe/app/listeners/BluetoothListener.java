@@ -34,11 +34,7 @@ If you want to declare that your app is available to BLE-capable devices only, i
  * The BluetoothListener handles the location of nearby patients in the study, but is limited by
  * the way Android handles Bluetooth interactions.
  * 
- * BluetoothListener keeps track of the state of th
- * 
- * 
- * 
- * e device's Bluetooth Adaptor, and will
+ * BluetoothListener keeps track of the state of the device's Bluetooth Adaptor, and will
  * intelligently enable/disable Bluetooth as needed.  It only enables Bluetooth in order to make
  * a Bluetooth Low Energy scan and record any Bluetooth MAC addresses that show up, and then will
  * disable Bluetooth.  If the Bluetooth adaptor was already enabled it will not turn Bluetooth off.
@@ -70,11 +66,12 @@ public class BluetoothListener extends BroadcastReceiver {
 	 * so we check for that too, and we check that ANY bluetooth device exists. */
 	public BluetoothListener() {
 		this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		Log.i("bluetooth", "required: " + Build.VERSION_CODES.JELLY_BEAN_MR2  + ", SDK INT: " + Build.VERSION.SDK_INT);
 		//We have to check if the BluetoothAdaptor is null, or if the device is not running api 18+  
 		if ( bluetoothAdapter == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
-//	it would be nice to insert this check as well, but the constructors for broadcast receivers must
-//  be empty or else android cannot correctly instantiate them on demand.  We do this check in the background process.		
-//	|| !appContext.getPackageManager().hasSystemFeature( PackageManager.FEATURE_BLUETOOTH_LE) ) {
+			//	it would be nice to insert this check as well, but the constructors for broadcast receivers must
+			//  be empty or else android cannot correctly instantiate them on demand.  We do this check in the background process.		
+			//	|| !appContext.getPackageManager().hasSystemFeature( PackageManager.FEATURE_BLUETOOTH_LE) ) {
 			this.bluetoothExists = false;
 			return; }
 		else { bluetoothExists = true; }
