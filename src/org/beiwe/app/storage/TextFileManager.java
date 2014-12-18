@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.InvalidKeyException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Collections;
 import java.util.HashSet;
@@ -41,6 +42,7 @@ public class TextFileManager {
 
 	//Delimiter and newline strings
 	public static final String DELIMITER = ",";
+	private static String EMPTY_HEADER = "";
 	
 	//Static instances of the individual FileManager objects.
 	private static TextFileManager GPSFile;
@@ -64,100 +66,108 @@ public class TextFileManager {
 	private static Context appContext;
 	private static boolean started = false;
 	private static String getter_error = "You tried to access a file before calling TextFileManager.start().";
+	private static void throwGetterError() { throw new NullPointerException( getter_error ); }
 	
 	//public static getters.
-	// These are all simple and nearly identical, so I have squished them into one-liners. 
-	public static TextFileManager getAccelFile(){ if ( accelFile == null ) throw new NullPointerException( getter_error ); return accelFile; }
-	public static TextFileManager getGPSFile(){ if ( GPSFile == null ) throw new NullPointerException( getter_error ); return GPSFile; }
-	public static TextFileManager getPowerStateFile(){ if ( powerStateLog == null ) throw new NullPointerException( getter_error ); return powerStateLog; }
-	public static TextFileManager getCallLogFile(){ if ( callLog == null ) throw new NullPointerException( getter_error ); return callLog; }
-	public static TextFileManager getTextsLogFile(){ if ( textsLog == null ) throw new NullPointerException( getter_error ); return textsLog; }
-	public static TextFileManager getBluetoothLogFile(){ if ( bluetoothLog == null ) throw new NullPointerException( getter_error ); return bluetoothLog; }
-	public static TextFileManager getWifiLogFile(){ if ( wifiLog == null ) throw new NullPointerException( getter_error ); return wifiLog; }
-	public static TextFileManager getSurveyTimingsFile(){ if ( surveyTimings == null ) throw new NullPointerException( getter_error ); return surveyTimings; }
-	public static TextFileManager getSurveyAnswersFile(){ if ( surveyAnswers == null ) throw new NullPointerException( getter_error ); return surveyAnswers; }
+	// These are all simple and nearly identical, so they are squished into one-liners. 
+	public static TextFileManager getAccelFile(){ if ( accelFile == null ) throwGetterError(); return accelFile; }
+	public static TextFileManager getGPSFile(){ if ( GPSFile == null ) throwGetterError(); return GPSFile; }
+	public static TextFileManager getPowerStateFile(){ if ( powerStateLog == null ) throwGetterError(); return powerStateLog; }
+	public static TextFileManager getCallLogFile(){ if ( callLog == null ) throwGetterError(); return callLog; }
+	public static TextFileManager getTextsLogFile(){ if ( textsLog == null ) throwGetterError(); return textsLog; }
+	public static TextFileManager getBluetoothLogFile(){ if ( bluetoothLog == null ) throwGetterError(); return bluetoothLog; }
+	public static TextFileManager getWifiLogFile(){ if ( wifiLog == null ) throwGetterError(); return wifiLog; }
+	public static TextFileManager getSurveyTimingsFile(){ if ( surveyTimings == null ) throwGetterError(); return surveyTimings; }
+	public static TextFileManager getSurveyAnswersFile(){ if ( surveyAnswers == null ) throwGetterError(); return surveyAnswers; }
 	//the persistent files
-	public static TextFileManager getCurrentDailyQuestionsFile(){ if ( currentDailyQuestions == null ) throw new NullPointerException( getter_error ); return currentDailyQuestions; }
-	public static TextFileManager getCurrentWeeklyQuestionsFile(){ if ( currentWeeklyQuestions == null ) throw new NullPointerException( getter_error ); return currentWeeklyQuestions; }
-	public static TextFileManager getDebugLogFile(){ if ( debugLogFile == null ) throw new NullPointerException( getter_error ); return debugLogFile; }
-	public static TextFileManager getKeyFile() { if ( keyFile == null ) throw new NullPointerException( getter_error ); return keyFile; }
+	public static TextFileManager getCurrentDailyQuestionsFile(){ if ( currentDailyQuestions == null ) throwGetterError(); return currentDailyQuestions; }
+	public static TextFileManager getCurrentWeeklyQuestionsFile(){ if ( currentWeeklyQuestions == null ) throwGetterError(); return currentWeeklyQuestions; }
+	public static TextFileManager getDebugLogFile(){ if ( debugLogFile == null ) throwGetterError(); return debugLogFile; }
+	public static TextFileManager getKeyFile() { if ( keyFile == null ) throwGetterError(); return keyFile; }
 	
 	//and (finally) the non-static object instance variables
 	public String name = null;
 	public String fileName = null;
 	private String header = null;
 	private Boolean persistent = null;
-	public byte[] AESKey = null;	
-	/*###############################################################################
-	######################## CONSTRUCTOR STUFF ######################################
-	###############################################################################*/
+	private Boolean encrypted = null;
+	private byte[] AESKey = null;
 	
+	/*###############################################################################
+	########################### Class Initialization ################################
+	###############################################################################*/
 	
 	/**Starts the TextFileManager
 	 * This must be called before code attempts to access files using getXXXFile().
-	 * Initializes all TextFileManager object instances.
-	 * Do not run more than once, it will error on you. 
+	 * Initializes all TextFileManager object instances.  Initialization is idempotent.
 	 * @param appContext a Context, provided by the app. */
 	public static synchronized void initialize(Context appContext){
 		if ( started ) { return; }
 		
 		//the key file for encryption (it is persistent and never written to)
-		keyFile = new TextFileManager(appContext, "keyFile", "", true, true);
-		
+		keyFile = new TextFileManager(appContext, "keyFile", "", true, true, false);
 		// Persistent files
-		currentDailyQuestions = new TextFileManager(appContext, "currentDailyQuestionsFile.json", "", true, true);
-		currentWeeklyQuestions = new TextFileManager(appContext, "currentWeeklyQuestionsFile.json", "", true, true);
-		
+		currentDailyQuestions = new TextFileManager(appContext, "currentDailyQuestionsFile.json", EMPTY_HEADER, true, true, false);
+		currentWeeklyQuestions = new TextFileManager(appContext, "currentWeeklyQuestionsFile.json", EMPTY_HEADER, true, true, false);
 		// The debug file is no longer persistent, so that we can upload it to the server associated with a user, otherwise it has the name "logfile.txt" and fails to upload.
-		debugLogFile = new TextFileManager(appContext, "logFile.txt", "THIS LINE IS A LOG FILE HEADER", false, true);
-		
+		debugLogFile = new TextFileManager(appContext, "logFile.txt", "THIS LINE IS A LOG FILE HEADER", false, false, true);
 		// Regularly/periodically-created files
-		GPSFile = new TextFileManager(appContext, "gps", GPSListener.header, false, true);
-		accelFile = new TextFileManager(appContext, "accel", AccelerometerListener.header, false, true);
-		textsLog = new TextFileManager(appContext, "textsLog", SmsSentLogger.header, false, true);
-		callLog = new TextFileManager(appContext, "callLog", CallLogger.header, false, true);
-		powerStateLog = new TextFileManager(appContext, "powerState", PowerStateListener.header, false, true);
-		bluetoothLog = new TextFileManager(appContext, "bluetoothLog", BluetoothListener.header, false, true);
-		debugLogFile = new TextFileManager(appContext, "logFile", "THIS LINE IS A LOG FILE HEADER", false, true);
-		
-		// Files created upon specific events
-		surveyTimings = new TextFileManager(appContext, "surveyTimings", SurveyTimingsRecorder.header, false, false);
-		surveyAnswers = new TextFileManager(appContext, "surveyAnswers", SurveyAnswersRecorder.header, false, false);
-		wifiLog = new TextFileManager(appContext, "wifiLog", WifiListener.header, false, true);
+		GPSFile = new TextFileManager(appContext, "gps", GPSListener.header, false, false, true);
+		accelFile = new TextFileManager(appContext, "accel", AccelerometerListener.header, false, false, true);
+		textsLog = new TextFileManager(appContext, "textsLog", SmsSentLogger.header, false, false, true);
+		callLog = new TextFileManager(appContext, "callLog", CallLogger.header, false, false, true);
+		powerStateLog = new TextFileManager(appContext, "powerState", PowerStateListener.header, false, false, true);
+		bluetoothLog = new TextFileManager(appContext, "bluetoothLog", BluetoothListener.header, false, false, true);
+		// Files created on specific events/written to in one go.
+		surveyTimings = new TextFileManager(appContext, "surveyTimings", SurveyTimingsRecorder.header, false, false, true);
+		surveyAnswers = new TextFileManager(appContext, "surveyAnswers", SurveyAnswersRecorder.header, false, false, true);
+		wifiLog = new TextFileManager(appContext, "wifiLog", WifiListener.header, false, false, true);
 		
 		started = true;
 	}
 	
+	/*###############################################################################
+	################## Instance Construction and Initialization #####################
+	###############################################################################*/
+	
 	/** This class has a PRIVATE constructor.  The constructor is only ever called 
-	 * internally, via the static start() function, creating files for data storage. 
+	 * internally, via the static initialize() function, it creatse the "FileHandlers" used throughout the codebase. 
 	 * @param appContext A Context.
 	 * @param name The file's name.
 	 * @param header The first line of the file.  Leave empty if you don't want a header, remember to include a new line at the end of the header.
-	 * @param persistent Set this to true for a persistent file */
-	private TextFileManager(Context appContext, String name, String header, Boolean persistent, Boolean createNow ){
+	 * @param persistent Set this to true for a persistent file.  Persistent files are not currently encryptable.
+	 * @param openOnInstantiation This boolean value dictates whether the file should be opened, mostly this is used in conjunction persistent files so that they can be read from.
+	 * @param encrypted Set this to True if the file will have encrypted writes. */
+	private TextFileManager(Context appContext, String name, String header, Boolean persistent, Boolean openOnInstantiation, Boolean encrypted ){
 		TextFileManager.appContext = appContext;
+		if ( persistent && encrypted ) { throw new NullPointerException("Persistent files do not support encryption."); }
 		this.name = name;
 		this.header = header;
 		this.persistent = persistent;
-		this.AESKey = EncryptionEngine.newAESKey();
-		if (createNow) { this.newFile(); }
+		this.encrypted = encrypted;
+		if (openOnInstantiation) { this.newFile(); } //immediately creating a file on instantiation was a common code pattern.
 	}
 	
-	/*###############################################################################
-	######################## OBJECT INSTANCE FUNCTIONS ##############################
-	###############################################################################*/
-	
-	/** Makes a new file.  Persistent files do not get a time stamp.
-	 * All files get their header written as the first line. */
+	/** Makes a new file.
+	 * Persistent files do not get a time stamp.
+	 * Encrypted files get a key and have the key encrypted using RSA and written as the first line of the file.
+	 * If a file has a header it is written as the second line. */
 	public synchronized void newFile(){
+		//handle the naming cases for persistent vs. non-persistent files
 		if ( this.persistent ) { this.fileName = this.name; } 
-		else {
-			String timecode = ((Long)(System.currentTimeMillis() )).toString();
-			this.fileName = LoginManager.getPatientID() + "_" + this.name + "_" + timecode + ".csv"; }
-		if ((header != null) && (header.length() > 0)) {
-			this.writeRSAEncryptedAESKey();
-			this.writeEncrypted(header);
+		else { // if user has not registered, stop non-persistnt file generation
+			if ( !LoginManager.isRegistered() ) { return; }
+			this.fileName = LoginManager.getPatientID() + "_" + this.name + "_" + System.currentTimeMillis() + ".csv";
 		}
+		//write the key to the file (if it has one)
+		if ( this.encrypted ) {
+			this.AESKey = EncryptionEngine.newAESKey();
+			try { this.writePlaintext( EncryptionEngine.encryptRSA( this.AESKey ) ); }
+			catch (InvalidKeySpecException e) { Log.e("initializing a file", "could not get key, this is not expected behavior?"); }
+		}
+		//write the csv header, if the file has a header
+		if ( header != null && header.length() > 0 ) {
+			this.writeEncrypted(header); }
 	}
 	
 	/** If it's a SurveyAnswers or SurveyTimings file, we want to append the
@@ -171,21 +181,19 @@ public class TextFileManager {
 		this.name = nameHolder;
 	}
 	
-	/** Delete the reference to the file so that it can be uploaded */
-	public synchronized void closeFile() {
-		this.fileName = null;
-	}
-
+	/*###############################################################################
+	########################## Read and Write Operations ############################
+	###############################################################################*/
+	
 	/** Takes a string. writes that to the file, adds a new line to the string.
 	 * Prints a stacktrace on a write error, but does not crash. If there is no
 	 * file, a new file will be created.
 	 * @param data any unicode valid string*/
 	public synchronized void writePlaintext(String data){
-		//write the output, we always want mode append
+		if (fileName == null) this.newFile();
 		FileOutputStream outStream;
-		try {
-			if (fileName == null) { this.newFile(); }
-			outStream = appContext.openFileOutput(fileName, Context.MODE_APPEND);
+		try {							//write the output, we always want mode append
+			outStream = appContext.openFileOutput(this.fileName, Context.MODE_APPEND);
 			outStream.write( ( data ).getBytes() );
 			outStream.write( "\n".getBytes() );
 			outStream.flush();
@@ -195,31 +203,25 @@ public class TextFileManager {
 			e.printStackTrace(); }
 		catch (IOException e) {
 			Log.e("TextFileManager", "error in the write operation: " + e.getMessage() );
-			e.printStackTrace();
-		}
+			e.printStackTrace(); }
 	}
 	
 	/**Encrypts string data and writes it to a file.
 	 * @param data any unicode valid string */
 	public synchronized void writeEncrypted(String data) {
-		this.writePlaintext( EncryptionEngine.encryptAES( data, this.AESKey ) );
-//		try { this.writePlaintext( EncryptionEngine.encryptAES( data, this.AESKey ) ); }
-//		catch (InvalidKeySpecException e) {
-//			Log.e("TextFileManager", "encrypted write operation without a keyFile: " + data);
-////			e.printStackTrace();
-//		}
+		if ( !this.encrypted ) throw new NullPointerException( this.name + "is not supposed to have encrypted writes!" );
+		if ( fileName == null ) this.newFile();
+		
+		try { this.writePlaintext( EncryptionEngine.encryptAES( data, this.AESKey ) ); }
+		catch (InvalidKeyException e) {
+			Log.e("TextFileManager", "encrypted write operation without an AES key: " +this.name + ", " + this.fileName);
+//			throw new NullPointerException("encrypted write operation without an AES key: " + this.fileName );
+		}
+		catch (InvalidKeySpecException e) { //this occurs when an encrypted write operation occurs without an RSA key file, we eat this error because it only happens at registration
+			Log.d("TextFileManager", "EncryptionEngine.AES_TOO_EARLY_ERROR: " + this.name + ", " + data);
+			e.printStackTrace(); }
 	}
 	
-	/**Encrypts byte[] data and writes it to a file.
-	 * @param data any unicode valid string */
-	public synchronized void writeRSAEncryptedAESKey() {
-		try { this.writePlaintext( EncryptionEngine.encryptRSA( this.AESKey ) ); }
-		catch (InvalidKeySpecException e) {
-			Log.e("TextFileManager", "encrypted write operation without a keyFile, " + this.fileName);
-//			e.printStackTrace();
-		}
-	}
-
 	/**@return A string of the file contents. */
 	public synchronized String read() {
 		BufferedInputStream bufferedInputStream;
@@ -234,13 +236,23 @@ public class TextFileManager {
 				e.printStackTrace(); }
 			bufferedInputStream.close(); }
 		catch (FileNotFoundException e) {
-			Log.i("TextFileManager", "file " + this.fileName + " does not exist");
+			Log.e("TextFileManager", "file " + this.fileName + " does not exist");
 			e.printStackTrace(); }
 		catch (IOException e){
 			Log.i("DataFileManager", "could not close " + this.fileName);
 			e.printStackTrace(); }
 		
 		return stringBuffer.toString();
+	}
+	
+	
+	/*###############################################################################
+	#################### Miscellaneous Utility Functions ############################
+	###############################################################################*/
+	
+	/** Delete the reference to the file so that it can be uploaded */
+	public synchronized void closeFile() {
+		this.fileName = null;
 	}
 	
 	/** Deletes a file in the safest possible way, based on the file type (persistent-nonpersistent). */
@@ -253,7 +265,7 @@ public class TextFileManager {
 			TextFileManager.delete(oldFileName);
 			this.newFile(); }
 		else { 					//create then delete
-			this.newFile();
+//			this.newFile();
 			TextFileManager.delete(oldFileName); }
 	}
 	
@@ -283,8 +295,7 @@ public class TextFileManager {
 	 * @return a string array of all files in the app's file directory. */
 	//TODO: postproduction.  change this to private or comment out entirely
 	public static synchronized String[] getAllFiles() { return appContext.getFilesDir().list(); }
-	
-	
+		
 	/** Returns all data that are not currently in use
 	 * @return String[] a list of file names */
 	public static synchronized String[] getAllUploadableFiles() {
@@ -324,8 +335,7 @@ public class TextFileManager {
 		makeNewFilesForEverything();
 		return file_list;
 	}
-	
-	
+		
 	/**For Debug Only.  Deletes all files, creates new ones. */
 	public static synchronized void deleteEverything() {
 		//Get complete list of all files, then make new files, then delete all files from the old files list.
@@ -348,5 +358,5 @@ public class TextFileManager {
 			catch (Exception e) {
 				Log.i("TextFileManager", "could not delete file " + file_name); 
 				e.printStackTrace(); } }
-	}
+	}	
 }

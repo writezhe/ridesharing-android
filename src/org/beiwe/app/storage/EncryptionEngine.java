@@ -24,40 +24,9 @@ import android.util.Base64;
 import android.util.Log;
 
 
-@SuppressLint("SecureRandom")
 public class EncryptionEngine {
 	
-	private static PublicKey key = null;
-	
-	/*############################################################################
-	 * ############################ Phone Numbers ################################
-	 * #########################################################################*/
-	
-	/**Converts a phone number into a 64-character hexadecimal string.
-	 * First standardizes the phone numbers by grabbing the last 10 digits, so
-	 * that hopefully, two identical phone numbers will get identical hashes,
-	 * even if one has dashes and a country code and the other doesn't.
-	 * 
-	 * Grabbing the last 10 characters is much simpler than using something like this:
-	 * https://github.com/googlei18n/libphonenumber
-	 * 
-	 * @param phoneNumber
-	 * @return a hexadecimal string, or an error message string */
-	public static String hashPhoneNumber(String phoneNumber) {
-
-		// Strip from the string any characters that aren't digits 0-9
-		String justDigits = phoneNumber.replaceAll("\\D+", "");
-
-		// Grab the last 10 digits
-		String last10;
-		if (justDigits.length() > 10) {
-			last10 = justDigits.substring(justDigits.length() - 10); }
-		else { last10 = justDigits; }
-
-		// Hash the last 10 digits
-		return safeHash(last10);
-	}
-
+	private static PublicKey RSAkey = null;
 	
 	/*############################################################################
 	 * ############################### Hashing ###################################
@@ -70,10 +39,10 @@ public class EncryptionEngine {
 		try {
 			return unsafeHash( input ); }
 		catch (NoSuchAlgorithmException e) {
-			Log.e("Hashing function", "NoSuchAlgorithmException");
+			Log.e("Hashing function", "NoSuchAlgorithmException"); //not gonna happen
 			e.printStackTrace(); }
 		catch (UnsupportedEncodingException e) {
-			Log.e("Hashing function", "UnsupportedEncodingException");
+			Log.e("Hashing function", "UnsupportedEncodingException"); //not gonna happen
 			e.printStackTrace(); }
 		Log.e("hash", "this line of code should absolutely never run.");
 		return null;
@@ -92,6 +61,31 @@ public class EncryptionEngine {
 		return toBase64String( hash.digest() );		
 	}
 	
+	/**Converts a phone number into a 64-character hexadecimal string.
+	 * First standardizes the phone numbers by grabbing the last 10 digits, so
+	 * that hopefully, two identical phone numbers will get identical hashes,
+	 * even if one has dashes and a country code and the other doesn't.
+	 * 
+	 * Grabbing the last 10 numerical characters is much simpler than using something like this:
+	 * https://github.com/googlei18n/libphonenumber
+	 * 
+	 * @param phoneNumber
+	 * @return a hexadecimal string, or an error message string */
+	public static String hashPhoneNumber(String phoneNumber) {
+
+		// Strip from the string any characters that aren't digits 0-9
+		String justDigits = phoneNumber.replaceAll("\\D+", "");
+
+		// Grab the last 10 digits
+		String last10;
+		if (justDigits.length() > 10) {
+			last10 = justDigits.substring(justDigits.length() - 10); }
+		else { last10 = justDigits; }
+
+		// Hash the last 10 digits
+		return safeHash(last10);
+	}
+	
 	
 	/*############################################################################
 	 * ############################ Encryption ###################################
@@ -103,7 +97,7 @@ public class EncryptionEngine {
 	 * @return a hex string of the encrypted data. */
 	@SuppressLint("TrulyRandom")
 	public static String encryptRSA(byte[] data) throws InvalidKeySpecException {
-		if (key == null) { EncryptionEngine.readKey(); }
+		if (RSAkey == null) readKey();
 		
 		//unfortunately we have problems encrypting this data, it occasionally loses a character, so we need to
 		// base64 encode it first.
@@ -113,19 +107,72 @@ public class EncryptionEngine {
 		Cipher rsaCipher = null;
 		
 		try { rsaCipher = Cipher.getInstance("RSA"); }
-		catch (NoSuchAlgorithmException e) { Log.e("Encryption Engine", "THIS DEVICE DOES NOT SUPPORT RSA?"); }
-		catch (NoSuchPaddingException e) { Log.e("Encryption Engine", "Something went wrong, go research Padding Exceptions. (NoSuchPaddingException) "); }
+		catch (NoSuchAlgorithmException e) {
+			Log.e("Encryption Engine", "THIS DEVICE DOES NOT SUPPORT RSA");
+			throw new NullPointerException("device is too stupid to live");}
+		catch (NoSuchPaddingException e) {
+			Log.e("Encryption Engine", "Device does not reconize padding format.  this is interesting because there ISN'T ONE (instance 1)");
+			throw new NullPointerException("device is too stupid to live");}
 		
-		try { rsaCipher.init(Cipher.ENCRYPT_MODE, key);	}
+		try { rsaCipher.init(Cipher.ENCRYPT_MODE, RSAkey);	}
 		catch (InvalidKeyException e) { Log.e("Encryption Engine", "The key is not a valid public RSA key."); }
 		
 		try {  encryptedText = rsaCipher.doFinal( data ); }
-		catch (IllegalBlockSizeException e1) { Log.e("Encryption Engine", "The key is malformed."); } 
-		catch (BadPaddingException e2) { Log.e("Encryption Engine", "Something went wrong, go research Padding Exceptions. (BadPaddingException)"); }
+		//TODO: Eli/Josh find a way to alert user that they need to reregister their device?
+		catch (IllegalBlockSizeException e1) { Log.e("Encryption Engine", "The key is malformed.");
+			throw new NullPointerException("RSA Key is invalid, the user needs to reregister their device."); } 
+		catch (BadPaddingException e2) { 
+			Log.e("Encryption Engine", "Device does not reconize padding format.  this is interesting because there ISN'T ONE (instance 2)");
+			throw new NullPointerException("device is too stupid to live");}
 		
 		return toBase64String(encryptedText);
 	}
 	
+	
+	public static String encryptAES(String someText, byte[] aesKey) throws InvalidKeyException, InvalidKeySpecException { return encryptAES( someText.getBytes(), aesKey ); }
+	
+	//TODO: Eli. Document.
+	public static String encryptAES(byte[] someText, byte[] aesKey) throws InvalidKeyException, InvalidKeySpecException {
+		if (RSAkey == null) readKey(); 
+		
+		//create an iv, 16 bytes of data
+		SecureRandom random = new SecureRandom();
+		IvParameterSpec ivSpec = new IvParameterSpec( random.generateSeed(16) );
+		
+		//initialize an AES encryption cipher, we are using CBC mode.
+		SecretKeySpec secretKeySpec = new SecretKeySpec( aesKey, "AES" );
+		Cipher cipher = null;
+		try { cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");}
+		catch (NoSuchAlgorithmException e) { // seems unlikely and should fail at the previous AES
+			Log.e("Encryption Engine", "device does not know what AES is, instance 2" );
+			e.printStackTrace();
+			throw new NullPointerException("device is too stupid to live"); }
+		catch (NoSuchPaddingException e) { //seems unlikely
+			Log.e("Encryption Engine", "device does not know what PKCS5 padding is" );
+			e.printStackTrace();
+			throw new NullPointerException("device is too stupid to live"); } 
+		try { cipher.init( Cipher.ENCRYPT_MODE, secretKeySpec, ivSpec ); }
+		catch (InvalidAlgorithmParameterException e) { //seems unlikely, iv generation failed?
+			Log.e("Encryption Engine", "InvalidAlgorithmParameterException during AES encryption..." );
+			e.printStackTrace();
+			throw new NullPointerException("InvalidAlgorithmParameterException during AES encryption..."); }
+		
+		//encrypt the data
+		try { return toBase64String( ivSpec.getIV() ) + ":" +
+					 toBase64String( cipher.doFinal( someText ) ); }
+		catch (IllegalBlockSizeException e) { //not possible, block size is coded to use the pkcs5 spec
+			Log.e("Encryption Engine", "an impossible error ocurred" );
+			e.printStackTrace(); 
+			throw new NullPointerException("device is too stupid to live"); }
+		catch (BadPaddingException e) {
+			Log.e("Encryption Engine", "an unknown error occured in AES padding" );
+			e.printStackTrace(); 
+			throw new NullPointerException("an unknown error occured in AES encryption."); }
+	}
+	
+	/* #######################################################################
+	 * ########################## Key Management #############################  
+	 * #####################################################################*/
 	
 	/**Looks for the public key file and imports it.
 	 * Spews out human readable errors to the Log if something seems wrong. 
@@ -137,21 +184,21 @@ public class EncryptionEngine {
 		
 		try {
 			KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-			key = keyFactory.generatePublic( x509EncodedKey ); }
+			RSAkey = keyFactory.generatePublic( x509EncodedKey ); }
 		catch (NoSuchAlgorithmException e1) {
-			Log.e("Encryption Engine", "ENCRYPTION HAS FAILED BECAUSE RSA IS NOT SUPPORTED?  AN ENCRYPT OPERATION IS ABOUT TO FAIL.");
-			e1.printStackTrace(); }
+			Log.e("Encryption Engine", "ENCRYPTION HAS FAILED BECAUSE RSA IS NOT SUPPORTED?");
+			e1.printStackTrace();
+			throw new NullPointerException("ENCRYPTION HAS FAILED BECAUSE RSA IS NOT SUPPORTED?"); }
 		catch (InvalidKeySpecException e2) {
 			Log.e("Encryption Engine", "The provided RSA public key is NOT VALID." );
 			throw e2; }
 	}
 	
-	//this is an INSANE construction, I cannot conceive of a single, possible, reason why you would not just use a [proper length] blob of random binary. seriously.
+	/**Generates a new 128 bit AES Encryption key.
+	 * @return a byte array 128 bits long for use as an AES Encryption key*/
 	public static byte[] newAESKey() {
-		// setup seed...
-		SecureRandom random = getNewRandom();
-		
-		//setup key generator object...
+		// setup seed and key generator
+		SecureRandom random = new SecureRandom();
 		KeyGenerator aesKeyGen = null;
 		try { aesKeyGen = KeyGenerator.getInstance("AES"); }
 		catch (NoSuchAlgorithmException e) { //seems unlikely
@@ -165,57 +212,9 @@ public class EncryptionEngine {
 	}
 	
 	
-	private static SecureRandom getNewRandom() {
-		SecureRandom random = null;
-		try { random = SecureRandom.getInstance("SHA1PRNG");}
-		catch (NoSuchAlgorithmException e) { //seems unlikely
-			Log.e("Encryption Engine", "device does not know what sha1 is..." );
-			e.printStackTrace(); }
-		random.setSeed( System.currentTimeMillis() ); //using a mildly insecure seed, do not care.
-		return random;
-	}
-	
-	
-	public static String encryptAES(String someText, byte[] aesKey) { return encryptAES( someText.getBytes(), aesKey ); }
-	
-	public static String encryptAES(byte[] someText, byte[] aesKey) {		
-		//create an iv, 16 bytes of data
-		SecureRandom random = getNewRandom();
-		IvParameterSpec ivSpec = new IvParameterSpec(random.generateSeed(16));
-		
-		//initialize an  AES encryption cipher
-		//we will use cfb mode so that we do not need to care about input length
-		SecretKeySpec secretKeySpec = new SecretKeySpec( aesKey, "AES" );
-		Cipher cipher = null;
-		try { cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");}
-		catch (NoSuchAlgorithmException e) { // seems unlikely and should fail at the previous AES
-			Log.e("Encryption Engine", "device does not know what AES is, instance 2" );
-			e.printStackTrace(); }
-		catch (NoSuchPaddingException e) { //seems unlikely
-			Log.e("Encryption Engine", "device does not know what PKCS5 padding is" );
-			e.printStackTrace(); } 
-		try { cipher.init( Cipher.ENCRYPT_MODE, secretKeySpec, ivSpec ); }
-		catch (InvalidKeyException e) { // key is autogenerated and of a hardcoded length, should not happen.
-			Log.e("Encryption Engine", "autogenerated AES key was invalid?" );
-			e.printStackTrace(); }
-		catch (InvalidAlgorithmParameterException e) { //seems unlikely, iv generation failed?
-			Log.e("Encryption Engine", "an unknown error occured during AES encryption" );
-			e.printStackTrace(); }
-		
-		//encrypt the data
-		try { return toBase64String( ivSpec.getIV() ) + ":" +
-					 toBase64String( cipher.doFinal( someText ) ); }
-		catch (IllegalBlockSizeException e) { //not possible, block size is hardcoded.
-			Log.e("Encryption Engine", "an impossible error ocurred" );
-			e.printStackTrace(); }
-		catch (BadPaddingException e) {
-			Log.e("Encryption Engine", "an unknown error occured in AES padding" );
-			e.printStackTrace(); }
-		
-		//Should never run.
-		Log.e("Encryption Engine", "AES encryption failed" );
-		return null;
-	}
+	/* #######################################################################
+	 * ########################## Data Wrapping ##############################  
+	 * #####################################################################*/
 	
 	private static String toBase64String( byte[] data ) { return Base64.encodeToString(data, Base64.NO_WRAP | Base64.URL_SAFE ); }
 //	private static String toBase64String( String data ) { return Base64.encodeToString(data.getBytes(), Base64.NO_WRAP | Base64.URL_SAFE ); }

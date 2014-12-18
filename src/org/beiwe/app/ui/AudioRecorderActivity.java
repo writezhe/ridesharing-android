@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.security.InvalidKeyException;
 import java.security.spec.InvalidKeySpecException;
 
 import org.beiwe.app.R;
@@ -94,9 +95,14 @@ public class AudioRecorderActivity extends SessionActivity {
 					writePlaintext( EncryptionEngine.encryptRSA( aesKey ) );
 					writePlaintext( EncryptionEngine.encryptAES( readInAudioFile(), aesKey ) );
 				}
-		        catch (InvalidKeySpecException e) {
+		        catch (InvalidKeyException e) {
+		        	Log.e("AudioFileManager", "encrypted write operation to the audio file without an aes key? how is that even...");
+					e.printStackTrace();
+					throw new NullPointerException(e.getMessage()); }
+				catch (InvalidKeySpecException e) {
 					Log.e("AudioFileManager", "encrypted write operation to the audio file without a keyFile.");
-//					e.printStackTrace();
+					e.printStackTrace();
+					throw new NullPointerException(e.getMessage());
 				}
 			}
 		}

@@ -64,6 +64,7 @@ public class BackgroundProcess extends Service {
 		startPowerStateListener();
 		registerTimers();
 		//If this device is both registered and timers have not already been started, start them!
+		//TODO: Eli/Josh. check that timers are started after registration?
 		if (LoginManager.isRegistered()) { startTimers(); }
 	}
 

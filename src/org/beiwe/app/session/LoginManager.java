@@ -21,7 +21,8 @@ import android.util.Log;
  *  */
 
 public class LoginManager {
-
+	public static String NULL_ID = "NULLID";
+	
 	private static int PRIVATE_MODE = 0;
 
 	// Private things that are encapsulated using functions in this class 
@@ -136,6 +137,6 @@ public class LoginManager {
 
 	public static String getPassword() { return pref.getString( KEY_PASSWORD, null ); }
 
-	public static String getPatientID() { return pref.getString(KEY_ID, "NULLID"); }
+	public static String getPatientID() { return pref.getString(KEY_ID, NULL_ID); }
 
 }
