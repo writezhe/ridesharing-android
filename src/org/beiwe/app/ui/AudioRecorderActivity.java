@@ -21,6 +21,7 @@ import android.content.res.Resources;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaRecorder;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -100,8 +101,26 @@ public class AudioRecorderActivity extends SessionActivity {
 		}
 	}
 
+    
+    private class EncryptAudioFileTask extends AsyncTask<Void, Void, Boolean> {
 
-	private void encryptAudioFile() {
+		@Override
+		protected Boolean doInBackground(Void... params) {
+			recordingButton.setClickable(false);  // Don't let the user start a new recording
+			return encryptAudioFile();
+		}
+    	
+		protected void onPostExecute(Boolean succeeded) {
+			if (succeeded) {
+		    	Log.d("AudioRecorderActivity.java", "Encryption succeeded."); }
+			else {
+		    	Log.w("AudioRecorderActivity.java", "Encryption failed."); }
+			recordingButton.setClickable(true);  // OK, now the user can start a new recording
+		}
+    }
+    
+
+	private Boolean encryptAudioFile() {
 		if (unencryptedTempAudioFilePath != null) {
 			// If the audio file has been written to, encrypt the audio file
 			String fileName = generateNewEncryptedAudioFileName();
@@ -110,17 +129,21 @@ public class AudioRecorderActivity extends SessionActivity {
 				byte[] aesKey = EncryptionEngine.newAESKey();
 				writePlaintext( EncryptionEngine.encryptRSA( aesKey ), fileName );
 				writePlaintext( EncryptionEngine.encryptAES( readInAudioFile(), aesKey ), fileName );
+				android.os.SystemClock.sleep(2000);
+				return true;
 			}
 	        catch (InvalidKeyException e) {
 	        	Log.e("AudioFileManager", "encrypted write operation to the audio file without an aes key? how is that even...");
 				e.printStackTrace();
-				throw new NullPointerException(e.getMessage()); }
+				throw new NullPointerException(e.getMessage());
+	        }
 			catch (InvalidKeySpecException e) {
 				Log.e("AudioFileManager", "encrypted write operation to the audio file without a keyFile.");
 				e.printStackTrace();
 				throw new NullPointerException(e.getMessage());
 			}
 		}
+		return false;
 	}
 
 	
@@ -203,7 +226,7 @@ public class AudioRecorderActivity extends SessionActivity {
     /** Start recording from the device's microphone */
     private void startRecording() {
     	currentlyRecording = true;
-		AppNotifications.dismissNotificatoin( getApplicationContext(), AppNotifications.recordingCode );
+		AppNotifications.dismissNotification( getApplicationContext(), AppNotifications.recordingCode );
 
     	// Toggles button
     	recordingButton.setText( getApplicationContext().getString(R.string.record_button_stop_text) );
@@ -243,7 +266,7 @@ public class AudioRecorderActivity extends SessionActivity {
         mRecorder = null;
 
         // Encrypt the audio file as soon as recording is finished
-        encryptAudioFile();
+        new EncryptAudioFileTask().execute();
     }
     
     
