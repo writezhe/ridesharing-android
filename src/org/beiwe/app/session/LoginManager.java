@@ -11,15 +11,9 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
-
-/**A class used to manage login sessions. Uses SharedPreferences in order to save
- * username-password combinations.
- * @author Dor Samet, Eli Jones
- * 
- *  
- *  
- *  */
-
+/**A class for managing patient login sessions.
+ * Uses SharedPreferences in order to save username-password combinations.
+ * @author Dor Samet, Eli Jones, Josh Zagorsky */
 public class LoginManager {
 	public static String NULL_ID = "NULLID";
 	
@@ -41,7 +35,7 @@ public class LoginManager {
 	######################### Constructor and Initializing ################################
 	#####################################################################################*/
 
-	/**Constructor method for the session manager class
+	/**Private singleton constructor method for the session manager class
 	 * @param context */
 	private LoginManager(Context context){
 		appContext = context;
@@ -50,6 +44,8 @@ public class LoginManager {
 		editor.commit();
 	}
 
+	/**The publicly accessible "constructor" for the LoginManager, initializes the required Context variable.
+	 * @param context */
 	public static void initialize( Context context ) { new LoginManager(context); } 
 
 	/*#####################################################################################
@@ -73,11 +69,16 @@ public class LoginManager {
 		editor.putLong(LOGIN_EXPIRATION, 0);
 		editor.commit();
 	}
-
+	
+	/**Getter for the IS_REGISTERED value.
+	 * @param value */
 	public static boolean isRegistered() { 
 		if (pref == null) Log.w("LoginManager", "FAILED AT ISREGISTERED");
-		return pref.getBoolean(IS_REGISTERED, false); }
+		return pref.getBoolean(IS_REGISTERED, false);
+	}
 	
+	/**Setter for the IS_REGISTERED value.
+	 * @param value */
 	public static void setRegistered(boolean value) { 
 		editor.putBoolean(IS_REGISTERED, value);
 		editor.commit();
@@ -102,6 +103,7 @@ public class LoginManager {
 			AlertsManager.showAlert(alertMessage, currentActivity);
 			return false;
 		}
+		// TODO: later.
 		// Improvement idea: set more password requirements (must have both letters and numbers)
 		return true;
 	}
@@ -110,17 +112,12 @@ public class LoginManager {
 	/**Takes an input string and returns a boolean value stating whether the input matches the current password.
 	 * @param input
 	 * @return */
-	public static boolean checkPassword(String input){
-		return ( getPassword().equals( EncryptionEngine.safeHash(input) ) );
-	}
-
+	public static boolean checkPassword(String input){ return ( getPassword().equals( EncryptionEngine.safeHash(input) ) ); }
+	
+	/**Sets a password to a hash of the provided value.
+	 * @param password */
 	public static void setPassword(String password) {
 		editor.putString(KEY_PASSWORD, EncryptionEngine.safeHash(password) );
-		editor.commit();
-	}
-
-	public static void setPasswordDirectly(String password){
-		editor.putString(KEY_PASSWORD, password);
 		editor.commit();
 	}
 
