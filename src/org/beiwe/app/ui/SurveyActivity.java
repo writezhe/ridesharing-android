@@ -96,7 +96,7 @@ public class SurveyActivity extends SessionActivity {
 	private void showUnansweredQuestionsWarning(String unansweredQuestions) {
 		AlertDialog.Builder alertBuilder = new AlertDialog.Builder(SurveyActivity.this);
 		alertBuilder.setTitle("Unanswered Questions");
-		alertBuilder.setMessage("You did not answer the following questions: " + unansweredQuestions + ". Do you want to submit the survey anyways?");
+		alertBuilder.setMessage("You did not answer the following questions: " + unansweredQuestions + ". Do you want to submit the survey anyway?");
 		alertBuilder.setPositiveButton("Submit anyway", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
