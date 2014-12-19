@@ -44,6 +44,7 @@ public class AudioRecorderActivity extends SessionActivity {
 
     public static final String unencryptedTempAudioFileName = "unencryptedTempAudioFile.mp4";
     private String unencryptedTempAudioFilePath;
+    private Boolean finishedEncrypting = true; // Effectively a lock on deleting the temp file
     
     private MediaRecorder mRecorder = null;
     private MediaPlayer mediaPlayer = null;
@@ -96,7 +97,7 @@ public class AudioRecorderActivity extends SessionActivity {
 
 	        /* Delete the temporary, unencrypted audio file so that nobody can play it back after
 	         * the user leaves this screen */
-	        TextFileManager.delete(unencryptedTempAudioFileName);
+	        if (finishedEncrypting) { TextFileManager.delete(unencryptedTempAudioFileName); }
 		}
 		else {
 			// The activity is probably just getting restarted because the screen rotated
@@ -110,10 +111,16 @@ public class AudioRecorderActivity extends SessionActivity {
 		@Override
 		protected Void doInBackground(Void... params) {
 			encryptAudioFile();
-			return null;  //haaate
+			return null;
 		}
 		@Override
-		protected void onPostExecute(Void arg) { recordingButton.setClickable(true); }
+		protected void onPostExecute(Void arg) {
+			finishedEncrypting = true;  // Can now delete audio file
+			// If isFinishing(), the other call to delete the temp file won't get triggered, so do it here
+			if (isFinishing()) { TextFileManager.delete(unencryptedTempAudioFileName); }
+
+			recordingButton.setClickable(true);
+		}
     }
     
 
@@ -186,6 +193,7 @@ public class AudioRecorderActivity extends SessionActivity {
     /** Start recording from the device's microphone */
     private void startRecording() {
     	currentlyRecording = true;
+    	finishedEncrypting = false;
 		AppNotifications.dismissNotification( getApplicationContext(), AppNotifications.recordingCode );
 
     	// Toggles button
