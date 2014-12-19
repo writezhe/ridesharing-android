@@ -86,8 +86,9 @@ public class RegisterActivity extends RunningBackgroundProcessActivity {
 	private void doRegister(final String url) { new HTTPAsync(url, this) {
 		@Override
 		protected Void doInBackground(Void... arg0) {
-			parameters = PostRequest.makeParameter("bluetooth_id", DeviceInfo.getBlootoothMAC()) +
-					PostRequest.makeParameter("new_password", newPassword);
+			parameters = PostRequest.makeParameter("bluetooth_id", DeviceInfo.getBlootoothMAC() ) +
+						PostRequest.makeParameter("new_password", newPassword) +
+						PostRequest.makeParameter("phone_number", DeviceInfo.getPhoneNumber() );
 			response = PostRequest.httpRegister(parameters, url);
 			return null; //hate
 		}

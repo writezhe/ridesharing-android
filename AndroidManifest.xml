@@ -31,7 +31,8 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED" />
-    
+    <!-- get own phone number -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     
     <!-- only for debug, remove before final product is finished -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
