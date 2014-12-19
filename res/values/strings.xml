@@ -51,7 +51,7 @@
     
     <!-- Survey Activity Strings -->
     <string name="survey_submit_button">Submit Answers</string>
-    <string name="survey_submit_success_message">Thank you! Your answers have been recorded and saved.</string>
+    <string name="survey_submit_success_message">Thank you! Your answers have been recorded and saved. A clinician may not look at your answers for weeks, so if you want help or feel unsafe, press the HOTLINE button.</string>
     <string name="survey_submit_error_message">There has been an error; your answers may not have been recorded and saved</string>
     <string name="button_upload">Upload Data Files</string>
     <string name="survey_loading_text">Downloading the most up-to-date survey questions from the server...</string>
@@ -115,7 +115,7 @@
     <string name="main_menu_call_hotline">Call Hotline</string>
     
     <!-- Recording Activity -->
-    <string name="record_activity_default_message">Please press "Record" and speak for about 2 minutes, describing your day and how you are feeling.  A live person is not guaranteed to listen to your message!</string>
+    <string name="record_activity_default_message">Please press "Record" and speak for about 2 minutes, describing your day and how you are feeling.  A clinician may not listen to your message for weeks, so if you feel unsafe or want help, press the HOTLINE button.</string>
     <string name="record_activity_button">Press to record</string>
     <string name="record_activity_playback">Play recording</string>
     <string name="play_button_text">Play</string>
