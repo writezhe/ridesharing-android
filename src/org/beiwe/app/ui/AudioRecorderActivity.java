@@ -29,6 +29,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+//TODO: Later. It would be nice if we could write the temp file to memory instead of to disk. 
+
 /**Audio Recorder
  * 
  * Provides a GUI to record audio clips and save them as files.
@@ -54,9 +56,9 @@ public class AudioRecorderActivity extends SessionActivity {
     
     private final Handler recordingTimeoutHandler = new Handler();
     
-    /*/////////////////////////////////////////////////*/
-    /*///////////////Overrides go here/////////////////*/ 
-    /*/////////////////////////////////////////////////*/
+    /*///////////////////////////////////////////////////
+    /////////////////Overrides go here/////////////////// 
+    ///////////////////////////////////////////////////*/
     
     /**On create, the activity presents the message to the user, and only a record button.
      * After recording, the app will present the user with the play button. */
@@ -101,52 +103,20 @@ public class AudioRecorderActivity extends SessionActivity {
 		}
 	}
 
-    
-    private class EncryptAudioFileTask extends AsyncTask<Void, Void, Boolean> {
-
+    /** While encrypting the audio file we block out user interaction.*/
+    private class EncryptAudioFileTask extends AsyncTask<Void, Void, Void> {
+    	@Override
+    	protected void onPreExecute() { recordingButton.setClickable(false); }
 		@Override
-		protected Boolean doInBackground(Void... params) {
-			recordingButton.setClickable(false);  // Don't let the user start a new recording
-			return encryptAudioFile();
+		protected Void doInBackground(Void... params) {
+			encryptAudioFile();
+			return null;  //haaate
 		}
-    	
-		protected void onPostExecute(Boolean succeeded) {
-			if (succeeded) {
-		    	Log.d("AudioRecorderActivity.java", "Encryption succeeded."); }
-			else {
-		    	Log.w("AudioRecorderActivity.java", "Encryption failed."); }
-			recordingButton.setClickable(true);  // OK, now the user can start a new recording
-		}
+		@Override
+		protected void onPostExecute(Void arg) { recordingButton.setClickable(true); }
     }
     
 
-	private Boolean encryptAudioFile() {
-		if (unencryptedTempAudioFilePath != null) {
-			// If the audio file has been written to, encrypt the audio file
-			String fileName = generateNewEncryptedAudioFileName();
-
-			try {
-				byte[] aesKey = EncryptionEngine.newAESKey();
-				writePlaintext( EncryptionEngine.encryptRSA( aesKey ), fileName );
-				writePlaintext( EncryptionEngine.encryptAES( readInAudioFile(), aesKey ), fileName );
-				android.os.SystemClock.sleep(2000);
-				return true;
-			}
-	        catch (InvalidKeyException e) {
-	        	Log.e("AudioFileManager", "encrypted write operation to the audio file without an aes key? how is that even...");
-				e.printStackTrace();
-				throw new NullPointerException(e.getMessage());
-	        }
-			catch (InvalidKeySpecException e) {
-				Log.e("AudioFileManager", "encrypted write operation to the audio file without a keyFile.");
-				e.printStackTrace();
-				throw new NullPointerException(e.getMessage());
-			}
-		}
-		return false;
-	}
-
-	
     /*/////////////////////////////////////////////////
     ///////////////Button functionalities////////////// 
     /////////////////////////////////////////////////*/
@@ -165,7 +135,6 @@ public class AudioRecorderActivity extends SessionActivity {
     	if (!currentlyRecording) { startRecording(); }
     	else { stopRecording(); }
     }
-
     
     /** When the user presses the "play" button, toggle (start/stop) playback. */
     public void buttonPlayPressed(View view) {
@@ -199,7 +168,6 @@ public class AudioRecorderActivity extends SessionActivity {
         }
         catch (IOException e) { Log.e(LOG_TAG, "prepare() failed"); }
     }
-
     
     /** Stops playing back the recording, and reset the button to "play" */
     private void stopPlaying() {
@@ -213,15 +181,7 @@ public class AudioRecorderActivity extends SessionActivity {
     	mediaPlayer.reset();
     	mediaPlayer.release();
         mediaPlayer = null;
-    }
-
-    
-    /**Generates new file name variables. The name consists of the time the recording takes place. */
-    private String generateNewEncryptedAudioFileName() {
-		String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
-		return LoginManager.getPatientID() + "_voiceRecording" + "_" + timecode + ".mp4";
-    }
-    
+    }    
     
     /** Start recording from the device's microphone */
     private void startRecording() {
@@ -248,7 +208,6 @@ public class AudioRecorderActivity extends SessionActivity {
         startRecordingTimeout();
         mRecorder.start();
     }
-
     
     // Stop recording, and reset the button to "record"
     private void stopRecording() {
@@ -270,10 +229,9 @@ public class AudioRecorderActivity extends SessionActivity {
     }
     
     
-    /*/////////////////////////////////////////////////*/
-    /*//////// Recording timeout functionality ////////*/ 
-    /*/////////////////////////////////////////////////*/
-    
+    /*///////////////////////////////////////////////////
+    ////////// Recording timeout functionality ////////// 
+    ///////////////////////////////////////////////////*/
     
     /** Automatically stop recording if the recording runs longer than n seconds. */
     private void startRecordingTimeout() {
@@ -305,28 +263,61 @@ public class AudioRecorderActivity extends SessionActivity {
     /** When the user presses "Done", just kill this activity and take them
      * back to the last one; the audio file should already be saved, so we
      * don't need to do anything other than kill the activity.  */
-    public void buttonDonePressed(View v) {
-    	finish();
+    public void buttonDonePressed(View v) { finish(); }
+    
+    /* #############################################################
+     * ######################### File io ###########################
+     * ###########################################################*/
+    
+    /**Generates new file name variables. The name consists of the time the recording takes place. */
+    private String generateNewEncryptedAudioFileName() {
+		String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
+		return LoginManager.getPatientID() + "_voiceRecording" + "_" + timecode + ".mp4";
     }
     
-    
+    /** Reads in the existing temporary audio file and encrypts it. Generates AES keys as needed.
+     * Behavior is to spend as little time writing the file as possible, at the expense of memory.*/
+	private void encryptAudioFile() {
+		if (unencryptedTempAudioFilePath != null) {
+			// If the audio file has been written to, encrypt the audio file
+			String fileName = generateNewEncryptedAudioFileName();
+			byte[] aesKey = EncryptionEngine.newAESKey();
+			String encryptedRSA = null;
+			String encryptedAudio = null;
+			try{
+				encryptedRSA = EncryptionEngine.encryptRSA( aesKey ); 
+				encryptedAudio = EncryptionEngine.encryptAES( readInAudioFile(), aesKey ); }
+			catch (InvalidKeySpecException e) {
+				Log.e("AudioFileManager", "encrypted write operation to the audio file without a keyFile.");
+				throw new NullPointerException( e.getMessage() ); }
+	        catch (InvalidKeyException e) {
+	        	Log.e("AudioFileManager", "encrypted write operation to the audio file without an aes key? how is that even...");
+				throw new NullPointerException( e.getMessage() ); }
+			writePlaintext( encryptedRSA , fileName );
+			writePlaintext( encryptedAudio, fileName );
+		}
+	}
+
+	
     /** Writes string data to a the audio file. */
 	private synchronized void writePlaintext(String data, String outputFileName){
 		FileOutputStream outStream;
-		
-		try {  //write the output, we want mode private because we want to overwrite the existing data
-			outStream = getApplicationContext().openFileOutput(outputFileName, Context.MODE_PRIVATE);
+		try {  //We use MODE_APPEND because... we know it works.
+			outStream = getApplicationContext().openFileOutput(outputFileName, Context.MODE_APPEND);
 			outStream.write( ( data ).getBytes() );
 			outStream.write( "\n".getBytes() );
 			outStream.flush();
 			outStream.close(); }
-		catch (Exception e) {
-			Log.i("audiorecorder", "Write error: " + outputFileName);
+		catch (FileNotFoundException e) {
+			Log.e("AudioRecording", "could not find file to right to, " + outputFileName);
+			e.printStackTrace(); }
+		catch (IOException e) {
+			Log.e("AudioRecording", "error in the write operation: " + e.getMessage() );
 			e.printStackTrace(); }
 	}
     
 	
-	/** Reads a byte array of the current audio file contents
+	/** Reads a byte array of the current temp audio file's contents.
 	 * @return byte array of file contents. */
 	private synchronized byte[] readInAudioFile() {
 		DataInputStream dataInputStream;
@@ -340,10 +331,10 @@ public class AudioRecorderActivity extends SessionActivity {
 				e.printStackTrace(); }
 			dataInputStream.close(); }
 		catch (FileNotFoundException e) {
-			Log.i("audiorecorder", "file " + unencryptedTempAudioFilePath + " does not exist");
+			Log.i("AudioRecording", "file " + unencryptedTempAudioFilePath + " does not exist");
 			e.printStackTrace(); }
 		catch (IOException e) {
-			Log.i("audiorecorder", "could not close " + unencryptedTempAudioFilePath);
+			Log.i("AudioRecording", "could not close " + unencryptedTempAudioFilePath);
 			e.printStackTrace(); }
 		return data;
 	}
