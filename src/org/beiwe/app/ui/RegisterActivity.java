@@ -50,34 +50,33 @@ public class RegisterActivity extends RunningBackgroundProcessActivity {
 	 * Normally there would be interaction with the server, in order to verify the user ID as well as the phone ID.
 	 * Right now it does simple checks to see that the user actually inserted a value.
 	 * @param view */
-	@SuppressLint("ShowToast")
 	public synchronized void registrationSequence(View view) {
 		String userIDStr = userID.getText().toString();
 		String passwordStr = password.getText().toString();
 
 		EditText newPasswordInput = (EditText) findViewById(R.id.registerNewPasswordInput);
 		EditText confirmNewPasswordInput = (EditText) findViewById(R.id.registerConfirmNewPasswordInput);
+		
 		newPassword = newPasswordInput.getText().toString();
 		String confirmNewPassword = confirmNewPasswordInput.getText().toString();
 
 		// If the user id length is too short, alert the user
 		if(userIDStr.length() == 0) {
-			AlertsManager.showAlert( getString(R.string.invalid_user_id), this); }
+			AlertsManager.showAlert( getString(R.string.invalid_user_id), this);
+			return; }
 
 		// If the new password doesn't match the confirm new password
 		else if (!newPassword.equals(confirmNewPassword)) {
-			AlertsManager.showAlert( getString(R.string.password_mismatch), this); }
+			AlertsManager.showAlert( getString(R.string.password_mismatch), this);
+			return; }
 		
 		// If the new password has too few characters, pop up an alert, and do nothing else
-		if (!LoginManager.passwordMeetsRequirements(newPassword, this)) {
-			return; }
+		if (!LoginManager.passwordMeetsRequirements(newPassword, this) ) { return; }
 
 		// If the password length is too short, alert the user
 		else if ( LoginManager.passwordMeetsRequirements(passwordStr, this) ) {
-			
 			LoginManager.setLoginCredentials(userIDStr, passwordStr);
-			
-			Log.d("RegisterActivity", "trying \"" + LoginManager.getPatientID() + "\" with password \"" + LoginManager.getPassword() + "\"" );
+//			Log.d("RegisterActivity", "trying \"" + LoginManager.getPatientID() + "\" with password \"" + LoginManager.getPassword() + "\"" );
 			doRegister(getApplicationContext().getString(R.string.register_url));
 		}
 	}
