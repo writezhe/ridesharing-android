@@ -13,22 +13,18 @@ import android.widget.EditText;
 
 
 //TODO: Eli.  update doc.
-/**Ui presents an interface-less loading activity to the user.  Moves user to the correct activity based on application state.
- * Logs the User into the app, handles correct loading timing of various app components.
- * Helper class {@link LoginManager.java}
+/**The LoginActivity presents the user with a password prompt.
+ * When the app has had no activity (defined as the time since a SessionActiviy last loaded)
+ * it bumps the user to this screen.  This timer occurs in the Background process, so the
+ * timer still triggers even if the app has been backgrounded or killed from the task switcher.
  * @authors Dor Samet, Eli Jones */
 
-public class LoginActivity extends RunningBackgroundProcessActivity {
-	//Note: LoginActivity cannot be a SessionActivity (without some stupid hacks)
-	//because SessionActivities trigger a LoginActivity, which would cause an infinite loop.
-	// In addition the LoginActivity should never the only activity on the activity stack,
-	// so the existence of a BackgroundProcess is assured.
-	
+public class LoginActivity extends RunningBackgroundProcessActivity {	
 	private EditText password;
 	private Context appContext;
 	
 	@Override
-	/**The login activity Always prompts the user for the password. */
+	/**The login activity prompts the user for the password. */
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_login);
@@ -64,5 +60,6 @@ public class LoginActivity extends RunningBackgroundProcessActivity {
 	}
 	
 	@Override
+	/** LoginActivity needs to suppress use of the back button, otherwise it would log the user in without a password. */
 	public void onBackPressed() { }
 }
