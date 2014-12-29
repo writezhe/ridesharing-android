@@ -217,7 +217,7 @@ public class AudioRecorderActivity extends SessionActivity {
         mRecorder.start();
     }
     
-    // Stop recording, and reset the button to "record"
+    /** Stop recording, and reset the button to "record" */
     private void stopRecording() {
     	displayPlaybackButton = true;
     	setPlayButtonVisibility();
