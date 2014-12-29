@@ -25,8 +25,6 @@ import android.widget.EditText;
 
 @SuppressLint("ShowToast")
 public class RegisterActivity extends RunningBackgroundProcessActivity {
-	// extends RunningBackgroundProcessActivity
-
 	// Private fields
 	private EditText userID;
 	private EditText password;
@@ -82,7 +80,8 @@ public class RegisterActivity extends RunningBackgroundProcessActivity {
 	}
 	
 	
-	//Aww yeuh. 
+	/**Implements the server request logic for user device registration. 
+	 * @param url the URL for device registration*/
 	private void doRegister(final String url) { new HTTPAsync(url, this) {
 		@Override
 		protected Void doInBackground(Void... arg0) {
@@ -104,10 +103,10 @@ public class RegisterActivity extends RunningBackgroundProcessActivity {
 				QuestionsDownloader downloader = new QuestionsDownloader(activity.getApplicationContext());
 				downloader.downloadJsonQuestions();
 
+				//This is important.  we need to start timers 
 				backgroundProcess.startTimers();
 
-				/* Create new data files, because now the app now has a patientID to prepend to
-				 * those files' names, instead of NULL_ID */
+				// Create new data files, these will now have a patientID prepended to those files
 				TextFileManager.makeNewFilesForEverything();
 
 				// Start the Main Screen Activity, and kill the RegisterActivity screen
