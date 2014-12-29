@@ -72,9 +72,10 @@ public class LoadingActivity extends RunningBackgroundProcessActivity {
 		else failureExit();
 	}
 	
-	
+	//TODO: josh. can you check and modify that this statement based on whether onPause is called if Destroy is called manually is correct?
 	@Override
-	/** safely ends the connection to the background process. */
+	/**Safely close the connection to the background process, this is necessary because we manually call
+	 * the Destroy() function on this class, so it does not trigger the onPause() function as defined in RunningBackgroundProcessActivity */
 	protected void onDestroy() {
 		super.onDestroy();
 		unbindService(backgroundProcessConnection);

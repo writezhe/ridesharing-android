@@ -58,6 +58,8 @@ public class RunningBackgroundProcessActivity extends Activity {
 
 
 	@Override
+	/**On creation of RunningBackgroundProcessActivity we guarantee that the BackgroundProcess is
+	 * actually running, we then bind to it so we can access program resources. */
 	protected void onResume() {
 		super.onResume();
 		
@@ -69,6 +71,8 @@ public class RunningBackgroundProcessActivity extends Activity {
 
 
 	@Override
+	/** disconnect BackgroundProcessConnection when the Activity closes, otherwise we have a
+	 * memory leak warning (and probably an actual memory leak, too). */
 	protected void onPause() {
 		super.onPause();
 		unbindService(backgroundProcessConnection);
@@ -80,6 +84,7 @@ public class RunningBackgroundProcessActivity extends Activity {
 	####################################################################*/
 	
 	@Override
+	/** Common UI element, the menu button.*/
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.logged_out_menu, menu);
@@ -88,6 +93,7 @@ public class RunningBackgroundProcessActivity extends Activity {
 
 	
 	@Override
+	/** Common UI element, items in menu.*/
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
 		// automatically handle clicks on the Home/Up button, so long
@@ -103,8 +109,9 @@ public class RunningBackgroundProcessActivity extends Activity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-
 	
+	
+	/** sends user to phone, calls the hotline. */
 	protected void callHotline() {
 		Intent callIntent = new Intent(Intent.ACTION_CALL);
 		String phoneNum = (String) getApplicationContext().getResources().getText(R.string.hotline_phone_number);
