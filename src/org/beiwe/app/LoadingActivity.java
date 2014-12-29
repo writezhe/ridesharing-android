@@ -4,8 +4,8 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
 import org.beiwe.app.BackgroundProcess.BackgroundProcessBinder;
-import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.storage.EncryptionEngine;
+import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.ui.AlertsManager;
 import org.beiwe.app.ui.MainMenuActivity;
 import org.beiwe.app.ui.RegisterActivity;
@@ -18,13 +18,12 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
-//TODO: Eli. Update doc.
-/**This is a gateway activity - the point of this activity is to navigate in between the three
- * starting activities.
+/**The LoadingActivity is a temporary RunningBackgroundProcessActivity (Not a SessionActivity,
+ * check out those classes if you are confused) that pops up when the user opens the app.
+ * This activity runs some simple checks to make sure that the device can actually run the app,
+ * and then bumps the user to the correct screen (Register or MainMenu).
  * 
- * Right now all it does is to call on checkLogin, which is the actual transfer mechanism.
- * 
- * This activity is also designed for splash screens.
+ * note: this cannot be a SessionActvity, doing so would cause it to instantiate itself infinitely when a user is logged out. 
  * @author Eli Jones, Dor Samet */
 
 public class LoadingActivity extends RunningBackgroundProcessActivity {
@@ -73,25 +72,26 @@ public class LoadingActivity extends RunningBackgroundProcessActivity {
 		else failureExit();
 	}
 	
-
+	
 	@Override
+	/** safely ends the connection to the background process. */
 	protected void onDestroy() {
 		super.onDestroy();
 		unbindService(backgroundProcessConnection);
 	}
 
-
+	/**CHecks whether device is registered, sends user to the correct screen. */
 	private void loadingSequence() {		
 		//if the device is not registered, push the user to the register activity
 		if ( !LoginManager.isRegistered() ){ startActivity(new Intent(this, RegisterActivity.class) ); }
 		//if device is registered push user to the main menu.
-//		else { startActivity(new Intent(this, MainMenuActivity.class) ); }
 		else { startActivity(new Intent(this, loadThisActivity) ); } 
 		finish(); //destroy the loading screen
 	}
 	
 	
-	/**Tests whether the device can run the hash algorithm the app requires @return */
+	/**Tests whether the device can run the hash algorithm the app requires
+	 * @return boolean of whether hashing works */
 	private boolean isAbleToHash() {
 		// Runs the unsafe hashing function and catches errors, if it catches errors.
 		try {
@@ -102,7 +102,8 @@ public class LoadingActivity extends RunningBackgroundProcessActivity {
 		return false;
 	}
 
-	
+	//TODO: Eli/Josh.  Probably test this.
+	/**Displays an error, then exits. (this may not actually work...) */
 	private void failureExit() {
 		AlertsManager.showErrorAlert( getString( R.string.invalid_device), this);
 		System.exit(1);
