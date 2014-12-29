@@ -7,19 +7,15 @@ import android.content.Context;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-//IMEI: phone SIM identifier.
-//android uuid
 
-/**
- * This is a class that NEEDS to be instantiated in the background process. In order to get the Android ID, the class needs
+
+/**This is a class that NEEDS to be instantiated in the background process. In order to get the Android ID, the class needs
  * Context. Once instantiated, the class assigns two variables for AndroidID and BluetoothMAC. Once they are instantiated,
  * they can be called from different classes to be used. They are hashed when they are called.
  * 
  * The class is used to grab unique ID data, and pass it to the server. The data is used while authenticating users
  * 
- * @author Dor Samet
- *
- */
+ * @author Dor Samet, Eli Jones */
 public class DeviceInfo {
 	private static String androidID;
 	private static String bluetoothMAC;
@@ -41,8 +37,7 @@ public class DeviceInfo {
 	} 
 
 	public static String getAndroidID() { return EncryptionEngine.safeHash(androidID); }
-	
-	//TODO: Eli. test that tehre are no errors on server or device when a null (i.e. empty strings) phone number or mac is encountered. 
+	 
 	public static String getBlootoothMAC() { return EncryptionEngine.safeHash(bluetoothMAC); }
 	
 	public static String getPhoneNumber() { return EncryptionEngine.hashPhoneNumber(phoneNumber); }
