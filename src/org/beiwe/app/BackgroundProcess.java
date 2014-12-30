@@ -79,6 +79,7 @@ public class BackgroundProcess extends Service {
 	// We could also use, and may change it if we encounter problems, START_REDELIVER_INTENT, which has nearly identical behavior.
 	public int onStartCommand(Intent intent, int flags, int startId){
 //		Log.d("BackroundProcess onStartCommand", "started with flag " + flags );
+		// TODO Eli: should there be a comma after the timestamp, so that the timestamp is in its own column, or is this already handled?
 		TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis()+" "+"started with flag " + flags);
 		return START_STICKY;
 	}
@@ -279,14 +280,20 @@ public class BackgroundProcess extends Service {
 			
 			//registers a notification for the user to make an audio recording.
 			if (intent.getAction().equals( appContext.getString(R.string.voice_recording) ) ) {
+				if (!Timer.alarmsAreExactInThisApiVersion()) {
+					timer.setDailyAlarmForTomorrow(intent); }
 				AppNotifications.displayRecordingNotification(appContext); }
 			
 			//registers a notification for the user to take the daily survey.
 			if (intent.getAction().equals( appContext.getString(R.string.daily_survey) ) ) {
+				if (!Timer.alarmsAreExactInThisApiVersion()) {
+					timer.setDailyAlarmForTomorrow(intent); }
 				AppNotifications.displaySurveyNotification(appContext, Type.DAILY); }
 			
 			//registers a notification for the user to take the weekly survey.
 			if (intent.getAction().equals( appContext.getString(R.string.weekly_survey) ) ) {
+				if (!Timer.alarmsAreExactInThisApiVersion()) {
+					timer.setWeeklyAlarmForNextWeek(intent); }
 				AppNotifications.displaySurveyNotification(appContext, Type.WEEKLY); }
 			
 			//runs the user signout logic, bumping the user to the login screen.
