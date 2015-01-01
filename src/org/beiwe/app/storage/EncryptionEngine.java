@@ -122,8 +122,12 @@ public class EncryptionEngine {
 		catch (InvalidKeyException e) { Log.e("Encryption Engine", "The key is not a valid public RSA key."); }
 		
 		try {  encryptedText = rsaCipher.doFinal( data ); }
-		//TODO: Eli/Josh find a way to alert user that they need to reregister their device?
+		
 		catch (IllegalBlockSizeException e1) { Log.e("Encryption Engine", "The key is malformed.");
+			// NOTE FOR FUTURE UPGRADES TO THIS SOFTWARE.
+			// The only solution to this error is to uninstall and reregister the device,
+			// or build entirely new functionality (no.) to redownload the key.
+			// This seems like it would be a security headache, so let's not attempt that.
 			throw new NullPointerException("RSA Key is invalid, the user needs to reregister their device."); } 
 		catch (BadPaddingException e2) { 
 			Log.e("Encryption Engine", "Device does not reconize padding format.  this is interesting because there ISN'T ONE (instance 2)");
