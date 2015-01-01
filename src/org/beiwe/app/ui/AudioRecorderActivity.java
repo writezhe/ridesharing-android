@@ -28,9 +28,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
-//TODO: Later. It would be nice if we could write the temp file to memory instead of to disk. 
-
+	
 /**Audio Recorder
  * 
  * Provides a GUI to record audio clips and save them as files.
