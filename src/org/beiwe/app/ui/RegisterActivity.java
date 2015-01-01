@@ -68,6 +68,7 @@ public class RegisterActivity extends RunningBackgroundProcessActivity {
 			AlertsManager.showAlert( getString(R.string.password_mismatch), this);
 			return; }
 		
+		//TODO: Josh.  This logical clause... does not do... anything.
 		// If the new password has too few characters, pop up an alert, and do nothing else
 		if (!LoginManager.passwordMeetsRequirements(newPassword, this) ) { return; }
 
@@ -87,7 +88,8 @@ public class RegisterActivity extends RunningBackgroundProcessActivity {
 		protected Void doInBackground(Void... arg0) {
 			parameters = PostRequest.makeParameter("bluetooth_id", DeviceInfo.getBlootoothMAC() ) +
 						PostRequest.makeParameter("new_password", newPassword) +
-						PostRequest.makeParameter("phone_number", DeviceInfo.getPhoneNumber() );
+						PostRequest.makeParameter("phone_number", DeviceInfo.getPhoneNumber() )  + 
+						PostRequest.makeParameter("device_id", DeviceInfo.getAndroidID() );
 			response = PostRequest.httpRegister(parameters, url);
 			return null; //hate
 		}

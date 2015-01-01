@@ -44,12 +44,12 @@ public class EncryptionEngine {
 			return unsafeHash( input ); }
 		catch (NoSuchAlgorithmException e) {
 			Log.e("Hashing function", "NoSuchAlgorithmException"); //not gonna happen
-			e.printStackTrace(); }
+			e.printStackTrace();
+			throw new NullPointerException("device is too stupid to live, crashed inside safeHash 1"); }
 		catch (UnsupportedEncodingException e) {
 			Log.e("Hashing function", "UnsupportedEncodingException"); //not gonna happen
-			e.printStackTrace(); }
-		Log.e("hash", "this line of code should absolutely never run.");
-		return null;
+			e.printStackTrace();
+			throw new NullPointerException("device is too stupid to live, crashed inside safeHash 2"); }
 	}
 	
 	
@@ -58,7 +58,7 @@ public class EncryptionEngine {
 	 * @return a Base64 String of the hash result. */
 	public static String unsafeHash (String input) throws NoSuchAlgorithmException, UnsupportedEncodingException{
 		if (input == null ) { Log.e("Hashing", "The hash function received a null string, it should now crash...");}
-		if (input.length() == 0) { return ""; } //if an empty string is inserted, return an empty string.
+		if (input.length() == 0) { return "null_data"; } //if an empty string is provided, return a string describing this.
 		MessageDigest hash = null;
 		hash = MessageDigest.getInstance("SHA-256");
 		hash.update( input.getBytes("UTF-8") );
