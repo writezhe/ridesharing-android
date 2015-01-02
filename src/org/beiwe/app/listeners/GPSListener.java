@@ -17,11 +17,8 @@ import android.util.Log;
  * However, we need the resolution in milliseconds for the line-by-line encryption scheme.
  * So, we grab the system time instead.  This may add a fraction of a second to the timestamp.
  * 
- * There are some features which were considered but not included:
  * We are NOT recording which location provider provided the update, or which location providers
- * are available on a given device.  This was not within scope for the original study, and implementation
- * is not trivial.  
- */
+ * are available on a given device. */
 
 public class GPSListener implements LocationListener {
 	
@@ -82,7 +79,8 @@ public class GPSListener implements LocationListener {
 			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this); 
 			enabled = true; }
 	}
-	
+
+	/** Disable all location updates */
 	public synchronized void turn_off(){
 		// pretty confident this cannot fail.
 		locationManager.removeUpdates(this);
@@ -97,6 +95,7 @@ public class GPSListener implements LocationListener {
 		return enabled;
 	}
 	
+	/** pushes an update to us whenever there is a location update. */
 	@Override
 	public void onLocationChanged(Location location) {		
 		Long javaTimeCode = System.currentTimeMillis();
@@ -110,14 +109,15 @@ public class GPSListener implements LocationListener {
 		GPSFile.writeEncrypted(data);
 	}
 	
-	/** We do not actually need to implement any of these default overrides
-	 *  When a provider has a change, we do not need to record it, and we do not appear to 
-	 *  have any corner cases where anything breaks.  We should be able to simply ignore these. */	
-	// arg0 for Provider Enabled/Disabled is a string saying "network" or "gps".
+	/*  We do not actually need to implement any of the following overrides.
+	 *  When a provider has a changed we do not need to record it, and we have
+	 *  not encountered any corner cases where these are relevant. */
+	
+//  arg0 for Provider Enabled/Disabled is a string saying "network" or "gps".
 	@Override
-	public void onProviderDisabled(String arg0) { Log.d("A location provider was disabled.", arg0); }
+	public void onProviderDisabled(String arg0) { } // Log.d("A location provider was disabled.", arg0); }
 	@Override
-	public void onProviderEnabled(String arg0) { Log.d("A location provider was enabled.", arg0); }
+	public void onProviderEnabled(String arg0) { } //Log.d("A location provider was enabled.", arg0); }
 	@Override
 	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
 		//Called when the provider status changes, when a provider is unable to fetch a location,
