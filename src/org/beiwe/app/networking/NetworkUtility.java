@@ -5,12 +5,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 
-/**
- * @author Eli Jones, Joshua Zagorsky
- */
+/** Contains a single function to check whether wifi is active and functional.
+ * @author Eli Jones, Joshua Zagorsky */
 
 public class NetworkUtility {
-
 	/**Return TRUE if WiFi is connected; FALSE otherwise
 	 * @return boolean value of whether the wifi is on and network connectivity is available. */
 	public static Boolean getWifiState(Context appContext ) {
