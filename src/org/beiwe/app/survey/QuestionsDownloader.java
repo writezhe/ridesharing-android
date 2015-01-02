@@ -19,6 +19,7 @@ public class QuestionsDownloader {
 
 	private Context appContext;
 	
+	/** @param applicationContext We need a Context in order to run certain logic in this class. */
 	public QuestionsDownloader(Context applicationContext) {
 		this.appContext = applicationContext;
 	}
@@ -35,6 +36,8 @@ public class QuestionsDownloader {
 			// Try loading the questions.json file from the local filesystem
 			return getSurveyQuestionsFromFilesystem(type);
 		}
+		//This should probably catch a JSONException, but the auto try-catch also inserts
+		// a catch NullPointerException, which is strange, so we have left it like it is.
 		catch (Exception e1) {
 			/* If the app hasn't downloaded questions.json and saved it to
 			 * the filesystem, return an empty String, which will break the

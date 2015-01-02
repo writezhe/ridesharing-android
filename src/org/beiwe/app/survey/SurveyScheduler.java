@@ -4,6 +4,9 @@ import org.beiwe.app.BackgroundProcess;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**Some handy functions for scheduling surveys.
+ * @author Josh Zagorsky*/
+
 public class SurveyScheduler {
 	
 	public static void scheduleSurvey(String jsonSurveyString) {

@@ -1,5 +1,7 @@
 package org.beiwe.app.survey;
 
+//TODO: Josh.  This needs a doc string?
+
 public class QuestionDescription {
 	private String id = null;
 	private String type = null;

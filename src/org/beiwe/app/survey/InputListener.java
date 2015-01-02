@@ -16,7 +16,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 public class InputListener {
 	
 	private Context appContext;
-	
+	/** InputListener requires a Context */
 	public InputListener(Context applicationContext) {
 		this.appContext = applicationContext;
 	}

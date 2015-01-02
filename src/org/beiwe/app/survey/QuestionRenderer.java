@@ -25,6 +25,7 @@ public class QuestionRenderer {
 	private int viewID;
 	private int questionNumber;
 	
+	//TODO: Josh.  This constructor is complicated that I think it needs a doc string saying it... sets up the question layout? and requires a context for future processing.
 	public QuestionRenderer(Context applicationContext) {
 		
 		appContext = applicationContext;

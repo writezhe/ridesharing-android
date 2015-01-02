@@ -5,7 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.SeekBar;
 
-/**
+/** A customized slider ui element so that we can have a grayed out effect for untouched sliders.
  * Based on http://stackoverflow.com/a/19008611
  * @author Josh Zagorsky
  *

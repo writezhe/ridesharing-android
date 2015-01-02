@@ -2,6 +2,8 @@ package org.beiwe.app.survey;
 
 import org.beiwe.app.R;
 
+//TODO: josh.  Insert a few lines of documentation describing what this is for.
+
 public class SurveyType {
 	public enum Type {
 		DAILY (002,
