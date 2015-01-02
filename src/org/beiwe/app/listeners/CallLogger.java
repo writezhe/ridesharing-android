@@ -11,14 +11,14 @@ import android.os.Handler;
 import android.provider.CallLog;
 import android.util.Log;
 
-/** @author Dor Samet */
+/** The CallLogger logs data from voice call, sent or received.
+ *  @author Dor Samet */
 
 public class CallLogger extends ContentObserver {
 
 	public static String header = "hashed phone number,call type,date,duration in seconds";
 
-	// Private variables
-	private Handler handler = null;
+	// URI for the database
 	private Uri allCalls = Uri.parse("content://call_log/calls");
 
 	// Last recorded values
@@ -45,10 +45,11 @@ public class CallLogger extends ContentObserver {
 	};
 
 
-	// Constructor of the call logger object
-	public CallLogger(Handler theHandler, Context context) {
-		super(theHandler);
-		theHandler = handler;
+
+	/** ContentObservers require a Handler object, we require a context for future logic.
+	 * */
+	public CallLogger(Handler handler, Context context) {
+		super(handler);
 		appContext = context;
 
 		// Pull database info, set lastKnownSize
@@ -64,8 +65,9 @@ public class CallLogger extends ContentObserver {
 	}
 
 	
-	/**On change, Looks for the last row, then goes back until reaching the row of the last recorded call,
-	 * Then goes back down until reaching the newest line, and records everything to the log file. */
+	/**onChange receives pushed updates.
+	 * We Look for the last row, then goes back until reaching the row of the last recorded call,
+	 * then goes back down until reaching the newest line, and records everything to the log file. */
 	public void onChange(boolean selfChange) {
 		super.onChange(selfChange);
 		
