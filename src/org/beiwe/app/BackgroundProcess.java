@@ -136,14 +136,14 @@ public class BackgroundProcess extends Service {
 	 * Note: Bluetooth has several checks to make sure that it actually exists on the device with the capabilities we need.
 	 * Checking for Bluetooth LE is necessary because it is an optional extension to Bluetooth 4.0. */
 	public void startBluetooth(){
-		// TODO Josh: log (to DeviceInfo or something) whether the device supports Bluetooth LE
+		// TODO later. log (to DeviceInfo or something) whether the device supports Bluetooth LE
 		if ( appContext.getPackageManager().hasSystemFeature( PackageManager.FEATURE_BLUETOOTH_LE ) ) {
 			Log.d("BackgroundProcess.java", "This device supports Bluetooth LE; the app will log which other devices are in Bluetooth range.");
 			this.bluetoothListener = new BluetoothListener();
 		}
 		else {
-			// TODO Josh: show an alert saying "this device does not support Bluetooth LE; it won't be able to blahblahblah
-			//  Josh: this could be a big, fat, rabbit hole to display a message from the background process.
+			// TODO later: show an alert saying "this device does not support Bluetooth LE; it won't be able to blahblahblah
+			//  this could be a big, fat, rabbit hole to display a message from the background process.
 			//  I think we should make the button in debug display a message, users don't care about whether the bluetooth feature works
 			Log.d("BackgroundProcess.java", "This device does not support Bluetooth LE; the app will not log which other devices are in Bluetooth range.");
 			this.bluetoothListener = null;
