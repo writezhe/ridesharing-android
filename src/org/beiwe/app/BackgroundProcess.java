@@ -65,8 +65,7 @@ public class BackgroundProcess extends Service {
 		registerTimers();
 		
 		DeviceInfo.getPhoneNumber();
-		//If this device is both registered and timers have not already been started, start them!
-		//TODO: Eli/Josh. check that timers are started after registration?
+		//If this device is registered, start timers!
 		if (LoginManager.isRegistered()) { startTimers(); }
 	}
 
