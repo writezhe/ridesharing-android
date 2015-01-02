@@ -10,10 +10,20 @@ import android.net.Uri;
 import android.os.Handler;
 import android.util.Log;
 
+/**MMSSentLogger listens for outgoing MMSes.
+ * In order to catch outgoing MMSes we need to monitor the texts database using a ContentObserver
+ * and then make a database query based on the 
+ * 
+ * @author Eli */
+
 public class MMSSentLogger extends ContentObserver{
 	
 	Context appContext = null;
 	
+	/** ContentObservers require a Handler object for instantiation,
+	 * and our future logic will require a Context.
+	 * @param handler
+	 * @param context */
 	public MMSSentLogger (Handler handler, Context context ) {
 		super(handler);
 		this.appContext = context;
@@ -23,16 +33,17 @@ public class MMSSentLogger extends ContentObserver{
 	public void onChange(boolean selfChange){
 		super.onChange(selfChange);
 
-//		Cursor cursor = appContext.getContentResolver().query( Uri.parse("content://mms"), null, "msg_box = 4", null, "_id");
+//		Cursor cursor = appContext.getContentResolver().query( Uri.parse("content://mms"), null, "msg_box = 4", null, "_id"); //this does not appear to work.
 		Cursor mmsCursor = appContext.getContentResolver().query( Uri.parse("content://mms/"), null, null, null, "date DESC");
 		Cursor smsCursor = appContext.getContentResolver().query( Uri.parse("content://mms-sms/conversations?simple=true"), null, null, null, "date");
 		
-		if ( !check_and_position_cursor(mmsCursor) || !check_and_position_cursor(smsCursor) ){ return; }
+		//test the MMS and SMS cursors for basic validity, move them into position.  If anything is invalid, exit.
+		if ( !checkAndPositionCursor(mmsCursor) || !checkAndPositionCursor(smsCursor) ){ return; }
+		//test that the data in these cursors are useful, if not, exit.
+		if ( !checkValidData(mmsCursor) || !checkValidData(smsCursor) ) { return; }
 		
-		if ( !smsCursor.getString(smsCursor.getColumnIndex( "transport_type" )).equals("mms") ) {
-//			Log.i("MMS stuff", "that was not an mms, ignoring.!");
-			return;
-		}
+		//we only care about MMSes in this code, so if we received an SMS change, we exit here.
+		if ( !smsCursor.getString(smsCursor.getColumnIndex( "transport_type" )).equals("mms") ) { return; }
 		
 		long date = mmsCursor.getInt( mmsCursor.getColumnIndex("date") ) * 1000L;
 		String recipient = smsCursor.getString( smsCursor.getColumnIndex("recipient_address") );
@@ -44,6 +55,8 @@ public class MMSSentLogger extends ContentObserver{
 			Log.i("mms", write_to_file);
 			TextFileManager.getTextsLogFile().writeEncrypted(write_to_file);
 		}
+		
+		//verbose logging code
 //		String message = getMmsText( "" + mmsCursor.getInt( mmsCursor.getColumnIndex("_id")) );
 //		Log.e("MMS message", "message length = " + message.length() );
 //		Log.e("MMS message", "message = " + message);
@@ -55,20 +68,30 @@ public class MMSSentLogger extends ContentObserver{
 		
 	}
 	
-	public boolean check_and_position_cursor(Cursor cursor){
+	/**Checks for basic validity of our database cursors, moves database cursor to correct location. 
+	 * @param cursor
+	 * @return returns false if cursor is invalid */
+	public boolean checkAndPositionCursor(Cursor cursor){
 		if (cursor == null || cursor.getCount() < 1) {
-//			Log.e("MMS validity check","invalid cursor");
+//			Log.e("MMS validity check failed","invalid cursor");
 			return false; }
 		
+		//move cursor to most recent update (this should hold true, but databases can have concurrent access etc.)
 		cursor.moveToFirst();
-//		Log.i("MMS COUNT", "Count: " + cursor.getCount());
-	
-		if (cursor.getInt( cursor.getColumnIndex("msg_box") ) != 2) {
-//			Log.e("MMS DUMP", "NOPE! :D");
-			return false; }
+//		Log.i("MMS COUNT", "Count: " + cursor.getCount())
+		return true;
+	}
+
+	/** Checks for data validity */
+	public boolean checkValidData(Cursor cursor){
+		//if the message box is not box number 2 (sent) then this was one of those many,
+		// many, extra, dumb, onChange triggers, and we return false.
+		if (cursor.getInt( cursor.getColumnIndex("msg_box") ) != 2 ) { return false; }
 		return true;
 	}
 	
+	//The following is the code that was written to work out what the data coming in meant.
+	// Since this is probably going to be useful to someone in the future, keep it.
 //	public void print_things_from_valid_sources( Cursor cursor ){
 //		
 //		for (String column : cursor.getColumnNames() ) {
@@ -123,6 +146,4 @@ public class MMSSentLogger extends ContentObserver{
 //	    }
 //	    return builder.toString();
 //	}
-	
-	
 }
