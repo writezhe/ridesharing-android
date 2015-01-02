@@ -13,11 +13,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 /**
- * The activity used to show the graph to the user. This activity currenlty shows the Beiwe website that houses the graph.
+ * The activity that shows the graph to the user. Displays the Beiwe webpage that houses the graph.
  * It also features the options to call the hotline, as well as immediate sign out
  * 
  * @author Dor Samet
- *
  */
 @SuppressLint("SetJavaScriptEnabled")
 public class GraphActivity extends SessionActivity {

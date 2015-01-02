@@ -5,6 +5,8 @@ import org.beiwe.app.RunningBackgroundProcessActivity;
 
 import android.os.Bundle;
 
+/**The about page!
+ * @author Everyone! */
 public class AboutActivity extends RunningBackgroundProcessActivity {
 
 	@Override

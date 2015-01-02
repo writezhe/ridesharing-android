@@ -16,6 +16,11 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+/**The SurveyActivity displays to the user the survey that has been pushed to the device.
+ * Layout in this activity is rendered, not static.
+ * @author Josh Zagorsky
+ */
+
 public class SurveyActivity extends SessionActivity {
 	
 	private SurveyAnswersRecorder answersRecorder;

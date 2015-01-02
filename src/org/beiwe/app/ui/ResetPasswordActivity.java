@@ -10,16 +10,12 @@ import android.view.View;
 import android.widget.EditText;
 
 /**
- * A class to manage users who forgot their passwords. For future references, this should work very similar to
- * the register class, and will work with the server.
- * 
+ * An activity to manage users who forgot their passwords.
  * @author Dor Samet
- *
  */
 
 @SuppressLint("ShowToast")
 public class ResetPasswordActivity extends RunningBackgroundProcessActivity {
-	// extends RunningBackgroundProcessActivity
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

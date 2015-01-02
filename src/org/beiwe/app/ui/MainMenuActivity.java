@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 
 /**The main menu activity of the app. Currently displays 4 buttons - Audio Recording, Graph, Hotline, and Sign out.
- * @author Dor Samet, Eli Jones */
+ * @author Dor Samet */
 public class MainMenuActivity extends SessionActivity {
 	//extends a SessionActivity
 	
