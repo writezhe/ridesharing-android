@@ -24,12 +24,9 @@ import org.beiwe.app.storage.TextFileManager;
 import android.content.Context;
 import android.util.Log;
 
-//potentially useful:
-// http://stackoverflow.com/questions/5643704/reusing-ssl-sessions-in-android-with-httpclient
-
-/** 
- * @author Josh, Eli, Dor
- */
+/** PostRequest is our class for handling all HTTP operations we need; they are all in the form of HTTP post requests. 
+ * All HTTP connections are HTTPS, and automatically include a password and identifying information. 
+ * @author Josh, Eli, Dor */
 
 public class PostRequest {
 
