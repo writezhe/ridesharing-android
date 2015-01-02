@@ -65,8 +65,7 @@ public class LoadingActivity extends RunningBackgroundProcessActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_loading);
 
-
-		if ( !testHashing() ) {
+		if ( testHashing() ) {
 			Intent startingIntent = new Intent(this.getApplicationContext(), BackgroundProcess.class);
 			startingIntent.addFlags(Intent.FLAG_FROM_BACKGROUND);
 			startService(startingIntent);
@@ -80,21 +79,14 @@ public class LoadingActivity extends RunningBackgroundProcessActivity {
 //		if ( !testEncryption( ) ) { failureExit(); } 
 	}
 	
-	//TODO: josh. can you check and modify that this statement based on whether onPause is called if Destroy is called manually is correct?
-	@Override
-	/**Safely close the connection to the background process, this is necessary because we manually call
-	 * the Destroy() function on this class, so it does not trigger the onPause() function as defined in RunningBackgroundProcessActivity */
-	protected void onDestroy() {
-		super.onDestroy();
-		unbindService(backgroundProcessConnection);
-	}
 
 	/**CHecks whether device is registered, sends user to the correct screen. */
 	private void loadingSequence() {		
 		//if the device is not registered, push the user to the register activity
 		if ( !LoginManager.isRegistered() ){ startActivity(new Intent(this, RegisterActivity.class) ); }
 		//if device is registered push user to the main menu.
-		else { startActivity(new Intent(this, loadThisActivity) ); } 
+		else { startActivity(new Intent(this, loadThisActivity) ); }
+		unbindService(backgroundProcessConnection);
 		finish(); //destroy the loading screen
 	}
 	
