@@ -14,16 +14,17 @@ import android.util.Log;
  * get more data from that, such as whether a message was opened. */
 
 /**
- * Listens for Broadcast saying that an SMS message has been received.
+ * Listens for Broadcast saying that an SMS message has been received, and records
+ * their timestamp to the log.
  * 
  * Note: the timestamp is the time at which the phone received the message.
  * For SMS messages (but not MMS messages), it is also possible to record the
  * time the message was sent; this is recorded in the last column ("time sent")
  * 
- * @author Josh Zagorsky June 2014
- */
+ * @author Josh Zagorsky June 2014 */
 public class SmsReceivedLogger extends BroadcastReceiver {
 
+	/** onReceive, splits incoming texts into SMS and MMS. */
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		if (intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {
@@ -34,7 +35,7 @@ public class SmsReceivedLogger extends BroadcastReceiver {
 		}
 	}
 
-	
+	/** pulls out source phone number from an MMS, writes info to texts log */
 	private void handleIncomingMMS(Intent intent) {
 		 Bundle bundle = intent.getExtras();
 
@@ -62,7 +63,7 @@ public class SmsReceivedLogger extends BroadcastReceiver {
          }
 	}
 	
-	
+	/** pulls out source phone number and length from an SMS, writes info to texts log. */
 	private void handleIncomingSMS(Intent intent) {
 		Bundle bundle = intent.getExtras();
 		SmsMessage[] messages = null;
@@ -90,7 +91,6 @@ public class SmsReceivedLogger extends BroadcastReceiver {
 			catch (Exception e) {
 				Log.i("SMSReceivedLogger", "SMS_RECEIVED Caught exception: " + e.getMessage());
 			}
-		}		
+		}
 	}
-
 }
