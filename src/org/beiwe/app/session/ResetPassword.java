@@ -56,7 +56,7 @@ public class ResetPassword {
 		doResetPasswordRequest();
 	}
 	
-	
+	/** Runs the network operation to reset the password on the server.*/
 	public void doResetPasswordRequest() {
 		String url = appContext.getString(R.string.reset_password_url);
 		new HTTPAsync(url, currentActivity) {
@@ -90,5 +90,4 @@ public class ResetPassword {
 			}
 		};
 	}
-
 }
