@@ -18,12 +18,14 @@ public class LoginManager {
 	public static String NULL_ID = "NULLID";
 	
 	private static int PRIVATE_MODE = 0;
-
+	private static boolean isInitialized = false;
+	
 	// Private things that are encapsulated using functions in this class 
 	private static SharedPreferences pref; 
 	private static Editor editor;
 	private static Context appContext;
-
+	
+	
 	// Editor key-strings
 	private static final String PREF_NAME = "BeiwePref";
 	private static final String KEY_ID = "uid";
@@ -32,21 +34,20 @@ public class LoginManager {
 	private static final String LOGIN_EXPIRATION = "loginExpirationTimestamp";
 	
 	/*#####################################################################################
-	######################### Constructor and Initializing ################################
+	################################### Initializing ######################################
 	#####################################################################################*/
 
-	/**Private singleton constructor method for the session manager class
+	/**The publicly accessible initializing function for the LoginManager, initializes the internal variables.
 	 * @param context */
-	private LoginManager(Context context){
+	public static void initialize( Context context ) {
+//		new LoginManager(context);
+		if ( isInitialized ) { return; }
 		appContext = context;
 		pref = appContext.getSharedPreferences(PREF_NAME, PRIVATE_MODE); //sets Shared Preferences private mode
 		editor = pref.edit();
 		editor.commit();
-	}
-
-	/**The publicly accessible "constructor" for the LoginManager, initializes the required Context variable.
-	 * @param context */
-	public static void initialize( Context context ) { new LoginManager(context); } 
+		isInitialized = true;
+	} 
 
 	/*#####################################################################################
 	##################################### Booleans ########################################
@@ -103,8 +104,6 @@ public class LoginManager {
 			AlertsManager.showAlert(alertMessage, currentActivity);
 			return false;
 		}
-		// TODO: later.
-		// Improvement idea: set more password requirements (must have both letters and numbers)
 		return true;
 	}
 

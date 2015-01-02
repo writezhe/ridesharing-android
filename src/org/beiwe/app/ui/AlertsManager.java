@@ -34,7 +34,7 @@ public class AlertsManager {
 		builder.create().show();
 	}
 	
-	public static void showErrorAlert(String message, Activity activity) {
+	public static void showErrorAlert(String message, Activity activity, final int alertNumber) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 		builder.setTitle("A critical error occured");
 		builder.setMessage(message);
@@ -42,7 +42,8 @@ public class AlertsManager {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				System.exit(0);
+				//TODO: later. this system exit operation does not work if the app loads a different activity over the activity that spawned this Alert
+				System.exit(alertNumber);
 			}
 		});		
 		builder.create().show();

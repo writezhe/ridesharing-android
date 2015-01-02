@@ -126,6 +126,9 @@ public class BackgroundProcess extends Service {
 	    alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 10000, restartServicePendingIntent);
 	}
 	
+	/** Stops the BackgroundProcess instance. */
+	public void stop() { this.stopSelf(); }
+	
 	/*#############################################################################
 	#########################         Starters              #######################
 	#############################################################################*/

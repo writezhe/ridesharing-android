@@ -1,7 +1,9 @@
 package org.beiwe.app;
 
 import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 import org.beiwe.app.BackgroundProcess.BackgroundProcessBinder;
 import org.beiwe.app.storage.EncryptionEngine;
@@ -62,14 +64,20 @@ public class LoadingActivity extends RunningBackgroundProcessActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_loading);
-		
-		if ( isAbleToHash() ) {
+
+
+		if ( !testHashing() ) {
 			Intent startingIntent = new Intent(this.getApplicationContext(), BackgroundProcess.class);
 			startingIntent.addFlags(Intent.FLAG_FROM_BACKGROUND);
 			startService(startingIntent);
 			bindService( startingIntent, backgroundProcessConnection, Context.BIND_AUTO_CREATE);
 		}
-		else failureExit();
+		else { failureExit(); }
+		
+		//TODO: later. to do add additional compatibility tests we need to guarantee that the background service is already running,
+		//this is complex, causes issues, and is currently a very low priority problem.  the following lines of code tend to crash the app, and are commented out.
+//		LoginManager.initialize( getApplicationContext() ); //We need to Initialize the LoginManager very early.
+//		if ( !testEncryption( ) ) { failureExit(); } 
 	}
 	
 	//TODO: josh. can you check and modify that this statement based on whether onPause is called if Destroy is called manually is correct?
@@ -91,22 +99,38 @@ public class LoadingActivity extends RunningBackgroundProcessActivity {
 	}
 	
 	
+	/*##################################################################################
+	############################### Testing Function ###################################
+	##################################################################################*/
+	
 	/**Tests whether the device can run the hash algorithm the app requires
 	 * @return boolean of whether hashing works */
-	private boolean isAbleToHash() {
+	private Boolean testHashing() {
 		// Runs the unsafe hashing function and catches errors, if it catches errors.
-		try {
-			EncryptionEngine.unsafeHash("input");
-			return true; }
-		catch (NoSuchAlgorithmException noSuchAlgorithm) { failureExit(); }
-		catch (UnsupportedEncodingException unSupportedEncoding) { failureExit(); }
-		return false;
+		try { EncryptionEngine.unsafeHash("input"); }
+		catch (NoSuchAlgorithmException noSuchAlgorithm) { return false; }
+		catch (UnsupportedEncodingException unSupportedEncoding) { return false; }
+		return true;
 	}
+	
+//	/** Returns true if the device cannot use the necessary encryption.
+//	 * I apologize for the double negative, but the boolean logic is stupid if .*/
+//	private boolean testEncryption() {
+//		if ( LoginManager.isRegistered() ) {	
+//			byte[] testKey = EncryptionEngine.newAESKey();
+//			try { EncryptionEngine.encryptAES("test", testKey); }
+//			catch (InvalidKeyException e) { return false; } //device does not support aes
+//			catch (InvalidKeySpecException e) { return false; } //device does not support rsa
+//		}
+//		return true;
+//	}
+	
 
-	//TODO: Eli/Josh.  Probably test this.
-	/**Displays an error, then exits. (this may not actually work...) */
+	/**Displays error, then exit.*/
 	private void failureExit() {
-		AlertsManager.showErrorAlert( getString( R.string.invalid_device), this);
-		System.exit(1);
+		//TODO: later. the following line is time sensitive and breaks constantly, it will require signifigant time to solve
+		//changed the alert message to inform the user they should uninstall the app (otherwise the background service will still run) 
+//		backgroundProcess.stop();
+		AlertsManager.showErrorAlert( getString( R.string.invalid_device), this, 1);
 	}
 }
