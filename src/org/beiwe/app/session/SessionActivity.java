@@ -24,13 +24,15 @@ public class SessionActivity extends RunningBackgroundProcessActivity {
 	########################## Log-in Logic ##############################
 	####################################################################*/
 	
+	/** when onResume is called we need to authenticate the user and
+	 * bump them to the login screen if they have timed out. */
 	@Override
 	protected void onResume() {
 		super.onResume();
 		authenticateAndLoginIfNecessary();
 	}
 	
-
+	/** When onPause is called we need to set the timeout. */
 	@Override
 	protected void onPause() {
 		super.onPause();
@@ -60,6 +62,7 @@ public class SessionActivity extends RunningBackgroundProcessActivity {
 	########################## Common UI #################################
 	####################################################################*/
 	
+	/** Sets up the contents of the menu button. */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; adds items to the action bar if it is present.
@@ -67,7 +70,7 @@ public class SessionActivity extends RunningBackgroundProcessActivity {
 		return true;
 	}
 
-	
+	/** Sets up the behavior of the items in the menu. */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action bar item clicks here. The action bar will
@@ -84,5 +87,4 @@ public class SessionActivity extends RunningBackgroundProcessActivity {
 			return super.onOptionsItemSelected(item);
 		}
 	}
-	
 }
