@@ -81,43 +81,55 @@ public class AppNotifications {
 	 * 
 	 * @param appContext
 	 * @param notifCode
-	 * @param drawableCode
+	 * @param iconID
 	 * @return
 	 */
-	private static Notification setupNotification(Context appContext, int notifCode, int drawableCode, SurveyType.Type surveyType) {
+	private static Notification setupNotification(Context appContext, int notifCode, int iconID, SurveyType.Type surveyType) {
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(appContext);
-		Intent intent;
-		builder.setContentTitle(appContext.getString(R.string.app_name));
-		if (notifCode == recordingCode) { // Sets up a voice recording notification
-			builder.setContentText(appContext.getResources().getString(R.string.recording_notification_details));
-			builder.setTicker(appContext.getResources().getString(R.string.recording_notification_message));
-	        intent = new Intent(appContext, AudioRecorderActivity.class);
-		} else { // Sets up a survey notification
-			builder.setContentText(appContext.getResources().getString(surveyType.notificationDetailsResource));
-			builder.setTicker(appContext.getResources().getString(surveyType.notificationMsgResource));
+		Intent activityIntent;
+		builder.setContentTitle( appContext.getString(R.string.app_name) );
+		if ( notifCode == recordingCode ) { // Sets up a voice recording notification
+			builder.setContentText( appContext.getResources().getString(R.string.recording_notification_details) );
+			builder.setTicker( appContext.getResources().getString(R.string.recording_notification_message) );
+	        activityIntent = new Intent( appContext, AudioRecorderActivity.class ); }
+	        
+		else { // Sets up a survey notification
+			builder.setContentText(appContext.getResources().getString( surveyType.notificationDetailsResource) );
+			builder.setTicker(appContext.getResources().getString( surveyType.notificationMsgResource ) );
 			/* The intent needs an action string that is unique for each survey type, because the
 			 * flag PendingIntent.FLAG_UPDATE_CURRENT means that any time a new identical
 			 * PendingIntent gets created, it replaces the existing one of the same type. We want a
 			 * new Daily Survey PendingIntent to replace an existing PendingIntent, but NOT replace
 			 * an existing Weekly Survey PendingIntent. See here: http://stackoverflow.com/a/10538554 */ 
-			intent = new Intent(surveyType.dictKey); 
-	        intent.setClass(appContext, SurveyActivity.class);
-	        intent.putExtra("SurveyType", surveyType.dictKey);
+			activityIntent = new Intent(surveyType.dictKey); 
+	        activityIntent.setClass( appContext, SurveyActivity.class );
+	        activityIntent.putExtra( "SurveyType", surveyType.dictKey );
 		}
-		// Sets up the two icons to be displayed
-		builder.setSmallIcon(drawableCode);
-		Bitmap bitmap = BitmapFactory.decodeResource(appContext.getResources(), drawableCode);
+		
+		// add the two icons to be displayed
+		builder.setSmallIcon(iconID);
+		Bitmap bitmap = BitmapFactory.decodeResource(appContext.getResources(), iconID);
         builder.setLargeIcon(bitmap);
 
-		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		activityIntent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP );
+//		Intent.FLAG_ACTIVITY_NEW_TASK
+//		Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
 
-		PendingIntent pendingIntent = PendingIntent.getActivity(
+		PendingIntent pendingActivityIntent = PendingIntent.getActivity(
 				appContext, // Context - where we are now
 				1, // Request code meaning "close the notification once done"
-				intent, // The actual intent - where are we going
-				PendingIntent.FLAG_UPDATE_CURRENT); // The result should be updated to be the current
-
-		builder.setContentIntent(pendingIntent);
+				activityIntent, // The actual intent - where are we going
+				PendingIntent.FLAG_CANCEL_CURRENT); // The result should be updated to be the current
+		
+		/*known problem:
+		 * if we use PendingIntent.FLAG_UPDATE_CURRENT the notification will not launch the survey on api 19, there are two known solutions:
+		 * use PendingIntent.FLAG_CANCEL_CURRENT
+		 * or
+		 * add android:exported="true" to the activity's permissions in the Manifest.
+		 * source: http://stackoverflow.com/questions/21250364/notification-click-not-launch-the-given-activity-on-nexus-phones
+		 */
+		
+		builder.setContentIntent(pendingActivityIntent);
 		Notification notification = builder.build();
 		return notification;
 	}
