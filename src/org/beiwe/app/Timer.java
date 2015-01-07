@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.SystemClock;
+import android.util.Log;
 
 /** The Timer class provides a meeans of setting various timers.  These are used by the BackgroundProcess
  * for devices that must be turned on/off, and timing the user to automatically logout after a period of time.
@@ -48,7 +49,10 @@ public class Timer {
 	public static final long VOICE_RECORDING_MAX_TIME_LENGTH = 5 * 60 * 1000L;
 	// Time between when the user last loads a new screen and when the app automatically logs out
 	public static final long MILLISECONDS_BEFORE_AUTO_LOGOUT = 5 * 60 * 1000L;
-
+	
+	public static final long ONE_DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000L;
+	public static final long ONE_WEEK_IN_MILLISECONDS = 7 * ONE_DAY_IN_MILLISECONDS;
+	
 	// Control Message Intents
 	public static Intent accelerometerOffIntent;
 	public static Intent accelerometerOnIntent;
@@ -159,6 +163,8 @@ public class Timer {
 	 * @param hourOfDay in 24-hr time, when the alarm should fire. E.g., "19" means 7pm every day
 	 * @param intentToBeBroadcast the intent to be broadcast when the alarm fires      */
 	public void setupDailyRepeatingAlarm(int hourOfDay, Intent intentToBeBroadcast) {
+		intentToBeBroadcast.putExtra("hour_of_day", hourOfDay);
+		
 		Calendar date = new GregorianCalendar();
 		date.set(Calendar.HOUR_OF_DAY, hourOfDay);
 		date.set(Calendar.MINUTE, 0);
@@ -166,11 +172,19 @@ public class Timer {
 		date.set(Calendar.MILLISECOND, 0);
 		long triggerAtMillis = date.getTimeInMillis();
 		//long triggerAtMillis = System.currentTimeMillis() - 5000L;  // For debugging only
-		
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
-		long oneDayInMillis = 24 * 60 * 60 * 1000L;
-		//long oneDayInMillis = 5 * 60 * 1000L;  // For debugging only
-		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, triggerAtMillis, oneDayInMillis, pendingIntent);		
+		long timeTillFire = triggerAtMillis - System.currentTimeMillis();
+		Log.d("Timer.java", "josh setupDailyRepeatingAlarm timeTillFire = " + timeTillFire + " milliseconds");
+
+		if (alarmsAreExactInThisApiVersion()) {
+			PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
+			alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, triggerAtMillis, ONE_DAY_IN_MILLISECONDS, pendingIntent); }
+		else {
+			// If we've already passed the trigger time for today, show the notification immediately
+			if (triggerAtMillis < System.currentTimeMillis()) {
+				appContext.sendBroadcast(intentToBeBroadcast); }
+			// Otherwise, set an alarm to go off at the trigger time later today
+			else {
+				setDailyAlarmForTomorrow(intentToBeBroadcast); } }
 	}
 	
 	
@@ -179,22 +193,74 @@ public class Timer {
 	 * @param hourOfDay in 24-hr time, when the alarm should fire. E.g., "19" means 7pm every day
 	 * @param intentToBeBroadcast the intent to be broadcast when the alarm fires      */
 	public void setupWeeklyRepeatingAlarm(int dayOfWeek, int hourOfDay, Intent intentToBeBroadcast) {
-		long oneWeekInMillis = 7 * 24 * 60 * 60 * 1000L;
-		//long oneWeekInMillis = 30 * 60 * 1000L;  // For debugging only
+		intentToBeBroadcast.putExtra("day_of_week", dayOfWeek);
+		intentToBeBroadcast.putExtra("hour_of_day", hourOfDay);
 
+		if (alarmsAreExactInThisApiVersion()) {
+			Calendar date = new GregorianCalendar();
+			date.set(Calendar.DAY_OF_WEEK, dayOfWeek);
+			date.set(Calendar.HOUR_OF_DAY, hourOfDay);
+			date.set(Calendar.MINUTE, 0);
+			date.set(Calendar.SECOND, 0);
+			date.set(Calendar.MILLISECOND, 0);
+			// The trigger date is in the past so that when you register, a weekly survey is immediately available
+			long triggerAtMillis = date.getTimeInMillis() - ONE_WEEK_IN_MILLISECONDS;
+			//long triggerAtMillis = System.currentTimeMillis() - 5000L;  // For debugging only
+			long timeTillFire = triggerAtMillis - System.currentTimeMillis();
+			Log.d("Timer.java", "josh setupWeeklyRepeatingAlarm timeTillFire = " + timeTillFire + " milliseconds");
+			
+			PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
+			alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, triggerAtMillis, ONE_WEEK_IN_MILLISECONDS, pendingIntent); }
+		else {
+			/* Send the broadcast right now, so that when you register, a weekly survey is
+			 * immediately available (note: we don't do this for the daily survey) */
+			appContext.sendBroadcast(intentToBeBroadcast); }
+	}
+	
+
+	public void setDailyAlarmForTomorrow(Intent intentToBeBroadcast) {
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
+		int hourOfDay = intentToBeBroadcast.getExtras().getInt("hour_of_day");
+		
+		Calendar date = new GregorianCalendar();
+		date.set(Calendar.HOUR_OF_DAY, hourOfDay);
+		date.set(Calendar.MINUTE, 0);
+		date.set(Calendar.SECOND, 0);
+		date.set(Calendar.MILLISECOND, 0);
+		long triggerAtMillis = date.getTimeInMillis();
+		
+		// If today's trigger time has already passed, set the alarm for tomorrow; otherwise leave it for today
+		if (date.getTimeInMillis() < System.currentTimeMillis()) {
+			triggerAtMillis += ONE_DAY_IN_MILLISECONDS; }
+		long timeTillFire = triggerAtMillis - System.currentTimeMillis();
+		Log.d("Timer.java", "josh DailyAlarm timeTillFire = " + timeTillFire + " milliseconds from now");
+		
+		alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
+	}
+	
+	
+	public void setWeeklyAlarmForNextWeek(Intent intentToBeBroadcast) {
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
+		int dayOfWeek = intentToBeBroadcast.getExtras().getInt("day_of_week");
+		int hourOfDay = intentToBeBroadcast.getExtras().getInt("hour_of_day");
+		
 		Calendar date = new GregorianCalendar();
 		date.set(Calendar.DAY_OF_WEEK, dayOfWeek);
 		date.set(Calendar.HOUR_OF_DAY, hourOfDay);
 		date.set(Calendar.MINUTE, 0);
 		date.set(Calendar.SECOND, 0);
 		date.set(Calendar.MILLISECOND, 0);
-		// The trigger date is in the past so that when you register, a survey is immediately available
-		long triggerAtMillis = date.getTimeInMillis() - oneWeekInMillis;
-		//long triggerAtMillis = System.currentTimeMillis() - 5000L;  // For debugging only
+		long triggerAtMillis = date.getTimeInMillis();
 		
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
-		alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, triggerAtMillis, oneWeekInMillis, pendingIntent);		
+		// If this week's trigger time has already passed, set the alarm for next week; otherwise leave it for this week
+		if (date.getTimeInMillis() < System.currentTimeMillis()) {
+			triggerAtMillis += ONE_WEEK_IN_MILLISECONDS; }
+		long timeTillFire = triggerAtMillis - System.currentTimeMillis();
+		Log.d("Timer.java", "josh WeeklyAlarm timeTillFire = " + timeTillFire + " milliseconds from now");
+
+		alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
 	}
+	
 	
 	/** setupExactTimeAlarm creates an Exact Alarm that will go off at a specific time within a
 	 * period, e.g. every hour (period), at 47 minutes past the hour (start time within period).
@@ -213,15 +279,27 @@ public class Timer {
 	 * ############################ Other Utility Functions #############################
 	 * ################################################################################*/
 	
+	/** In API 19 and above, alarms are inexact (to save power).  In API 18 and
+	 *  below, alarms are exact.
+	 *  This function checks the phone's operating system's API version and
+	 *  returns TRUE if alarms are exact in this version (i.e., if it's API 18
+	 *  or below), and returns FALSE if alarms are inexact.  */
+	public static Boolean alarmsAreExactInThisApiVersion() {
+		int currentApiVersion = android.os.Build.VERSION.SDK_INT;
+		if (currentApiVersion < android.os.Build.VERSION_CODES.KITKAT) {
+			return true; }
+		else {
+			return false; }
+	}
+	
 	/** Calls AlarmManager.set() for API < 19, and AlarmManager.setExact() for API 19+
 	 * For an exact alarm, it seems you need to use .set() for API 18 and below, and
 	 * .setExact() for API 19 (KitKat) and above. */
 	private void setExactAlarm(int type, long triggerAtMillis, PendingIntent operation) {
-		int currentApiVersion = android.os.Build.VERSION.SDK_INT;
-		if (currentApiVersion < android.os.Build.VERSION_CODES.KITKAT) {
-			alarmManager.set(type, triggerAtMillis, operation);
-		}
-		else { alarmManager.setExact(type, triggerAtMillis, operation); }	
+		if (alarmsAreExactInThisApiVersion()) {			
+			alarmManager.set(type, triggerAtMillis, operation); }
+		else {
+			alarmManager.setExact(type, triggerAtMillis, operation); }
 	}
 	
 	/**Cancels an alarm.
