@@ -214,9 +214,11 @@ public class BackgroundProcess extends Service {
 			timer.setupExactTimeAlarm(Timer.BLUETOOTH_PERIOD, Timer.BLUETOOTH_START_TIME_IN_PERIOD, Timer.bluetoothOnIntent); }
 		if (!timer.alarmIsSet(Timer.wifiLogIntent)) {
 			timer.setupFuzzyPowerOptimizedRepeatingAlarm(Timer.WIFI_LOG_PERIOD, Timer.wifiLogIntent); }
+		
 		if (!timer.alarmIsSet(Timer.voiceRecordingIntent)) {
 			timer.setupDailyRepeatingAlarm(Timer.VOICE_RECORDING_HOUR_OF_DAY, Timer.voiceRecordingIntent); }
-		if (!timer.alarmIsSet(Timer.uploadDatafilesIntent)) {
+		
+		if (!timer.alarmIsSet(Timer.uploadDatafilesIntent)) {	
 			timer.setupFuzzyPowerOptimizedRepeatingAlarm(Timer.UPLOAD_DATA_FILES_PERIOD, Timer.uploadDatafilesIntent); }
 		if (!timer.alarmIsSet(Timer.createNewDataFilesIntent)) {
 			timer.setupFuzzyPowerOptimizedRepeatingAlarm(Timer.CREATE_NEW_DATA_FILES_PERIOD, Timer.createNewDataFilesIntent); }
@@ -225,13 +227,16 @@ public class BackgroundProcess extends Service {
 	}
 	
 	public static void startAutomaticLogoutCountdownTimer(){
+		if (timer == null) Log.w("bacgroundProcess", "timer is null, this is about to crash");
 		timer.setupExactSingleAlarm(Timer.MILLISECONDS_BEFORE_AUTO_LOGOUT, Timer.signoutIntent);
 		LoginManager.loginOrRefreshLogin();
 	}
 
 	public static void clearAutomaticLogoutCountdownTimer() { timer.cancelAlarm(Timer.signoutIntent); }
 	
-	public static void setDailySurvey(int hour) { timer.setupDailyRepeatingAlarm(hour, Timer.dailySurveyIntent); }
+	public static void setDailySurvey(int hour) { 
+		
+		timer.setupDailyRepeatingAlarm(hour, Timer.dailySurveyIntent); }
 	
 	public static void setWeeklySurvey(int hour, int dayOfWeek) { timer.setupWeeklyRepeatingAlarm(dayOfWeek, hour, Timer.weeklySurveyIntent); }
 	

@@ -7,6 +7,7 @@ import org.beiwe.app.ui.LoginActivity;
 import org.beiwe.app.ui.ResetPasswordActivity;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -29,6 +30,7 @@ public class SessionActivity extends RunningBackgroundProcessActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
+		LoginManager.initialize(getApplicationContext()); // yeah this function has been rewritten to handle getting called too much.
 		authenticateAndLoginIfNecessary();
 	}
 	
@@ -36,12 +38,22 @@ public class SessionActivity extends RunningBackgroundProcessActivity {
 	@Override
 	protected void onPause() {
 		super.onPause();
+		if (backgroundProcess == null) Log.w("sessionactivity 1", "background process is null, you have a race condition with instantiating the background process.");
 		BackgroundProcess.clearAutomaticLogoutCountdownTimer();
 	}
 
+	/*FIXME: We have some sort of race condition here that can be replicated by doing the following.
+	 * open the app, login, scroll down to the audio recording button and tap it.
+	 * go to the task switcher and swipe away the app, then immediately go up to the audio recording notification and tap it.
+	 * the app will try to open, and then crash.
+	 * 
+	 * sessionactivity 2
+	 */
 
 	/** If the user is NOT logged in, take them to the login page */
 	protected void authenticateAndLoginIfNecessary() {
+		if (backgroundProcess == null) Log.w("sessionactivity 2", "background process is null, you have a race condition with instantiating the background process.");
+		
 		if (LoginManager.isLoggedIn()) {
 			BackgroundProcess.startAutomaticLogoutCountdownTimer();
 		}
