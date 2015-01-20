@@ -1,15 +1,12 @@
 package org.beiwe.app;
 
 import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
 
 import org.beiwe.app.BackgroundProcess.BackgroundProcessBinder;
-import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.session.LoginManager;
+import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.ui.AlertsManager;
-import org.beiwe.app.ui.MainMenuActivity;
 import org.beiwe.app.ui.RegisterActivity;
 
 import android.content.ComponentName;
