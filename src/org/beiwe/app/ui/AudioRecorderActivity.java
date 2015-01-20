@@ -17,6 +17,7 @@ import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.TextFileManager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
@@ -269,7 +270,10 @@ public class AudioRecorderActivity extends SessionActivity {
     /** When the user presses "Done", just kill this activity and take them
      * back to the last one; the audio file should already be saved, so we
      * don't need to do anything other than kill the activity.  */
-    public void buttonDonePressed(View v) { finish(); }
+    public void buttonDonePressed(View v) {
+    	startActivity(new Intent(getApplicationContext(), MainMenuActivity.class));
+    	finish();
+    }
     
     /* #############################################################
      * ######################### File io ###########################
