@@ -42,14 +42,6 @@ public class SessionActivity extends RunningBackgroundProcessActivity {
 		BackgroundProcess.clearAutomaticLogoutCountdownTimer();
 	}
 
-	/*FIXME: We have some sort of race condition here that can be replicated by doing the following.
-	 * open the app, login, scroll down to the audio recording button and tap it.
-	 * go to the task switcher and swipe away the app, then immediately go up to the audio recording notification and tap it.
-	 * the app will try to open, and then crash.
-	 * 
-	 * sessionactivity 2
-	 */
-
 	/** If the user is NOT logged in, take them to the login page */
 	protected void authenticateAndLoginIfNecessary() {
 		if (backgroundProcess == null) Log.w("sessionactivity 2", "background process is null, you have a race condition with instantiating the background process.");
