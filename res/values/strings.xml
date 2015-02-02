@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Reference strings in Java code using a line like this:
     appContext.getResources().getString(R.string.name_of_string) -->
@@ -43,7 +43,13 @@
 	<string name="button_wifi_scan">Scan Wifi</string>
     <string name="check_if_alarm_is_set">Check if alarm is set</string>
     <string name="unregister_button">unregister</string>
-	
+	<string name="button_logcat_key_file">logcat key file</string>
+    <string name="button_encryption">ENCRYPT!~!!!</string>
+    <string name="button_show_daily_survey_notification">Show daily survey notification</string>
+    <string name="button_show_weekly_survey_notification">Show weekly survey notification</string>
+    <string name="button_go_to_main_menu">Go To Main Menu</string>
+    <string name="button_make_new_files">Make New Files.</string>
+    
 
     <!-- Error Messages -->
     <string name="question_error_text">If you are reading this, something broke. Please contact the study administrators, and tell them that there is a bug in the survey!</string>
@@ -54,7 +60,7 @@
     <string name="survey_submit_success_message">Thank you! Your answers have been recorded and saved. A clinician may not look at your answers for weeks, so if you want help or feel unsafe, press the \'Call Hotline\' button.</string>
     <string name="survey_submit_error_message">There has been an error; your answers may not have been recorded and saved</string>
     <string name="button_upload">Upload Data Files</string>
-    <string name="survey_loading_text">Downloading the most up-to-date survey questions from the server...</string>
+    <string name="survey_loading_text" tools:ignore="TypographyEllipsis">Downloading the most up-to-date survey questions from the server...</string>
 
     <!-- Login Activity Strings -->
     <string name="login_page_for_app">Login page for app</string>
@@ -103,7 +109,7 @@
     <string name="couldnt_register">Could not register this device</string>
 
     <!-- Loading Activity Strings -->
-    <string name="loading_activity_loading_message">Loading...</string>
+    <string name="loading_activity_loading_message" tools:ignore="TypographyEllipsis">Loading...</string>
     <string name="survey_notification_title_template">Survey: %1$s</string>
     <string name="action_share">Share</string>
     <string name="action_reply">Reply</string>
@@ -160,5 +166,6 @@
     <!-- About Page -->
     <string name="title_activity_about">About Beiwe</string>
     <string name="about_page_body">Beiwe is a public health research tool that passively and actively collects data about your behavior and phone usage.  It actively collects data by regularly asking you to fill out surveys and to make voice recordings.  It passively collects data by recording your movement (with GPS and accelerometer), whom you call and text, and when you are near other phones that have the app installed.\n\nAlthough Beiwe collects a huge amount of data, all of the data are anonymized; Beiwe does not ever know your name, your phone number, or other identifying characteristics.  Beiwe only knows you as a randomly-generated ID number.  Beiwe also does not know the phone numbers of any person you call or text; it one-way-encrypts all phone numbers.  Beiwe can tell when you call the same person twice, but it doesn\'t know whom that person is.\n\nBeiwe was designed by Dr. Jukka-Pekka Onnela at the Harvard School of Public Health for use in a research study run by Dr. Roy Perlis at Massachusetts General Hospital.  The software was built by Zagaran, Inc., in Cambridge, Massachusetts.</string>
+    <string name="send_recording_notification">Send Recording Notification</string>
 
 </resources>

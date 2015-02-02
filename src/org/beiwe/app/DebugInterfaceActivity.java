@@ -5,6 +5,7 @@ import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.storage.TextFileManager;
+import org.beiwe.app.survey.SurveyType;
 import org.beiwe.app.survey.SurveyType.Type;
 import org.beiwe.app.ui.AlertsManager;
 import org.beiwe.app.ui.AppNotifications;
@@ -125,4 +126,13 @@ public class DebugInterfaceActivity extends SessionActivity {
 	public void loadMainMenu(View view) { startActivity(new Intent(appContext, MainMenuActivity.class) ); }
 	
 	public void makeNewFiles(View view) { TextFileManager.makeNewFilesForEverything(); }
+	
+	public void popDailySurveyNotification(View view) {
+		AppNotifications.displaySurveyNotification(getApplicationContext(), SurveyType.Type.DAILY);
+	}
+	
+	public void popWeeklySurveyNotification(View view) {
+		AppNotifications.displaySurveyNotification(getApplicationContext(), SurveyType.Type.WEEKLY);
+	}
+	
 }
