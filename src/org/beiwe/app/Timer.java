@@ -184,7 +184,27 @@ public class Timer {
 				appContext.sendBroadcast(intentToBeBroadcast); }
 			// Otherwise, set an alarm to go off at the trigger time later today
 			else {
-				setDailyAlarmForTomorrow(intentToBeBroadcast); } }
+				setupDailyAlarmForTomorrow(intentToBeBroadcast); } }
+	}
+	
+	public void setupDailyAlarmForTomorrow(Intent intentToBeBroadcast) {
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
+		int hourOfDay = intentToBeBroadcast.getExtras().getInt("hour_of_day");
+		
+		Calendar date = new GregorianCalendar();
+		date.set(Calendar.HOUR_OF_DAY, hourOfDay);
+		date.set(Calendar.MINUTE, 0);
+		date.set(Calendar.SECOND, 0);
+		date.set(Calendar.MILLISECOND, 0);
+		long triggerAtMillis = date.getTimeInMillis();
+		
+		// If today's trigger time has already passed, set the alarm for tomorrow; otherwise leave it for today
+		if (date.getTimeInMillis() < System.currentTimeMillis()) {
+			triggerAtMillis += ONE_DAY_IN_MILLISECONDS; }
+		long timeTillFire = triggerAtMillis - System.currentTimeMillis();
+		Log.d("Timer.java", "josh DailyAlarm timeTillFire = " + timeTillFire + " milliseconds from now");
+		
+		alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
 	}
 	
 	
@@ -217,29 +237,8 @@ public class Timer {
 			appContext.sendBroadcast(intentToBeBroadcast); }
 	}
 	
-
-	public void setDailyAlarmForTomorrow(Intent intentToBeBroadcast) {
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
-		int hourOfDay = intentToBeBroadcast.getExtras().getInt("hour_of_day");
-		
-		Calendar date = new GregorianCalendar();
-		date.set(Calendar.HOUR_OF_DAY, hourOfDay);
-		date.set(Calendar.MINUTE, 0);
-		date.set(Calendar.SECOND, 0);
-		date.set(Calendar.MILLISECOND, 0);
-		long triggerAtMillis = date.getTimeInMillis();
-		
-		// If today's trigger time has already passed, set the alarm for tomorrow; otherwise leave it for today
-		if (date.getTimeInMillis() < System.currentTimeMillis()) {
-			triggerAtMillis += ONE_DAY_IN_MILLISECONDS; }
-		long timeTillFire = triggerAtMillis - System.currentTimeMillis();
-		Log.d("Timer.java", "josh DailyAlarm timeTillFire = " + timeTillFire + " milliseconds from now");
-		
-		alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
-	}
 	
-	
-	public void setWeeklyAlarmForNextWeek(Intent intentToBeBroadcast) {
+	public void setupWeeklyAlarmForNextWeek(Intent intentToBeBroadcast) {
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
 		int dayOfWeek = intentToBeBroadcast.getExtras().getInt("day_of_week");
 		int hourOfDay = intentToBeBroadcast.getExtras().getInt("hour_of_day");

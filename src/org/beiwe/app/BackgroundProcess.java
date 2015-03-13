@@ -238,7 +238,7 @@ public class BackgroundProcess extends Service {
 		
 		timer.setupDailyRepeatingAlarm(hour, Timer.dailySurveyIntent); }
 	
-	public static void setWeeklySurvey(int hour, int dayOfWeek) { timer.setupWeeklyRepeatingAlarm(dayOfWeek, hour, Timer.weeklySurveyIntent); }
+	public static void setupWeeklySurvey(int hour, int dayOfWeek) { timer.setupWeeklyRepeatingAlarm(dayOfWeek, hour, Timer.weeklySurveyIntent); }
 	
 	
 	/**The timerReceiver is an Android BroadcastReceiver that listens for our timer events to trigger,
@@ -286,19 +286,19 @@ public class BackgroundProcess extends Service {
 			//registers a notification for the user to make an audio recording.
 			if (intent.getAction().equals( appContext.getString(R.string.voice_recording) ) ) {
 				if (!Timer.alarmsAreExactInThisApiVersion()) {
-					timer.setDailyAlarmForTomorrow(intent); }
+					timer.setupDailyAlarmForTomorrow(intent); }
 				AppNotifications.displayRecordingNotification(appContext); }
 			
 			//registers a notification for the user to take the daily survey.
 			if (intent.getAction().equals( appContext.getString(R.string.daily_survey) ) ) {
 				if (!Timer.alarmsAreExactInThisApiVersion()) {
-					timer.setDailyAlarmForTomorrow(intent); }
+					timer.setupDailyAlarmForTomorrow(intent); }
 				AppNotifications.displaySurveyNotification(appContext, Type.DAILY); }
 			
 			//registers a notification for the user to take the weekly survey.
 			if (intent.getAction().equals( appContext.getString(R.string.weekly_survey) ) ) {
 				if (!Timer.alarmsAreExactInThisApiVersion()) {
-					timer.setWeeklyAlarmForNextWeek(intent); }
+					timer.setupWeeklyAlarmForNextWeek(intent); }
 				AppNotifications.displaySurveyNotification(appContext, Type.WEEKLY); }
 			
 			//runs the user signout logic, bumping the user to the login screen.
