@@ -85,6 +85,14 @@ public class LoginManager {
 		editor.commit();
 	}
 
+	public static void setFirstWeeklyRun(boolean value){
+		editor.putBoolean("weekly_ever", value);
+		editor.commit();
+	}
+	
+	public static boolean checkFirstWeeklyRun (){
+		return pref.getBoolean("weekly_ever", false);
+	}
 
 	/*######################################################################################
 	##################################### Passwords ########################################
