@@ -145,7 +145,9 @@ public class QuestionsDownloader {
 		}
 	}
 	
-	
+	/** Writes a survey to a file and schedules the survey to run.
+	 * @param survey survey data.
+	 * @param file the TextFileManager instance to write data to. */
 	private void writeSurveyToFile(String survey, TextFileManager file) {
 		Log.d("QuestionsDownloader.java", "writeSurveyToFile() called on " + file.name);
 		if (survey != null) {
