@@ -12,6 +12,7 @@ import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.QuestionsDownloader;
+import org.beiwe.app.survey.SurveyScheduler;
 import org.beiwe.app.survey.SurveyType.Type;
 import org.beiwe.app.ui.AppNotifications;
 import org.beiwe.app.ui.LoginActivity;
@@ -203,10 +204,9 @@ public class BackgroundProcess extends Service {
 	#############################################################################*/
 	
 	public void startTimers() {
-		// If there isn't a timer set for accelerometer ON or OFF, set the accelerometer to turn ON sometime in the future
+		// Sensor timers.
 		if (!timer.alarmIsSet(Timer.accelerometerOnIntent) && !timer.alarmIsSet(Timer.accelerometerOffIntent)) {
 			timer.setupFuzzySinglePowerOptimizedAlarm( Timer.ACCELEROMETER_OFF_MINIMUM_DURATION, Timer.accelerometerOnIntent); }
-		// If there isn't a timer set for GPS ON or OFF, set the GPS to turn ON sometime in the future
 		if (!timer.alarmIsSet(Timer.gpsOnIntent) && !timer.alarmIsSet(Timer.gpsOffIntent)) {
 			timer.setupFuzzySinglePowerOptimizedAlarm( Timer.GPS_OFF_MINIMUM_DURATION, Timer.gpsOnIntent); }
 		if (!timer.alarmIsSet(Timer.bluetoothOnIntent) && !timer.alarmIsSet(Timer.bluetoothOffIntent)) {
@@ -214,10 +214,7 @@ public class BackgroundProcess extends Service {
 		if (!timer.alarmIsSet(Timer.wifiLogIntent)) {
 			timer.setupFuzzyPowerOptimizedRepeatingAlarm(Timer.WIFI_LOG_PERIOD, Timer.wifiLogIntent); }
 		
-		if (!timer.alarmIsSet(Timer.voiceRecordingIntent)) {
-			timer.startDailyAlarm(Timer.VOICE_RECORDING_HOUR_OF_DAY, Timer.voiceRecordingIntent); }
-
-		
+		// Functionality timers.
 		if (!timer.alarmIsSet(Timer.uploadDatafilesIntent)) {	
 			timer.setupFuzzyPowerOptimizedRepeatingAlarm(Timer.UPLOAD_DATA_FILES_PERIOD, Timer.uploadDatafilesIntent); }
 		if (!timer.alarmIsSet(Timer.createNewDataFilesIntent)) {
@@ -225,7 +222,16 @@ public class BackgroundProcess extends Service {
 		if (!timer.alarmIsSet(Timer.checkForNewSurveysIntent)) {
 			timer.setupFuzzyPowerOptimizedRepeatingAlarm(Timer.CHECK_FOR_NEW_SURVEYS_PERIOD, Timer.checkForNewSurveysIntent); }
 		
-		//todo: this bit
+		// Survey timers.
+		if (!timer.alarmIsSet(Timer.voiceRecordingIntent)) {
+			//the voice recording time of day is hardcoded...
+			timer.startDailyAlarm(Timer.VOICE_RECORDING_HOUR_OF_DAY, Timer.voiceRecordingIntent); }
+		String dailyQuestions = TextFileManager.getCurrentDailyQuestionsFile().read();
+		if (!timer.alarmIsSet(Timer.dailySurveyIntent) && dailyQuestions != null || dailyQuestions.length() != 0 ){
+			SurveyScheduler.scheduleSurvey(dailyQuestions); }
+		String weeklyQuestions = TextFileManager.getCurrentWeeklyQuestionsFile().read();
+		if (!timer.alarmIsSet(Timer.weeklySurveyIntent) && weeklyQuestions != null && weeklyQuestions.length() != 0 ){
+			SurveyScheduler.scheduleSurvey(weeklyQuestions); }
 	}
 	
 	public static void startAutomaticLogoutCountdownTimer(){
