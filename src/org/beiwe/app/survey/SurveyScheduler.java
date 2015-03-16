@@ -20,7 +20,7 @@ public class SurveyScheduler {
 		else {
 			// Schedule a weekly survey
 			int dayOfWeek = dayOfWeekToAskSurvey(jsonSurveyString);
-			BackgroundProcess.setupWeeklySurvey(hour, dayOfWeek);
+			BackgroundProcess.runWeeklySurveyStart(hour, dayOfWeek);
 		}
 	}
 	

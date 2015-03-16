@@ -4,6 +4,10 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Random;
 
+import org.beiwe.app.session.LoginManager;
+import org.beiwe.app.survey.SurveyType.Type;
+import org.beiwe.app.ui.AppNotifications;
+
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -159,35 +163,38 @@ public class Timer {
 	}
 	
 	
-	/** Set a repeating, once-a-day alarm. Uses AlarmManager.setRepeating, which may not be precise
+	/**Sets up and starts an alarm that will trigger on the hour provided.  The intent will have
+	 * an Extra added to it defining the time of day.
+	 * Usage: when this intent is received by a BroadcastReceiver simply call setupDailyAlarm
+	 * and pass in the intent, setupDailyAlarm handles it from there.
 	 * @param hourOfDay in 24-hr time, when the alarm should fire. E.g., "19" means 7pm every day
 	 * @param intentToBeBroadcast the intent to be broadcast when the alarm fires      */
-	public void setupDailyRepeatingAlarm(int hourOfDay, Intent intentToBeBroadcast) {
-		intentToBeBroadcast.putExtra("hour_of_day", hourOfDay);
-		
-		Calendar date = new GregorianCalendar();
-		date.set(Calendar.HOUR_OF_DAY, hourOfDay);
-		date.set(Calendar.MINUTE, 0);
-		date.set(Calendar.SECOND, 0);
-		date.set(Calendar.MILLISECOND, 0);
-		long triggerAtMillis = date.getTimeInMillis();
-		//long triggerAtMillis = System.currentTimeMillis() - 5000L;  // For debugging only
-		long timeTillFire = triggerAtMillis - System.currentTimeMillis();
-		Log.d("Timer.java", "josh setupDailyRepeatingAlarm timeTillFire = " + timeTillFire + " milliseconds");
-
-		if (alarmsAreExactInThisApiVersion()) {
-			PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
-			alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, triggerAtMillis, ONE_DAY_IN_MILLISECONDS, pendingIntent); }
-		else {
-			// If we've already passed the trigger time for today, show the notification immediately
-			if (triggerAtMillis < System.currentTimeMillis()) {
-				appContext.sendBroadcast(intentToBeBroadcast); }
-			// Otherwise, set an alarm to go off at the trigger time later today
-			else {
-				setupDailyAlarmForTomorrow(intentToBeBroadcast); } }
+	public void startDailyAlarm(int hourOfDay, Intent intentToBeBroadcast) {
+		intentToBeBroadcast.putExtra("hour_of_day", hourOfDay);			
+		setupDailyAlarm(intentToBeBroadcast);
 	}
 	
-	public void setupDailyAlarmForTomorrow(Intent intentToBeBroadcast) {
+	
+	/**Sets up and starts an alarm that will trigger on the hour and day of the week provided. The
+	 * intent will have extras added to it defining the day and time of day.
+	 * Usage: when this intent is received by a BroadcastReceiver simply call setupWeeklySurveyAlarm
+	 * and pass in the intent, setupWeeklySurveyAlarm handles it from there.
+	 * @param dayOfWeek the integer value of the day of the week to run the survey
+	 * @param hourOfDay the hour in the day that the weekly survey should be run at. */
+	public void startWeeklyAlarm(int dayOfWeek, int hourOfDay, Intent intentToBeBroadcast){
+		Log.i("timers", "weekly alarm first run");
+		if ( LoginManager.checkFirstWeeklyRun() ) { //only notify on initial download of the survey.
+			AppNotifications.displaySurveyNotification(appContext, Type.WEEKLY);
+		}
+		intentToBeBroadcast.putExtra("day_of_week", dayOfWeek);
+		intentToBeBroadcast.putExtra("hour_of_day", hourOfDay);
+		appContext.sendBroadcast(intentToBeBroadcast);
+	}
+	
+	
+	/**Takes a specially prepared intent and sets it to go off at the time provided.
+	 * @param intentToBeBroadcast an intent that has been prepared by the startDailyAlarm function.*/
+	public void setupDailyAlarm(Intent intentToBeBroadcast) {
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
 		int hourOfDay = intentToBeBroadcast.getExtras().getInt("hour_of_day");
 		
@@ -197,51 +204,24 @@ public class Timer {
 		date.set(Calendar.SECOND, 0);
 		date.set(Calendar.MILLISECOND, 0);
 		long triggerAtMillis = date.getTimeInMillis();
-		
 		// If today's trigger time has already passed, set the alarm for tomorrow; otherwise leave it for today
 		if (date.getTimeInMillis() < System.currentTimeMillis()) {
 			triggerAtMillis += ONE_DAY_IN_MILLISECONDS; }
-		long timeTillFire = triggerAtMillis - System.currentTimeMillis();
-		Log.d("Timer.java", "josh DailyAlarm timeTillFire = " + timeTillFire + " milliseconds from now");
-		
+//		long timeTillFire = triggerAtMillis - System.currentTimeMillis();
+//		Log.d("Timer.java", "josh DailyAlarm timeTillFire = " + timeTillFire + " milliseconds from now");
 		alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
 	}
 	
 	
-	/** Set a repeating, once-a-week alarm. Uses AlarmManager.setRepeating, which may not be precise
-	 * @param dayOfWeek Sunday = 1, Saturday = 7; or use Calendar.SUNDAY, Calendar.MONDAY, etc.
-	 * @param hourOfDay in 24-hr time, when the alarm should fire. E.g., "19" means 7pm every day
-	 * @param intentToBeBroadcast the intent to be broadcast when the alarm fires      */
-	public void setupWeeklyRepeatingAlarm(int dayOfWeek, int hourOfDay, Intent intentToBeBroadcast) {
-		intentToBeBroadcast.putExtra("day_of_week", dayOfWeek);
-		intentToBeBroadcast.putExtra("hour_of_day", hourOfDay);
-
-		if (alarmsAreExactInThisApiVersion()) {
-			Calendar date = new GregorianCalendar();
-			date.set(Calendar.DAY_OF_WEEK, dayOfWeek);
-			date.set(Calendar.HOUR_OF_DAY, hourOfDay);
-			date.set(Calendar.MINUTE, 0);
-			date.set(Calendar.SECOND, 0);
-			date.set(Calendar.MILLISECOND, 0);
-			// The trigger date is in the past so that when you register, a weekly survey is immediately available
-			long triggerAtMillis = date.getTimeInMillis() - ONE_WEEK_IN_MILLISECONDS;
-			//long triggerAtMillis = System.currentTimeMillis() - 5000L;  // For debugging only
-			long timeTillFire = triggerAtMillis - System.currentTimeMillis();
-			Log.d("Timer.java", "josh setupWeeklyRepeatingAlarm timeTillFire = " + timeTillFire + " milliseconds");
-			
-			PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
-			alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, triggerAtMillis, ONE_WEEK_IN_MILLISECONDS, pendingIntent); }
-		else {
-			/* Send the broadcast right now, so that when you register, a weekly survey is
-			 * immediately available (note: we don't do this for the daily survey) */
-			appContext.sendBroadcast(intentToBeBroadcast); }
-	}
-	
-	
-	public void setupWeeklyAlarmForNextWeek(Intent intentToBeBroadcast) {
+	/**Takes a specially prepared intent and sets it to go off at the day and time provided
+	 * @param intentToBeBroadcast an intent that has been prepared by the startWeeklyAlarm function.*/
+	public void setupWeeklySurveyAlarm(Intent intentToBeBroadcast) {
+		Log.i("timers", "weekly alarm set...");
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
 		int dayOfWeek = intentToBeBroadcast.getExtras().getInt("day_of_week");
 		int hourOfDay = intentToBeBroadcast.getExtras().getInt("hour_of_day");
+		Log.i("timers", ""+dayOfWeek);
+		Log.i("timers", ""+hourOfDay);
 		
 		Calendar date = new GregorianCalendar();
 		date.set(Calendar.DAY_OF_WEEK, dayOfWeek);
@@ -254,9 +234,9 @@ public class Timer {
 		// If this week's trigger time has already passed, set the alarm for next week; otherwise leave it for this week
 		if (date.getTimeInMillis() < System.currentTimeMillis()) {
 			triggerAtMillis += ONE_WEEK_IN_MILLISECONDS; }
-		long timeTillFire = triggerAtMillis - System.currentTimeMillis();
-		Log.d("Timer.java", "josh WeeklyAlarm timeTillFire = " + timeTillFire + " milliseconds from now");
-
+//		triggerAtMillis = System.currentTimeMillis() + 15000; //hax, debug code.
+//		long timeTillFire = triggerAtMillis - System.currentTimeMillis();
+//		Log.d("Timer.java", "josh WeeklyAlarm timeTillFire = " + timeTillFire + " milliseconds from now");
 		alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
 	}
 	

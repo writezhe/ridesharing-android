@@ -79,7 +79,6 @@ public class BackgroundProcess extends Service {
 	// We could also use, and may change it if we encounter problems, START_REDELIVER_INTENT, which has nearly identical behavior.
 	public int onStartCommand(Intent intent, int flags, int startId){
 //		Log.d("BackroundProcess onStartCommand", "started with flag " + flags );
-		// TODO Eli: should there be a comma after the timestamp, so that the timestamp is in its own column, or is this already handled?
 		TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis()+" "+"started with flag " + flags);
 		return START_STICKY;
 	}
@@ -216,7 +215,8 @@ public class BackgroundProcess extends Service {
 			timer.setupFuzzyPowerOptimizedRepeatingAlarm(Timer.WIFI_LOG_PERIOD, Timer.wifiLogIntent); }
 		
 		if (!timer.alarmIsSet(Timer.voiceRecordingIntent)) {
-			timer.setupDailyRepeatingAlarm(Timer.VOICE_RECORDING_HOUR_OF_DAY, Timer.voiceRecordingIntent); }
+			timer.startDailyAlarm(Timer.VOICE_RECORDING_HOUR_OF_DAY, Timer.voiceRecordingIntent); }
+
 		
 		if (!timer.alarmIsSet(Timer.uploadDatafilesIntent)) {	
 			timer.setupFuzzyPowerOptimizedRepeatingAlarm(Timer.UPLOAD_DATA_FILES_PERIOD, Timer.uploadDatafilesIntent); }
@@ -224,6 +224,8 @@ public class BackgroundProcess extends Service {
 			timer.setupFuzzyPowerOptimizedRepeatingAlarm(Timer.CREATE_NEW_DATA_FILES_PERIOD, Timer.createNewDataFilesIntent); }
 		if (!timer.alarmIsSet(Timer.checkForNewSurveysIntent)) {
 			timer.setupFuzzyPowerOptimizedRepeatingAlarm(Timer.CHECK_FOR_NEW_SURVEYS_PERIOD, Timer.checkForNewSurveysIntent); }
+		
+		//todo: this bit
 	}
 	
 	public static void startAutomaticLogoutCountdownTimer(){
@@ -236,9 +238,12 @@ public class BackgroundProcess extends Service {
 	
 	public static void setDailySurvey(int hour) { 
 		
-		timer.setupDailyRepeatingAlarm(hour, Timer.dailySurveyIntent); }
+		timer.startDailyAlarm(hour, Timer.dailySurveyIntent); }
 	
-	public static void setupWeeklySurvey(int hour, int dayOfWeek) { timer.setupWeeklyRepeatingAlarm(dayOfWeek, hour, Timer.weeklySurveyIntent); }
+	public static void runWeeklySurveyStart(int hour, int dayOfWeek) { 
+		//just passes data into the timer to start the weekly, all logic is handled inside.
+		timer.startWeeklyAlarm(dayOfWeek, hour, Timer.weeklySurveyIntent);
+	}
 	
 	
 	/**The timerReceiver is an Android BroadcastReceiver that listens for our timer events to trigger,
@@ -285,20 +290,17 @@ public class BackgroundProcess extends Service {
 			
 			//registers a notification for the user to make an audio recording.
 			if (intent.getAction().equals( appContext.getString(R.string.voice_recording) ) ) {
-				if (!Timer.alarmsAreExactInThisApiVersion()) {
-					timer.setupDailyAlarmForTomorrow(intent); }
+				timer.setupDailyAlarm(intent);
 				AppNotifications.displayRecordingNotification(appContext); }
 			
 			//registers a notification for the user to take the daily survey.
 			if (intent.getAction().equals( appContext.getString(R.string.daily_survey) ) ) {
-				if (!Timer.alarmsAreExactInThisApiVersion()) {
-					timer.setupDailyAlarmForTomorrow(intent); }
+				timer.setupDailyAlarm(intent);
 				AppNotifications.displaySurveyNotification(appContext, Type.DAILY); }
 			
 			//registers a notification for the user to take the weekly survey.
 			if (intent.getAction().equals( appContext.getString(R.string.weekly_survey) ) ) {
-				if (!Timer.alarmsAreExactInThisApiVersion()) {
-					timer.setupWeeklyAlarmForNextWeek(intent); }
+				timer.setupWeeklySurveyAlarm(intent);
 				AppNotifications.displaySurveyNotification(appContext, Type.WEEKLY); }
 			
 			//runs the user signout logic, bumping the user to the login screen.
