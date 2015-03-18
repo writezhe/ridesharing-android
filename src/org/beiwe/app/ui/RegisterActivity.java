@@ -2,6 +2,7 @@ package org.beiwe.app.ui;
 
 import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.LoadingActivity;
+import org.beiwe.app.PhoneNumberEntry;
 import org.beiwe.app.R;
 import org.beiwe.app.RunningBackgroundProcessActivity;
 import org.beiwe.app.networking.HTTPAsync;
@@ -95,23 +96,9 @@ public class RegisterActivity extends RunningBackgroundProcessActivity {
 		
 		@Override
 		protected void onPostExecute(Void arg) {
-			if (response == 200) { 
-				LoginManager.setRegistered(true);
+			if (response == 200) {
 				LoginManager.setPassword(newPassword);
-				LoginManager.loginOrRefreshLogin();
-
-				// Download the survey questions and schedule the surveys
-				QuestionsDownloader downloader = new QuestionsDownloader(activity.getApplicationContext());
-				downloader.downloadJsonQuestions();
-
-				//This is important.  we need to start timers 
-				backgroundProcess.startTimers();
-
-				// Create new data files, these will now have a patientID prepended to those files
-				TextFileManager.makeNewFilesForEverything();
-
-				// Start the Main Screen Activity, and kill the RegisterActivity screen
-				activity.startActivity(new Intent(activity.getApplicationContext(), LoadingActivity.loadThisActivity) );
+				activity.startActivity(new Intent(activity.getApplicationContext(), PhoneNumberEntry.class) );
 				activity.finish();
 			}
 			else if (response == 2) {

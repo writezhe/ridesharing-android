@@ -1,6 +1,7 @@
 package org.beiwe.app;
 
 import org.beiwe.app.BackgroundProcess.BackgroundProcessBinder;
+import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.ui.AboutActivity;
 
 import android.app.Activity;
@@ -114,7 +115,7 @@ public class RunningBackgroundProcessActivity extends Activity {
 	/** sends user to phone, calls the hotline. */
 	protected void callHotline() {
 		Intent callIntent = new Intent(Intent.ACTION_CALL);
-		String phoneNum = (String) getApplicationContext().getResources().getText(R.string.hotline_phone_number);
+		String phoneNum = LoginManager.getPrimaryCareNumber();
 	    callIntent.setData(Uri.parse("tel:" + phoneNum));
 	    startActivity(callIntent);		
 	}

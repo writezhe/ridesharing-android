@@ -152,12 +152,14 @@ public class TextFileManager {
 	/** Makes a new file.
 	 * Persistent files do not get a time stamp.
 	 * Encrypted files get a key and have the key encrypted using RSA and written as the first line of the file.
-	 * If a file has a header it is written as the second line. */
-	public synchronized void newFile(){
+	 * If a file has a header it is written as the second line.
+	 * Fails when files are not allowed to be written to. (the rule is no encrypted writes until registraction is complete.
+	 * @return A boolean value of whether a new file has been created.*/
+	public synchronized boolean newFile(){
 		//handle the naming cases for persistent vs. non-persistent files
 		if ( this.persistent ) { this.fileName = this.name; } 
-		else { // if user has not registered, stop non-persistnt file generation
-			if ( !LoginManager.isRegistered() ) { return; }
+		else { // if user has not registered, stop non-persistent file generation
+			if ( !LoginManager.isRegistered() ) { return false; }
 			this.fileName = LoginManager.getPatientID() + "_" + this.name + "_" + System.currentTimeMillis() + ".csv";
 		}
 		//write the key to the file (if it has one)
@@ -169,6 +171,7 @@ public class TextFileManager {
 		//write the csv header, if the file has a header
 		if ( header != null && header.length() > 0 ) {
 			this.writeEncrypted(header); }
+		return true;
 	}
 	
 	/** If it's a SurveyAnswers or SurveyTimings file, we want to append the
@@ -178,7 +181,7 @@ public class TextFileManager {
 	public synchronized void newFile(String surveyId) {
 		String nameHolder = this.name;
 		this.name += surveyId;
-		newFile();
+		newFile(); //We do not care about return value, it is only used for handling encrypted files.
 		this.name = nameHolder;
 	}
 	
@@ -211,14 +214,16 @@ public class TextFileManager {
 	 * @param data any unicode valid string */
 	public synchronized void writeEncrypted(String data) {
 		if ( !this.encrypted ) throw new NullPointerException( this.name + "is not supposed to have encrypted writes!" );
-		if ( fileName == null ) this.newFile();
+		if ( fileName == null ) { //when newFile fails we are not allowed to write to files.
+			if (!this.newFile() ) { return; }
+		}
 		
 		try { this.writePlaintext( EncryptionEngine.encryptAES( data, this.AESKey ) ); }
 		catch (InvalidKeyException e) {
-			Log.e("TextFileManager", "encrypted write operation without an AES key: " +this.name + ", " + this.fileName);
+			Log.e("TextFileManager", "encrypted write operation without an AES key: " + this.name + ", " + this.fileName);
 //			throw new NullPointerException("encrypted write operation without an AES key: " + this.fileName );
 		}
-		catch (InvalidKeySpecException e) { //this occurs when an encrypted write operation occurs without an RSA key file, we eat this error because it only happens at registration
+		catch (InvalidKeySpecException e) { //this occurs when an encrypted write operation occurs without an RSA key file, we eat this error because it only happens during registration/initial config.
 			Log.d("TextFileManager", "EncryptionEngine.AES_TOO_EARLY_ERROR: " + this.name + ", " + data);
 			e.printStackTrace(); }
 	}

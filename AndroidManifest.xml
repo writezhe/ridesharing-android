@@ -33,7 +33,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED" />
     <!-- get own phone number -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    
+
     <!-- only for debug, remove before final product is finished -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!-- Power management and monitoring, not sure where this would be used... -->
@@ -55,10 +55,10 @@
             android:name=".DebugInterfaceActivity"
             android:label="@string/app_name" />
         <activity
-            android:name="org.beiwe.app.ui.AudioRecorderActivity"
+            android:name=".ui.AudioRecorderActivity"
             android:label="@string/title_activity_audio_recorder" />
         <activity
-            android:name="org.beiwe.app.ui.SurveyActivity"
+            android:name=".ui.SurveyActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_survey" />
         <activity
@@ -78,7 +78,7 @@
             android:label="@string/title_activity_graph" >
         </activity>
         <activity
-            android:name="org.beiwe.app.LoadingActivity"
+            android:name=".LoadingActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -107,6 +107,7 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.provider.Telephony.WAP_PUSH_RECEIVED" />
+
                 <data android:mimeType="application/vnd.wap.mms-message" />
             </intent-filter>
         </receiver>
@@ -124,14 +125,22 @@
                 <action android:name="android.intent.action.AIRPLANE_MODE" />
             </intent-filter>
         </receiver>
-		
+
         <activity
             android:name=".ui.ResetPasswordActivity"
             android:label="@string/title_activity_reset_password" >
         </activity>
         <activity
-            android:name="org.beiwe.app.ui.AboutActivity"
+            android:name=".ui.AboutActivity"
             android:label="@string/title_activity_about" >
+        </activity>
+        <activity
+            android:name=".PhoneNumberEntry"
+            android:label="@string/title_activity_phone_number_entry" >
+        </activity>
+        <activity
+            android:name=".ConsentForm"
+            android:label="@string/title_activity_consent_form" >
         </activity>
     </application>
 
