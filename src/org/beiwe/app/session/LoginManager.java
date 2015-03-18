@@ -25,13 +25,15 @@ public class LoginManager {
 	private static Editor editor;
 	private static Context appContext;
 	
-	
 	// Editor key-strings
 	private static final String PREF_NAME = "BeiwePref";
 	private static final String KEY_ID = "uid";
 	private static final String KEY_PASSWORD = "password";
 	private static final String IS_REGISTERED = "IsRegistered";
 	private static final String LOGIN_EXPIRATION = "loginExpirationTimestamp";
+	private static String PCP_PHONE_KEY = "primary_care";
+	private static String PASSWORD_RESET_NUMBER_KEY = "reset_number";
+	
 	
 	/*#####################################################################################
 	################################### Initializing ######################################
@@ -143,4 +145,24 @@ public class LoginManager {
 
 	public static String getPatientID() { return pref.getString(KEY_ID, NULL_ID); }
 
+	/*###########################################################################################
+	#################################### Contact Numbers ########################################
+	###########################################################################################*/
+	
+	public static String getPrimaryCareNumber() {
+		return pref.getString(PCP_PHONE_KEY, "");
+	}
+	public static void setPrimaryCareNumber( String phoneNumber) {
+		editor.putString(PCP_PHONE_KEY, phoneNumber );
+		editor.commit();
+	}
+	
+	public static String getPasswordResetNumber() {
+		return pref.getString(PASSWORD_RESET_NUMBER_KEY, "");
+	}
+	public static void setPasswordResetNumber( String phoneNumber ){
+		editor.putString(PASSWORD_RESET_NUMBER_KEY, phoneNumber );
+		editor.commit();
+	}
+	
 }
