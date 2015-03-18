@@ -182,7 +182,6 @@ public class Timer {
 	 * @param dayOfWeek the integer value of the day of the week to run the survey
 	 * @param hourOfDay the hour in the day that the weekly survey should be run at. */
 	public void startWeeklyAlarm(int dayOfWeek, int hourOfDay, Intent intentToBeBroadcast){
-		Log.i("timers", "weekly alarm first run");
 		if ( LoginManager.checkFirstWeeklyRun() ) { //only notify on initial download of the survey.
 			AppNotifications.displaySurveyNotification(appContext, Type.WEEKLY);
 		}
@@ -216,12 +215,9 @@ public class Timer {
 	/**Takes a specially prepared intent and sets it to go off at the day and time provided
 	 * @param intentToBeBroadcast an intent that has been prepared by the startWeeklyAlarm function.*/
 	public void setupWeeklySurveyAlarm(Intent intentToBeBroadcast) {
-		Log.i("timers", "weekly alarm set...");
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
 		int dayOfWeek = intentToBeBroadcast.getExtras().getInt("day_of_week");
 		int hourOfDay = intentToBeBroadcast.getExtras().getInt("hour_of_day");
-		Log.i("timers", ""+dayOfWeek);
-		Log.i("timers", ""+hourOfDay);
 		
 		Calendar date = new GregorianCalendar();
 		date.set(Calendar.DAY_OF_WEEK, dayOfWeek);
