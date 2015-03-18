@@ -121,6 +121,7 @@ public class BackgroundProcess extends Service {
 		//whatever, 10 seconds later the background service will start.
 		Intent restartServiceIntent = new Intent( getApplicationContext(), this.getClass() );
 	    restartServiceIntent.setPackage( getPackageName() );
+	    // TODO: PendingIntent.FLAG_ONE_SHOT would probably be better if changed to FLAG_CANCEL_CURRENT, but this might be a pain to test
 	    PendingIntent restartServicePendingIntent = PendingIntent.getService( getApplicationContext(), 1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT );
 	    AlarmManager alarmService = (AlarmManager) getApplicationContext().getSystemService( Context.ALARM_SERVICE );
 	    alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 500, restartServicePendingIntent);
