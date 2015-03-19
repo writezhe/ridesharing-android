@@ -67,9 +67,11 @@ public class BluetoothListener extends BroadcastReceiver {
 		Log.i("bluetooth", "required: " + Build.VERSION_CODES.JELLY_BEAN_MR2  + ", SDK INT: " + Build.VERSION.SDK_INT);
 		//We have to check if the BluetoothAdaptor is null, or if the device is not running api 18+  
 		if ( bluetoothAdapter == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
-			//	it would be nice to insert this check as well, but the constructors for broadcast receivers must
-			//  be empty or else android cannot correctly instantiate them on demand.  We do this check in the background process.		
-			//	|| !appContext.getPackageManager().hasSystemFeature( PackageManager.FEATURE_BLUETOOTH_LE) ) {
+			/* It would be nice to insert the following check, but constructors for BroadcastReceivers must have 0 arguments,
+			  or else android os will not be able to instantiate it when it receives a broadcast.
+			  The PackageManager.FEATURE_BLUETOOTH_LE requires a Context that we do not have access to here,
+			  so the check is run before instantiation in the background process.
+			  the check: !appContext.getPackageManager().hasSystemFeature( PackageManager.FEATURE_BLUETOOTH_LE) */ 
 			this.bluetoothExists = false;
 			return; }
 		else { bluetoothExists = true; }
