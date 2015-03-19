@@ -135,11 +135,11 @@
             android:label="@string/title_activity_about" >
         </activity>
         <activity
-            android:name=".PhoneNumberEntry"
+            android:name="org.beiwe.app.ui.PhoneNumberEntry"
             android:label="@string/title_activity_phone_number_entry" >
         </activity>
         <activity
-            android:name=".ConsentForm"
+            android:name="org.beiwe.app.ui.ConsentForm"
             android:label="@string/title_activity_consent_form" >
         </activity>
     </application>

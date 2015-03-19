@@ -1,5 +1,8 @@
-package org.beiwe.app;
+package org.beiwe.app.ui;
 
+import org.beiwe.app.LoadingActivity;
+import org.beiwe.app.R;
+import org.beiwe.app.RunningBackgroundProcessActivity;
 import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.QuestionsDownloader;
