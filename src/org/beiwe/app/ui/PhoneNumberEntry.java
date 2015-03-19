@@ -19,8 +19,8 @@ public class PhoneNumberEntry extends RunningBackgroundProcessActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_phone_number_entry);
-		primaryCarePhone = (EditText) findViewById(R.id.passwordResetNumber);
-		passwordResetPhone = (EditText) findViewById(R.id.primaryCareNumber);
+		primaryCarePhone = (EditText) findViewById(R.id.primaryCareNumber);
+		passwordResetPhone = (EditText) findViewById(R.id.passwordResetNumber);
 
 		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard( getApplicationContext() );
 		textFieldKeyboard.makeKeyboardBehave(primaryCarePhone);
