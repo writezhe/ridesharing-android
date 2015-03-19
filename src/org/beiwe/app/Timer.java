@@ -14,7 +14,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.SystemClock;
-import android.util.Log;
 
 /** The Timer class provides a meeans of setting various timers.  These are used by the BackgroundProcess
  * for devices that must be turned on/off, and timing the user to automatically logout after a period of time.
@@ -208,7 +207,7 @@ public class Timer {
 			triggerAtMillis += ONE_DAY_IN_MILLISECONDS; }
 //		long timeTillFire = triggerAtMillis - System.currentTimeMillis();
 //		Log.d("Timer.java", "josh DailyAlarm timeTillFire = " + timeTillFire + " milliseconds from now");
-		alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
+		setExactAlarm(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
 	}
 	
 	
@@ -233,7 +232,7 @@ public class Timer {
 //		triggerAtMillis = System.currentTimeMillis() + 15000; //hax, debug code.
 //		long timeTillFire = triggerAtMillis - System.currentTimeMillis();
 //		Log.d("Timer.java", "josh WeeklyAlarm timeTillFire = " + timeTillFire + " milliseconds from now");
-		alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
+		setExactAlarm(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
 	}
 	
 	
