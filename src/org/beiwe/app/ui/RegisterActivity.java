@@ -67,8 +67,8 @@ public class RegisterActivity extends RunningBackgroundProcessActivity {
 			AlertsManager.showAlert( getString(R.string.password_mismatch), this);
 			return; }
 		
-		//TODO: Josh.  This logical clause... does not do... anything.
 		// If the new password has too few characters, pop up an alert, and do nothing else
+		//(note: the user alert is handled internally.)
 		if (!LoginManager.passwordMeetsRequirements(newPassword, this) ) { return; }
 
 		// If the password length is too short, alert the user
