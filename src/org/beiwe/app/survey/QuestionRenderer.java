@@ -16,6 +16,10 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+/**
+ * This class contains the functions for making the app UI render questions
+ * from the data extracted from the questions JSON file.
+ */
 public class QuestionRenderer {
 
 	private Context appContext;
@@ -25,7 +29,10 @@ public class QuestionRenderer {
 	private int viewID;
 	private int questionNumber;
 	
-	//TODO: Josh.  This constructor is complicated that I think it needs a doc string saying it... sets up the question layout? and requires a context for future processing.
+	/** 
+	 * Constructs the class by instantiating a LayoutInflater to render the
+	 * questions and attaching an InputListener to record the user's actions
+	 */
 	public QuestionRenderer(Context applicationContext) {
 		
 		appContext = applicationContext;

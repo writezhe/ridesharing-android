@@ -2,8 +2,11 @@ package org.beiwe.app.survey;
 
 import org.beiwe.app.R;
 
-//TODO: josh.  Insert a few lines of documentation describing what this is for.
-
+/**
+ * Contains attributes for on Daily and Weekly surveys. Passing an object
+ * around makes it easier to call functions for downloading survey questions
+ * from the server, and for showing notifications to the user.
+ */
 public class SurveyType {
 	public enum Type {
 		DAILY (002,

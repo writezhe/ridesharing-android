@@ -1,6 +1,13 @@
 package org.beiwe.app.survey;
 
-//TODO: Josh.  This needs a doc string?
+/**
+ * This class makes it easier to pass around the description of a question so
+ * that it can be recorded in Survey Answers and Survey Timings files.
+ * That way, instead of just recording "user answered '7' to question #5", the
+ * Survey Answers and Survey Timings files record something along the lines of
+ * "user answered '7' to question #5, which asked 'how many hours of sleep did
+ * you get last night' and had a numeric input field, with options..."
+ */
 
 public class QuestionDescription {
 	private String id = null;
