@@ -61,7 +61,7 @@ public class LoadingActivity extends RunningBackgroundProcessActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_loading);
-
+				
 		if ( testHashing() ) {
 			Intent startingIntent = new Intent(this.getApplicationContext(), BackgroundProcess.class);
 			startingIntent.addFlags(Intent.FLAG_FROM_BACKGROUND);
@@ -118,9 +118,6 @@ public class LoadingActivity extends RunningBackgroundProcessActivity {
 
 	/**Displays error, then exit.*/
 	private void failureExit() {
-		//TODO: later. the following line is time sensitive and breaks constantly, it will require signifigant time to solve
-		//changed the alert message to inform the user they should uninstall the app (otherwise the background service will still run) 
-//		backgroundProcess.stop();
 		AlertsManager.showErrorAlert( getString( R.string.invalid_device), this, 1);
 	}
 }

@@ -42,7 +42,7 @@ public class AlertsManager {
 			
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				//TODO: later. this system exit operation does not work if the app loads a different activity over the activity that spawned this Alert
+				//this system.exit() operation does not work if the app loads a different activity over the activity that spawned this Alert
 				System.exit(alertNumber);
 			}
 		});		
