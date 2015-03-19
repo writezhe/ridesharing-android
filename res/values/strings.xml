@@ -171,6 +171,9 @@
     <string name="about_page_body">Beiwe is a public health research tool that passively and actively collects data about your behavior and phone usage.  It actively collects data by regularly asking you to fill out surveys and to make voice recordings.  It passively collects data by recording your movement (with GPS and accelerometer), whom you call and text, and when you are near other phones that have the app installed.\n\nAlthough Beiwe collects a huge amount of data, all of the data are anonymized; Beiwe does not ever know your name, your phone number, or other identifying characteristics.  Beiwe only knows you as a randomly-generated ID number.  Beiwe also does not know the phone numbers of any person you call or text; it one-way-encrypts all phone numbers.  Beiwe can tell when you call the same person twice, but it doesn\'t know whom that person is.\n\nBeiwe was designed by Dr. Jukka-Pekka Onnela at the Harvard School of Public Health for use in a research study run by Dr. Roy Perlis at Massachusetts General Hospital.  The software was built by Zagaran, Inc., in Cambridge, Massachusetts.</string>
     <string name="send_recording_notification">Send Recording Notification</string>
 	
+    <!-- Phone Numbers -->
+    <string name="phone_number_too_long"> "Phone numbers cannot be more than %d digits long." </string>
+    <string name="enter_phone_numbers">You must enter values for the two phone numbers above </string>
     <!-- Consent Form -->
     <string name="title_activity_consent_form">ConsentForm</string>
     <string name="consentFormButton"> I Consent </string> 

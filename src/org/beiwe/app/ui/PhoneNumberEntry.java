@@ -7,13 +7,13 @@ import org.beiwe.app.survey.TextFieldKeyboard;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
 public class PhoneNumberEntry extends RunningBackgroundProcessActivity {
 	private EditText primaryCarePhone;
 	private EditText passwordResetPhone;
+	private int maxPhoneNumberLength = 11;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -28,13 +28,16 @@ public class PhoneNumberEntry extends RunningBackgroundProcessActivity {
 	}
 	
 	public void checkAndPromptConsent(View view) {
-		String primary = primaryCarePhone.getText().toString();
-		String reset = passwordResetPhone.getText().toString();
+		String primary = primaryCarePhone.getText().toString().replaceAll("\\D+", "");;
+		String reset = passwordResetPhone.getText().toString().replaceAll("\\D+", "");;
 		
-		Log.e("primary", "\"" + primary +"\"");
-		Log.e("reset", "\"" + reset + "\"");
+		
 		if (primary == null || primary.length() == 0 || reset == null || reset.length() == 0 ){
-			AlertsManager.showAlert( "You must enter values for the two phone numbers above.", this );
+			AlertsManager.showAlert( getString(R.string.enter_phone_numbers), this );
+			return;
+		}
+		if (primary.length() > maxPhoneNumberLength || reset.length() > maxPhoneNumberLength){
+			AlertsManager.showAlert( String.format( getString(R.string.phone_number_too_long), maxPhoneNumberLength), this );
 			return;
 		}
 		
