@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.beiwe.app.R;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -20,6 +21,7 @@ import android.widget.TextView;
  * This class contains the functions for making the app UI render questions
  * from the data extracted from the questions JSON file.
  */
+@SuppressLint("InflateParams")
 public class QuestionRenderer {
 
 	private Context appContext;
@@ -358,6 +360,7 @@ public class QuestionRenderer {
 	 * default value. 
 	 * @param slider
 	 */
+	@SuppressLint("ClickableViewAccessibility")
 	private void makeSliderInvisibleUntilTouched(SeekBarEditableThumb slider) {
 		// Before the user has touched the slider, make the "thumb" transparent/ almost invisible
 		/* Note: this works well on Android 4; there's a weird bug on Android 2 in which the first
