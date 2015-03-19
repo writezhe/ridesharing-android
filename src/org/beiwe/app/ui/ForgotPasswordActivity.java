@@ -5,6 +5,8 @@ import org.beiwe.app.RunningBackgroundProcessActivity;
 import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.session.ResetPassword;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -49,5 +51,11 @@ public class ForgotPasswordActivity extends RunningBackgroundProcessActivity {
 		ResetPassword resetPassword = new ResetPassword(this);
 		resetPassword.checkInputsAndTryToResetPassword(tempPassword, newPassword, confirmNewPassword);
 	}
-
+	
+	public void callResetPassword(View view){
+		Intent callIntent = new Intent(Intent.ACTION_CALL);
+		String phoneNum = LoginManager.getPasswordResetNumber();
+	    callIntent.setData(Uri.parse("tel:" + phoneNum));
+	    startActivity(callIntent);
+	}
 }
