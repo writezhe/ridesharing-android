@@ -67,7 +67,12 @@ public class SmsSentLogger extends ContentObserver {
 			Log.i("SMSLogger", "data = " + data);
 			smsLogFile.writeEncrypted(data);
 			
-			// TODO: Josh. Figure out if when a text is sent, is written as a new line if no network.
+			/* Note: Android often records a text message multiple times. This
+			 * may happen as a message is moved among the outbox, sent, and
+			 * other folders. The good news is that when a duplicate text
+			 * message is recorded, we get several identical lines (same
+			 * message length, same hashed phone number, and same timestamp),
+			 * so it should be easy to identify duplicate entries. */
 		}
 	}	
 }
