@@ -70,10 +70,11 @@ public class LoadingActivity extends RunningBackgroundProcessActivity {
 		}
 		else { failureExit(); }
 		
-		//TODO: later. to do add additional compatibility tests we need to guarantee that the background service is already running,
-		//this is complex, causes issues, and is currently a very low priority problem.  the following lines of code tend to crash the app, and are commented out.
-//		LoginManager.initialize( getApplicationContext() ); //We need to Initialize the LoginManager very early.
-//		if ( !testEncryption( ) ) { failureExit(); } 
+		/* In order to have additional compatibility tests we need to guarantee that the background service is already running,
+		this is complex, and all compatibility documentation for android indicates that the encryption we use are implemented for all 
+		versions of android.  is currently a very low priority problem.  The following lines of code tends to crash the app.
+		LoginManager.initialize( getApplicationContext() ); // probably fixed when we moved the LoginManager initialization to an earlier point in the activity cycle.
+		if ( !testEncryption( ) ) { failureExit(); } //probably still broken. */
 	}
 	
 
