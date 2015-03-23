@@ -28,8 +28,8 @@ public class PhoneNumberEntry extends RunningBackgroundProcessActivity {
 	}
 	
 	public void checkAndPromptConsent(View view) {
-		String primary = primaryCarePhone.getText().toString().replaceAll("\\D+", "");;
-		String reset = passwordResetPhone.getText().toString().replaceAll("\\D+", "");;
+		String primary = primaryCarePhone.getText().toString().replaceAll("\\D+", "");
+		String reset = passwordResetPhone.getText().toString().replaceAll("\\D+", "");
 		
 		
 		if (primary == null || primary.length() == 0 || reset == null || reset.length() == 0 ){
