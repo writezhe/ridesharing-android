@@ -24,14 +24,19 @@ public class LoginManager {
 	private static SharedPreferences pref; 
 	private static Editor editor;
 	private static Context appContext;
-	
-	
+		
 	// Editor key-strings
 	private static final String PREF_NAME = "BeiwePref";
 	private static final String KEY_ID = "uid";
 	private static final String KEY_PASSWORD = "password";
 	private static final String IS_REGISTERED = "IsRegistered";
 	private static final String LOGIN_EXPIRATION = "loginExpirationTimestamp";
+	private static final String PRIOR_WEEKLY_TIME = "prior_weekly_timer_time";
+	private static final String PRIOR_DAILY_TIME = "prior_daily_time";
+	private static final String PRIOR_AUDIO_TIME = "prior_audio_time";
+	private static final String PRIOR_WEEKLY_STATE = "prior_weekly_state";
+	private static final String PRIOR_DAILY_STATE = "prior_daily_state";
+	private static final String PRIOR_AUDIO_STATE = "prior_audio_state";
 	
 	/*#####################################################################################
 	################################### Initializing ######################################
@@ -40,7 +45,6 @@ public class LoginManager {
 	/**The publicly accessible initializing function for the LoginManager, initializes the internal variables.
 	 * @param context */
 	public static void initialize( Context context ) {
-//		new LoginManager(context);
 		if ( isInitialized ) { return; }
 		appContext = context;
 		pref = appContext.getSharedPreferences(PREF_NAME, PRIVATE_MODE); //sets Shared Preferences private mode
@@ -85,15 +89,7 @@ public class LoginManager {
 		editor.commit();
 	}
 
-	public static void setFirstWeeklyRun(boolean value){
-		editor.putBoolean("weekly_ever", value);
-		editor.commit();
-	}
 	
-	public static boolean checkFirstWeeklyRun (){
-		return pref.getBoolean("weekly_ever", false);
-	}
-
 	/*######################################################################################
 	##################################### Passwords ########################################
 	######################################################################################*/
@@ -143,4 +139,37 @@ public class LoginManager {
 
 	public static String getPatientID() { return pref.getString(KEY_ID, NULL_ID); }
 
+	/*###########################################################################################
+	##################################### Zombie Alarms #########################################
+	###########################################################################################*/
+	// the 9223372036854775807L is the highest value a java Long can contain, this default value only occurs at registration time.
+	public static Long getWeeklySurveyAlarmTime() { return pref.getLong(PRIOR_WEEKLY_TIME, 9223372036854775807L ); }
+	public static Long getDailySurveyAlarmTime() { return pref.getLong(PRIOR_DAILY_TIME, 9223372036854775807L ); }
+	public static Long getAudioAlarmTime() { return pref.getLong(PRIOR_AUDIO_TIME, 9223372036854775807L ); }
+	// the state that the notification SHOULD be in.  The default value is only returned at registration, i.e. weekly triggers at registration, the others don't.
+	public static Boolean getCorrectDailyNotificationState() { return pref.getBoolean(PRIOR_DAILY_STATE, false ); }
+	public static Boolean getCorrectWeeklyNotificationState() { return pref.getBoolean(PRIOR_WEEKLY_STATE, true ); }
+	public static Boolean getCorrectAudioNotificationState() { return pref.getBoolean(PRIOR_AUDIO_STATE, false ); }
+	
+	// setters for weekly alarm time (gets set inside the notification triggering alarm code in timers) 
+	public static void setWeeklySurveyAlarm( Long timeCode ) {
+		editor.putLong(PRIOR_WEEKLY_TIME, timeCode );
+		editor.commit(); }
+	public static void setDailySurveyAlarm( Long timeCode ) {
+		editor.putLong(PRIOR_DAILY_TIME, timeCode );
+		editor.commit(); }	
+	public static void setAudioAlarm( Long timeCode ) {
+		editor.putLong(PRIOR_AUDIO_TIME, timeCode );
+		editor.commit(); }
+	
+	// setters for the correct current state of survey notifications, i.e. the state a notification SHOULD be in.
+	public static void setCorrectWeeklyNotificationState( Boolean bool ) {
+		editor.putBoolean(PRIOR_WEEKLY_STATE, bool );
+		editor.commit(); }
+	public static void setCorrectDailyNotificationState( Boolean bool ) {
+		editor.putBoolean(PRIOR_DAILY_STATE, bool );
+		editor.commit(); }	
+	public static void setCorrectAudioNotificationState( Boolean bool ) {
+		editor.putBoolean(PRIOR_AUDIO_STATE, bool );
+		editor.commit(); }
 }

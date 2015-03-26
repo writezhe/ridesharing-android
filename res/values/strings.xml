@@ -49,7 +49,8 @@
     <string name="button_show_weekly_survey_notification">Show weekly survey notification</string>
     <string name="button_go_to_main_menu">Go To Main Menu</string>
     <string name="button_make_new_files">Make New Files.</string>
-    
+    <string name="button_prior_alarm_times">Log prior alarm times</string>
+    <string name="button_show_audio_survey_notification">Show audio recording notification</string>
 
     <!-- Error Messages -->
     <string name="question_error_text">If you are reading this, something broke. Please contact the study administrators, and tell them that there is a bug in the survey!</string>

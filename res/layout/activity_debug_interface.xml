@@ -101,26 +101,11 @@
 	        android:text="@string/button_wifi_scan" />
 
 	    <Button
-	        android:id="@+id/Notify"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:gravity="fill_horizontal"
-	        android:onClick="notificationSender"
-	        android:text="@string/button_notify" />
-
-	    <Button
 	        android:id="@+id/signout"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:onClick="signOut"
 	        android:text="@string/signout" />
-	    
-	    <Button
-	        android:id="@+id/unregister"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:onClick="unRegister"
-	        android:text="@string/unregister_button" />
 
 		<Button
 		    android:id="@+id/buttonTimer"
@@ -128,13 +113,6 @@
 		    android:layout_height="wrap_content"
 		    android:onClick="buttonTimer"
 		    android:text="@string/timer_button" />
-		
-		<Button
-	        android:id="@+id/buttonRecordingNotif"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:onClick="notificationRecordingSender"
-	        android:text="@string/send_recording_notification" />
 		
 		<Button
 		    android:id="@+id/buttonGetKeyFile"
@@ -163,6 +141,20 @@
 	        android:layout_height="wrap_content"
 	        android:onClick="popWeeklySurveyNotification"
 	        android:text="@string/button_show_weekly_survey_notification" />
+		
+		<Button
+	        android:id="@+id/buttonPopAudioSurveyNotification"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="popAudioSurveyNotification"
+	        android:text="@string/button_show_audio_survey_notification" />
+
+		<Button
+		    android:id="@+id/buttonAlarmStates"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:onClick="alarmStates"
+		    android:text="@string/button_prior_alarm_times" />
 		
 		<Button
 	        android:id="@+id/loadMainMenu"
