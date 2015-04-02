@@ -3,6 +3,7 @@ package org.beiwe.app.session;
 import org.beiwe.app.BackgroundProcess;
 import org.beiwe.app.R;
 import org.beiwe.app.RunningBackgroundProcessActivity;
+import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.ui.LoginActivity;
 import org.beiwe.app.ui.ResetPasswordActivity;
 
@@ -30,28 +31,33 @@ public class SessionActivity extends RunningBackgroundProcessActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		LoginManager.initialize(getApplicationContext()); // yeah this function has been rewritten to handle getting called too much.
-		authenticateAndLoginIfNecessary();
+		LoginManager.initialize(getApplicationContext()); // this function has been rewritten to efficiently handle getting called too much.  Don't worry about it.
 	}
 	
 	/** When onPause is called we need to set the timeout. */
 	@Override
 	protected void onPause() {
 		super.onPause();
-		if (backgroundProcess == null) Log.w("sessionactivity 1", "background process is null, you have a race condition with instantiating the background process.");
+		if (backgroundProcess == null) {
+			Log.w("sessionactivity", "background process is null, you have a race condition with instantiating the background process.");
+			TextFileManager.getDebugLogFile().writeEncrypted("a sessionactivity tried to clear the automatic logout countdown timer, but the background process did not exist.");
+		}
 		BackgroundProcess.clearAutomaticLogoutCountdownTimer();
 	}
-
+	
+	@Override
+	/** Sets the logout timer, should trigger whenever onResume is called. */
+	protected void doBackgroundDependantTasks() { 
+		Log.i("SessionActivity", "printed from SessionActivity");
+		authenticateAndLoginIfNecessary();
+	}
+	
 	/** If the user is NOT logged in, take them to the login page */
 	protected void authenticateAndLoginIfNecessary() {
-		if (backgroundProcess == null) Log.w("sessionactivity 2", "background process is null, you have a race condition with instantiating the background process.");
-		
-		if (LoginManager.isLoggedIn()) {
-			BackgroundProcess.startAutomaticLogoutCountdownTimer();
-		}
+		if ( LoginManager.isLoggedIn() ) {
+			BackgroundProcess.startAutomaticLogoutCountdownTimer(); }
 		else {
-			startActivity(new Intent(this, LoginActivity.class));
-		}
+			startActivity(new Intent(this, LoginActivity.class) ); }
 	}
 
 

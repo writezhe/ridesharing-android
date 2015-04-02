@@ -34,7 +34,7 @@ public class RunningBackgroundProcessActivity extends Activity {
 	 * relies on the BackgroundProcess is always tied to UI elements, reducing the chance of
 	 * a null backgroundProcess variable to essentially zero. */
 	protected BackgroundProcess backgroundProcess;
-	
+
 	//an unused variable for tracking whether the background process is connected, uncomment if we ever need that.
 //	protected boolean isBound = false;
 	
@@ -45,6 +45,7 @@ public class RunningBackgroundProcessActivity extends Activity {
 	        Log.d("ServiceConnection", "Background Process Connected");
 	        BackgroundProcessBinder some_binder = (BackgroundProcessBinder) binder;
 	        backgroundProcess = some_binder.getService();
+	        doBackgroundDependantTasks();
 //	        isBound = true;
 	    }
 	    
@@ -56,7 +57,9 @@ public class RunningBackgroundProcessActivity extends Activity {
 	    }
 	};
 
-
+	/** Override this function to do tasks on creation, but only after the background process has been initialized. */
+	protected void doBackgroundDependantTasks() { Log.d("RunningBackgroundProcessActivity", "doBackgroundDependantTasks ran as default (do nothing)"); }
+	
 	@Override
 	/**On creation of RunningBackgroundProcessActivity we guarantee that the BackgroundProcess is
 	 * actually running, we then bind to it so we can access program resources. */

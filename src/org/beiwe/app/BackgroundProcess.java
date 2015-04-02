@@ -245,7 +245,13 @@ public class BackgroundProcess extends Service {
 	}
 	
 	public static void startAutomaticLogoutCountdownTimer(){
-		if (timer == null) Log.w("bacgroundProcess", "timer is null, this is about to crash");
+		//note: this function is static due to the evolution of the connections activities have to the background process,
+		// it probably is better practice to make this non-static, but we are leaving it as is so we don't have to test
+		// this type of low-level operational difference.
+		if (timer == null) {
+			Log.w("bacgroundProcess", "timer is null, this is about to crash");
+			TextFileManager.getDebugLogFile().writeEncrypted("our not-quite-race-condition encountered, the timer was null when the background process was supposed to be instantiated");
+		}
 		timer.setupExactSingleAlarm(Timer.MILLISECONDS_BEFORE_AUTO_LOGOUT, Timer.signoutIntent);
 		LoginManager.loginOrRefreshLogin();
 	}
