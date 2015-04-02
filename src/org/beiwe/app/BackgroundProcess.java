@@ -140,7 +140,15 @@ public class BackgroundProcess extends Service {
 		//Note: the Bluetooth listener is a BroadcastReceiver, which means it must have a 0-argument constructor so android can instantiate it on broadcast receipts.
 		//The following check must be made, but it requires a Context that we cannot pass into the BluetoothListener, so we do the check in the BackgroundProcess.
 		if ( appContext.getPackageManager().hasSystemFeature( PackageManager.FEATURE_BLUETOOTH_LE ) ) {
-			this.bluetoothListener = new BluetoothListener(); }
+			this.bluetoothListener = new BluetoothListener(); 
+			if ( this.bluetoothListener.isBluetoothEnabled() ) {
+				Log.i("Background Process", "success, actually doing bluetooth things.");
+				registerReceiver(this.bluetoothListener, new IntentFilter("android.bluetooth.adapter.action.STATE_CHANGED") );
+			} else {
+				Log.e("Background Process", "bluetooth Failure. Should not have gotten this far.");
+				TextFileManager.getDebugLogFile().writeEncrypted("bluetooth Failure, device should not have gotten to this line of code");
+			}
+		}
 		else {
 			TextFileManager.getDebugLogFile().writeEncrypted("Device does not support bluetooth LE, bluetooth features disabled.");
 			this.bluetoothListener = null; } 
