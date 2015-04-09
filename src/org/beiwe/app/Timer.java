@@ -217,9 +217,9 @@ public class Timer {
 		int hourOfDay = intentToBeBroadcast.getExtras().getInt("hour_of_day");
 		
 		Calendar date = new GregorianCalendar();
-		date.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
-		date.set(Calendar.HOUR_OF_DAY, dayOfWeek);
-		date.set(Calendar.MINUTE, hourOfDay);
+		date.set(Calendar.DAY_OF_WEEK, dayOfWeek);
+		date.set(Calendar.HOUR_OF_DAY, hourOfDay);
+		date.set(Calendar.MINUTE, 0);
 		date.set(Calendar.SECOND, 0);
 		date.set(Calendar.MILLISECOND, 0);
 		long nextTriggerTime = date.getTimeInMillis();
