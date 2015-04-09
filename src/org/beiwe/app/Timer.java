@@ -48,7 +48,7 @@ public class Timer {
 	// Hour, in 24-hour time, that the voice recording notification appears
 	public static final int VOICE_RECORDING_HOUR_OF_DAY = 19;
 	// Amount of time before the voice recording stops automatically
-	public static final long VOICE_RECORDING_MAX_TIME_LENGTH = 5 * 60 * 1000L;
+	public static final long VOICE_RECORDING_MAX_TIME_LENGTH = 4 * 60 * 1000L;
 	// Time between when the user last loads a new screen and when the app automatically logs out
 	public static final long MILLISECONDS_BEFORE_AUTO_LOGOUT = 5 * 60 * 1000L;
 	

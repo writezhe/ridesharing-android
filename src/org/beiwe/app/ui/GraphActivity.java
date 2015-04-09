@@ -51,9 +51,5 @@ public class GraphActivity extends SessionActivity {
 		String graphUrl = getApplicationContext().getString(R.string.graph_url);
 		browser.postUrl(graphUrl, EncodingUtils.getBytes(postData, "BASE64"));
 	}
-	
-	public void callHotline(View v) {
-		super.callHotline();
-	}
 
 }

@@ -13,6 +13,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 /**All Activities in the app extend this Activity.  It ensures that the app's key services (i.e.
  * BackgroundProcess, LoginManager, PostRequest, DeviceInfo, and WifiListener) are running before
@@ -106,7 +107,7 @@ public class RunningBackgroundProcessActivity extends Activity {
 			startActivity(new Intent(getApplicationContext(), AboutActivity.class));
 			return true;
 		case R.id.menu_call_hotline:
-			callHotline();
+			callClinician(null);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -115,7 +116,7 @@ public class RunningBackgroundProcessActivity extends Activity {
 	
 	
 	/** sends user to phone, calls the hotline. */
-	protected void callHotline() {
+	public void callClinician(View v) {
 		Intent callIntent = new Intent(Intent.ACTION_CALL);
 		String phoneNum = (String) getApplicationContext().getResources().getText(R.string.hotline_phone_number);
 	    callIntent.setData(Uri.parse("tel:" + phoneNum));

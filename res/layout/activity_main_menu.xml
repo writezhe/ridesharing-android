@@ -38,7 +38,7 @@
         android:id="@+id/main_menu_hotline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="callHotline"
-        android:text="@string/main_menu_call_hotline" />
+        android:onClick="callClinician"
+        android:text="@string/call_my_clinician" />
 
 </LinearLayout>
