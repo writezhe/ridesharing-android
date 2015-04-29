@@ -46,6 +46,8 @@
     <string name="button_show_weekly_survey_notification">Show weekly survey notification</string>
     <string name="button_go_to_main_menu">Go To Main Menu</string>
     <string name="button_make_new_files">Make New Files.</string>
+    <string name="button_prior_alarm_times">Log prior alarm times</string>
+    <string name="button_show_audio_survey_notification">Show audio recording notification</string>
 
     <!-- Error Messages -->
     <string name="question_error_text">If you are reading this, something broke. Please contact the study administrators, and tell them that there is a bug in the survey!</string>
@@ -53,7 +55,7 @@
 
     <!-- Survey Activity Strings -->
     <string name="survey_submit_button">Submit Answers</string>
-    <string name="survey_submit_success_message">Thank you! Your answers have been recorded and saved. A clinician may not look at your answers for weeks, so if you want help or feel unsafe, press the \'Call Hotline\' button.</string>
+    <string name="survey_submit_success_message">Thank you for completing the survey.  Don\'t forget, no clinician will see your answers.  So, if you need help or you\'re thinking about harming yourself, please call your clinician.  You can also press the \"Call My Clinician\" button above to call your clinician.</string>
     <string name="survey_submit_error_message">There has been an error; your answers may not have been recorded and saved</string>
     <string name="button_upload">Upload Data Files</string>
     <string name="survey_loading_text" tools:ignore="TypographyEllipsis">Downloading the most up-to-date survey questions from the server...</string>
@@ -121,10 +123,10 @@
     <string name="title_activity_main_menu">Beiwe Main Screen</string>
     <string name="main_menu_top_message">Welcome to Beiwe!</string>
     <string name="main_menu_view_graph">View survey answers on graph</string>
-    <string name="main_menu_call_hotline">Call Hotline</string>
+    <string name="main_menu_call_hotline">Call My Clinician</string>
 
     <!-- Recording Activity -->
-    <string name="record_activity_default_message">Please press \'Record\' and speak for about 2 minutes, describing your day and how you are feeling.  A clinician may not listen to your message for weeks, so if you feel unsafe or want help, press the \'Call Hotline\' button.</string>
+    <string name="record_activity_default_message">We would like to know how your day is going.  When you are ready, please press \"Record\" and speak for about 2 minutes.  Press \"Stop\" when you are finished. The recording will stop automatically after 4 minutes. Remember, researchers will not review and analyze your data until the end of the study, so if you are ill or in danger and need to speak with your clinician, press the \"Call My Clinician\" button.</string>
     <string name="record_activity_button">Press to record</string>
     <string name="record_activity_playback">Play recording</string>
     <string name="play_button_text">Play</string>
@@ -137,11 +139,11 @@
 
     <!-- Notifications -->
     <string name="daily_survey_notification_message">New daily survey</string>
-    <string name="daily_survey_notification_details">Please fill out the daily survey</string>	
+    <string name="daily_survey_notification_details">Please fill out the daily survey.</string>
     <string name="weekly_survey_notification_message">New weekly survey</string>
-    <string name="weekly_survey_notification_details">Please fill out the weekly in-depth survey</string>
-    <string name="recording_notification_message">Please make a voice recording</string>
-    <string name="recording_notification_details">Please make a brief voice recording</string>
+    <string name="weekly_survey_notification_details">Please fill out the weekly survey.</string>
+    <string name="recording_notification_message">New voice recording</string>
+    <string name="recording_notification_details">Please make a brief voice recording.</string>
     <string name="title_activity_graph">Previous Survey Answers</string>
 
     <!-- Timer Action Strings -->
@@ -164,11 +166,11 @@
     <string name="menu_sign_out">Sign Out</string>
     <string name="menu_change_password">Change Password</string>
     <string name="menu_about">About This App</string>
-    <string name="menu_call_hotline">Call Hotline</string>
-
+    <string name="call_my_clinician">Call My Clinician</string>
+    
     <!-- About Page -->
     <string name="title_activity_about">About Beiwe</string>
-    <string name="about_page_body">Beiwe is a public health research tool that passively and actively collects data about your behavior and phone usage.  It actively collects data by regularly asking you to fill out surveys and to make voice recordings.  It passively collects data by recording your movement (with GPS and accelerometer), whom you call and text, and when you are near other phones that have the app installed.\n\nAlthough Beiwe collects a huge amount of data, all of the data are anonymized; Beiwe does not ever know your name, your phone number, or other identifying characteristics.  Beiwe only knows you as a randomly-generated ID number.  Beiwe also does not know the phone numbers of any person you call or text; it one-way-encrypts all phone numbers.  Beiwe can tell when you call the same person twice, but it doesn\'t know whom that person is.\n\nBeiwe was designed by Dr. Jukka-Pekka Onnela at the Harvard School of Public Health for use in a research study run by Dr. Roy Perlis at Massachusetts General Hospital.  The software was built by Zagaran, Inc., in Cambridge, Massachusetts.</string>
+    <string name="about_page_body">Beiwe is an application that runs on your cell phone and helps researchers collect information about your health and behaviors. It asks you to fill out short surveys, and to make a recording of your voice, once a day. Beiwe continuously collects information about your location (using your phone\'s GPS) and how much you move around (using your phone\'s accelerometer). It also monitors how much you use your phone for calling and texting, and it keeps track of the different people you communicate with. Importantly, Beiwe does not record the names or phone numbers of anyone you communicate with. While it can tell if you call the same person more than once, it does not know who that person is. Beiwe does not record the content of your text messages or phone calls. It also keeps track of the different Wi-Fi networks in your area, but the names of those networks are replaced with random codes. Finally, Beiwe can tell if you are near another phone that is also running this application.\n\nAlthough Beiwe collects a large amount of data, all of this data is processed to protect your privacy. This means that the application does not know your name, your phone number, or anything else that could identify you. Beiwe only knows you by an identification number. Because Beiwe does not know who you are, it cannot communicate with your clinician if you are ill or in danger. Researchers will not review the data Beiwe collects until the end of the study. To make it easier for you to connect with your clinician, the \"Call my Clinician\" button appears at the top of every page. In order for the button to work, you must enter your clinician\'s phone number into Beiwe. You can change it as often as needed.\n\nBeiwe was conceived and designed by Dr. Jukka-Pekka \"JP\" Onnela at the Harvard School of Public Health. The research study in which you are enrolled is run by Dr. Roy Perlis at Massachusetts General Hospital. The software was built by Zagaran, Inc., in Cambridge, Massachusetts.</string>
     <string name="send_recording_notification">Send Recording Notification</string>
 	
     <!-- Phone Numbers -->

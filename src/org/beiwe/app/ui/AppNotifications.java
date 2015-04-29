@@ -1,6 +1,7 @@
 package org.beiwe.app.ui;
 
 import org.beiwe.app.R;
+import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.survey.SurveyType;
 
 import android.app.Notification;
@@ -41,6 +42,9 @@ public class AppNotifications {
 		notificationManager.notify(
 				surveyType.notificationCode, // If another notification with the same ID pops up, it will be updated. This SHOULD be fine
 				surveyNotification);
+		
+		if (surveyType == SurveyType.Type.DAILY){ LoginManager.setCorrectDailyNotificationState(true); }
+		if (surveyType == SurveyType.Type.WEEKLY){ LoginManager.setCorrectWeeklyNotificationState(true); }
 	}
 	
 	/**
@@ -60,7 +64,8 @@ public class AppNotifications {
 		
 		notificationManager.notify(
 				recordingCode, // If another notification with the same ID pops up, it will be updated. This SHOULD be fine
-				recordingNotification); 
+				recordingNotification);
+		LoginManager.setCorrectAudioNotificationState(true);
 	}
 	
 	/**
@@ -85,6 +90,7 @@ public class AppNotifications {
 	 * @return
 	 */
 	private static Notification setupNotification(Context appContext, int notifCode, int iconID, SurveyType.Type surveyType) {
+
 		NotificationCompat.Builder builder = new NotificationCompat.Builder(appContext);
 		Intent activityIntent;
 		builder.setContentTitle( appContext.getString(R.string.app_name) );
@@ -130,6 +136,7 @@ public class AppNotifications {
 		 */
 		
 		builder.setContentIntent(pendingActivityIntent);
+		
 		Notification notification = builder.build();
 		return notification;
 	}

@@ -6,14 +6,11 @@ import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.SurveyType;
-import org.beiwe.app.survey.SurveyType.Type;
-import org.beiwe.app.ui.AlertsManager;
 import org.beiwe.app.ui.AppNotifications;
 import org.beiwe.app.ui.AudioRecorderActivity;
 import org.beiwe.app.ui.LoginActivity;
 import org.beiwe.app.ui.MainMenuActivity;
 import org.beiwe.app.ui.SurveyActivity;
-import org.beiwe.app.Timer;
 
 import android.content.Context;
 import android.content.Intent;
@@ -42,12 +39,9 @@ public class DebugInterfaceActivity extends SessionActivity {
 //		Log.i("log file encrypted", EncryptionEngine.encryptAES(log) );
 	}
 	
-	public void clearInternalLog(View view) {
-		Log.i("clear log button pressed", "poke.");
-		TextFileManager.getDebugLogFile().deleteSafely(); }
+	public void clearInternalLog(View view) { TextFileManager.getDebugLogFile().deleteSafely(); }
 	
-	public void uploadDataFiles(View view) {
-		PostRequest.uploadAllFiles(); }
+	public void uploadDataFiles(View view) { PostRequest.uploadAllFiles(); }
 	
 	public void goToAudioRecorder(View view) { startActivity( new Intent(this, AudioRecorderActivity.class) ); }
 	
@@ -76,36 +70,15 @@ public class DebugInterfaceActivity extends SessionActivity {
 		super.logoutUser();
 	}
 	
-	public void unRegister (View view) {
-		LoginManager.setRegistered(false);
-		stopService( new Intent( appContext, BackgroundProcess.class) );
-		AlertsManager.showAlert("registered set to fals, you must go start the app manually.", this);
-		System.exit(0);
-	}
-	
 	public void scanWifi (View view) { WifiListener.scanWifi(); }
 	
-	public void bluetoothButtonStart (View view) {
-		appContext.sendBroadcast(Timer.bluetoothOnIntent);
-	}
+	public void bluetoothButtonStart (View view) { appContext.sendBroadcast(Timer.bluetoothOnIntent); }
 
-	public void bluetoothButtonStop (View view) {
-		appContext.sendBroadcast(Timer.bluetoothOffIntent);
-	}
+	public void bluetoothButtonStop (View view) { appContext.sendBroadcast(Timer.bluetoothOffIntent); }
 	
 	public void buttonTimer(View view) { backgroundProcess.startTimers(); }
-	
-	public void notificationSender (View view) {
-		AppNotifications.displaySurveyNotification(appContext, Type.DAILY);
-		Log.i("DebugInterfaceActivity", "Notification Displayed"); 	}
-	
-	public void notificationRecordingSender (View view) {
-		AppNotifications.displayRecordingNotification(appContext);
-		Log.i("DebugInterfaceActivity", "Notification Displayed"); }
-	
-	public void getKeyFile(View view) {
-		Log.i("DEBUG", "key file data: " + TextFileManager.getKeyFile().read());
-	}
+		
+	public void getKeyFile(View view) { Log.i("DEBUG", "key file data: " + TextFileManager.getKeyFile().read()); }
 	
 	public void testEncrypt (View view) {
 		//code commented out because would have to catch an error
@@ -127,12 +100,15 @@ public class DebugInterfaceActivity extends SessionActivity {
 	
 	public void makeNewFiles(View view) { TextFileManager.makeNewFilesForEverything(); }
 	
-	public void popDailySurveyNotification(View view) {
-		AppNotifications.displaySurveyNotification(getApplicationContext(), SurveyType.Type.DAILY);
-	}
+	public void popDailySurveyNotification(View view) { AppNotifications.displaySurveyNotification(getApplicationContext(), SurveyType.Type.DAILY); }
 	
-	public void popWeeklySurveyNotification(View view) {
-		AppNotifications.displaySurveyNotification(getApplicationContext(), SurveyType.Type.WEEKLY);
-	}
+	public void popWeeklySurveyNotification(View view) { AppNotifications.displaySurveyNotification(getApplicationContext(), SurveyType.Type.WEEKLY); }
 	
+	public void popAudioSurveyNotification(View view) { AppNotifications.displayRecordingNotification(appContext); }
+
+	public void alarmStates(View view) {
+		Log.i("audio", "" +LoginManager.getAudioAlarmTime() + ", " + LoginManager.getCorrectAudioNotificationState() );
+		Log.i("daily", "" + LoginManager.getDailySurveyAlarmTime()  + ", " + LoginManager.getCorrectDailyNotificationState());
+		Log.i("weekly", "" + LoginManager.getWeeklySurveyAlarmTime() + ", " + LoginManager.getCorrectWeeklyNotificationState()) ;
+	}
 }

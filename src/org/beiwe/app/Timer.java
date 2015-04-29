@@ -5,8 +5,6 @@ import java.util.GregorianCalendar;
 import java.util.Random;
 
 import org.beiwe.app.session.LoginManager;
-import org.beiwe.app.survey.SurveyType.Type;
-import org.beiwe.app.ui.AppNotifications;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -14,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.SystemClock;
+import android.util.Log;
 
 /** The Timer class provides a meeans of setting various timers.  These are used by the BackgroundProcess
  * for devices that must be turned on/off, and timing the user to automatically logout after a period of time.
@@ -49,7 +48,7 @@ public class Timer {
 	// Hour, in 24-hour time, that the voice recording notification appears
 	public static final int VOICE_RECORDING_HOUR_OF_DAY = 19;
 	// Amount of time before the voice recording stops automatically
-	public static final long VOICE_RECORDING_MAX_TIME_LENGTH = 5 * 60 * 1000L;
+	public static final long VOICE_RECORDING_MAX_TIME_LENGTH = 4 * 60 * 1000L;
 	// Time between when the user last loads a new screen and when the app automatically logs out
 	public static final long MILLISECONDS_BEFORE_AUTO_LOGOUT = 5 * 60 * 1000L;
 	
@@ -73,8 +72,8 @@ public class Timer {
 	public static Intent checkForNewSurveysIntent;
 	
 	// Intent filters
-	public IntentFilter getAccelerometerOffIntentFilter() { return new IntentFilter( accelerometerOffIntent.getAction() ); }
 	public IntentFilter getAccelerometerOnIntentFilter() { return new IntentFilter( accelerometerOnIntent.getAction() ); }
+	public IntentFilter getAccelerometerOffIntentFilter() { return new IntentFilter( accelerometerOffIntent.getAction() ); }
 	public IntentFilter getBluetoothOffIntentFilter() { return new IntentFilter( bluetoothOffIntent.getAction() ); }
 	public IntentFilter getBluetoothOnIntentFilter() { return new IntentFilter( bluetoothOnIntent.getAction() ); }
 	public IntentFilter getDailySurveyIntentFilter() { return new IntentFilter( dailySurveyIntent.getAction() ); }
@@ -181,12 +180,9 @@ public class Timer {
 	 * @param dayOfWeek the integer value of the day of the week to run the survey
 	 * @param hourOfDay the hour in the day that the weekly survey should be run at. */
 	public void startWeeklyAlarm(int dayOfWeek, int hourOfDay, Intent intentToBeBroadcast){
-		if ( LoginManager.checkFirstWeeklyRun() ) { //only notify on initial download of the survey.
-			AppNotifications.displaySurveyNotification(appContext, Type.WEEKLY);
-		}
 		intentToBeBroadcast.putExtra("day_of_week", dayOfWeek);
 		intentToBeBroadcast.putExtra("hour_of_day", hourOfDay);
-		appContext.sendBroadcast(intentToBeBroadcast);
+		setupWeeklySurveyAlarm(intentToBeBroadcast);
 	}
 	
 	
@@ -201,13 +197,15 @@ public class Timer {
 		date.set(Calendar.MINUTE, 0);
 		date.set(Calendar.SECOND, 0);
 		date.set(Calendar.MILLISECOND, 0);
-		long triggerAtMillis = date.getTimeInMillis();
-		// If today's trigger time has already passed, set the alarm for tomorrow; otherwise leave it for today
-		if (date.getTimeInMillis() < System.currentTimeMillis()) {
-			triggerAtMillis += ONE_DAY_IN_MILLISECONDS; }
-//		long timeTillFire = triggerAtMillis - System.currentTimeMillis();
-//		Log.d("Timer.java", "josh DailyAlarm timeTillFire = " + timeTillFire + " milliseconds from now");
-		setExactAlarm(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
+		long nextTriggerTime = date.getTimeInMillis();
+		// If today's trigger time has already passed, set the alarm for tomorrow.  This should universally occur except at registration and reboots.
+		if (nextTriggerTime < System.currentTimeMillis() ) { nextTriggerTime += ONE_DAY_IN_MILLISECONDS; }
+//		checkForMissedAlarm(intentToBeBroadcast, nextTriggerTime);
+		long timeTillFire = nextTriggerTime - System.currentTimeMillis();
+		Log.i("Timer.java", "josh DailyAlarm timeTillFire = " + timeTillFire + " milliseconds from now");
+		setExactAlarm(AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingIntent);
+		if (dailySurveyIntent.filterEquals(intentToBeBroadcast) ){ LoginManager.setDailySurveyAlarm(nextTriggerTime); }
+		if (voiceRecordingIntent.filterEquals(intentToBeBroadcast) ){ LoginManager.setAudioAlarm(nextTriggerTime); }
 	}
 	
 	
@@ -224,17 +222,17 @@ public class Timer {
 		date.set(Calendar.MINUTE, 0);
 		date.set(Calendar.SECOND, 0);
 		date.set(Calendar.MILLISECOND, 0);
-		long triggerAtMillis = date.getTimeInMillis();
-		
-		// If this week's trigger time has already passed, set the alarm for next week; otherwise leave it for this week
-		if (date.getTimeInMillis() < System.currentTimeMillis()) {
-			triggerAtMillis += ONE_WEEK_IN_MILLISECONDS; }
+		long nextTriggerTime = date.getTimeInMillis();
+		// If this week's trigger time has already passed, set the alarm for next week.  This should universally occur except at registration and reboots.
+		if (nextTriggerTime < System.currentTimeMillis()) { nextTriggerTime += ONE_WEEK_IN_MILLISECONDS; }
+//		checkForMissedAlarm(intentToBeBroadcast, nextTriggerTime);
 //		triggerAtMillis = System.currentTimeMillis() + 15000; //hax, debug code.
-//		long timeTillFire = triggerAtMillis - System.currentTimeMillis();
-//		Log.d("Timer.java", "josh WeeklyAlarm timeTillFire = " + timeTillFire + " milliseconds from now");
-		setExactAlarm(AlarmManager.RTC_WAKEUP, triggerAtMillis, pendingIntent);
+		long timeTillFire = nextTriggerTime - System.currentTimeMillis();
+		Log.i("Timer.java", "josh WeeklyAlarm timeTillFire = " + timeTillFire + " milliseconds from now");
+		setExactAlarm(AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingIntent);
+		LoginManager.setWeeklySurveyAlarm(nextTriggerTime);
 	}
-	
+		
 	
 	/** setupExactTimeAlarm creates an Exact Alarm that will go off at a specific time within a
 	 * period, e.g. every hour (period), at 47 minutes past the hour (start time within period).

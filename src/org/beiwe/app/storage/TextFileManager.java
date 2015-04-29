@@ -203,7 +203,7 @@ public class TextFileManager {
 			outStream.flush();
 			outStream.close(); }
 		catch (FileNotFoundException e) {
-			Log.e("TextFileManager", "could not find file to right to, " + this.fileName);
+			Log.e("TextFileManager", "could not find file to write to, " + this.fileName);
 			e.printStackTrace(); }
 		catch (IOException e) {
 			Log.e("TextFileManager", "error in the write operation: " + e.getMessage() );
@@ -238,14 +238,14 @@ public class TextFileManager {
 			try { while( (data = bufferedInputStream.read()) != -1)
 				stringBuffer.append((char)data); }
 			catch (IOException e) {
-				Log.i("Upload", "read error in " + this.fileName);
+				Log.e("Upload", "read error in " + this.fileName);
 				e.printStackTrace(); }
 			bufferedInputStream.close(); }
 		catch (FileNotFoundException e) {
 			Log.e("TextFileManager", "file " + this.fileName + " does not exist");
 			e.printStackTrace(); }
 		catch (IOException e){
-			Log.i("DataFileManager", "could not close " + this.fileName);
+			Log.e("DataFileManager", "could not close " + this.fileName);
 			e.printStackTrace(); }
 		
 		return stringBuffer.toString();
@@ -280,13 +280,13 @@ public class TextFileManager {
 	public static synchronized void delete(String fileName){
 		try { appContext.deleteFile(fileName); }
 		catch (Exception e) {
-			Log.i("TextFileManager", "cannot delete file " + fileName );
+			Log.e("TextFileManager", "cannot delete file " + fileName );
 			e.printStackTrace(); }
 	}
 	
 	/** Make new files for all the non-persistent files. */
 	public static synchronized void makeNewFilesForEverything() {
-		Log.d("TextFileManager.java", "makeNewFilesForEverything() called");
+//		Log.d("TextFileManager.java", "makeNewFilesForEverything() called");
 		GPSFile.newFile();
 		accelFile.newFile();
 		powerStateLog.newFile();
@@ -360,10 +360,10 @@ public class TextFileManager {
 		
 		//and delete things
 		for (String file_name : files) {
-			Log.i("deleting file", file_name);
+//			Log.i("deleting file", file_name);
 			try { appContext.deleteFile(file_name); }
 			catch (Exception e) {
-				Log.i("TextFileManager", "could not delete file " + file_name); 
+				Log.e("TextFileManager", "could not delete file " + file_name); 
 				e.printStackTrace(); } }
 	}	
 }

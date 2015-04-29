@@ -18,11 +18,6 @@ public class MainMenuActivity extends SessionActivity {
 		setContentView(R.layout.activity_main_menu);
 	}
 	
-	/**Calls... the hotline. */
-	public void callHotline(View v) {
-		super.callHotline();
-	}
-
 	/*#########################################################################
 	############################## Buttons ####################################
 	#########################################################################*/

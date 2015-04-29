@@ -7,7 +7,6 @@ import org.beiwe.app.session.SessionActivity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -50,10 +49,6 @@ public class GraphActivity extends SessionActivity {
 		String postData = PostRequest.securityParameters(null);
 		String graphUrl = getApplicationContext().getString(R.string.graph_url);
 		browser.postUrl(graphUrl, EncodingUtils.getBytes(postData, "BASE64"));
-	}
-	
-	public void callHotline(View v) {
-		super.callHotline();
 	}
 
 }

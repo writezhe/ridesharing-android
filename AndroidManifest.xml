@@ -55,8 +55,9 @@
             android:name=".DebugInterfaceActivity"
             android:label="@string/app_name" />
         <activity
-            android:name=".ui.AudioRecorderActivity"
-            android:label="@string/title_activity_audio_recorder" />
+            android:name="org.beiwe.app.ui.AudioRecorderActivity"
+            android:label="@string/title_activity_audio_recorder"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.SurveyActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -111,11 +112,10 @@
                 <data android:mimeType="application/vnd.wap.mms-message" />
             </intent-filter>
         </receiver>
+        
         <receiver android:name=".listeners.BluetoothListener" >
-            <intent-filter>
-                <action android:name="android.bluetooth.adapter.action.STATE_CHANGED" />
-            </intent-filter>
         </receiver>
+        
         <receiver android:name=".listeners.PowerStateListener" >
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />

@@ -47,7 +47,6 @@ public class BackgroundProcess extends Service {
 	@Override
 	/** onCreate is essentially the constructor for the service, initialize variables here.*/
 	public void onCreate() {
-//		Log.d("backgroundprocess", "Backgroundprocess Created");
 		appContext = this.getApplicationContext();
 		
 		DeviceInfo.initialize( getApplicationContext() );
@@ -141,7 +140,15 @@ public class BackgroundProcess extends Service {
 		//Note: the Bluetooth listener is a BroadcastReceiver, which means it must have a 0-argument constructor so android can instantiate it on broadcast receipts.
 		//The following check must be made, but it requires a Context that we cannot pass into the BluetoothListener, so we do the check in the BackgroundProcess.
 		if ( appContext.getPackageManager().hasSystemFeature( PackageManager.FEATURE_BLUETOOTH_LE ) ) {
-			this.bluetoothListener = new BluetoothListener(); }
+			this.bluetoothListener = new BluetoothListener(); 
+			if ( this.bluetoothListener.isBluetoothEnabled() ) {
+				Log.i("Background Process", "success, actually doing bluetooth things.");
+				registerReceiver(this.bluetoothListener, new IntentFilter("android.bluetooth.adapter.action.STATE_CHANGED") );
+			} else {
+				Log.e("Background Process", "bluetooth Failure. Should not have gotten this far.");
+				TextFileManager.getDebugLogFile().writeEncrypted("bluetooth Failure, device should not have gotten to this line of code");
+			}
+		}
 		else {
 			TextFileManager.getDebugLogFile().writeEncrypted("Device does not support bluetooth LE, bluetooth features disabled.");
 			this.bluetoothListener = null; } 
@@ -218,29 +225,49 @@ public class BackgroundProcess extends Service {
 		if (!timer.alarmIsSet(Timer.checkForNewSurveysIntent)) {
 			timer.setupFuzzyPowerOptimizedRepeatingAlarm(Timer.CHECK_FOR_NEW_SURVEYS_PERIOD, Timer.checkForNewSurveysIntent); }
 		
-		// Survey timers.
-		if (!timer.alarmIsSet(Timer.voiceRecordingIntent)) {
-			//the voice recording time of day is hardcoded...
-			timer.startDailyAlarm(Timer.VOICE_RECORDING_HOUR_OF_DAY, Timer.voiceRecordingIntent); }
-		String dailyQuestions = TextFileManager.getCurrentDailyQuestionsFile().read();
-		if (!timer.alarmIsSet(Timer.dailySurveyIntent) && dailyQuestions != null || dailyQuestions.length() != 0 ){
+		//checks for the current expected state with app notifications. (must be run before we potentially set new alarms)
+		Long now = System.currentTimeMillis();
+		if ( LoginManager.getCorrectAudioNotificationState() || LoginManager.getAudioAlarmTime() < now ) {
+			AppNotifications.displayRecordingNotification(appContext); }
+		if ( LoginManager.getCorrectWeeklyNotificationState() || LoginManager.getWeeklySurveyAlarmTime() < now ) {
+			AppNotifications.displaySurveyNotification(appContext, Type.WEEKLY); }
+		if ( LoginManager.getCorrectDailyNotificationState() || LoginManager.getDailySurveyAlarmTime() < now ) {
+			 AppNotifications.displaySurveyNotification(appContext, Type.DAILY); }
+		
+		
+		// Survey timers.  In addition to starting the alarm, check whether the notification should be currently active
+		// based on data in SharedPreferences (persistant storage).
+		String dailyQuestions = TextFileManager.getCurrentDailyQuestionsFile().read(); 
+		if (!timer.alarmIsSet(Timer.dailySurveyIntent) && (dailyQuestions != null && dailyQuestions.length() != 0 ) ){
 			SurveyScheduler.scheduleSurvey(dailyQuestions); }
+		
 		String weeklyQuestions = TextFileManager.getCurrentWeeklyQuestionsFile().read();
-		if (!timer.alarmIsSet(Timer.weeklySurveyIntent) && weeklyQuestions != null && weeklyQuestions.length() != 0 ){
+		if (!timer.alarmIsSet(Timer.weeklySurveyIntent) && (weeklyQuestions != null && weeklyQuestions.length() != 0 ) ){
 			SurveyScheduler.scheduleSurvey(weeklyQuestions); }
+		
+		//the voice recording time of day is hardcoded in Timer.
+		if (!timer.alarmIsSet(Timer.voiceRecordingIntent)) {
+			timer.startDailyAlarm(Timer.VOICE_RECORDING_HOUR_OF_DAY, Timer.voiceRecordingIntent); }
+		
+		
 	}
 	
 	public static void startAutomaticLogoutCountdownTimer(){
-		if (timer == null) Log.w("bacgroundProcess", "timer is null, this is about to crash");
+		//note: this function is static due to the evolution of the connections activities have to the background process,
+		// it probably is better practice to make this non-static, but we are leaving it as is so we don't have to test
+		// this type of low-level operational difference.
+		if (timer == null) {
+			Log.w("bacgroundProcess", "timer is null, this is about to crash");
+			TextFileManager.getDebugLogFile().writeEncrypted("our not-quite-race-condition encountered, the timer was null when the background process was supposed to be instantiated");
+		}
 		timer.setupExactSingleAlarm(Timer.MILLISECONDS_BEFORE_AUTO_LOGOUT, Timer.signoutIntent);
 		LoginManager.loginOrRefreshLogin();
 	}
 
 	public static void clearAutomaticLogoutCountdownTimer() { timer.cancelAlarm(Timer.signoutIntent); }
 	
-	public static void setDailySurvey(int hour) { 
-		
-		timer.startDailyAlarm(hour, Timer.dailySurveyIntent); }
+	//hooks into the timer object and sets a daily alarm for the daily survey notification.
+	public static void setDailySurvey(int hour) { timer.startDailyAlarm(hour, Timer.dailySurveyIntent); }
 	
 	public static void runWeeklySurveyStart(int hour, int dayOfWeek) { 
 		//just passes data into the timer to start the weekly, all logic is handled inside.
@@ -292,18 +319,18 @@ public class BackgroundProcess extends Service {
 			
 			//registers a notification for the user to make an audio recording.
 			if (intent.getAction().equals( appContext.getString(R.string.voice_recording) ) ) {
-				timer.setupDailyAlarm(intent);
-				AppNotifications.displayRecordingNotification(appContext); }
+				AppNotifications.displayRecordingNotification(appContext);
+				timer.setupDailyAlarm(intent); }
 			
 			//registers a notification for the user to take the daily survey.
 			if (intent.getAction().equals( appContext.getString(R.string.daily_survey) ) ) {
-				timer.setupDailyAlarm(intent);
-				AppNotifications.displaySurveyNotification(appContext, Type.DAILY); }
+				AppNotifications.displaySurveyNotification(appContext, Type.DAILY);
+				timer.setupDailyAlarm(intent); }
 			
 			//registers a notification for the user to take the weekly survey.
 			if (intent.getAction().equals( appContext.getString(R.string.weekly_survey) ) ) {
-				timer.setupWeeklySurveyAlarm(intent);
-				AppNotifications.displaySurveyNotification(appContext, Type.WEEKLY); }
+				AppNotifications.displaySurveyNotification(appContext, Type.WEEKLY); 
+				timer.setupWeeklySurveyAlarm(intent); }
 			
 			//runs the user signout logic, bumping the user to the login screen.
 			if (intent.getAction().equals( appContext.getString(R.string.signout_intent) ) ) {

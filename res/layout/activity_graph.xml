@@ -25,8 +25,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:onClick="callHotline"
-            android:text="@string/main_menu_call_hotline" />
+            android:onClick="callClinician"
+            android:text="@string/call_my_clinician" />
 
     </RelativeLayout>
 

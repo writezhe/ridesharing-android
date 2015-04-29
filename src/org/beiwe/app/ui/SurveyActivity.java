@@ -1,6 +1,7 @@
 package org.beiwe.app.ui;
 
 import org.beiwe.app.R;
+import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.survey.JsonParser;
 import org.beiwe.app.survey.QuestionsDownloader;
@@ -76,7 +77,6 @@ public class SurveyActivity extends SessionActivity {
 	 * @param v
 	 */
 	public void submitButtonPressed(View v) {
-		AppNotifications.dismissNotification(getApplicationContext(), surveyType.notificationCode);
 
 		SurveyTimingsRecorder.recordSubmit(getApplicationContext());
 		
@@ -141,6 +141,12 @@ public class SurveyActivity extends SessionActivity {
 
 		// Close the Activity
 		startActivity(new Intent(getApplicationContext(), MainMenuActivity.class));
+		
+		if (surveyType == SurveyType.Type.DAILY){ LoginManager.setCorrectDailyNotificationState(false); }
+		if (surveyType == SurveyType.Type.WEEKLY){ LoginManager.setCorrectWeeklyNotificationState(false); }
+		
+		AppNotifications.dismissNotification(getApplicationContext(), surveyType.notificationCode);
+
 		finish();
 	}
 		

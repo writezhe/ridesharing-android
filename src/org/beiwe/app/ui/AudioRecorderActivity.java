@@ -193,7 +193,6 @@ public class AudioRecorderActivity extends SessionActivity {
     private void startRecording() {
     	currentlyRecording = true;
     	finishedEncrypting = false;
-		AppNotifications.dismissNotification( getApplicationContext(), AppNotifications.recordingCode );
 
     	// Toggles button
     	recordingButton.setText( getApplicationContext().getString(R.string.record_button_stop_text) );
@@ -271,6 +270,8 @@ public class AudioRecorderActivity extends SessionActivity {
      * back to the last one; the audio file should already be saved, so we
      * don't need to do anything other than kill the activity.  */
     public void buttonDonePressed(View v) {
+    	LoginManager.setCorrectAudioNotificationState(false);
+		AppNotifications.dismissNotification( getApplicationContext(), AppNotifications.recordingCode );
     	startActivity(new Intent(getApplicationContext(), MainMenuActivity.class));
     	finish();
     }
@@ -319,7 +320,7 @@ public class AudioRecorderActivity extends SessionActivity {
 			outStream.flush();
 			outStream.close(); }
 		catch (FileNotFoundException e) {
-			Log.e("AudioRecording", "could not find file to right to, " + outputFileName);
+			Log.e("AudioRecording", "could not find file to write to, " + outputFileName);
 			e.printStackTrace(); }
 		catch (IOException e) {
 			Log.e("AudioRecording", "error in the write operation: " + e.getMessage() );
