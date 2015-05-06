@@ -13,7 +13,7 @@ import android.widget.EditText;
 public class PhoneNumberEntry extends RunningBackgroundProcessActivity {
 	private EditText primaryCarePhone;
 	private EditText passwordResetPhone;
-	private int maxPhoneNumberLength = 11;
+	private int phoneNumberLength = 10;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,13 +31,12 @@ public class PhoneNumberEntry extends RunningBackgroundProcessActivity {
 		String primary = primaryCarePhone.getText().toString().replaceAll("\\D+", "");
 		String reset = passwordResetPhone.getText().toString().replaceAll("\\D+", "");
 		
-		
 		if (primary == null || primary.length() == 0 || reset == null || reset.length() == 0 ){
 			AlertsManager.showAlert( getString(R.string.enter_phone_numbers), this );
 			return;
 		}
-		if (primary.length() > maxPhoneNumberLength || reset.length() > maxPhoneNumberLength){
-			AlertsManager.showAlert( String.format( getString(R.string.phone_number_too_long), maxPhoneNumberLength), this );
+		if (primary.length() != phoneNumberLength || reset.length() != phoneNumberLength){
+			AlertsManager.showAlert( String.format( getString(R.string.phone_number_length_error), phoneNumberLength), this );
 			return;
 		}
 		

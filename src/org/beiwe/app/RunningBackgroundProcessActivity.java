@@ -107,8 +107,11 @@ public class RunningBackgroundProcessActivity extends Activity {
 		case R.id.menu_about:
 			startActivity(new Intent(getApplicationContext(), AboutActivity.class));
 			return true;
-		case R.id.menu_call_hotline:
+		case R.id.menu_call_clinician:
 			callClinician(null);
+			return true;
+		case R.id.menu_call_research_assistant:
+			callResearchAssistant(null);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -116,11 +119,19 @@ public class RunningBackgroundProcessActivity extends Activity {
 	}
 	
 	
-	/** sends user to phone, calls the hotline. */
+	/** sends user to phone, calls the user's clinician. */
 	public void callClinician(View v) {
 		Intent callIntent = new Intent(Intent.ACTION_CALL);
 		String phoneNum = LoginManager.getPrimaryCareNumber();
 	    callIntent.setData(Uri.parse("tel:" + phoneNum));
-	    startActivity(callIntent);		
+	    startActivity(callIntent);
+	}
+	
+	/** sends user to phone, calls the study's research assistant. */
+	public void callResearchAssistant(View v) {
+		Intent callIntent = new Intent(Intent.ACTION_CALL);
+		String phoneNum = LoginManager.getPasswordResetNumber();
+	    callIntent.setData(Uri.parse("tel:" + phoneNum));
+	    startActivity(callIntent);
 	}
 }
