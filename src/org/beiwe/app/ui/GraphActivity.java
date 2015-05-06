@@ -13,7 +13,7 @@ import android.webkit.WebViewClient;
 
 /**
  * The activity that shows the graph to the user. Displays the Beiwe webpage that houses the graph.
- * It also features the options to call the hotline, as well as immediate sign out
+ * It also features the options to call clinician, as well as immediate sign out
  * 
  * @author Dor Samet
  */
