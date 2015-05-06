@@ -109,7 +109,7 @@
                     android:layout_weight="2" />
 
                 <Button
-                    android:id="@+id/record_activity_hotline"
+                    android:id="@+id/record_activity_call_clinician"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/btn_default"

@@ -20,7 +20,7 @@
         android:layout_height="44dp" >
 
         <Button
-            android:id="@+id/graph_hotline"
+            android:id="@+id/graph_call_clinician"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
