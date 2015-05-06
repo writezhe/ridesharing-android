@@ -24,7 +24,7 @@ public class ForgotPasswordActivity extends RunningBackgroundProcessActivity {
 		setContentView(R.layout.activity_forgot_password);
 
 		/* Add the user's Patient ID to the heading in the activity, so the user can tell it to the
-		 * administrator when the user calls the hotline asking for a temporary password. */
+		 * administrator when the user calls the research assistant asking for a temporary password. */
 		TextView title = (TextView) findViewById(R.id.forgotPasswordTitle);
 		String titleWithIdResource = getApplicationContext().getString(R.string.forgot_password_title_with_id);
 		String instructionsWithId = String.format(titleWithIdResource, LoginManager.getPatientID());
@@ -34,7 +34,7 @@ public class ForgotPasswordActivity extends RunningBackgroundProcessActivity {
 	
 	/** calls the reset password HTTPAsync query. */
 	public void registerNewPassword(View view) {
-		// Get the user's temporary password (they get this from a human admin by calling the hotline)
+		// Get the user's temporary password (they get this from a human admin by calling the research assistant)
 		EditText tempPasswordInputField = (EditText) findViewById(R.id.forgotPasswordTempPasswordInput);
 		String tempPassword = tempPasswordInputField.getText().toString();
 
