@@ -40,8 +40,6 @@
     <uses-permission android:name="android.permission.BATTERY_STATS" />
     <!-- Permissions regarding hotline -->
     <uses-permission android:name="android.permission.CALL_PHONE" />
-    <!-- Permission for BackgroundProcess to get other tasks. TODO: Eli, do we need this? -->
-    <!-- <uses-permission android:name="android.permission.GET_TASKS" /> -->
 
     <application
         android:allowBackup="true"
