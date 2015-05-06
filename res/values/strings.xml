@@ -178,7 +178,8 @@
     <string name="enter_phone_numbers">You must enter values for the two phone numbers above </string>
     <!-- Consent Form -->
     <string name="title_activity_consent_form">ConsentForm</string>
-    <string name="consentFormButton"> I Consent </string> 
+    <string name="consentButton"> I Consent </string>
+    <string name="doNotConsentButton"> I do not Consent </string> 
     <string name="consentForm"> 
         The Consent Form\n
         Goes\n

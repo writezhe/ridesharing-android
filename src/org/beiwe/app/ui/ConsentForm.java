@@ -21,6 +21,11 @@ public class ConsentForm extends RunningBackgroundProcessActivity {
 		
 	}
 	
+	public void doNotConsentButton(View view) {
+		finish();
+		System.exit(0);
+	}
+	
 	public void consentButton(View view) {
 		LoginManager.setRegistered(true);
 		LoginManager.loginOrRefreshLogin();
