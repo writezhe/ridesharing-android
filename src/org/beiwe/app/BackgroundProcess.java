@@ -59,7 +59,7 @@ public class BackgroundProcess extends Service {
 		accelerometerListener = new AccelerometerListener( appContext );
 		startBluetooth();
 		startSmsSentLogger();
-//		startMmsSentLogger();
+		startMmsSentLogger();
 		startCallLogger();
 		startPowerStateListener();
 		registerTimers();
