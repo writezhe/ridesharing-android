@@ -2,7 +2,7 @@ package org.beiwe.app;
 
 import org.beiwe.app.BackgroundProcess.BackgroundProcessBinder;
 import org.beiwe.app.session.LoginManager;
-import org.beiwe.app.ui.AboutActivity;
+import org.beiwe.app.ui.AboutActivityLoggedOut;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -105,7 +105,7 @@ public class RunningBackgroundProcessActivity extends Activity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		switch (item.getItemId()) {
 		case R.id.menu_about:
-			startActivity(new Intent(getApplicationContext(), AboutActivity.class));
+			startActivity(new Intent(getApplicationContext(), AboutActivityLoggedOut.class));
 			return true;
 		case R.id.menu_call_clinician:
 			callClinician(null);

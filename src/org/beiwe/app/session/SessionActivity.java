@@ -4,6 +4,7 @@ import org.beiwe.app.BackgroundProcess;
 import org.beiwe.app.R;
 import org.beiwe.app.RunningBackgroundProcessActivity;
 import org.beiwe.app.storage.TextFileManager;
+import org.beiwe.app.ui.AboutActivityLoggedIn;
 import org.beiwe.app.ui.LoginActivity;
 import org.beiwe.app.ui.ResetPasswordActivity;
 
@@ -92,6 +93,9 @@ public class SessionActivity extends RunningBackgroundProcessActivity {
 			return true;
 		case R.id.menu_signout:
 			logoutUser();
+			return true;
+		case R.id.menu_about:
+			startActivity(new Intent(getApplicationContext(), AboutActivityLoggedIn.class));
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

@@ -7,7 +7,7 @@ import android.os.Bundle;
 
 /**The about page!
  * @author Everyone! */
-public class AboutActivity extends RunningBackgroundProcessActivity {
+public class AboutActivityLoggedOut extends RunningBackgroundProcessActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
