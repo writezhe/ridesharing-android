@@ -65,7 +65,6 @@ public class MMSSentLogger extends ContentObserver{
 //		print_things_from_valid_sources(mmsCursor);
 //		Log.e("MMS stuff", "SMS:");
 //		print_things_from_valid_sources(smsCursor);
-		
 	}
 	
 	/**Checks for basic validity of our database cursors, moves database cursor to correct location. 
@@ -86,7 +85,29 @@ public class MMSSentLogger extends ContentObserver{
 	public boolean checkValidData(Cursor cursor){
 		//if the message box is not box number 2 (sent) then this was one of those many,
 		// many, extra, dumb, onChange triggers, and we return false.
-		if (cursor.getInt( cursor.getColumnIndex("msg_box") ) != 2 ) { return false; }
+		try {
+			if (cursor.getInt( cursor.getColumnIndexOrThrow("msg_box") ) != 2 ) { return false; }
+		}
+		catch (IllegalArgumentException e) {
+			//this is the error that we should get if the column does not exist
+			return false;
+		}
+		catch (IllegalStateException e) {
+			//cursor.getInt throws an IllegalStateException occasionally, with the following message:
+			//Couldn't read row 0, col -1 from CursorWindow.  Make sure the Cursor is initialized correctly before accessing data from it.
+			//This does not occur when the user receives or sends MMS messages, it just happens, though it happens more frequently if
+			//the user is "fiddling" (selecting an image, for instance) with MMS.
+			//The good thing is that if this happens, the cursor is invalid. 
+			return false;
+		}
+		//http://developer.android.com/reference/android/database/sqlite/SQLiteCursor.html
+		//this is not valid, I have been assuming I was dealing with a sqlitecursor but apparently the following method is not defined, so maybe not.
+//		try {
+//			cursor.checkPosition();
+//		}
+//		catch (CursorIndexOutOfBoundsException e) {
+//			return false;
+//		}
 		return true;
 	}
 	
