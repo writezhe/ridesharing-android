@@ -4,5 +4,4 @@
     android:layout_height="wrap_content"
     style="@style/EditTextStyle"
     android:inputType="textMultiLine|textCapSentences" >
-
 </EditText>

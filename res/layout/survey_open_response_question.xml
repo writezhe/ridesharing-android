@@ -13,9 +13,9 @@
 	    style="@style/MainTextStyle"
 	    android:padding="20dp"
 	    android:textSize="20sp"
-	    android:text="@string/question_error_text" >	    
+	    android:text="@string/question_error_text" >
 	</TextView>
-	
+
 	<LinearLayout
 	    android:id="@+id/textFieldContainer"
         android:layout_width="match_parent"
@@ -26,6 +26,5 @@
         android:paddingTop="10dp"
         android:paddingBottom="50dp" >
     </LinearLayout>
-	
-	
+
 </org.beiwe.app.survey.QuestionLinearLayout>

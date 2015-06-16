@@ -7,5 +7,4 @@
     android:textSize="20sp"
     android:tag="infoTextbox"
     android:text="@string/question_error_text" >
-    
 </TextView>

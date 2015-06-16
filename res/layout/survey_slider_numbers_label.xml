@@ -7,5 +7,4 @@
     android:paddingLeft="50dp"
     android:paddingRight="50dp"
     android:orientation="horizontal">
-
 </LinearLayout>

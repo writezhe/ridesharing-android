@@ -13,7 +13,7 @@
 	    style="@style/MainTextStyle"
 	    android:padding="20dp"
 	    android:textSize="20sp"
-	    android:text="@string/question_error_text" >	    
+	    android:text="@string/question_error_text" >
 	</TextView>
 
 	<LinearLayout
@@ -27,5 +27,4 @@
         android:paddingBottom="50dp" >
     </LinearLayout>
 
-	
 </org.beiwe.app.survey.QuestionLinearLayout>
