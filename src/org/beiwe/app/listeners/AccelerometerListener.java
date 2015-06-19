@@ -11,7 +11,7 @@ import android.hardware.SensorManager;
 import android.util.Log;
 
 public class AccelerometerListener implements SensorEventListener{
-	public static String header = "timestamp, accuracy, x, y, z";
+	public static String header = "timestamp,accuracy,x,y,z";
 	
 	private SensorManager accelSensorManager;
 	private Sensor accelSensor;
@@ -46,7 +46,7 @@ public class AccelerometerListener implements SensorEventListener{
 			this.accelSensor = accelSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
 			if (accelSensorManager == null ){ 
-				Log.i("accelerometer does not exist??", " !!!!!!!!!!!!!!!!!! " );
+//				Log.e("accelerometer does not exist?", " !!!!!!!!!!!!!!!!!! " );
 				exists = false;	}
 	} }
 	

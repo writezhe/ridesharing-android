@@ -12,7 +12,7 @@ import android.util.Log;
  *  @author Josh Zagorsky, Eli Jones, May/June 2014 */
 public class PowerStateListener extends BroadcastReceiver {
 	
-	public static String header = "time, event";
+	public static String header = "timestamp, event";
 	private static Boolean started = false;
 	
 	public static void start(){ started = true; }

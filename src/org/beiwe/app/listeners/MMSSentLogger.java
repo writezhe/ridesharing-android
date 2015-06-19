@@ -45,14 +45,14 @@ public class MMSSentLogger extends ContentObserver{
 		//we only care about MMSes in this code, so if we received an SMS change, we exit here.
 		if ( !smsCursor.getString(smsCursor.getColumnIndex( "transport_type" )).equals("mms") ) { return; }
 		
-		long date = mmsCursor.getInt( mmsCursor.getColumnIndex("date") ) * 1000L;
+		long timestamp = mmsCursor.getInt( mmsCursor.getColumnIndex("date") ) * 1000L;
 		String recipient = smsCursor.getString( smsCursor.getColumnIndex("recipient_address") );
 		
 		String[] recipients = recipient.split(";");
 		for (String number : recipients) {
 			String ident = EncryptionEngine.hashPhoneNumber(number);
-			String write_to_file = date + TextFileManager.DELIMITER + ident + TextFileManager.DELIMITER + "sent" + TextFileManager.DELIMITER + "MMS";
-			Log.i("mms", write_to_file);
+			String write_to_file = timestamp + TextFileManager.DELIMITER + ident + TextFileManager.DELIMITER + "sent MMS" + TextFileManager.DELIMITER + "MMS";
+//			Log.i("mms", write_to_file);
 			TextFileManager.getTextsLogFile().writeEncrypted(write_to_file);
 		}
 		

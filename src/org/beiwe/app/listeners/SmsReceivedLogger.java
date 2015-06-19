@@ -50,13 +50,12 @@ public class SmsReceivedLogger extends BroadcastReceiver {
                  indx = incomingNumber.indexOf("+");
                  if(indx>0){
                      incomingNumber = incomingNumber.substring(indx);
-                     
+//                     "timestamp,hashed phone number,sent vs received,message length,time sent";
                      String data = "" + System.currentTimeMillis() + TextFileManager.DELIMITER;
                      data += EncryptionEngine.hashPhoneNumber(incomingNumber) + TextFileManager.DELIMITER;
-                     data += "received" + TextFileManager.DELIMITER;
-                     data += "MMS";
-
-                     Log.i("SMSReceivedLogger", "data = " + data);
+                     data += "received MMS" + TextFileManager.DELIMITER;
+//                     TODO: determine if we can get the length of the text, if it has an attachment.
+//                     Log.i("SMSReceivedLogger", "data = " + data);
                      TextFileManager.getTextsLogFile().writeEncrypted(data);
                  }
              }
@@ -77,10 +76,10 @@ public class SmsReceivedLogger extends BroadcastReceiver {
 					messageFrom = messages[i].getOriginatingAddress();
 					String messageBody = messages[i].getMessageBody();
 					long timestamp = messages[i].getTimestampMillis();
-					
+//                  "timestamp,hashed phone number,sent vs received,message length,time sent";
 					String data = "" + System.currentTimeMillis() + TextFileManager.DELIMITER;
 					data += EncryptionEngine.hashPhoneNumber(messageFrom) + TextFileManager.DELIMITER;
-					data += "received" + TextFileManager.DELIMITER;
+					data += "received SMS" + TextFileManager.DELIMITER;
 					data += messageBody.length() + TextFileManager.DELIMITER;
 					data += timestamp;
 

@@ -22,7 +22,7 @@ import android.util.Log;
 
 public class GPSListener implements LocationListener {
 	
-	public static String header = "time, latitude, longitude, altitude, accuracy";
+	public static String header = "timestamp, latitude, longitude, altitude, accuracy";
 	private TextFileManager GPSFile;
 	
 	private Context appContext;

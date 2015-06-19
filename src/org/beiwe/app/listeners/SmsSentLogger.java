@@ -50,7 +50,7 @@ public class SmsSentLogger extends ContentObserver {
 				
 		String address = cursor.getString(cursor.getColumnIndex("address"));
 		String body = cursor.getString(cursor.getColumnIndex("body"));
-		String date = cursor.getString(cursor.getColumnIndex("date"));
+		String timestamp = cursor.getString(cursor.getColumnIndex("date"));
 		int msgType = cursor.getInt(cursor.getColumnIndex("type"));
 		
 		/* Improvement idea: we could log all message types; TextBasedSmsColumns has 6 types of messages: 
@@ -59,12 +59,12 @@ public class SmsSentLogger extends ContentObserver {
 		 * We could also use this class to log incoming messages as well as outgoing messages. */
 		if (msgType == TextBasedSmsColumns.MESSAGE_TYPE_SENT) {
 			
-			String data = "" + date + TextFileManager.DELIMITER;
+//			"timestamp,hashed phone number,sent vs received,message length,time sent";
+			String data = "" + timestamp + TextFileManager.DELIMITER;
 			data += EncryptionEngine.hashPhoneNumber(address) + TextFileManager.DELIMITER;
-			data += "sent" + TextFileManager.DELIMITER;
+			data += "sent SMS" + TextFileManager.DELIMITER;
 			data += body.length();
 			
-			Log.i("SMSLogger", "data = " + data);
 			smsLogFile.writeEncrypted(data);
 			
 			/* Note: Android often records a text message multiple times. This
