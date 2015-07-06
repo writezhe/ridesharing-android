@@ -160,7 +160,7 @@ public class Timer {
 		setExactAlarm(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
 	}
 	
-	
+	//TODO: eli. write a single timer function that takes a... list, probably, and gets days of week out of it, and a time of day
 	/**Sets up and starts an alarm that will trigger on the hour provided.  The intent will have
 	 * an Extra added to it defining the time of day.
 	 * Usage: when this intent is received by a BroadcastReceiver simply call setupDailyAlarm

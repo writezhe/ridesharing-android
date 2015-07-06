@@ -7,6 +7,8 @@ import org.json.JSONObject;
 /**Some handy functions for scheduling surveys.
  * @author Josh Zagorsky*/
 
+//TODO: Eli. Rewrite day of week logic (looks like this is a rewrite of the entire class...) to grab a list from the json and parse it (possibly just pass it directly, buuuut that seems unsafe.  validate input at least.)  
+//TODO: Eli. document.
 public class SurveyScheduler {
 	
 	public static void scheduleSurvey(String jsonSurveyString) {
