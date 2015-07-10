@@ -2,7 +2,7 @@ package org.beiwe.app;
 
 import org.beiwe.app.R;
 import org.beiwe.app.storage.EncryptionEngine;
-import org.beiwe.app.ui.AlertsManager;
+import org.beiwe.app.ui.utils.AlertsManager;
 
 import android.app.Activity;
 import android.content.Context;

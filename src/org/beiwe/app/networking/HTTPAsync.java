@@ -1,7 +1,7 @@
 package org.beiwe.app.networking;
 
 import org.beiwe.app.R;
-import org.beiwe.app.ui.AlertsManager;
+import org.beiwe.app.ui.utils.AlertsManager;
 
 import android.app.Activity;
 import android.os.AsyncTask;

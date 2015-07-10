@@ -1,4 +1,4 @@
-package org.beiwe.app.ui;
+package org.beiwe.app.ui.utils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
