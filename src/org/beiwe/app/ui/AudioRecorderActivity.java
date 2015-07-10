@@ -15,6 +15,7 @@ import org.beiwe.app.Timer;
 import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.TextFileManager;
+import org.beiwe.app.ui.utils.AppNotifications;
 
 import android.content.Context;
 import android.content.Intent;

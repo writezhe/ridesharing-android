@@ -9,6 +9,7 @@ import org.beiwe.app.survey.SurveyAnswersRecorder;
 import org.beiwe.app.survey.SurveyTimingsRecorder;
 import org.beiwe.app.survey.SurveyType;
 import org.beiwe.app.survey.SurveyType.Type;
+import org.beiwe.app.ui.utils.AppNotifications;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;

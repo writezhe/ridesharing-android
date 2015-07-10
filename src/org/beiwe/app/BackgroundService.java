@@ -13,8 +13,8 @@ import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.QuestionsDownloader;
 import org.beiwe.app.survey.SurveyScheduler;
 import org.beiwe.app.survey.SurveyType.Type;
-import org.beiwe.app.ui.AppNotifications;
 import org.beiwe.app.ui.LoginActivity;
+import org.beiwe.app.ui.utils.AppNotifications;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
