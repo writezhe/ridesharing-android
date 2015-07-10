@@ -7,7 +7,7 @@ import org.beiwe.app.RunningBackgroundProcessActivity;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.ui.AboutActivityLoggedIn;
 import org.beiwe.app.ui.LoginActivity;
-import org.beiwe.app.ui.ResetPasswordActivity;
+import org.beiwe.app.ui.registration.ResetPasswordActivity;
 
 import android.content.Intent;
 import android.util.Log;

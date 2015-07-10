@@ -1,4 +1,4 @@
-package org.beiwe.app.ui;
+package org.beiwe.app.ui.registration;
 
 import org.beiwe.app.R;
 import org.beiwe.app.RunningBackgroundProcessActivity;
