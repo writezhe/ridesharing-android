@@ -4,6 +4,7 @@ import org.beiwe.app.PersistentData;
 import org.beiwe.app.R;
 import org.beiwe.app.RunningBackgroundProcessActivity;
 import org.beiwe.app.survey.TextFieldKeyboard;
+import org.beiwe.app.ui.registration.ConsentFormActivity;
 import org.beiwe.app.ui.utils.AlertsManager;
 
 import android.content.Intent;
@@ -43,7 +44,7 @@ public class PhoneNumberEntry extends RunningBackgroundProcessActivity {
 		
 		PersistentData.setPrimaryCareNumber(primary);
 		PersistentData.setPasswordResetNumber(reset);
-		startActivity(new Intent(getApplicationContext(), ConsentForm.class));
+		startActivity(new Intent(getApplicationContext(), ConsentFormActivity.class));
 		finish();
 	}
 }

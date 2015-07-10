@@ -141,7 +141,7 @@
             android:label="@string/title_activity_phone_number_entry" >
         </activity>
         <activity
-            android:name="org.beiwe.app.ui.ConsentForm"
+            android:name="org.beiwe.app.ui.registration.ConsentFormActivity"
             android:label="@string/title_activity_consent_form" >
         </activity>
     </application>

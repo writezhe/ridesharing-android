@@ -1,4 +1,4 @@
-package org.beiwe.app.ui;
+package org.beiwe.app.ui.registration;
 
 import org.beiwe.app.LoadingActivity;
 import org.beiwe.app.PersistentData;
@@ -14,7 +14,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-public class ConsentForm extends RunningBackgroundProcessActivity {
+public class ConsentFormActivity extends RunningBackgroundProcessActivity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +25,7 @@ public class ConsentForm extends RunningBackgroundProcessActivity {
 	/** On the press of the do not consent button, we pop up an alert, allowing the user
 	 * to press "Cancel" if they did not mean to press the do not consent. */
 	public void doNotConsentButton(View view) {
-		AlertDialog.Builder alertBuilder = new AlertDialog.Builder(ConsentForm.this);
+		AlertDialog.Builder alertBuilder = new AlertDialog.Builder(ConsentFormActivity.this);
 		alertBuilder.setTitle("Do Not Consent");
 		alertBuilder.setMessage(getString(R.string.doNotConsentAlert));
 		alertBuilder.setPositiveButton("I Understand", new DialogInterface.OnClickListener() {
