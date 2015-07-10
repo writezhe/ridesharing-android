@@ -8,13 +8,13 @@
     <string name="action_settings">Settings</string>
 
     <!-- API URLs -->
-    <string name="data_upload_url">https://beiwe.org/upload</string>
-    <string name="daily_survey_questions_url">https://beiwe.org/download_daily_survey</string>
-    <string name="weekly_survey_questions_url">https://beiwe.org/download_weekly_survey</string>
-    <string name="forgot_password_url">https://beiwe.org/forgot_password</string>
-    <string name="reset_password_url">https://beiwe.org/set_password</string>
-    <string name="graph_url">https://beiwe.org/graph</string>
-    <string name="register_url">https://beiwe.org/register_user</string>
+    <string name="data_upload_url">http://dev.beiwe.org/upload</string>
+    <string name="daily_survey_questions_url">http://dev.beiwe.org/download_daily_survey</string>
+    <string name="weekly_survey_questions_url">http://dev.beiwe.org/download_weekly_survey</string>
+    <string name="forgot_password_url">http://dev.beiwe.org/forgot_password</string>
+    <string name="reset_password_url">http://dev.beiwe.org/set_password</string>
+    <string name="graph_url">http://dev.beiwe.org/graph</string>
+    <string name="register_url">http://dev.beiwe.org/register_user</string>
 
     <!-- Recording Options Strings -->
     <string name="title_activity_audio_recorder">Make a Voice Recording</string>

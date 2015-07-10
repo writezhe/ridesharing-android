@@ -89,7 +89,7 @@
         <!-- SERVICE -->
 
         <service
-            android:name=".BackgroundProcess"
+            android:name=".BackgroundService"
             android:exported="false"
             android:label="BackgroundProcess-thing" />
 

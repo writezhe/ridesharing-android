@@ -1,6 +1,6 @@
 package org.beiwe.app;
 
-import org.beiwe.app.BackgroundProcess.BackgroundProcessBinder;
+import org.beiwe.app.BackgroundService.BackgroundProcessBinder;
 import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.ui.AboutActivityLoggedOut;
 
@@ -35,7 +35,7 @@ public class RunningBackgroundProcessActivity extends Activity {
 	 * We ensure the BackgroundProcess is running in the onResume call, and functionality that
 	 * relies on the BackgroundProcess is always tied to UI elements, reducing the chance of
 	 * a null backgroundProcess variable to essentially zero. */
-	protected BackgroundProcess backgroundProcess;
+	protected BackgroundService backgroundProcess;
 
 	//an unused variable for tracking whether the background process is connected, uncomment if we ever need that.
 //	protected boolean isBound = false;
@@ -68,7 +68,7 @@ public class RunningBackgroundProcessActivity extends Activity {
 	protected void onResume() {
 		super.onResume();
 		
-		Intent startingIntent = new Intent(this.getApplicationContext(), BackgroundProcess.class);
+		Intent startingIntent = new Intent(this.getApplicationContext(), BackgroundService.class);
 		startingIntent.addFlags(Intent.FLAG_FROM_BACKGROUND);
 		startService(startingIntent);
         bindService( startingIntent, backgroundProcessConnection, Context.BIND_AUTO_CREATE);

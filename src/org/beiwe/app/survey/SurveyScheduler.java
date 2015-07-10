@@ -1,6 +1,6 @@
 package org.beiwe.app.survey;
 
-import org.beiwe.app.BackgroundProcess;
+import org.beiwe.app.BackgroundService;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -17,12 +17,12 @@ public class SurveyScheduler {
 
 		if (dayOfWeekToAskSurvey(jsonSurveyString) == -1) {
 			// Schedule a daily survey
-			BackgroundProcess.setDailySurvey(hour);
+			BackgroundService.setDailySurvey(hour);
 		}
 		else {
 			// Schedule a weekly survey
 			int dayOfWeek = dayOfWeekToAskSurvey(jsonSurveyString);
-			BackgroundProcess.runWeeklySurveyStart(hour, dayOfWeek);
+			BackgroundService.runWeeklySurveyStart(hour, dayOfWeek);
 		}
 	}
 	

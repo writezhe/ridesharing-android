@@ -33,7 +33,7 @@ import android.os.SystemClock;
 import android.util.Log;
 
 
-public class BackgroundProcess extends Service {
+public class BackgroundService extends Service {
 	
 	private Context appContext;
 	
@@ -364,8 +364,8 @@ public class BackgroundProcess extends Service {
 	 * Provides a (safe) handle to the background process using the onStartCommand code
 	 * used in every RunningBackgroundProcessActivity */
 	public class BackgroundProcessBinder extends Binder {
-        public BackgroundProcess getService() {
-            return BackgroundProcess.this;
+        public BackgroundService getService() {
+            return BackgroundService.this;
         }
     }
 }

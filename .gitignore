@@ -37,3 +37,6 @@ proguard/
 
 # Key files on Eli's dev environment
 signing keystore*
+
+# Eli's builds folder
+builds

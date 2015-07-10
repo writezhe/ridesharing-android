@@ -1,6 +1,6 @@
 package org.beiwe.app.listeners;
 
-import org.beiwe.app.BackgroundProcess;
+import org.beiwe.app.BackgroundService;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -36,7 +36,7 @@ public class BootListener extends BroadcastReceiver {
 	/** Does what it says, starts the background service running.
 	 *  called when SDcard available and on device startup. */	
 	private void startBackgroundProcess(Context externalContext){
-		Intent intent_to_start_background_service = new Intent(externalContext, BackgroundProcess.class);
+		Intent intent_to_start_background_service = new Intent(externalContext, BackgroundService.class);
 		intent_to_start_background_service.addFlags(Intent.FLAG_FROM_BACKGROUND);
 	    externalContext.startService(intent_to_start_background_service);
 	}

@@ -3,7 +3,7 @@ package org.beiwe.app;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
-import org.beiwe.app.BackgroundProcess.BackgroundProcessBinder;
+import org.beiwe.app.BackgroundService.BackgroundProcessBinder;
 import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.ui.AlertsManager;
@@ -32,7 +32,7 @@ public class LoadingActivity extends RunningBackgroundProcessActivity {
 	public static Class loadThisActivity = DebugInterfaceActivity.class;
 //	public static Class loadThisActivity = MainMenuActivity.class;
 	
-	protected BackgroundProcess backgroundProcess;
+	protected BackgroundService backgroundProcess;
 	protected boolean isBound = false;
 	
 	/**The ServiceConnection Class is our trigger for events that rely on the BackgroundService */
@@ -63,7 +63,7 @@ public class LoadingActivity extends RunningBackgroundProcessActivity {
 		setContentView(R.layout.activity_loading);
 				
 		if ( testHashing() ) {
-			Intent startingIntent = new Intent(this.getApplicationContext(), BackgroundProcess.class);
+			Intent startingIntent = new Intent(this.getApplicationContext(), BackgroundService.class);
 			startingIntent.addFlags(Intent.FLAG_FROM_BACKGROUND);
 			startService(startingIntent);
 			bindService( startingIntent, backgroundProcessConnection, Context.BIND_AUTO_CREATE);

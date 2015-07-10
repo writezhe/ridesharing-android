@@ -1,6 +1,6 @@
 package org.beiwe.app.session;
 
-import org.beiwe.app.BackgroundProcess;
+import org.beiwe.app.BackgroundService;
 import org.beiwe.app.R;
 import org.beiwe.app.RunningBackgroundProcessActivity;
 import org.beiwe.app.storage.TextFileManager;
@@ -43,7 +43,7 @@ public class SessionActivity extends RunningBackgroundProcessActivity {
 			Log.w("sessionactivity", "background process is null, you have a race condition with instantiating the background process.");
 			TextFileManager.getDebugLogFile().writeEncrypted("a sessionactivity tried to clear the automatic logout countdown timer, but the background process did not exist.");
 		}
-		BackgroundProcess.clearAutomaticLogoutCountdownTimer();
+		BackgroundService.clearAutomaticLogoutCountdownTimer();
 	}
 	
 	@Override
@@ -56,7 +56,7 @@ public class SessionActivity extends RunningBackgroundProcessActivity {
 	/** If the user is NOT logged in, take them to the login page */
 	protected void authenticateAndLoginIfNecessary() {
 		if ( LoginManager.isLoggedIn() ) {
-			BackgroundProcess.startAutomaticLogoutCountdownTimer(); }
+			BackgroundService.startAutomaticLogoutCountdownTimer(); }
 		else {
 			startActivity(new Intent(this, LoginActivity.class) ); }
 	}

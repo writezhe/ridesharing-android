@@ -87,7 +87,7 @@ public class Timer {
 	public IntentFilter getCheckForNewSurveysIntent() { return new IntentFilter( checkForNewSurveysIntent.getAction() ); }
 		
 	// Constructor
-	public Timer( BackgroundProcess backgroundProcess ) {
+	public Timer( BackgroundService backgroundProcess ) {
 		appContext = backgroundProcess.getApplicationContext();
 		alarmManager = (AlarmManager)( backgroundProcess.getSystemService( Context.ALARM_SERVICE ));
 		
