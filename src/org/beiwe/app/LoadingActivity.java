@@ -5,7 +5,7 @@ import java.security.NoSuchAlgorithmException;
 
 import org.beiwe.app.BackgroundService.BackgroundProcessBinder;
 import org.beiwe.app.storage.EncryptionEngine;
-import org.beiwe.app.ui.RegisterActivity;
+import org.beiwe.app.ui.registration.RegisterActivity;
 import org.beiwe.app.ui.utils.AlertsManager;
 
 import android.content.ComponentName;
