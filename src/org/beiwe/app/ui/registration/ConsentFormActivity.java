@@ -1,11 +1,11 @@
 package org.beiwe.app.ui.registration;
 
-import org.beiwe.app.LoadingActivity;
 import org.beiwe.app.PersistentData;
 import org.beiwe.app.R;
 import org.beiwe.app.RunningBackgroundProcessActivity;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.QuestionsDownloader;
+import org.beiwe.app.ui.LoadingActivity;
 
 
 import android.app.AlertDialog;

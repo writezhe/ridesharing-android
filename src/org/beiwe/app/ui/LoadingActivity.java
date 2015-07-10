@@ -1,11 +1,16 @@
-package org.beiwe.app;
+package org.beiwe.app.ui;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
+import org.beiwe.app.BackgroundService;
+import org.beiwe.app.PersistentData;
+import org.beiwe.app.R;
+import org.beiwe.app.RunningBackgroundProcessActivity;
 import org.beiwe.app.BackgroundService.BackgroundProcessBinder;
+import org.beiwe.app.R.layout;
+import org.beiwe.app.R.string;
 import org.beiwe.app.storage.EncryptionEngine;
-import org.beiwe.app.ui.DebugInterfaceActivity;
 import org.beiwe.app.ui.registration.RegisterActivity;
 import org.beiwe.app.ui.utils.AlertsManager;
 

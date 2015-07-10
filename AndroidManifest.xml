@@ -77,7 +77,7 @@
             android:label="@string/title_activity_graph" >
         </activity>
         <activity
-            android:name=".LoadingActivity"
+            android:name="org.beiwe.app.ui.LoadingActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
