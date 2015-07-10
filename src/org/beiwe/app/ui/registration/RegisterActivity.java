@@ -7,7 +7,6 @@ import org.beiwe.app.RunningBackgroundProcessActivity;
 import org.beiwe.app.networking.HTTPAsync;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.survey.TextFieldKeyboard;
-import org.beiwe.app.ui.PhoneNumberEntry;
 import org.beiwe.app.ui.utils.AlertsManager;
 
 import android.annotation.SuppressLint;
@@ -96,7 +95,7 @@ public class RegisterActivity extends RunningBackgroundProcessActivity {
 		protected void onPostExecute(Void arg) {
 			if (response == 200) {
 				PersistentData.setPassword(newPassword);
-				activity.startActivity(new Intent(activity.getApplicationContext(), PhoneNumberEntry.class) );
+				activity.startActivity(new Intent(activity.getApplicationContext(), PhoneNumberEntryActivity.class) );
 				activity.finish();
 			}
 			else if (response == 2) {

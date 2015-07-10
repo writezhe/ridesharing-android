@@ -137,7 +137,7 @@
             android:label="@string/title_activity_about" >
         </activity>
         <activity
-            android:name="org.beiwe.app.ui.PhoneNumberEntry"
+            android:name="org.beiwe.app.ui.registration.PhoneNumberEntryActivity"
             android:label="@string/title_activity_phone_number_entry" >
         </activity>
         <activity
