@@ -1,4 +1,4 @@
-package org.beiwe.app.ui;
+package org.beiwe.app.ui.user;
 
 import java.io.DataInputStream;
 import java.io.File;

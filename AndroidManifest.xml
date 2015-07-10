@@ -53,15 +53,15 @@
             android:name=".DebugInterfaceActivity"
             android:label="@string/app_name" />
         <activity
-            android:name="org.beiwe.app.ui.AudioRecorderActivity"
+            android:name="org.beiwe.app.ui.user.AudioRecorderActivity"
             android:label="@string/title_activity_audio_recorder"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".ui.SurveyActivity"
+            android:name=".user.SurveyActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_survey" />
         <activity
-            android:name=".ui.LoginActivity"
+            android:name=".user.LoginActivity"
             android:label="@string/title_activity_login" />
         <activity
             android:name="org.beiwe.app.ui.registration.ForgotPasswordActivity"
@@ -70,10 +70,10 @@
             android:name="org.beiwe.app.ui.registration.RegisterActivity"
             android:label="@string/title_activity_register" />
         <activity
-            android:name=".ui.MainMenuActivity"
+            android:name=".user.MainMenuActivity"
             android:label="@string/title_activity_main_menu" />
         <activity
-            android:name=".ui.GraphActivity"
+            android:name=".user.GraphActivity"
             android:label="@string/title_activity_graph" >
         </activity>
         <activity
@@ -129,11 +129,11 @@
             android:label="@string/title_activity_reset_password" >
         </activity>
         <activity
-            android:name=".ui.AboutActivityLoggedOut"
+            android:name=".user.AboutActivityLoggedOut"
             android:label="@string/title_activity_about" >
         </activity>
         <activity
-            android:name=".ui.AboutActivityLoggedIn"
+            android:name=".user.AboutActivityLoggedIn"
             android:label="@string/title_activity_about" >
         </activity>
         <activity

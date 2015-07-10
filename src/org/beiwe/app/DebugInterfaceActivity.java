@@ -5,10 +5,10 @@ import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.SurveyType;
-import org.beiwe.app.ui.AudioRecorderActivity;
-import org.beiwe.app.ui.LoginActivity;
-import org.beiwe.app.ui.MainMenuActivity;
-import org.beiwe.app.ui.SurveyActivity;
+import org.beiwe.app.ui.user.AudioRecorderActivity;
+import org.beiwe.app.ui.user.LoginActivity;
+import org.beiwe.app.ui.user.MainMenuActivity;
+import org.beiwe.app.ui.user.SurveyActivity;
 import org.beiwe.app.ui.utils.AppNotifications;
 
 import android.content.Context;

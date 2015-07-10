@@ -5,9 +5,9 @@ import org.beiwe.app.PersistentData;
 import org.beiwe.app.R;
 import org.beiwe.app.RunningBackgroundProcessActivity;
 import org.beiwe.app.storage.TextFileManager;
-import org.beiwe.app.ui.AboutActivityLoggedIn;
-import org.beiwe.app.ui.LoginActivity;
 import org.beiwe.app.ui.registration.ResetPasswordActivity;
+import org.beiwe.app.ui.user.AboutActivityLoggedIn;
+import org.beiwe.app.ui.user.LoginActivity;
 
 import android.content.Intent;
 import android.util.Log;

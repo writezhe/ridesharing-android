@@ -1,4 +1,4 @@
-package org.beiwe.app.ui;
+package org.beiwe.app.ui.user;
 
 import org.apache.http.util.EncodingUtils;
 import org.beiwe.app.R;
