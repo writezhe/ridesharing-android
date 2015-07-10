@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.beiwe.app.PersistentData;
 import org.beiwe.app.listeners.AccelerometerListener;
 import org.beiwe.app.listeners.BluetoothListener;
 import org.beiwe.app.listeners.CallLogger;
@@ -17,7 +18,6 @@ import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
 import org.beiwe.app.listeners.WifiListener;
-import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.survey.SurveyAnswersRecorder;
 import org.beiwe.app.survey.SurveyTimingsRecorder;
 import org.beiwe.app.ui.AudioRecorderActivity;
@@ -159,8 +159,8 @@ public class TextFileManager {
 		//handle the naming cases for persistent vs. non-persistent files
 		if ( this.persistent ) { this.fileName = this.name; } 
 		else { // if user has not registered, stop non-persistent file generation
-			if ( !LoginManager.isRegistered() ) { return false; }
-			this.fileName = LoginManager.getPatientID() + "_" + this.name + "_" + System.currentTimeMillis() + ".csv";
+			if ( !PersistentData.isRegistered() ) { return false; }
+			this.fileName = PersistentData.getPatientID() + "_" + this.name + "_" + System.currentTimeMillis() + ".csv";
 		}
 		//write the key to the file (if it has one)
 		if ( this.encrypted ) {

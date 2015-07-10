@@ -2,7 +2,6 @@ package org.beiwe.app;
 
 import org.beiwe.app.listeners.WifiListener;
 import org.beiwe.app.networking.PostRequest;
-import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.SurveyType;
@@ -107,8 +106,8 @@ public class DebugInterfaceActivity extends SessionActivity {
 	public void popAudioSurveyNotification(View view) { AppNotifications.displayRecordingNotification(appContext); }
 
 	public void alarmStates(View view) {
-		Log.i("audio", "" +LoginManager.getAudioAlarmTime() + ", " + LoginManager.getCorrectAudioNotificationState() );
-		Log.i("daily", "" + LoginManager.getDailySurveyAlarmTime()  + ", " + LoginManager.getCorrectDailyNotificationState());
-		Log.i("weekly", "" + LoginManager.getWeeklySurveyAlarmTime() + ", " + LoginManager.getCorrectWeeklyNotificationState()) ;
+		Log.i("audio", "" +PersistentData.getAudioAlarmTime() + ", " + PersistentData.getCorrectAudioNotificationState() );
+		Log.i("daily", "" + PersistentData.getDailySurveyAlarmTime()  + ", " + PersistentData.getCorrectDailyNotificationState());
+		Log.i("weekly", "" + PersistentData.getWeeklySurveyAlarmTime() + ", " + PersistentData.getCorrectWeeklyNotificationState()) ;
 	}
 }

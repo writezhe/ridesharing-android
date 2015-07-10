@@ -1,8 +1,8 @@
 package org.beiwe.app.ui;
 
+import org.beiwe.app.PersistentData;
 import org.beiwe.app.R;
 import org.beiwe.app.RunningBackgroundProcessActivity;
-import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
 import android.content.Context;
@@ -41,8 +41,8 @@ public class LoginActivity extends RunningBackgroundProcessActivity {
 	 * IF session is not logged in, wait for user input.
 	 * @param view*/
 	public void loginButton(View view) {		
-		if ( LoginManager.checkPassword( password.getText().toString() ) ) {
-			LoginManager.loginOrRefreshLogin();
+		if ( PersistentData.checkPassword( password.getText().toString() ) ) {
+			PersistentData.loginOrRefreshLogin();
 			finish();
 			return;
 		}

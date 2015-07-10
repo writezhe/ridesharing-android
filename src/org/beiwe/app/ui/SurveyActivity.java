@@ -1,7 +1,7 @@
 package org.beiwe.app.ui;
 
+import org.beiwe.app.PersistentData;
 import org.beiwe.app.R;
-import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.survey.JsonParser;
 import org.beiwe.app.survey.QuestionsDownloader;
@@ -142,8 +142,8 @@ public class SurveyActivity extends SessionActivity {
 		// Close the Activity
 		startActivity(new Intent(getApplicationContext(), MainMenuActivity.class));
 		
-		if (surveyType == SurveyType.Type.DAILY){ LoginManager.setCorrectDailyNotificationState(false); }
-		if (surveyType == SurveyType.Type.WEEKLY){ LoginManager.setCorrectWeeklyNotificationState(false); }
+		if (surveyType == SurveyType.Type.DAILY){ PersistentData.setCorrectDailyNotificationState(false); }
+		if (surveyType == SurveyType.Type.WEEKLY){ PersistentData.setCorrectWeeklyNotificationState(false); }
 		
 		AppNotifications.dismissNotification(getApplicationContext(), surveyType.notificationCode);
 

@@ -4,7 +4,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Random;
 
-import org.beiwe.app.session.LoginManager;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -204,8 +203,8 @@ public class Timer {
 		long timeTillFire = nextTriggerTime - System.currentTimeMillis();
 		Log.i("Timer.java", "josh DailyAlarm timeTillFire = " + timeTillFire + " milliseconds from now");
 		setExactAlarm(AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingIntent);
-		if (dailySurveyIntent.filterEquals(intentToBeBroadcast) ){ LoginManager.setDailySurveyAlarm(nextTriggerTime); }
-		if (voiceRecordingIntent.filterEquals(intentToBeBroadcast) ){ LoginManager.setAudioAlarm(nextTriggerTime); }
+		if (dailySurveyIntent.filterEquals(intentToBeBroadcast) ){ PersistentData.setDailySurveyAlarm(nextTriggerTime); }
+		if (voiceRecordingIntent.filterEquals(intentToBeBroadcast) ){ PersistentData.setAudioAlarm(nextTriggerTime); }
 	}
 	
 	
@@ -230,7 +229,7 @@ public class Timer {
 		long timeTillFire = nextTriggerTime - System.currentTimeMillis();
 		Log.i("Timer.java", "josh WeeklyAlarm timeTillFire = " + timeTillFire + " milliseconds from now");
 		setExactAlarm(AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingIntent);
-		LoginManager.setWeeklySurveyAlarm(nextTriggerTime);
+		PersistentData.setWeeklySurveyAlarm(nextTriggerTime);
 	}
 		
 	

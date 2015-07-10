@@ -17,8 +17,8 @@ import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.http.client.methods.HttpPost;
 import org.beiwe.app.DeviceInfo;
+import org.beiwe.app.PersistentData;
 import org.beiwe.app.R;
-import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.storage.TextFileManager;
 
 import android.content.Context;
@@ -278,9 +278,9 @@ public class PostRequest {
 	 *  a text input field instead of from the device storage.
 	 *  @return a String of the securityParameters to append to the POST request */
 	public static String securityParameters(String newPassword) {
-		String patientId = LoginManager.getPatientID();
+		String patientId = PersistentData.getPatientID();
 		String deviceId = DeviceInfo.getAndroidID();
-		String password = LoginManager.getPassword();
+		String password = PersistentData.getPassword();
 		if (newPassword != null) password = newPassword;
 
 		return makeParameter("patient_id", patientId) +

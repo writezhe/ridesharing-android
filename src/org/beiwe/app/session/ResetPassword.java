@@ -1,5 +1,6 @@
 package org.beiwe.app.session;
 
+import org.beiwe.app.PersistentData;
 import org.beiwe.app.R;
 import org.beiwe.app.networking.HTTPAsync;
 import org.beiwe.app.networking.PostRequest;
@@ -48,7 +49,7 @@ public class ResetPassword {
 		}
 
 		// If the new password has too few characters, pop up an alert, and do nothing else
-		if (!LoginManager.passwordMeetsRequirements(newPassword, currentActivity)) {
+		if (!PersistentData.passwordMeetsRequirements(newPassword, currentActivity)) {
 			return;
 		}
 		
@@ -75,10 +76,10 @@ public class ResetPassword {
 				
 				if (response == 200) {
 					// Set the password on the device to the new permanent password
-					LoginManager.setPassword(newPassword);
+					PersistentData.setPassword(newPassword);
 					
 					// Set the user to "logged in"
-					LoginManager.loginOrRefreshLogin();
+					PersistentData.loginOrRefreshLogin();
 
 					// Show a Toast with a "Success!" message
 					String message = appContext.getString(R.string.pass_reset_complete);

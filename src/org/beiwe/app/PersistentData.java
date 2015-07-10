@@ -1,7 +1,6 @@
-package org.beiwe.app.session;
+package org.beiwe.app;
 
 import org.beiwe.app.R;
-import org.beiwe.app.Timer;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.ui.AlertsManager;
 
@@ -14,7 +13,7 @@ import android.util.Log;
 /**A class for managing patient login sessions.
  * Uses SharedPreferences in order to save username-password combinations.
  * @author Dor Samet, Eli Jones, Josh Zagorsky */
-public class LoginManager {
+public class PersistentData {
 	public static String NULL_ID = "NULLID";
 	
 	private static int PRIVATE_MODE = 0;

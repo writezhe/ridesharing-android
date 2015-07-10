@@ -4,7 +4,6 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
 import org.beiwe.app.BackgroundService.BackgroundProcessBinder;
-import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.ui.AlertsManager;
 import org.beiwe.app.ui.RegisterActivity;
@@ -81,7 +80,7 @@ public class LoadingActivity extends RunningBackgroundProcessActivity {
 	/**CHecks whether device is registered, sends user to the correct screen. */
 	private void loadingSequence() {		
 		//if the device is not registered, push the user to the register activity
-		if ( !LoginManager.isRegistered() ){ startActivity(new Intent(this, RegisterActivity.class) ); }
+		if ( !PersistentData.isRegistered() ){ startActivity(new Intent(this, RegisterActivity.class) ); }
 		//if device is registered push user to the main menu.
 		else { startActivity(new Intent(this, loadThisActivity) ); }
 		unbindService(backgroundProcessConnection);

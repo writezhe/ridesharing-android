@@ -1,9 +1,9 @@
 package org.beiwe.app.ui;
 
 import org.beiwe.app.LoadingActivity;
+import org.beiwe.app.PersistentData;
 import org.beiwe.app.R;
 import org.beiwe.app.RunningBackgroundProcessActivity;
-import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.QuestionsDownloader;
 
@@ -41,8 +41,8 @@ public class ConsentForm extends RunningBackgroundProcessActivity {
 	}
 	
 	public void consentButton(View view) {
-		LoginManager.setRegistered(true);
-		LoginManager.loginOrRefreshLogin();
+		PersistentData.setRegistered(true);
+		PersistentData.loginOrRefreshLogin();
 
 		// Download the survey questions and schedule the surveys
 		QuestionsDownloader downloader = new QuestionsDownloader(getApplicationContext());

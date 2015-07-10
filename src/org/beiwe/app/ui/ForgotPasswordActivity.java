@@ -1,8 +1,8 @@
 package org.beiwe.app.ui;
 
+import org.beiwe.app.PersistentData;
 import org.beiwe.app.R;
 import org.beiwe.app.RunningBackgroundProcessActivity;
-import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.session.ResetPassword;
 
 import android.content.Intent;
@@ -27,7 +27,7 @@ public class ForgotPasswordActivity extends RunningBackgroundProcessActivity {
 		 * administrator when the user calls the research assistant asking for a temporary password. */
 		TextView title = (TextView) findViewById(R.id.forgotPasswordTitle);
 		String titleWithIdResource = getApplicationContext().getString(R.string.forgot_password_title_with_id);
-		String instructionsWithId = String.format(titleWithIdResource, LoginManager.getPatientID());
+		String instructionsWithId = String.format(titleWithIdResource, PersistentData.getPatientID());
 		title.setText(instructionsWithId);
 	}
 	
@@ -54,7 +54,7 @@ public class ForgotPasswordActivity extends RunningBackgroundProcessActivity {
 	
 	public void callResetPassword(View view){
 		Intent callIntent = new Intent(Intent.ACTION_CALL);
-		String phoneNum = LoginManager.getPasswordResetNumber();
+		String phoneNum = PersistentData.getPasswordResetNumber();
 	    callIntent.setData(Uri.parse("tel:" + phoneNum));
 	    startActivity(callIntent);
 	}

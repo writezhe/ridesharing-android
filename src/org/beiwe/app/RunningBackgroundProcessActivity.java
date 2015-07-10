@@ -1,7 +1,6 @@
 package org.beiwe.app;
 
 import org.beiwe.app.BackgroundService.BackgroundProcessBinder;
-import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.ui.AboutActivityLoggedOut;
 
 import android.app.Activity;
@@ -122,7 +121,7 @@ public class RunningBackgroundProcessActivity extends Activity {
 	/** sends user to phone, calls the user's clinician. */
 	public void callClinician(View v) {
 		Intent callIntent = new Intent(Intent.ACTION_CALL);
-		String phoneNum = LoginManager.getPrimaryCareNumber();
+		String phoneNum = PersistentData.getPrimaryCareNumber();
 	    callIntent.setData(Uri.parse("tel:" + phoneNum));
 	    startActivity(callIntent);
 	}
@@ -130,7 +129,7 @@ public class RunningBackgroundProcessActivity extends Activity {
 	/** sends user to phone, calls the study's research assistant. */
 	public void callResearchAssistant(View v) {
 		Intent callIntent = new Intent(Intent.ACTION_CALL);
-		String phoneNum = LoginManager.getPasswordResetNumber();
+		String phoneNum = PersistentData.getPasswordResetNumber();
 	    callIntent.setData(Uri.parse("tel:" + phoneNum));
 	    startActivity(callIntent);
 	}

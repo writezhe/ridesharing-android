@@ -9,7 +9,6 @@ import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
 import org.beiwe.app.listeners.WifiListener;
 import org.beiwe.app.networking.PostRequest;
-import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.QuestionsDownloader;
 import org.beiwe.app.survey.SurveyScheduler;
@@ -50,7 +49,7 @@ public class BackgroundService extends Service {
 		appContext = this.getApplicationContext();
 		
 		DeviceInfo.initialize( getApplicationContext() );
-		LoginManager.initialize( getApplicationContext() );
+		PersistentData.initialize( getApplicationContext() );
 		TextFileManager.initialize( getApplicationContext() );
 		PostRequest.initialize( getApplicationContext() );
 		WifiListener.initialize( getApplicationContext() );
@@ -66,7 +65,7 @@ public class BackgroundService extends Service {
 		
 		DeviceInfo.getPhoneNumber();
 		//If this device is registered, start timers!
-		if (LoginManager.isRegistered()) { startTimers(); }
+		if (PersistentData.isRegistered()) { startTimers(); }
 	}
 
 	
@@ -227,11 +226,11 @@ public class BackgroundService extends Service {
 		
 		//checks for the current expected state with app notifications. (must be run before we potentially set new alarms)
 		Long now = System.currentTimeMillis();
-		if ( LoginManager.getCorrectAudioNotificationState() || LoginManager.getAudioAlarmTime() < now ) {
+		if ( PersistentData.getCorrectAudioNotificationState() || PersistentData.getAudioAlarmTime() < now ) {
 			AppNotifications.displayRecordingNotification(appContext); }
-		if ( LoginManager.getCorrectWeeklyNotificationState() || LoginManager.getWeeklySurveyAlarmTime() < now ) {
+		if ( PersistentData.getCorrectWeeklyNotificationState() || PersistentData.getWeeklySurveyAlarmTime() < now ) {
 			AppNotifications.displaySurveyNotification(appContext, Type.WEEKLY); }
-		if ( LoginManager.getCorrectDailyNotificationState() || LoginManager.getDailySurveyAlarmTime() < now ) {
+		if ( PersistentData.getCorrectDailyNotificationState() || PersistentData.getDailySurveyAlarmTime() < now ) {
 			 AppNotifications.displaySurveyNotification(appContext, Type.DAILY); }
 		
 		
@@ -261,7 +260,7 @@ public class BackgroundService extends Service {
 			TextFileManager.getDebugLogFile().writeEncrypted("our not-quite-race-condition encountered, the timer was null when the background process was supposed to be instantiated");
 		}
 		timer.setupExactSingleAlarm(Timer.MILLISECONDS_BEFORE_AUTO_LOGOUT, Timer.signoutIntent);
-		LoginManager.loginOrRefreshLogin();
+		PersistentData.loginOrRefreshLogin();
 	}
 
 	public static void clearAutomaticLogoutCountdownTimer() { timer.cancelAlarm(Timer.signoutIntent); }
@@ -334,7 +333,7 @@ public class BackgroundService extends Service {
 			
 			//runs the user signout logic, bumping the user to the login screen.
 			if (intent.getAction().equals( appContext.getString(R.string.signout_intent) ) ) {
-				LoginManager.logout();
+				PersistentData.logout();
 				Intent loginPage = new Intent(appContext, LoginActivity.class);
 				loginPage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				appContext.startActivity(loginPage); }

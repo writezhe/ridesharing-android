@@ -9,9 +9,9 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.spec.InvalidKeySpecException;
 
+import org.beiwe.app.PersistentData;
 import org.beiwe.app.R;
 import org.beiwe.app.Timer;
-import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.TextFileManager;
@@ -270,7 +270,7 @@ public class AudioRecorderActivity extends SessionActivity {
      * back to the last one; the audio file should already be saved, so we
      * don't need to do anything other than kill the activity.  */
     public void buttonDonePressed(View v) {
-    	LoginManager.setCorrectAudioNotificationState(false);
+    	PersistentData.setCorrectAudioNotificationState(false);
 		AppNotifications.dismissNotification( getApplicationContext(), AppNotifications.recordingCode );
     	startActivity(new Intent(getApplicationContext(), MainMenuActivity.class));
     	finish();
@@ -283,7 +283,7 @@ public class AudioRecorderActivity extends SessionActivity {
     /**Generates new file name variables. The name consists of the time the recording takes place. */
     private String generateNewEncryptedAudioFileName() {
 		String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
-		return LoginManager.getPatientID() + "_voiceRecording" + "_" + timecode + ".mp4";
+		return PersistentData.getPatientID() + "_voiceRecording" + "_" + timecode + ".mp4";
     }
     
     /** Reads in the existing temporary audio file and encrypts it. Generates AES keys as needed.

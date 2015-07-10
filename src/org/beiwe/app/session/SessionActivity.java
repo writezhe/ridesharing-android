@@ -1,6 +1,7 @@
 package org.beiwe.app.session;
 
 import org.beiwe.app.BackgroundService;
+import org.beiwe.app.PersistentData;
 import org.beiwe.app.R;
 import org.beiwe.app.RunningBackgroundProcessActivity;
 import org.beiwe.app.storage.TextFileManager;
@@ -32,7 +33,7 @@ public class SessionActivity extends RunningBackgroundProcessActivity {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		LoginManager.initialize(getApplicationContext()); // this function has been rewritten to efficiently handle getting called too much.  Don't worry about it.
+		PersistentData.initialize(getApplicationContext()); // this function has been rewritten to efficiently handle getting called too much.  Don't worry about it.
 	}
 	
 	/** When onPause is called we need to set the timeout. */
@@ -55,7 +56,7 @@ public class SessionActivity extends RunningBackgroundProcessActivity {
 	
 	/** If the user is NOT logged in, take them to the login page */
 	protected void authenticateAndLoginIfNecessary() {
-		if ( LoginManager.isLoggedIn() ) {
+		if ( PersistentData.isLoggedIn() ) {
 			BackgroundService.startAutomaticLogoutCountdownTimer(); }
 		else {
 			startActivity(new Intent(this, LoginActivity.class) ); }
@@ -64,7 +65,7 @@ public class SessionActivity extends RunningBackgroundProcessActivity {
 
 	/** Display the LoginActivity, and invalidate the login in SharedPreferences */
 	protected void logoutUser() {
-		LoginManager.logout();
+		PersistentData.logout();
 		startActivity(new Intent(this, LoginActivity.class));
 	}
 	

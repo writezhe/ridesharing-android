@@ -1,11 +1,11 @@
 package org.beiwe.app.ui;
 
 import org.beiwe.app.DeviceInfo;
+import org.beiwe.app.PersistentData;
 import org.beiwe.app.R;
 import org.beiwe.app.RunningBackgroundProcessActivity;
 import org.beiwe.app.networking.HTTPAsync;
 import org.beiwe.app.networking.PostRequest;
-import org.beiwe.app.session.LoginManager;
 import org.beiwe.app.survey.TextFieldKeyboard;
 
 import android.annotation.SuppressLint;
@@ -66,11 +66,11 @@ public class RegisterActivity extends RunningBackgroundProcessActivity {
 		
 		// If the new password has too few characters, pop up an alert, and do nothing else
 		//(note: the user alert is handled internally.)
-		if (!LoginManager.passwordMeetsRequirements(newPassword, this) ) { return; }
+		if (!PersistentData.passwordMeetsRequirements(newPassword, this) ) { return; }
 
 		// If the password length is too short, alert the user
-		else if ( LoginManager.passwordMeetsRequirements(passwordStr, this) ) {
-			LoginManager.setLoginCredentials(userIDStr, passwordStr);
+		else if ( PersistentData.passwordMeetsRequirements(passwordStr, this) ) {
+			PersistentData.setLoginCredentials(userIDStr, passwordStr);
 //			Log.d("RegisterActivity", "trying \"" + LoginManager.getPatientID() + "\" with password \"" + LoginManager.getPassword() + "\"" );
 			doRegister(getApplicationContext().getString(R.string.register_url));
 		}
@@ -93,7 +93,7 @@ public class RegisterActivity extends RunningBackgroundProcessActivity {
 		@Override
 		protected void onPostExecute(Void arg) {
 			if (response == 200) {
-				LoginManager.setPassword(newPassword);
+				PersistentData.setPassword(newPassword);
 				activity.startActivity(new Intent(activity.getApplicationContext(), PhoneNumberEntry.class) );
 				activity.finish();
 			}
