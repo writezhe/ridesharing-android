@@ -5,6 +5,7 @@ import java.security.NoSuchAlgorithmException;
 
 import org.beiwe.app.BackgroundService.BackgroundProcessBinder;
 import org.beiwe.app.storage.EncryptionEngine;
+import org.beiwe.app.ui.DebugInterfaceActivity;
 import org.beiwe.app.ui.registration.RegisterActivity;
 import org.beiwe.app.ui.utils.AlertsManager;
 
