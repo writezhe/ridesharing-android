@@ -47,28 +47,20 @@ public class QuestionsDownloader {
 	}
 	
 	
-	/**
-	 * Read a file from the server, and return the file as a String 
+	/**Read a file from the server, and return the file as a String 
 	 * @throws NotFoundException 
 	 * @throws IOException 
-	 * @throws JSONException 
-	 */
+	 * @throws JSONException */
 	private String getSurveyQuestionsFromServer(String urlString) throws NotFoundException, JSONException {
 		String parameters = "";
 		String surveyQuestions = PostRequest.httpRequestString( parameters, urlString );
-		if (isValidSurveyJson(surveyQuestions)) {
-			return surveyQuestions;
-		}
-		else {
-			throw new JSONException("Invalid JSON");
-		}
+		if (isValidSurveyJson(surveyQuestions)) { return surveyQuestions; }
+		else { throw new JSONException("Invalid JSON"); }
 	}
 	
 	
-	/**
-	 * Read a file from the local Android filesystem, and return it as a String
-	 * @throws JSONException 
-	 */
+	/**Read a file from the local Android filesystem, and return it as a String
+	 * @throws JSONException */
 	private String getSurveyQuestionsFromFilesystem(SurveyType.Type type) throws NullPointerException, JSONException {
 		Log.i("QuestionsDownloader", "Called getSurveyQuestionsFromFilesystem()");
 		
@@ -79,12 +71,10 @@ public class QuestionsDownloader {
 	}
 	
 	
-	/**
-	 * Tells you whether a String is valid JSON
+	/**Tells you whether a String is valid JSON
 	 * Based on: http://stackoverflow.com/a/10174938
 	 * @param
-	 * @return true if valid JSON; false otherwise
-	 */
+	 * @return true if valid JSON; false otherwise */
 	private boolean isValidSurveyJson(String input) {
 		try {
 			JSONObject wholeSurveyObject = new JSONObject(input);
@@ -102,11 +92,9 @@ public class QuestionsDownloader {
 	}
 	
 	
-	/**
-	 * Gets the most up-to-date versions of the surveys, writes them to files,
+	/**Gets the most up-to-date versions of the surveys, writes them to files,
 	 * and schedules repeating notifications for them. Does it on a separate,
-	 * non-blocking thread, because it's a slow network request
-	 */
+	 * non-blocking thread, because it's a slow network request */
 	class GetUpToDateSurveys extends AsyncTask<String, Integer, Map<String, String>> {
 
 		@Override
@@ -129,9 +117,7 @@ public class QuestionsDownloader {
 			if (surveysDict != null && !surveysDict.isEmpty()) {
 				for (SurveyType.Type type : SurveyType.Type.values()) {
 					String survey = surveysDict.get(type.dictKey);
-					if (survey != null) {
-						writeSurveyToFile(survey, getQuestionsFile(type));
-					}
+					if (survey != null) { writeSurveyToFile(survey, getQuestionsFile(type)); }
 				}
 			}
 		}
@@ -168,5 +154,4 @@ public class QuestionsDownloader {
 				return null;
 		}
 	}
-
 }

@@ -29,10 +29,8 @@ public class JsonParser {
 	}
 
 
-	/**
-	 * Add all survey questions to the provided surveyLayout View object
-	 * @param surveyLayout
-	 */
+	/**Add all survey questions to the provided surveyLayout View object
+	 * @param surveyLayout */
 	public String renderSurveyFromJSON(LinearLayout surveyLayout, String jsonSurveyString) {
 		LinearLayout questionsLayout = (LinearLayout) surveyLayout.findViewById(R.id.surveyQuestionsLayout);
 		try { //Every single line here can throw a JSONException
@@ -57,11 +55,9 @@ public class JsonParser {
 	}
 
 
-	/**
-	 * Create/render a single survey question
+	/**Create/render a single survey question
 	 * @param jsonQuestion JSON representation of a question
-	 * @return a survey question that's a View object
-	 */
+	 * @return a survey question that's a View object */
 	private View renderQuestionFromJSON(JSONObject jsonQuestion) {
 		String questionType = getStringFromJSONObject(jsonQuestion, "question_type");
 		if (questionType.equals("info_text_box")) { return renderInfoTextBox(jsonQuestion); }
@@ -118,36 +114,30 @@ public class JsonParser {
 	}
 
 
-	/**
-	 * Get a String from a JSONObject key
+	/**Get a String from a JSONObject key
 	 * @param obj a generic JSONObject
 	 * @param key the JSON key
-	 * @return return an empty String instead of throwing a JSONException
-	 */
+	 * @return return an empty String instead of throwing a JSONException */
 	private String getStringFromJSONObject(JSONObject obj, String key) {
 		try { return obj.getString(key);}
 		catch (JSONException e) { return ""; }
 	}
 
 
-	/**
-	 * Get an int from a JSONObject key
+	/**Get an int from a JSONObject key
 	 * @param obj a generic JSONObject
 	 * @param key the JSON key
-	 * @return return -1 instead of throwing a JSONException
-	 */
+	 * @return return -1 instead of throwing a JSONException */
 	private int getIntFromJSONObject(JSONObject obj, String key) {
-		try { return obj.getInt(key);}
+		try { return obj.getInt(key); }
 		catch (JSONException e) { return -1; }
 	}
 
 
-	/**
-	 * Get an array of Strings from a JSONObject key
+	/**Get an array of Strings from a JSONObject key
 	 * @param obj a generic JSONObject
 	 * @param key the JSON key
-	 * @return return a one-String array instead of throwing a JSONException
-	 */
+	 * @return return a one-String array instead of throwing a JSONException */
 	private String[] getStringArrayFromJSONObject(JSONObject obj, String key) {
 		JSONArray jsonArray;
 		try { jsonArray = obj.getJSONArray(key); }
@@ -157,22 +147,19 @@ public class JsonParser {
 		}
 		String[] strings = new String[jsonArray.length()];
 		for (int i = 0; i < jsonArray.length(); i++) {
-			try { strings[i] = jsonArray.getJSONObject(i).getString("text");}
+			try { strings[i] = jsonArray.getJSONObject(i).getString("text"); }
 			catch (JSONException e) { strings[i] = ""; }
 		}
 		return strings;
 	}
 
 
-	/**
-	 * Get an Enum TextFieldType from a JSONObject key
+	/**Get an Enum TextFieldType from a JSONObject key
 	 * @param obj a generic JSONObject
 	 * @param key the JSON key
-	 * @return return SINGLE_LINE_TEXT as the default instead of throwing a JSONException
-	 */
+	 * @return return SINGLE_LINE_TEXT as the default instead of throwing a JSONException */
 	private TextFieldType.Type getTextFieldTypeFromJSONObject(JSONObject obj, String key) {
 		try { return Type.valueOf(obj.getString(key)); }
 		catch (JSONException e) { return Type.SINGLE_LINE_TEXT; }
 	}
-
 }
