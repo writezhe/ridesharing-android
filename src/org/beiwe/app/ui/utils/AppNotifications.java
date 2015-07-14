@@ -1,7 +1,7 @@
 package org.beiwe.app.ui.utils;
 
-import org.beiwe.app.PersistentData;
 import org.beiwe.app.R;
+import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.survey.SurveyType;
 import org.beiwe.app.ui.user.AudioRecorderActivity;
 import org.beiwe.app.ui.user.SurveyActivity;

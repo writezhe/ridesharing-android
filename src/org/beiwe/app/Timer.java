@@ -4,6 +4,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Random;
 
+import org.beiwe.app.storage.PersistentData;
+
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;

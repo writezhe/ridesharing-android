@@ -1,10 +1,10 @@
 package org.beiwe.app.session;
 
-import org.beiwe.app.PersistentData;
 import org.beiwe.app.R;
 import org.beiwe.app.networking.HTTPAsync;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.storage.EncryptionEngine;
+import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.ui.utils.AlertsManager;
 
 import android.app.Activity;

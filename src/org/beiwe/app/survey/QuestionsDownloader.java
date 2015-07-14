@@ -74,12 +74,8 @@ public class QuestionsDownloader {
 		
 		String surveyQuestions = getQuestionsFile(type).read();
 
-		if (isValidSurveyJson(surveyQuestions)) {
-			return surveyQuestions;
-		}
-		else {
-			throw new JSONException("Invalid JSON");
-		}
+		if (isValidSurveyJson(surveyQuestions)) { return surveyQuestions; }
+		else { throw new JSONException("Invalid JSON"); }
 	}
 	
 	
@@ -99,12 +95,8 @@ public class QuestionsDownloader {
 			}
 		}
 		catch (JSONException e) {
-			try {
-				new JSONArray(input);
-			}
-			catch (JSONException e2) {
-				return false;
-			}
+			try { new JSONArray(input); }
+			catch (JSONException e2) { return false; }
 		}
 		return false;
 	}

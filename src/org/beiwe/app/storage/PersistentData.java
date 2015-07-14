@@ -1,7 +1,8 @@
-package org.beiwe.app;
+package org.beiwe.app.storage;
 
 import org.beiwe.app.R;
-import org.beiwe.app.storage.EncryptionEngine;
+import org.beiwe.app.Timer;
+import org.beiwe.app.R.string;
 import org.beiwe.app.ui.utils.AlertsManager;
 
 import android.app.Activity;
@@ -24,7 +25,7 @@ public class PersistentData {
 	private static SharedPreferences pref; 
 	private static Editor editor;
 	private static Context appContext;
-
+	
 	/**  Editor key-strings */
 	private static final String PREF_NAME = "BeiwePref";
 	private static final String KEY_ID = "uid";
@@ -82,7 +83,7 @@ public class PersistentData {
 	} 
 
 	/*#####################################################################################
-	##################################### Booleans ########################################
+	##################################### User State ######################################
 	#####################################################################################*/
 
 	/** Quick check for login. **/
@@ -113,6 +114,43 @@ public class PersistentData {
 		editor.putBoolean(IS_REGISTERED, value);
 		editor.commit(); }
 
+	/*######################################################################################
+	##################################### Passwords ########################################
+	######################################################################################*/
+
+	/**Checks that an input matches valid password requirements. (this only checks length)
+	 * Throws up an alert notifying the user if the password is not valid.
+	 * @param input
+	 * @param activity
+	 * @return true or false based on password requirements.*/
+	public static boolean passwordMeetsRequirements(String password, Activity currentActivity) {
+		// If the password has too few characters, pop up an alert saying so
+		int minPasswordLength = 1; // TODO postproduction: set the minPasswordLength to something higher than 1
+		if (password.length() < minPasswordLength) {
+			String alertMessage = String.format(appContext.getString(R.string.password_too_short), minPasswordLength);
+			AlertsManager.showAlert(alertMessage, currentActivity);
+			return false;
+		}
+		return true;
+	}
+
+ 	/**Takes an input string and returns a boolean value stating whether the input matches the current password.
+	 * @param input
+	 * @return */
+	public static boolean checkPassword(String input){ return ( getPassword().equals( EncryptionEngine.safeHash(input) ) ); }
+
+	/**Sets a password to a hash of the provided value.
+	 * @param password */
+	public static void setPassword(String password) {
+		editor.putString(KEY_PASSWORD, EncryptionEngine.safeHash(password) );
+		editor.commit();
+	}
+
+	
+	/*#####################################################################################
+	#################################### Study State ######################################
+	#####################################################################################*/
+
 	//TODO: Eli.  hook into these toggls during registration.
 	public static boolean getAccelerometerEnabled(){ return pref.getBoolean(ACCELEROMETER, false); }
 	public static boolean getGpsEnabled(){ return pref.getBoolean(GPS, false); }
@@ -121,7 +159,20 @@ public class PersistentData {
 	public static boolean getWifiEnabled(){ return pref.getBoolean(WIFI, false); }
 	public static boolean getBluetoothEnabled(){ return pref.getBoolean(BLUETOOTH, false); }
 	public static boolean getPowerStateEnabled(){ return pref.getBoolean(POWER_STATE, false); }
-
+	public static long getAccelerometerOffDurationSeconds() { return pref.getLong(ACCELEROMETER_OFF_DURATION_SECONDS, MAX_LONG); }
+	public static long getAccelerometerOnDurationSeconds() { return pref.getLong(ACCELEROMETER_ON_DURATION_SECONDS, MAX_LONG); }
+	public static long getBluetoothOnDurationSeconds() { return pref.getLong(BLUETOOTH_ON_DURATION_SECONDS, MAX_LONG); }
+	public static long getBluetoothTotalDurationSeconds() { return pref.getLong(BLUETOOTH_TOTAL_DURATION_SECONDS, MAX_LONG); }
+	public static long getBluetoothGlobalOffsetSeconds() { return pref.getLong(BLUETOOTH_GLOBAL_OFFSET_SECONDS, MAX_LONG); }
+	public static long getCheckForNewSurveysFrequencySeconds() { return pref.getLong(CHECK_FOR_NEW_SURVEYS_FREQUENCY_SECONDS, MAX_LONG); }
+	public static long getCreateNewDataFilesFrequencySeconds() { return pref.getLong(CREATE_NEW_DATA_FILES_FREQUENCY_SECONDS, MAX_LONG); }
+	public static long getGpsOffDurationSeconds() { return pref.getLong(GPS_OFF_DURATION_SECONDS, MAX_LONG); }
+	public static long getGpsOnDurationSeconds() { return pref.getLong(GPS_ON_DURATION_SECONDS, MAX_LONG); }
+	public static long getSecondsBeforeAutoLogout() { return pref.getLong(SECONDS_BEFORE_AUTO_LOGOUT, MAX_LONG); }
+	public static long getUploadDataFilesFrequencySeconds() { return pref.getLong(UPLOAD_DATA_FILES_FREQUENCY_SECONDS, MAX_LONG); }
+	public static long getVoiceRecordingMaxTimeLengthSeconds() { return pref.getLong(VOICE_RECORDING_MAX_TIME_LENGTH_SECONDS, MAX_LONG); }
+	public static long getWifiLogFrequencySeconds() { return pref.getLong(WIFI_LOG_FREQUENCY_SECONDS, MAX_LONG); }
+	
 	public static void setAccelerometerEnabled(boolean enabled) {
 		editor.putBoolean(ACCELEROMETER, enabled);
 		editor.commit(); }
@@ -184,53 +235,6 @@ public class PersistentData {
 		editor.putLong(WIFI_LOG_FREQUENCY_SECONDS, seconds);
 		editor.commit(); }
 
-	public static long getAccelerometerOffDurationSeconds() { return pref.getLong(ACCELEROMETER_OFF_DURATION_SECONDS, MAX_LONG); }
-	public static long getAccelerometerOnDurationSeconds() { return pref.getLong(ACCELEROMETER_ON_DURATION_SECONDS, MAX_LONG); }
-	public static long getBluetoothOnDurationSeconds() { return pref.getLong(BLUETOOTH_ON_DURATION_SECONDS, MAX_LONG); }
-	public static long getBluetoothTotalDurationSeconds() { return pref.getLong(BLUETOOTH_TOTAL_DURATION_SECONDS, MAX_LONG); }
-	public static long getBluetoothGlobalOffsetSeconds() { return pref.getLong(BLUETOOTH_GLOBAL_OFFSET_SECONDS, MAX_LONG); }
-	public static long getCheckForNewSurveysFrequencySeconds() { return pref.getLong(CHECK_FOR_NEW_SURVEYS_FREQUENCY_SECONDS, MAX_LONG); }
-	public static long getCreateNewDataFilesFrequencySeconds() { return pref.getLong(CREATE_NEW_DATA_FILES_FREQUENCY_SECONDS, MAX_LONG); }
-	public static long getGpsOffDurationSeconds() { return pref.getLong(GPS_OFF_DURATION_SECONDS, MAX_LONG); }
-	public static long getGpsOnDurationSeconds() { return pref.getLong(GPS_ON_DURATION_SECONDS, MAX_LONG); }
-	public static long getSecondsBeforeAutoLogout() { return pref.getLong(SECONDS_BEFORE_AUTO_LOGOUT, MAX_LONG); }
-	public static long getUploadDataFilesFrequencySeconds() { return pref.getLong(UPLOAD_DATA_FILES_FREQUENCY_SECONDS, MAX_LONG); }
-	public static long getVoiceRecordingMaxTimeLengthSeconds() { return pref.getLong(VOICE_RECORDING_MAX_TIME_LENGTH_SECONDS, MAX_LONG); }
-	public static long getWifiLogFrequencySeconds() { return pref.getLong(WIFI_LOG_FREQUENCY_SECONDS, MAX_LONG); }
-
-	/*######################################################################################
-	##################################### Passwords ########################################
-	######################################################################################*/
-
-
-	/**Checks that an input matches valid password requirements. (this only checks length)
-	 * Throws up an alert notifying the user if the password is not valid.
-	 * @param input
-	 * @param activity
-	 * @return true or false based on password requirements.*/
-	public static boolean passwordMeetsRequirements(String password, Activity currentActivity) {
-		// If the password has too few characters, pop up an alert saying so
-		int minPasswordLength = 1; // TODO postproduction: set the minPasswordLength to something higher than 1
-		if (password.length() < minPasswordLength) {
-			String alertMessage = String.format(appContext.getString(R.string.password_too_short), minPasswordLength);
-			AlertsManager.showAlert(alertMessage, currentActivity);
-			return false;
-		}
-		return true;
-	}
-
-
-	/**Takes an input string and returns a boolean value stating whether the input matches the current password.
-	 * @param input
-	 * @return */
-	public static boolean checkPassword(String input){ return ( getPassword().equals( EncryptionEngine.safeHash(input) ) ); }
-
-	/**Sets a password to a hash of the provided value.
-	 * @param password */
-	public static void setPassword(String password) {
-		editor.putString(KEY_PASSWORD, EncryptionEngine.safeHash(password) );
-		editor.commit();
-	}
 
 	/*###########################################################################################
 	################################### User Credentials ########################################
@@ -302,4 +306,29 @@ public class PersistentData {
 	public static void setCorrectAudioNotificationState( Boolean bool ) {
 		editor.putBoolean(PRIOR_AUDIO_STATE, bool );
 		editor.commit(); }
+	
+	/*###########################################################################################
+	###################################### Survey Info ##########################################
+	###########################################################################################*/
+	//All we do is use the shared prefs as a key value store of json, and we just interpret the json each time.
+	public static String getSurveyContent(String surveyId){ return pref.getString(surveyId + "-content", null); }
+	public static String getSurveyTimes(String surveyId){ return pref.getString(surveyId + "-times", null); }
+	public static String getSurveyType(String surveyId){ return pref.getString(surveyId + "-type", null); }
+	
+	public static void setSurveyContent(String surveyId, String content){
+		editor.putString(surveyId + "-content", content);
+		editor.commit(); }
+	public static void setSurveyTimes(String surveyId, String times){
+		editor.putString(surveyId + "-content", times);
+		editor.commit(); }
+	public static void setSurveyType(String surveyId, String times){
+		editor.putString(surveyId + "-content", times);
+		editor.commit(); }
+	
+	public static void deleteSurvey(String surveyId) {
+		editor.remove(surveyId + "-content");
+		editor.remove(surveyId + "-times");
+		editor.remove(surveyId + "-type");
+		editor.commit();
+	}
 }

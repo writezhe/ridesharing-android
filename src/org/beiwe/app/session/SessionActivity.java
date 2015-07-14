@@ -1,9 +1,9 @@
 package org.beiwe.app.session;
 
 import org.beiwe.app.BackgroundService;
-import org.beiwe.app.PersistentData;
 import org.beiwe.app.R;
 import org.beiwe.app.RunningBackgroundProcessActivity;
+import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.ui.registration.ResetPasswordActivity;
 import org.beiwe.app.ui.user.AboutActivityLoggedIn;

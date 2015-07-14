@@ -1,6 +1,7 @@
 package org.beiwe.app;
 
 import org.beiwe.app.BackgroundService.BackgroundProcessBinder;
+import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.ui.user.AboutActivityLoggedOut;
 
 import android.app.Activity;

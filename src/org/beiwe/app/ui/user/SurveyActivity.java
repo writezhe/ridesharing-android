@@ -1,8 +1,8 @@
 package org.beiwe.app.ui.user;
 
-import org.beiwe.app.PersistentData;
 import org.beiwe.app.R;
 import org.beiwe.app.session.SessionActivity;
+import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.survey.JsonParser;
 import org.beiwe.app.survey.QuestionsDownloader;
 import org.beiwe.app.survey.SurveyAnswersRecorder;

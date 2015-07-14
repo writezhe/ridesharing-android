@@ -9,11 +9,11 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.spec.InvalidKeySpecException;
 
-import org.beiwe.app.PersistentData;
 import org.beiwe.app.R;
 import org.beiwe.app.Timer;
 import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.storage.EncryptionEngine;
+import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.ui.utils.AppNotifications;
 

@@ -17,8 +17,8 @@ import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.http.client.methods.HttpPost;
 import org.beiwe.app.DeviceInfo;
-import org.beiwe.app.PersistentData;
 import org.beiwe.app.R;
+import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.storage.TextFileManager;
 
 import android.content.Context;

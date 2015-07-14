@@ -1,9 +1,9 @@
 package org.beiwe.app.ui.registration;
 
-import org.beiwe.app.PersistentData;
 import org.beiwe.app.R;
 import org.beiwe.app.RunningBackgroundProcessActivity;
 import org.beiwe.app.session.ResetPassword;
+import org.beiwe.app.storage.PersistentData;
 
 import android.content.Intent;
 import android.net.Uri;
