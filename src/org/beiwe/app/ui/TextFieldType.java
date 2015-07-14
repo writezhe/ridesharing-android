@@ -1,4 +1,4 @@
-package org.beiwe.app.survey;
+package org.beiwe.app.ui;
 
 /** this was an extremely common code pattern, so we pulled it out and made it a class. */
 

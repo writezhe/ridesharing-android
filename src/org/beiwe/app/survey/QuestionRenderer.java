@@ -3,6 +3,7 @@ package org.beiwe.app.survey;
 import java.util.Arrays;
 
 import org.beiwe.app.R;
+import org.beiwe.app.ui.TextFieldType;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
