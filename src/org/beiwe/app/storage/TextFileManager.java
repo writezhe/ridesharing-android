@@ -57,8 +57,8 @@ public class TextFileManager {
 	private static TextFileManager surveyAnswers;
 	private static TextFileManager wifiLog;
 	
-	private static TextFileManager currentDailyQuestions;
-	private static TextFileManager currentWeeklyQuestions;
+//	private static TextFileManager currentDailyQuestions;
+//	private static TextFileManager currentWeeklyQuestions;
 	
 	private static TextFileManager keyFile;
 	
@@ -80,8 +80,8 @@ public class TextFileManager {
 	public static TextFileManager getSurveyTimingsFile(){ if ( surveyTimings == null ) throwGetterError(); return surveyTimings; }
 	public static TextFileManager getSurveyAnswersFile(){ if ( surveyAnswers == null ) throwGetterError(); return surveyAnswers; }
 	//the persistent files
-	public static TextFileManager getCurrentDailyQuestionsFile(){ if ( currentDailyQuestions == null ) throwGetterError(); return currentDailyQuestions; }
-	public static TextFileManager getCurrentWeeklyQuestionsFile(){ if ( currentWeeklyQuestions == null ) throwGetterError(); return currentWeeklyQuestions; }
+//	public static TextFileManager getCurrentDailyQuestionsFile(){ if ( currentDailyQuestions == null ) throwGetterError(); return currentDailyQuestions; }
+//	public static TextFileManager getCurrentWeeklyQuestionsFile(){ if ( currentWeeklyQuestions == null ) throwGetterError(); return currentWeeklyQuestions; }
 	public static TextFileManager getDebugLogFile(){ if ( debugLogFile == null ) throwGetterError(); return debugLogFile; }
 	public static TextFileManager getKeyFile() { if ( keyFile == null ) throwGetterError(); return keyFile; }
 	
@@ -107,8 +107,8 @@ public class TextFileManager {
 		//the key file for encryption (it is persistent and never written to)
 		keyFile = new TextFileManager(appContext, "keyFile", "", true, true, false);
 		// Persistent files
-		currentDailyQuestions = new TextFileManager(appContext, "currentDailyQuestionsFile.json", EMPTY_HEADER, true, true, false);
-		currentWeeklyQuestions = new TextFileManager(appContext, "currentWeeklyQuestionsFile.json", EMPTY_HEADER, true, true, false);
+//		currentDailyQuestions = new TextFileManager(appContext, "currentDailyQuestionsFile.json", EMPTY_HEADER, true, true, false);
+//		currentWeeklyQuestions = new TextFileManager(appContext, "currentWeeklyQuestionsFile.json", EMPTY_HEADER, true, true, false);
 		// The debug file is no longer persistent, so that we can upload it to the server associated with a user, otherwise it has the name "logfile.txt" and fails to upload.
 		debugLogFile = new TextFileManager(appContext, "logFile", "THIS LINE IS A LOG FILE HEADER", false, false, true);
 		// Regularly/periodically-created files
@@ -308,8 +308,8 @@ public class TextFileManager {
 		Collections.addAll(files, getAllFiles());
 		
 		// These files should never be uploaded
-		files.remove(TextFileManager.getCurrentDailyQuestionsFile().fileName);
-		files.remove(TextFileManager.getCurrentWeeklyQuestionsFile().fileName);
+//		files.remove(TextFileManager.getCurrentDailyQuestionsFile().fileName);
+//		files.remove(TextFileManager.getCurrentWeeklyQuestionsFile().fileName);
 		files.remove(TextFileManager.getKeyFile().fileName);
 		files.remove(AudioRecorderActivity.unencryptedTempAudioFileName);
 		
@@ -349,10 +349,10 @@ public class TextFileManager {
 		Collections.addAll(files, getAllFilesSafely());
 		
 		//Need to do this crap or else we end up deleting the persistent files repeatedly
-		files.remove(TextFileManager.getCurrentDailyQuestionsFile().fileName);
-		TextFileManager.getCurrentDailyQuestionsFile().deleteSafely();
-		files.remove(TextFileManager.getCurrentWeeklyQuestionsFile().fileName);
-		TextFileManager.getCurrentWeeklyQuestionsFile().deleteSafely();
+//		files.remove(TextFileManager.getCurrentDailyQuestionsFile().fileName);
+//		TextFileManager.getCurrentDailyQuestionsFile().deleteSafely();
+//		files.remove(TextFileManager.getCurrentWeeklyQuestionsFile().fileName);
+//		TextFileManager.getCurrentWeeklyQuestionsFile().deleteSafely();
 		files.remove(TextFileManager.getDebugLogFile().fileName);
 		TextFileManager.getDebugLogFile().deleteSafely();
 		files.remove(TextFileManager.getKeyFile().fileName);

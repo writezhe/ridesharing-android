@@ -123,6 +123,7 @@
     <string name="main_menu_top_message">Welcome to Beiwe!</string>
     <string name="main_menu_view_graph">View survey answers on graph</string>
     <string name="main_menu_call_my_clinician">Call My Clinician</string>
+    <string name="title_activity_graph">Previous Survey Answers</string>
 
     <!-- Recording Activity -->
     <string name="record_activity_default_message">We would like to know how your day is going.  When you are ready, please press \"Record\" and speak for about 2 minutes.  Press \"Stop\" when you are finished. The recording will stop automatically after 4 minutes. Remember, researchers will not review and analyze your data until the end of the study, so if you are ill or in danger and need to speak with your clinician, press the \"Call My Clinician\" button.</string>
@@ -137,13 +138,10 @@
     <string name="timeout_msg_2nd_half">" minutes, so your recording was automatically stopped and saved"</string>
 
     <!-- Notifications -->
-    <string name="daily_survey_notification_message">New daily survey</string>
-    <string name="daily_survey_notification_details">Please fill out the daily survey.</string>
-    <string name="weekly_survey_notification_message">New weekly survey</string>
-    <string name="weekly_survey_notification_details">Please fill out the weekly survey.</string>
-    <string name="recording_notification_message">New voice recording</string>
-    <string name="recording_notification_details">Please make a brief voice recording.</string>
-    <string name="title_activity_graph">Previous Survey Answers</string>
+    <string name="new_android_survey_notification_ticker">New survey</string>
+    <string name="new_android_survey_notification_details">Please fill out this survey.</string>
+    <string name="new_audio_survey_notification_ticker">New voice recording</string>
+    <string name="new_audio_survey_notification_details">Please make a voice recording.</string>
 
     <!-- Timer Action Strings -->
     <string name="accelerometer_off">Accelerometer OFF</string>

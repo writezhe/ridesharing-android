@@ -1,5 +1,7 @@
 package org.beiwe.app.storage;
 
+import java.util.List;
+
 import org.beiwe.app.R;
 import org.beiwe.app.Timer;
 import org.beiwe.app.R.string;
@@ -255,9 +257,7 @@ public class PersistentData {
 	#################################### Contact Numbers ########################################
 	###########################################################################################*/
 
-	public static String getPrimaryCareNumber() {
-		return pref.getString(PCP_PHONE_KEY, "");
-	}
+	public static String getPrimaryCareNumber() { return pref.getString(PCP_PHONE_KEY, ""); }
 	public static void setPrimaryCareNumber( String phoneNumber) {
 		editor.putString(PCP_PHONE_KEY, phoneNumber );
 		editor.commit();
@@ -266,6 +266,7 @@ public class PersistentData {
 	public static String getPasswordResetNumber() {
 		return pref.getString(PASSWORD_RESET_NUMBER_KEY, "");
 	}
+	
 	public static void setPasswordResetNumber( String phoneNumber ){
 		editor.putString(PASSWORD_RESET_NUMBER_KEY, phoneNumber );
 		editor.commit();
@@ -277,58 +278,95 @@ public class PersistentData {
 	//TODO: Eli. Reimplement, make these work for arbitrary number of surveys.
 
 	// the 9223372036854775807L is the highest value a java Long can contain, this default value only occurs at registration time.
-	public static Long getWeeklySurveyAlarmTime() { return pref.getLong(PRIOR_WEEKLY_TIME, MAX_LONG ); }
-	public static Long getDailySurveyAlarmTime() { return pref.getLong(PRIOR_DAILY_TIME, 9223372036854775807L ); }
-	public static Long getAudioAlarmTime() { return pref.getLong(PRIOR_AUDIO_TIME, 9223372036854775807L ); }
-	// the state that the notification SHOULD be in.  The default value is only returned at registration, i.e. weekly triggers at registration, the others don't.
-	public static Boolean getCorrectDailyNotificationState() { return pref.getBoolean(PRIOR_DAILY_STATE, false ); }
-	public static Boolean getCorrectWeeklyNotificationState() { return pref.getBoolean(PRIOR_WEEKLY_STATE, true ); }
-	public static Boolean getCorrectAudioNotificationState() { return pref.getBoolean(PRIOR_AUDIO_STATE, false ); }
-
-	// setters for weekly alarm time (gets set inside the notification triggering alarm code in timers) 
+//	public static Long getWeeklySurveyAlarmTime() { return pref.getLong(PRIOR_WEEKLY_TIME, MAX_LONG ); }
+//	public static Long getDailySurveyAlarmTime() { return pref.getLong(PRIOR_DAILY_TIME, 9223372036854775807L ); }
+//	public static Long getAudioAlarmTime() { return pref.getLong(PRIOR_AUDIO_TIME, 9223372036854775807L ); }
+//	// the state that the notification SHOULD be in.  The default value is only returned at registration, i.e. weekly triggers at registration, the others don't.
+//	public static Boolean getCorrectDailyNotificationState() { return pref.getBoolean(PRIOR_DAILY_STATE, false ); }
+//	public static Boolean getCorrectWeeklyNotificationState() { return pref.getBoolean(PRIOR_WEEKLY_STATE, true ); }
+//	public static Boolean getCorrectAudioNotificationState() { return pref.getBoolean(PRIOR_AUDIO_STATE, false ); }
+//
+//	// setters for weekly alarm time (gets set inside the notification triggering alarm code in timers) 
 	public static void setWeeklySurveyAlarm( Long timeCode ) {
 		editor.putLong(PRIOR_WEEKLY_TIME, timeCode );
 		editor.commit(); }
-	public static void setDailySurveyAlarm( Long timeCode ) {
-		editor.putLong(PRIOR_DAILY_TIME, timeCode );
-		editor.commit(); }	
-	public static void setAudioAlarm( Long timeCode ) {
-		editor.putLong(PRIOR_AUDIO_TIME, timeCode );
-		editor.commit(); }
-
-	// setters for the correct current state of survey notifications, i.e. the state a notification SHOULD be in.
-	public static void setCorrectWeeklyNotificationState( Boolean bool ) {
-		editor.putBoolean(PRIOR_WEEKLY_STATE, bool );
-		editor.commit(); }
-	public static void setCorrectDailyNotificationState( Boolean bool ) {
-		editor.putBoolean(PRIOR_DAILY_STATE, bool );
-		editor.commit(); }	
-	public static void setCorrectAudioNotificationState( Boolean bool ) {
-		editor.putBoolean(PRIOR_AUDIO_STATE, bool );
-		editor.commit(); }
+//	public static void setDailySurveyAlarm( Long timeCode ) {
+//		editor.putLong(PRIOR_DAILY_TIME, timeCode );
+//		editor.commit(); }	
+//	public static void setAudioAlarm( Long timeCode ) {
+//		editor.putLong(PRIOR_AUDIO_TIME, timeCode );
+//		editor.commit(); }
+//
+//	// setters for the correct current state of survey notifications, i.e. the state a notification SHOULD be in.
+//	public static void setCorrectWeeklyNotificationState( Boolean bool ) {
+//		editor.putBoolean(PRIOR_WEEKLY_STATE, bool );
+//		editor.commit(); }
+//	public static void setCorrectDailyNotificationState( Boolean bool ) {
+//		editor.putBoolean(PRIOR_DAILY_STATE, bool );
+//		editor.commit(); }	
+//	public static void setCorrectAudioNotificationState( Boolean bool ) {
+//		editor.putBoolean(PRIOR_AUDIO_STATE, bool );
+//		editor.commit(); }
 	
 	/*###########################################################################################
 	###################################### Survey Info ##########################################
-	###########################################################################################*/
+	####################### We have Zombie Highlander Notifications ###########################*/
+	
+	//TODO: Eli.  Refactor everything that is setXXX to saveXXX to avoid confusion when setting alarms vs saving alarm values to persistent storage.
+	
+	//TODO: Eli.  we need a storage mechanism of all survey Ids, and these ids need to be convertable to digits.
+	//TODO: Eli.  We need surveyIds to either be or be convertible in a repeatable manner to ints.
+	//TODO: Eli.  we might need a mapping of survey Ids to survey id ints.
+	public static List<String> getSurveyIds() {
+		//TODO: Eli. Implement.
+		Log.e("PersistentDataManager", "getSurveyIds is not implemented.");
+		throw new NullPointerException("getSurveyIds is not implemented.");
+	}
+	
+	public static void addSurveyId(String surveyId){
+		//TODO: Eli. Implement.
+		Log.e("PersistentDataManager", "addSurveyId is not implemented.");
+		throw new NullPointerException("addSurveyId is not implemented.");
+	}
+	
 	//All we do is use the shared prefs as a key value store of json, and we just interpret the json each time.
+	//todo: Eli. determine how/whether to handle this returning nulls
 	public static String getSurveyContent(String surveyId){ return pref.getString(surveyId + "-content", null); }
 	public static String getSurveyTimes(String surveyId){ return pref.getString(surveyId + "-times", null); }
+
 	public static String getSurveyType(String surveyId){ return pref.getString(surveyId + "-type", null); }
+	public static Boolean getSurveyNotificationState( String surveyId) { return pref.getBoolean(surveyId + "-notificationState", false ); }
 	
+	public static int getNumericalSurveyId(String surveyId) {
+		Log.e("PersistentDataManager", "getNumericalSurveyId is not implemented.");
+		throw new NullPointerException("getNumericalSurveyId is not implemented.");
+	}
+	
+	public static long getPriorSurveyAlarmTime(String surveyId) { return pref.getLong( surveyId + "-prior_alarm", MAX_LONG); }
+	
+
 	public static void setSurveyContent(String surveyId, String content){
 		editor.putString(surveyId + "-content", content);
 		editor.commit(); }
 	public static void setSurveyTimes(String surveyId, String times){
-		editor.putString(surveyId + "-content", times);
+		editor.putString(surveyId + "-times", times);
 		editor.commit(); }
-	public static void setSurveyType(String surveyId, String times){
-		editor.putString(surveyId + "-content", times);
+	public static void setSurveyType(String surveyId, String type){
+		editor.putString(surveyId + "-type", type);
+		editor.commit(); }
+	public static void setSurveyNotificationState(String surveyId, Boolean bool ) {
+		editor.putBoolean(surveyId + "-notificationState", bool );
+		editor.commit(); }
+	public static void savePriorSurveyAlarmTime(String surveyId, long time){
+		editor.putLong(surveyId + "-prior_alarm", time);
 		editor.commit(); }
 	
 	public static void deleteSurvey(String surveyId) {
+		//todo: Eli. can a remove operation fail if the key does not exist? if so how do we handle that.
 		editor.remove(surveyId + "-content");
 		editor.remove(surveyId + "-times");
 		editor.remove(surveyId + "-type");
+		editor.remove(surveyId + "-notificationState");
 		editor.commit();
 	}
 }

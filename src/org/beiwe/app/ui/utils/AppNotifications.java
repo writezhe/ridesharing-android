@@ -2,9 +2,8 @@ package org.beiwe.app.ui.utils;
 
 import org.beiwe.app.R;
 import org.beiwe.app.storage.PersistentData;
-import org.beiwe.app.survey.SurveyType;
+import org.beiwe.app.survey.SurveyActivity;
 import org.beiwe.app.ui.user.AudioRecorderActivity;
-import org.beiwe.app.ui.user.SurveyActivity;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -14,132 +13,90 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 /**The purpose of this class is to deal with all that has to do with Survey Notifications.
  * This is a STATIC method, and is called from the background process
  * 
- * @author Dor Samet */
-
+ * @author Eli Jones */
+//TODO: Eli. Redoc.
+//TODO: Eli. Refactor to "SurveyNotifications" .... after code compiles....
 public class AppNotifications {
 
-	public static final int recordingCode = 001;
+	//TODO: eli. this seems like nonsense, remove avnd make dynamic.
+//	public static final int recordingCode = 001; 
 	
-	/**
-	 * Creates a survey notification that transfers the user to the survey activity. 
-	 * 
+	/**Creates a survey notification that transfers the user to the survey activity. 
 	 * Note: the notification can only be dismissed through submitting the survey
-	 * @param appContext
-	 */
-	public static void displaySurveyNotification(Context appContext, SurveyType.Type surveyType) {
-		Notification surveyNotification = setupNotification(appContext, surveyType.notificationCode, R.drawable.survey_icon, surveyType);
-		surveyNotification.flags = Notification.FLAG_ONGOING_EVENT;
+	 * @param appContext */
+	//TODO: Eli.  SurveyId here needs to be provided as an int.
+	//TODO: Refactor name of this function when we can compile
+	public static void displaySurveyNotification(Context appContext, String surveyId) {
+		//TODO: Eli. Check that this doc is correct, I might have the intent and pendingintent backwards.
+		//activityIntent contains information on the action triggered by tapping the notification. 
+		//it contains the action ("launch this activity class"), and a surveyId.
+		//   the original declaration:  activityIntent = new Intent(surveyType.dictKey);
+		Intent activityIntent = new Intent(surveyId);
+		int numericalSurveyId = PersistentData.getNumericalSurveyId(surveyId);
+		
+		int iconId;
+		//TODO: Eli. make sure we have a consistent use of these type identifiers across both codebases
+		if ( PersistentData.getSurveyType(surveyId) == "android_survey" ) { iconId = R.drawable.survey_icon; }
+		else if ( PersistentData.getSurveyType(surveyId) == "audio_survey" ) { iconId = R.drawable.survey_icon; }
+		else {
+			Log.e("backgroundService", "survey type did not work correctly");
+			throw new NullPointerException("survey type did not work correctly");
+		};
+		
+		//FIXME: Eli.  add logic that checks the survey type and returns the appropriate activity class to launch.
+		activityIntent = new Intent( appContext, AudioRecorderActivity.class );
+        activityIntent.setClass( appContext, SurveyActivity.class );
+        //TODO: Eli. changed this string from "SurveyType" to "SurveyId", look for bugs...
+        activityIntent.putExtra( "SurveyId", surveyId );
+        activityIntent.putExtra( "SurveyIdInt", numericalSurveyId );
+		activityIntent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP ); //modifies behavior when the user is currently in the app.
 
-		// Get an instance of the notification manager
-		NotificationManager notificationManager = 
-				(NotificationManager) appContext.getSystemService(Context.NOTIFICATION_SERVICE);
-
-		// Terrible naming for the method to post a notification
-		notificationManager.cancel(surveyType.notificationCode);
+		/* The pending intent defines properties of the notification itself.
+		 * BUG. Cannot use FLAG_UPDATE_CURRENT, which handles conflicts with multiple notification with the same id, 
+		 * to replace the existing notification.  This variable is supplied later in notificationManager.notify()
+		 * if you use FLAG_UPDATE_CURRENT the notification will not launch the provided activity on android api 19.
+		 * solution: use FLAG_CANCEL_CURRENT, it provides the same functionality for our purposes.
+		 * (or add android:exported="true" to the activity's permissions in the Manifest.)
+		 * http://stackoverflow.com/questions/21250364/notification-click-not-launch-the-given-activity-on-nexus-phones */
+		PendingIntent pendingActivityIntent = PendingIntent.getActivity(appContext,
+				1, // a Request code meaning "close the notification once done"
+				activityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 		
-		notificationManager.notify(
-				surveyType.notificationCode, // If another notification with the same ID pops up, it will be updated. This SHOULD be fine
-				surveyNotification);
-		
-		if (surveyType == SurveyType.Type.DAILY){ PersistentData.setCorrectDailyNotificationState(true); }
-		if (surveyType == SurveyType.Type.WEEKLY){ PersistentData.setCorrectWeeklyNotificationState(true); }
-	}
-	
-	/**
-	 * Creates a voice recording notification that transfers the user to the audio recording activity
-	 * 
-	 * Note: the notification can only be dismissed through submitting the survey
-	 * @param appContext
-	 */
-	public static void displayRecordingNotification(Context appContext) {
-		Notification recordingNotification = setupNotification(appContext, recordingCode, R.drawable.voice_recording_icon, null);
-		recordingNotification.flags = Notification.FLAG_ONGOING_EVENT;
-		
-		NotificationManager notificationManager = 
-				(NotificationManager) appContext.getSystemService(Context.NOTIFICATION_SERVICE);
-		
-		notificationManager.cancel(recordingCode);
-		
-		notificationManager.notify(
-				recordingCode, // If another notification with the same ID pops up, it will be updated. This SHOULD be fine
-				recordingNotification);
-		PersistentData.setCorrectAudioNotificationState(true);
-	}
-	
-	/**
-	 * Used to dismiss the notification corresponding the appCode.
-	 * For example, if the user finishes a survey and presses "submit", the app will call appCode "001" to dismiss the notification.
-	 * 
-	 * @param appContext
-	 * @param notifCode
-	 */
-	public static void dismissNotification(Context appContext, int notifCode) {
-		NotificationManager notificationManager = (NotificationManager) appContext.getSystemService(Context.NOTIFICATION_SERVICE);
-		notificationManager.cancel(notifCode);
-	}
-	
-	/**
-	 * Sets up a notification for the user. This uses the given context and one of two notification codes (two static final ints given to this class).
-	 * The drawable code is also given for shorter setup of the notification.
-	 * 
-	 * @param appContext
-	 * @param notifCode
-	 * @param iconID
-	 * @return
-	 */
-	private static Notification setupNotification(Context appContext, int notifCode, int iconID, SurveyType.Type surveyType) {
-
-		NotificationCompat.Builder builder = new NotificationCompat.Builder(appContext);
-		Intent activityIntent;
+		//TODO: Eli. this is the original call to the now defunct setup function, note the survey icon argument
+//		Notification surveyNotification = setupNotification(appContext, surveyIdInt, R.drawable.survey_icon, surveyIdInt);
+		// and this was the variables in the function definition: Context appContext, int notifCode, int iconID, int surveyIdInt
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(appContext);		
+		builder.setSmallIcon(iconId);
+        builder.setLargeIcon( BitmapFactory.decodeResource(appContext.getResources(), iconId) );
 		builder.setContentTitle( appContext.getString(R.string.app_name) );
-		if ( notifCode == recordingCode ) { // Sets up a voice recording notification
-			builder.setContentText( appContext.getResources().getString(R.string.recording_notification_details) );
-			builder.setTicker( appContext.getResources().getString(R.string.recording_notification_message) );
-	        activityIntent = new Intent( appContext, AudioRecorderActivity.class ); }
-	        
-		else { // Sets up a survey notification
-			builder.setContentText(appContext.getResources().getString( surveyType.notificationDetailsResource) );
-			builder.setTicker(appContext.getResources().getString( surveyType.notificationMsgResource ) );
-			/* The intent needs an action string that is unique for each survey type, because the
-			 * flag PendingIntent.FLAG_UPDATE_CURRENT means that any time a new identical
-			 * PendingIntent gets created, it replaces the existing one of the same type. We want a
-			 * new Daily Survey PendingIntent to replace an existing PendingIntent, but NOT replace
-			 * an existing Weekly Survey PendingIntent. See here: http://stackoverflow.com/a/10538554 */ 
-			activityIntent = new Intent(surveyType.dictKey); 
-	        activityIntent.setClass( appContext, SurveyActivity.class );
-	        activityIntent.putExtra( "SurveyType", surveyType.dictKey );
-		}
-		
-		// add the two icons to be displayed
-		builder.setSmallIcon(iconID);
-		Bitmap bitmap = BitmapFactory.decodeResource(appContext.getResources(), iconID);
-        builder.setLargeIcon(bitmap);
-
-		activityIntent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP );
-//		Intent.FLAG_ACTIVITY_NEW_TASK
-//		Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK
-
-		PendingIntent pendingActivityIntent = PendingIntent.getActivity(
-				appContext, // Context - where we are now
-				1, // Request code meaning "close the notification once done"
-				activityIntent, // The actual intent - where are we going
-				PendingIntent.FLAG_CANCEL_CURRENT); // The result should be updated to be the current
-		
-		/*known problem:
-		 * if we use PendingIntent.FLAG_UPDATE_CURRENT the notification will not launch the survey on api 19, there are two known solutions:
-		 * use PendingIntent.FLAG_CANCEL_CURRENT
-		 * or
-		 * add android:exported="true" to the activity's permissions in the Manifest.
-		 * source: http://stackoverflow.com/questions/21250364/notification-click-not-launch-the-given-activity-on-nexus-phones
-		 */
-		
+		builder.setContentText( appContext.getResources().getString(R.string.new_android_survey_notification_details) );
+		builder.setTicker( appContext.getResources().getString(R.string.new_android_survey_notification_ticker) );
 		builder.setContentIntent(pendingActivityIntent);
 		
-		Notification notification = builder.build();
-		return notification;
+		//Build the notification, interface with a notification manager.
+		Notification surveyNotification = builder.build();
+		NotificationManager notificationManager = (NotificationManager) appContext.getSystemService(Context.NOTIFICATION_SERVICE);
+		notificationManager.cancel(numericalSurveyId); //cancel current
+		surveyNotification.flags = Notification.FLAG_ONGOING_EVENT;
+		notificationManager.notify(
+				numericalSurveyId, // If another notification with the same ID pops up, this notification will be updated/cancelled.
+				surveyNotification);
+		//And, finally, set the notification state for zombie alarms.
+		PersistentData.setSurveyNotificationState(surveyId, true);
 	}
+	
+	/**Use to dismiss the notification corresponding the surveyIdInt.
+	 * @param appContext
+	 * @param notifCode */
+	public static void dismissNotification(Context appContext, String surveyId) {
+		//TODO: Eli.  Test.  I only Think that this value is the correct id to dismiss a notification, previously it used a per-study-type constant in a SurveyType.
+		NotificationManager notificationManager = (NotificationManager) appContext.getSystemService(Context.NOTIFICATION_SERVICE);
+		notificationManager.cancel(PersistentData.getNumericalSurveyId(surveyId));
+	}
+	
 }

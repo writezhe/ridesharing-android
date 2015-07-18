@@ -8,11 +8,10 @@ import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.storage.TextFileManager;
-import org.beiwe.app.survey.SurveyType;
+import org.beiwe.app.survey.SurveyActivity;
 import org.beiwe.app.ui.user.AudioRecorderActivity;
 import org.beiwe.app.ui.user.LoginActivity;
 import org.beiwe.app.ui.user.MainMenuActivity;
-import org.beiwe.app.ui.user.SurveyActivity;
 import org.beiwe.app.ui.utils.AppNotifications;
 
 import android.content.Context;
@@ -103,15 +102,17 @@ public class DebugInterfaceActivity extends SessionActivity {
 	
 	public void makeNewFiles(View view) { TextFileManager.makeNewFilesForEverything(); }
 	
-	public void popDailySurveyNotification(View view) { AppNotifications.displaySurveyNotification(getApplicationContext(), SurveyType.Type.DAILY); }
+	//TODO: find a way to rewrite.
+	//public void popDailySurveyNotification(View view) { AppNotifications.displaySurveyNotification(getApplicationContext(), SurveyType.Type.DAILY); }
 	
-	public void popWeeklySurveyNotification(View view) { AppNotifications.displaySurveyNotification(getApplicationContext(), SurveyType.Type.WEEKLY); }
+	//public void popWeeklySurveyNotification(View view) { AppNotifications.displaySurveyNotification(getApplicationContext(), SurveyType.Type.WEEKLY); }
 	
-	public void popAudioSurveyNotification(View view) { AppNotifications.displayRecordingNotification(appContext); }
+	//public void popAudioSurveyNotification(View view) { AppNotifications.displayRecordingNotification(appContext); }
 
 	public void alarmStates(View view) {
-		Log.i("audio", "" +PersistentData.getAudioAlarmTime() + ", " + PersistentData.getCorrectAudioNotificationState() );
-		Log.i("daily", "" + PersistentData.getDailySurveyAlarmTime()  + ", " + PersistentData.getCorrectDailyNotificationState());
-		Log.i("weekly", "" + PersistentData.getWeeklySurveyAlarmTime() + ", " + PersistentData.getCorrectWeeklyNotificationState()) ;
+		//TODO: reimplement.
+//		Log.i("audio", "" +PersistentData.getAudioAlarmTime() + ", " + PersistentData.getCorrectAudioNotificationState() );
+//		Log.i("daily", "" + PersistentData.getDailySurveyAlarmTime()  + ", " + PersistentData.getCorrectDailyNotificationState());
+//		Log.i("weekly", "" + PersistentData.getWeeklySurveyAlarmTime() + ", " + PersistentData.getCorrectWeeklyNotificationState()) ;
 	}
 }

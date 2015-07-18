@@ -7,13 +7,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import javax.net.ssl.HttpsURLConnection;
+//TODO: Eli/Josh. Reenable ssl
+//import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.http.client.methods.HttpPost;
 import org.beiwe.app.DeviceInfo;
@@ -100,9 +102,9 @@ public class PostRequest {
 	 * @param url a URL object
 	 * @return a new HttpsURLConnection with minimal settings applied
 	 * @throws IOException This function can throw 2 kinds of IO exceptions: IOExeptions and ProtocolException*/
-	private static HttpsURLConnection minimalHTTP(URL url) throws IOException {		
+	private static HttpURLConnection minimalHTTP(URL url) throws IOException {		
 		// Create a new HttpURLConnection and set its parameters
-		HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.setUseCaches(false);
 		connection.setDoOutput(true);
 		connection.setRequestMethod("POST");
@@ -118,8 +120,8 @@ public class PostRequest {
 	 * @param parameters a string that has been created using the makeParameters function
 	 * @param url a URL object
 	 * @return a new HttpsURLConnection with common settings */
-	private static HttpsURLConnection setupHTTP( String parameters, URL url, String newPassword ) throws IOException {
-		HttpsURLConnection connection = minimalHTTP(url);
+	private static HttpURLConnection setupHTTP( String parameters, URL url, String newPassword ) throws IOException {
+		HttpURLConnection connection = minimalHTTP(url);
 
 		DataOutputStream request = new DataOutputStream( connection.getOutputStream() );
 		request.write( securityParameters(newPassword).getBytes() );
@@ -134,7 +136,7 @@ public class PostRequest {
 	 * @param connection an HttpsURLConnection
 	 * @return a String containing return data
 	 * @throws IOException */
-	private static String readResponse(HttpsURLConnection connection) throws IOException {
+	private static String readResponse(HttpURLConnection connection) throws IOException {
 		Integer responseCode = connection.getResponseCode();
 		if (responseCode == 200) {
 			BufferedReader reader = new BufferedReader(new InputStreamReader( new DataInputStream( connection.getInputStream() ) ) );
@@ -152,7 +154,7 @@ public class PostRequest {
 	 #################################################################################*/
 
 	private static String doPostRequestGetResponseString(String parameters, String urlString) throws IOException {
-		HttpsURLConnection connection = setupHTTP( parameters, new URL( urlString ), null );
+		HttpURLConnection connection = setupHTTP( parameters, new URL( urlString ), null );
 		connection.connect();
 		String data = readResponse(connection);
 		connection.disconnect();
@@ -161,7 +163,7 @@ public class PostRequest {
 
 
 	private static int doPostRequestGetResponseCode(String parameters, URL url, String newPassword) throws IOException {
-		HttpsURLConnection connection = setupHTTP(parameters, url, newPassword);
+		HttpURLConnection connection = setupHTTP(parameters, url, newPassword);
 		int response = connection.getResponseCode();
 		connection.disconnect();
 		return response;
@@ -169,7 +171,7 @@ public class PostRequest {
 
 
 	private static int doRegisterRequest(String parameters, URL url) throws IOException {
-		HttpsURLConnection connection = setupHTTP(parameters, url, null);
+		HttpURLConnection connection = setupHTTP(parameters, url, null);
 		int response = connection.getResponseCode();
 		if ( response == 200 ) {
 			String key = readResponse(connection) ;
@@ -193,7 +195,7 @@ public class PostRequest {
 	 * @return HTTP Response code as int
 	 * @throws IOException */
 	private static int doFileUpload(File file, URL uploadUrl) throws IOException {
-		HttpsURLConnection connection = minimalHTTP( uploadUrl );
+		HttpURLConnection connection = minimalHTTP( uploadUrl );
 		DataOutputStream request = new DataOutputStream( connection.getOutputStream() );
 		//insert the multipart parameter here.
 		DataInputStream inputStream = new DataInputStream( new FileInputStream(file) );

@@ -29,6 +29,8 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 	
 /**Audio Recorder
@@ -57,17 +59,33 @@ public class AudioRecorderActivity extends SessionActivity {
     
     private final Handler recordingTimeoutHandler = new Handler();
     
-    /*///////////////////////////////////////////////////
-    /////////////////Overrides go here/////////////////// 
-    ///////////////////////////////////////////////////*/
+    private String surveyId;
+    private int surveyIdInt;
+    private String surveyPrompt;
+    
+    /*#########################################################
+    ################## Activity Overrides ##################### 
+    #########################################################*/
     
     /**On create, the activity presents the message to the user, and only a record button.
      * After recording, the app will present the user with the play button. */
     @Override
     public void onCreate(Bundle bundle) {
-        super.onCreate(bundle);
+    	//get info for the survey.
+    	Intent triggerIntent = getIntent();
+    	surveyId = triggerIntent.getStringExtra("surveyId");
+//    	surveyIdInt = triggerIntent.getIntExtra("surveyIdInt", 0); //TODO: Eli.  Do we need to do anything to handle this default value?
+    	String content = PersistentData.getSurveyContent(surveyId);
+    	//TODO: Eli/Josh. write function that grabs the audio prompt from the provided content string, sets up the display text
+    	//Json.blabla
+    	// Get the survey layout objects that we'll add questions to
+//    	TextView textbox = findViewById(R.id.the correct textview id...);
+//    	textbox.setText(prompt);
+    	//TODO: Eli. set prompt text to the provided text in the layout
+    	//TODO: ensure that this behavior does not kill the app if a survey download event occurs and rewrites the survey. 
+    	super.onCreate(bundle);
         setContentView(R.layout.activity_audio_recorder);
-
+        
         String fileDirectory = getApplicationContext().getFilesDir().getAbsolutePath() + "/";
         unencryptedTempAudioFilePath = fileDirectory + unencryptedTempAudioFileName;
         
@@ -76,32 +94,22 @@ public class AudioRecorderActivity extends SessionActivity {
         
     	// Each time the screen is flipped, the app checks if it's time to show the play button
     	setPlayButtonVisibility();
-    	
-    	/* Improvement idea: make the Audio Recording prompt a string that can
-    	 * be edited on the server, and then propagates via automatic downloads
-    	 * to all phones running the app, just like the survey questions. */
-    	//TextView surveyMessage = (TextView) findViewById(R.id.record_activity_textview);
-    	//surveyMessage.setText("Please record a statement about how you are feeling today.");
     }
 
 
     @Override
 	public void onDestroy() {
 		super.onDestroy();
-
 		if (isFinishing()) {
 			// If the activity is being finished()
 	        if (mRecorder != null) { stopRecording(); }
 	        if (mediaPlayer != null) { stopPlaying(); }
 	        displayPlaybackButton = false;
-
 	        /* Delete the temporary, unencrypted audio file so that nobody can play it back after
 	         * the user leaves this screen */
 	        if (finishedEncrypting) { TextFileManager.delete(unencryptedTempAudioFileName); }
 		}
-		else {
-			// The activity is probably just getting restarted because the screen rotated
-		}
+		// case: The activity is probably just getting restarted because the screen rotated
 	}
 
     /** While encrypting the audio file we block out user interaction.*/
@@ -118,15 +126,14 @@ public class AudioRecorderActivity extends SessionActivity {
 			finishedEncrypting = true;  // Can now delete audio file
 			// If isFinishing(), the other call to delete the temp file won't get triggered, so do it here
 			if (isFinishing()) { TextFileManager.delete(unencryptedTempAudioFileName); }
-
 			recordingButton.setClickable(true);
 		}
     }
     
 
-    /*/////////////////////////////////////////////////
-    ///////////////Button functionalities////////////// 
-    /////////////////////////////////////////////////*/
+    /*#########################################################
+    ################# Button functionalities ################## 
+    #########################################################*/
 	
     /** Checks if mFileName is null. If it is, then the play button will be invisible. Otherwise,
      * the button will be visible. 
@@ -149,9 +156,9 @@ public class AudioRecorderActivity extends SessionActivity {
     	else { stopPlaying(); }    	
     }
     
-    /*/////////////////////////////////////////////////
-    ///////Recording and playing functionalities/////// 
-    /////////////////////////////////////////////////*/
+    /*#########################################################
+    ################# Recording and Playing ################### 
+    #########################################################*/
 
     /** Starts playing back the recording */
     private void startPlaying() {
@@ -179,11 +186,9 @@ public class AudioRecorderActivity extends SessionActivity {
     /** Stops playing back the recording, and reset the button to "play" */
     private void stopPlaying() {
     	currentlyPlaying = false;
-    	
     	// Toggles button
     	playButton.setText(getApplicationContext().getString(R.string.play_button_text));
     	playButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.play_button, 0, 0);
-
     	mediaPlayer.stop();
     	mediaPlayer.reset();
     	mediaPlayer.release();
@@ -194,11 +199,9 @@ public class AudioRecorderActivity extends SessionActivity {
     private void startRecording() {
     	currentlyRecording = true;
     	finishedEncrypting = false;
-
     	// Toggles button
     	recordingButton.setText( getApplicationContext().getString(R.string.record_button_stop_text) );
     	recordingButton.setCompoundDrawablesWithIntrinsicBounds( 0, R.drawable.stop_recording_button, 0, 0 );
-    	
         mRecorder = new MediaRecorder();
         mRecorder.reset();
         mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -236,9 +239,9 @@ public class AudioRecorderActivity extends SessionActivity {
     }
     
     
-    /*///////////////////////////////////////////////////
-    ////////// Recording timeout functionality ////////// 
-    ///////////////////////////////////////////////////*/
+    /*#########################################################
+    #################### Recording Timeout #################### 
+    #########################################################*/
     
     /** Automatically stop recording if the recording runs longer than n seconds. */
     private void startRecordingTimeout() {
@@ -271,8 +274,9 @@ public class AudioRecorderActivity extends SessionActivity {
      * back to the last one; the audio file should already be saved, so we
      * don't need to do anything other than kill the activity.  */
     public void buttonDonePressed(View v) {
-    	PersistentData.setCorrectAudioNotificationState(false);
-		AppNotifications.dismissNotification( getApplicationContext(), AppNotifications.recordingCode );
+    	PersistentData.setSurveyNotificationState(surveyId, false);
+    	//todo: eli. add a surveyId, we can read it from the json?
+		AppNotifications.dismissNotification( getApplicationContext(), surveyId );
     	startActivity(new Intent(getApplicationContext(), MainMenuActivity.class));
     	finish();
     }
