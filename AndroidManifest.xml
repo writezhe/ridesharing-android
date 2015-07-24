@@ -57,11 +57,11 @@
             android:label="@string/title_activity_audio_recorder"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".user.SurveyActivity"
+            android:name="org.beiwe.app.ui.survey.SurveyActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_survey" />
         <activity
-            android:name=".user.LoginActivity"
+            android:name="org.beiwe.app.ui.user.LoginActivity"
             android:label="@string/title_activity_login" />
         <activity
             android:name="org.beiwe.app.ui.registration.ForgotPasswordActivity"
@@ -70,10 +70,10 @@
             android:name="org.beiwe.app.ui.registration.RegisterActivity"
             android:label="@string/title_activity_register" />
         <activity
-            android:name=".user.MainMenuActivity"
+            android:name="org.beiwe.app.ui.user.MainMenuActivity"
             android:label="@string/title_activity_main_menu" />
         <activity
-            android:name=".user.GraphActivity"
+            android:name="org.beiwe.app.ui.user.GraphActivity"
             android:label="@string/title_activity_graph" >
         </activity>
         <activity
@@ -81,7 +81,6 @@
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

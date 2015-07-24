@@ -1,11 +1,14 @@
 package org.beiwe.app.ui;
 
+import java.security.spec.InvalidKeySpecException;
+
 import org.beiwe.app.R;
 import org.beiwe.app.Timer;
 import org.beiwe.app.R.layout;
 import org.beiwe.app.listeners.WifiListener;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.SessionActivity;
+import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.SurveyActivity;
@@ -83,17 +86,28 @@ public class DebugInterfaceActivity extends SessionActivity {
 	public void getKeyFile(View view) { Log.i("DEBUG", "key file data: " + TextFileManager.getKeyFile().read()); }
 	
 	public void testEncrypt (View view) {
-		//code commented out because would have to catch an error
-//		Log.i("Debug..", TextFileManager.getKeyFile().read());
-//		String data = TextFileManager.getKeyFile().read();
-//		Log.i("reading keyFile:", data );
-//		
-//		EncryptionEngine.readKey();
-//
-//		String encrypted = EncryptionEngine.encryptRSA("ThIs Is a TeSt".getBytes() ).toString();
-//		Log.i("test encrypt - length:", "" + encrypted.length() );
-//		Log.i("test encrypt - output:", encrypted );
-//		Log.i("test hash:", EncryptionEngine.safeHash( encrypted ) );
+//		code commented out because would have to catch an error
+		Log.i("Debug..", TextFileManager.getKeyFile().read());
+		String data = TextFileManager.getKeyFile().read();
+		Log.i("reading keyFile:", data );
+		
+		try { EncryptionEngine.readKey(); }
+		catch (InvalidKeySpecException e) {
+			Log.e("DebugInterfaceActivity", "this is only partially implemented, unknown behavior");
+			e.printStackTrace();
+			throw new NullPointerException("some form of encryption error, type 1");
+		}
+
+		String encrypted;
+		try { encrypted = EncryptionEngine.encryptRSA("ThIs Is a TeSt".getBytes() ).toString(); }
+		catch (InvalidKeySpecException e) {
+			Log.e("DebugInterfaceActivity", "this is only partially implemented, unknown behavior");
+			e.printStackTrace();
+			throw new NullPointerException("some form of encryption error, type 2");
+		}
+		Log.i("test encrypt - length:", "" + encrypted.length() );
+		Log.i("test encrypt - output:", encrypted );
+		Log.i("test hash:", EncryptionEngine.safeHash( encrypted ) );
 	}
 	
 	public void resetPassword(View view) { startActivity(new Intent(appContext, LoginActivity.class) ); }
@@ -102,14 +116,24 @@ public class DebugInterfaceActivity extends SessionActivity {
 	
 	public void makeNewFiles(View view) { TextFileManager.makeNewFilesForEverything(); }
 	
-	//TODO: find a way to rewrite.
-	//public void popDailySurveyNotification(View view) { AppNotifications.displaySurveyNotification(getApplicationContext(), SurveyType.Type.DAILY); }
+	//TODO: Eli. reimplement these.
+	public void popDailySurveyNotification(View view) {
+		Log.e("DebugInterfaceActivity", "not implemented");
+//		AppNotifications.displaySurveyNotification(getApplicationContext(), SurveyType.Type.DAILY);
+	}
 	
-	//public void popWeeklySurveyNotification(View view) { AppNotifications.displaySurveyNotification(getApplicationContext(), SurveyType.Type.WEEKLY); }
+	public void popWeeklySurveyNotification(View view) {
+		Log.e("DebugInterfaceActivity", "not implemented");
+		//AppNotifications.displaySurveyNotification(getApplicationContext(), SurveyType.Type.WEEKLY);
+	}
 	
-	//public void popAudioSurveyNotification(View view) { AppNotifications.displayRecordingNotification(appContext); }
+	public void popAudioSurveyNotification(View view) {
+		Log.e("DebugInterfaceActivity", "not implemented");
+//		AppNotifications.displayRecordingNotification(appContext);
+	}
 
 	public void alarmStates(View view) {
+		Log.e("DebugInterfaceActivity", "not implemented");
 		//TODO: reimplement.
 //		Log.i("audio", "" +PersistentData.getAudioAlarmTime() + ", " + PersistentData.getCorrectAudioNotificationState() );
 //		Log.i("daily", "" + PersistentData.getDailySurveyAlarmTime()  + ", " + PersistentData.getCorrectDailyNotificationState());

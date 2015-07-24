@@ -1,5 +1,7 @@
 package org.beiwe.app.storage;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.beiwe.app.R;
@@ -12,6 +14,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**A class for managing patient login sessions.
  * Uses SharedPreferences in order to save username-password combinations.
@@ -58,15 +64,7 @@ public class PersistentData {
 	private static final String UPLOAD_DATA_FILES_FREQUENCY_SECONDS = "upload_data_files_frequency_seconds";
 	private static final String VOICE_RECORDING_MAX_TIME_LENGTH_SECONDS = "voice_recording_max_time_length_seconds";
 	private static final String WIFI_LOG_FREQUENCY_SECONDS = "wifi_log_frequency_seconds";
-
-
-	//TODO: Eli. part of arbitrary number of surveys, see zombie alarms below.
-	private static final String PRIOR_WEEKLY_TIME = "prior_weekly_timer_time";
-	private static final String PRIOR_DAILY_TIME = "prior_daily_time";
-	private static final String PRIOR_AUDIO_TIME = "prior_audio_time";
-	private static final String PRIOR_WEEKLY_STATE = "prior_weekly_state";
-	private static final String PRIOR_DAILY_STATE = "prior_daily_state";
-	private static final String PRIOR_AUDIO_STATE = "prior_audio_state";
+	private static final String SURVEY_IDS = "survey_ids";
 
 
 	/*#####################################################################################
@@ -272,41 +270,6 @@ public class PersistentData {
 		editor.commit();
 	}
 
-	/*###########################################################################################
-	##################################### Zombie Alarms #########################################
-	###########################################################################################*/
-	//TODO: Eli. Reimplement, make these work for arbitrary number of surveys.
-
-	// the 9223372036854775807L is the highest value a java Long can contain, this default value only occurs at registration time.
-//	public static Long getWeeklySurveyAlarmTime() { return pref.getLong(PRIOR_WEEKLY_TIME, MAX_LONG ); }
-//	public static Long getDailySurveyAlarmTime() { return pref.getLong(PRIOR_DAILY_TIME, 9223372036854775807L ); }
-//	public static Long getAudioAlarmTime() { return pref.getLong(PRIOR_AUDIO_TIME, 9223372036854775807L ); }
-//	// the state that the notification SHOULD be in.  The default value is only returned at registration, i.e. weekly triggers at registration, the others don't.
-//	public static Boolean getCorrectDailyNotificationState() { return pref.getBoolean(PRIOR_DAILY_STATE, false ); }
-//	public static Boolean getCorrectWeeklyNotificationState() { return pref.getBoolean(PRIOR_WEEKLY_STATE, true ); }
-//	public static Boolean getCorrectAudioNotificationState() { return pref.getBoolean(PRIOR_AUDIO_STATE, false ); }
-//
-//	// setters for weekly alarm time (gets set inside the notification triggering alarm code in timers) 
-	public static void setWeeklySurveyAlarm( Long timeCode ) {
-		editor.putLong(PRIOR_WEEKLY_TIME, timeCode );
-		editor.commit(); }
-//	public static void setDailySurveyAlarm( Long timeCode ) {
-//		editor.putLong(PRIOR_DAILY_TIME, timeCode );
-//		editor.commit(); }	
-//	public static void setAudioAlarm( Long timeCode ) {
-//		editor.putLong(PRIOR_AUDIO_TIME, timeCode );
-//		editor.commit(); }
-//
-//	// setters for the correct current state of survey notifications, i.e. the state a notification SHOULD be in.
-//	public static void setCorrectWeeklyNotificationState( Boolean bool ) {
-//		editor.putBoolean(PRIOR_WEEKLY_STATE, bool );
-//		editor.commit(); }
-//	public static void setCorrectDailyNotificationState( Boolean bool ) {
-//		editor.putBoolean(PRIOR_DAILY_STATE, bool );
-//		editor.commit(); }	
-//	public static void setCorrectAudioNotificationState( Boolean bool ) {
-//		editor.putBoolean(PRIOR_AUDIO_STATE, bool );
-//		editor.commit(); }
 	
 	/*###########################################################################################
 	###################################### Survey Info ##########################################
@@ -317,17 +280,61 @@ public class PersistentData {
 	//TODO: Eli.  we need a storage mechanism of all survey Ids, and these ids need to be convertable to digits.
 	//TODO: Eli.  We need surveyIds to either be or be convertible in a repeatable manner to ints.
 	//TODO: Eli.  we might need a mapping of survey Ids to survey id ints.
+
 	public static List<String> getSurveyIds() {
-		//TODO: Eli. Implement.
-		Log.e("PersistentDataManager", "getSurveyIds is not implemented.");
-		throw new NullPointerException("getSurveyIds is not implemented.");
+		return jsonArrayToList(getSurveyIdsJsonArray());
+	}
+
+	private static JSONArray getSurveyIdsJsonArray() {
+		JSONArray jsonSurveyIdArray;
+		String jsonString = pref.getString("jsondata", "0");
+		if (jsonString == "0") { return new JSONArray();  } //return empty if the list is empty
+		try { jsonSurveyIdArray = new JSONArray(jsonString); }
+		catch (JSONException e) { throw new NullPointerException("getSurveyIds failed, json string was: " + jsonString ); }
+		return jsonSurveyIdArray;
+	}
+		
+	private static List<String> jsonArrayToList( JSONArray array ) {
+		ArrayList<String> ret = new ArrayList<String>(array.length() );
+		for (int i=0; i < array.length(); i++) { //Wow, JSONArrays are not iterable.
+			try { ret.add( array.getString(i) ); } //uhg, json exceptions...
+			catch (JSONException e) { throw new NullPointerException("unpacking json array failed, json string was: " + array.toString() ); }
+		}
+		return ret;
 	}
 	
-	public static void addSurveyId(String surveyId){
-		//TODO: Eli. Implement.
-		Log.e("PersistentDataManager", "addSurveyId is not implemented.");
-		throw new NullPointerException("addSurveyId is not implemented.");
+	public static void addSurveyId(String surveyId) {
+		List<String> list = jsonArrayToList( getSurveyIdsJsonArray() );
+		if ( !list.contains(surveyId) ) {
+			list.add(surveyId);
+			editor.putString(SURVEY_IDS, new JSONArray(list).toString() ) ;
+		}
+		else { throw new NullPointerException("duplicate survey id added"); }
+		//TODO: Eli. Define Behavior for duplicate entries, probably at download...
 	}
+	
+	/**Takes a JSONArray of survey IDs from the survey updates and returns a list of new surveyIds, and deletes Old surveys and unschedules them.
+	 * @param surveyIds
+	 * @return  */
+	public static List <String> compareSurveyIds( JSONArray surveyIds ) {
+		List <String> newSurveyIdList = jsonArrayToList(surveyIds);
+		List <String> oldSurveyIdList = getSurveyIds();
+		List <String> ret = new ArrayList <String>();
+		for (String newId : newSurveyIdList ) { //for each new survey Id...
+			if ( !oldSurveyIdList.contains(newId) ) { //if survey Id is a new one, add to return list.
+				ret.add(newId);
+			}
+		}
+		for (String oldId : oldSurveyIdList ) { //for each old survey Id...
+			if ( !newSurveyIdList.contains(oldId) ) { //if survey Id is not in the new list, delete all associated data
+				//TOD: Eli. unschedule old survey notification...
+				throw new NullPointerException("surveys currently scheduled need to be unscheduled");
+//				deleteSurvey(oldId);
+			}
+		}
+		return ret;
+	}
+	
 	
 	//All we do is use the shared prefs as a key value store of json, and we just interpret the json each time.
 	//todo: Eli. determine how/whether to handle this returning nulls
@@ -344,7 +351,13 @@ public class PersistentData {
 	
 	public static long getPriorSurveyAlarmTime(String surveyId) { return pref.getLong( surveyId + "-prior_alarm", MAX_LONG); }
 	
-
+	private static void createSurveyData(String surveyId, String content, String times, String type){
+		editor.putString(surveyId + "-content", content);
+		editor.putString(surveyId + "-times", times);
+		editor.putString(surveyId + "-type", type);
+		editor.commit();
+	}
+	//TODO: Eli.  I think we do still need the following (or at least they would be useful/efficient) 
 	public static void setSurveyContent(String surveyId, String content){
 		editor.putString(surveyId + "-content", content);
 		editor.commit(); }
@@ -354,10 +367,11 @@ public class PersistentData {
 	public static void setSurveyType(String surveyId, String type){
 		editor.putString(surveyId + "-type", type);
 		editor.commit(); }
+	
 	public static void setSurveyNotificationState(String surveyId, Boolean bool ) {
 		editor.putBoolean(surveyId + "-notificationState", bool );
 		editor.commit(); }
-	public static void savePriorSurveyAlarmTime(String surveyId, long time){
+	public static void savePriorSurveyAlarmTime(String surveyId, long time) {
 		editor.putLong(surveyId + "-prior_alarm", time);
 		editor.commit(); }
 	
