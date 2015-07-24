@@ -4,7 +4,7 @@ import org.beiwe.app.R;
 import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.ui.user.MainMenuActivity;
-import org.beiwe.app.ui.utils.AppNotifications;
+import org.beiwe.app.ui.utils.SurveyNotifications;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -103,7 +103,7 @@ public class SurveyActivity extends SessionActivity {
 		// Close the Activity
 		startActivity(new Intent(getApplicationContext(), MainMenuActivity.class));
 		PersistentData.setSurveyNotificationState(surveyId, false);		
-		AppNotifications.dismissNotification(getApplicationContext(), surveyId);
+		SurveyNotifications.dismissNotification(getApplicationContext(), surveyId);
 		finish();
 	}
 		

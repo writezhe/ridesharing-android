@@ -21,7 +21,7 @@ import android.util.Log;
  * @author Eli Jones */
 //TODO: Eli. Redoc.
 //TODO: Eli. Refactor to "SurveyNotifications" .... after code compiles....
-public class AppNotifications {
+public class SurveyNotifications {
 
 	//TODO: eli. this seems like nonsense, remove avnd make dynamic.
 //	public static final int recordingCode = 001; 

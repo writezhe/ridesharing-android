@@ -15,7 +15,7 @@ import org.beiwe.app.survey.SurveyActivity;
 import org.beiwe.app.ui.user.AudioRecorderActivity;
 import org.beiwe.app.ui.user.LoginActivity;
 import org.beiwe.app.ui.user.MainMenuActivity;
-import org.beiwe.app.ui.utils.AppNotifications;
+import org.beiwe.app.ui.utils.SurveyNotifications;
 
 import android.content.Context;
 import android.content.Intent;

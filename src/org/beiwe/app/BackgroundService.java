@@ -14,7 +14,7 @@ import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.QuestionsDownloader;
 import org.beiwe.app.survey.SurveyScheduler;
 import org.beiwe.app.ui.user.LoginActivity;
-import org.beiwe.app.ui.utils.AppNotifications;
+import org.beiwe.app.ui.utils.SurveyNotifications;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -229,7 +229,7 @@ public class BackgroundService extends Service {
 		//TODO: Eli. fairly sure that these should run the (to be implemented) getPriorSurveyAlarmTime function.  (fully aware that the use of "prior" can be confusing.
 		for (String surveyId : PersistentData.getSurveyIds() ){
 			if ( PersistentData.getSurveyNotificationState(surveyId) || PersistentData.getPriorSurveyAlarmTime(surveyId) < now ) {
-				AppNotifications.displaySurveyNotification(appContext, surveyId);
+				SurveyNotifications.displaySurveyNotification(appContext, surveyId);
 			}
 		}
 		

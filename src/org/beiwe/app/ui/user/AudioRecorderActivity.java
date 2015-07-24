@@ -15,7 +15,7 @@ import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.storage.TextFileManager;
-import org.beiwe.app.ui.utils.AppNotifications;
+import org.beiwe.app.ui.utils.SurveyNotifications;
 
 import android.content.Context;
 import android.content.Intent;
@@ -276,7 +276,7 @@ public class AudioRecorderActivity extends SessionActivity {
     public void buttonDonePressed(View v) {
     	PersistentData.setSurveyNotificationState(surveyId, false);
     	//todo: eli. add a surveyId, we can read it from the json?
-		AppNotifications.dismissNotification( getApplicationContext(), surveyId );
+		SurveyNotifications.dismissNotification( getApplicationContext(), surveyId );
     	startActivity(new Intent(getApplicationContext(), MainMenuActivity.class));
     	finish();
     }
