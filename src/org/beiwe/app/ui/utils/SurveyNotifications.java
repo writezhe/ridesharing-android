@@ -20,17 +20,10 @@ import android.util.Log;
  * 
  * @author Eli Jones */
 //TODO: Eli. Redoc.
-//TODO: Eli. Refactor to "SurveyNotifications" .... after code compiles....
 public class SurveyNotifications {
-
-	//TODO: eli. this seems like nonsense, remove avnd make dynamic.
-//	public static final int recordingCode = 001; 
-	
 	/**Creates a survey notification that transfers the user to the survey activity. 
 	 * Note: the notification can only be dismissed through submitting the survey
 	 * @param appContext */
-	//TODO: Eli.  SurveyId here needs to be provided as an int.
-	//TODO: Refactor name of this function when we can compile
 	public static void displaySurveyNotification(Context appContext, String surveyId) {
 		//TODO: Eli. Check that this doc is correct, I might have the intent and pendingintent backwards.
 		//activityIntent contains information on the action triggered by tapping the notification. 
@@ -98,5 +91,4 @@ public class SurveyNotifications {
 		NotificationManager notificationManager = (NotificationManager) appContext.getSystemService(Context.NOTIFICATION_SERVICE);
 		notificationManager.cancel(PersistentData.getNumericalSurveyId(surveyId));
 	}
-	
 }

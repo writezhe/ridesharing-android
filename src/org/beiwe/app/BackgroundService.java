@@ -273,11 +273,11 @@ public class BackgroundService extends Service {
 //		timer.startDailyAlarm(hour, Timer.dailySurveyIntent);
 	}
 	
-	public static void runWeeklySurveyStart(int hour, int dayOfWeek) { 
-		throw new NullPointerException("BackgroundService - setDailySurvey not implemented");
-		//just passes data into the timer to start the weekly, all logic is handled inside.
-//		timer.startWeeklyAlarm(dayOfWeek, hour, Timer.weeklySurveyIntent);
-	}
+//	public static void runWeeklySurveyStart(int hour, int dayOfWeek) { 
+//		throw new NullPointerException("BackgroundService - setDailySurvey not implemented");
+//		//just passes data into the timer to start the weekly, all logic is handled inside.
+////		timer.startWeeklyAlarm(dayOfWeek, hour, Timer.weeklySurveyIntent);
+//	}
 	
 	
 	/**The timerReceiver is an Android BroadcastReceiver that listens for our timer events to trigger,
