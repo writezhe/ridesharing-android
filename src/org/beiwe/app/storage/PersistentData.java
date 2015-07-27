@@ -1,12 +1,11 @@
 package org.beiwe.app.storage;
+import org.beiwe.app.JSONUtils;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import org.beiwe.app.R;
 import org.beiwe.app.Timer;
-import org.beiwe.app.R.string;
 import org.beiwe.app.ui.utils.AlertsManager;
 
 import android.app.Activity;
@@ -282,7 +281,7 @@ public class PersistentData {
 	//TODO: Eli.  we might need a mapping of survey Ids to survey id ints.
 
 	public static List<String> getSurveyIds() {
-		return jsonArrayToList(getSurveyIdsJsonArray());
+		return JSONUtils.jsonArrayToStringList(getSurveyIdsJsonArray());
 	}
 
 	private static JSONArray getSurveyIdsJsonArray() {
@@ -293,18 +292,10 @@ public class PersistentData {
 		catch (JSONException e) { throw new NullPointerException("getSurveyIds failed, json string was: " + jsonString ); }
 		return jsonSurveyIdArray;
 	}
-		
-	private static List<String> jsonArrayToList( JSONArray array ) {
-		ArrayList<String> ret = new ArrayList<String>(array.length() );
-		for (int i=0; i < array.length(); i++) { //Wow, JSONArrays are not iterable.
-			try { ret.add( array.getString(i) ); } //uhg, json exceptions...
-			catch (JSONException e) { throw new NullPointerException("unpacking json array failed, json string was: " + array.toString() ); }
-		}
-		return ret;
-	}
+	
 	
 	public static void addSurveyId(String surveyId) {
-		List<String> list = jsonArrayToList( getSurveyIdsJsonArray() );
+		List<String> list = JSONUtils.jsonArrayToStringList( getSurveyIdsJsonArray() );
 		if ( !list.contains(surveyId) ) {
 			list.add(surveyId);
 			editor.putString(SURVEY_IDS, new JSONArray(list).toString() ) ;
@@ -317,7 +308,7 @@ public class PersistentData {
 	 * @param surveyIds
 	 * @return  */
 	public static List <String> compareSurveyIds( JSONArray surveyIds ) {
-		List <String> newSurveyIdList = jsonArrayToList(surveyIds);
+		List <String> newSurveyIdList = JSONUtils.jsonArrayToStringList(surveyIds);
 		List <String> oldSurveyIdList = getSurveyIds();
 		List <String> ret = new ArrayList <String>();
 		for (String newId : newSurveyIdList ) { //for each new survey Id...
