@@ -17,9 +17,9 @@ import org.beiwe.app.listeners.GPSListener;
 import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
 import org.beiwe.app.listeners.WifiListener;
+import org.beiwe.app.survey.AudioRecorderActivity;
 import org.beiwe.app.survey.SurveyAnswersRecorder;
 import org.beiwe.app.survey.SurveyTimingsRecorder;
-import org.beiwe.app.ui.user.AudioRecorderActivity;
 
 import android.content.Context;
 import android.util.Log;

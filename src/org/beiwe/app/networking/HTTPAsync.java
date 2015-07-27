@@ -86,6 +86,7 @@ public class HTTPAsync extends AsyncTask<Void, Void, Void> {
 		} }	);
 	}
 	
+	//TODO: Eli/Josh.  move these error messages to strings.xml
 	/**Checks a given response code sent from the server, and then returns a string corresponding to the code,
 	 * in order to display that to the user.
 	 * @param responseCode

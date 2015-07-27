@@ -2,8 +2,8 @@ package org.beiwe.app.ui.utils;
 
 import org.beiwe.app.R;
 import org.beiwe.app.storage.PersistentData;
+import org.beiwe.app.survey.AudioRecorderActivity;
 import org.beiwe.app.survey.SurveyActivity;
-import org.beiwe.app.ui.user.AudioRecorderActivity;
 
 import android.app.Notification;
 import android.app.NotificationManager;

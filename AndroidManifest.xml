@@ -53,7 +53,7 @@
             android:name="org.beiwe.app.ui.DebugInterfaceActivity"
             android:label="@string/app_name" />
         <activity
-            android:name="org.beiwe.app.ui.user.AudioRecorderActivity"
+            android:name="org.beiwe.app.survey.AudioRecorderActivity"
             android:label="@string/title_activity_audio_recorder"
             android:screenOrientation="portrait" />
         <activity

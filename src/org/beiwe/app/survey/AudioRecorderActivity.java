@@ -1,4 +1,4 @@
-package org.beiwe.app.ui.user;
+package org.beiwe.app.survey;
 
 import java.io.DataInputStream;
 import java.io.File;
@@ -15,6 +15,7 @@ import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.storage.TextFileManager;
+import org.beiwe.app.ui.user.MainMenuActivity;
 import org.beiwe.app.ui.utils.SurveyNotifications;
 
 import android.content.Context;
