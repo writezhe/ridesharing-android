@@ -30,6 +30,7 @@ import android.util.Log;
  * All HTTP connections are HTTPS, and automatically include a password and identifying information. 
  * @author Josh, Eli, Dor */
 
+//TODO: Eli. update docs, this does not adequately state that it puts into any request automatic security parameters.
 public class PostRequest {
 
 	private static Context appContext;	
@@ -47,7 +48,7 @@ public class PostRequest {
 	 #################################################################################*/
 
 
-	/**For use with Async tasks run from activities.
+	/**For use with Async tasks.
 	 * This opens a connection with the server, sends the HTTP parameters, then receives a response code, and returns it.
 	 * @param parameters
 	 * @return serverResponseCode */
@@ -65,7 +66,7 @@ public class PostRequest {
 	}
 
 
-	/**For use with Async tasks run from activities.
+	/**For use with Async tasks.
 	 * Makes an HTTP post request with the provided URL and parameters, returns the server's response code from that request
 	 * @param parameters
 	 * @return an int of the server's response code from the HTTP request */
@@ -81,7 +82,7 @@ public class PostRequest {
 			return 502; }
 	}
 
-	/**For use with Async tasks run from activities.
+	/**For use with Async tasks.
 	 * Makes an HTTP post request with the provided URL and parameters, returns a string of the server's entire response. 
 	 * @param urlString
 	 * @return a string of the contents of the return from an HTML request.*/
@@ -92,7 +93,7 @@ public class PostRequest {
 			e.printStackTrace();
 			throw new NullPointerException("Download File failed."); }
 	}
-
+	
 	/*##################################################################################
 	 ################################ Common Code ######################################
 	 #################################################################################*/
@@ -152,7 +153,7 @@ public class PostRequest {
 	/*##################################################################################
 	 ####################### Actual Post Request Functions #############################
 	 #################################################################################*/
-
+	
 	private static String doPostRequestGetResponseString(String parameters, String urlString) throws IOException {
 		HttpURLConnection connection = setupHTTP( parameters, new URL( urlString ), null );
 		connection.connect();
@@ -257,7 +258,7 @@ public class PostRequest {
 	}
 
 
-	/**Try to upload a file to the serverp
+	/**Try to upload a file to the server
 	 * @param filename the short name (not the full path) of the file to upload
 	 * @return TRUE if the server reported "200 OK"; FALSE otherwise */
 	private static Boolean tryToUploadFile(String filename) throws IOException {

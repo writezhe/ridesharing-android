@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
+//TODO: Eli. Redoc.
+
 /**HTTPAsync is a... special AsyncTask for handling network (HTTP) requests using our PostRequest class.
  * HTTPAsync handles the asynchronous requirement for UI threads, and automatically handles user
  * notification for the well defined HTTP errors.

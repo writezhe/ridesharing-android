@@ -3,6 +3,8 @@ package org.beiwe.app.networking;
 import android.os.AsyncTask;
 import android.util.Log;
 
+//TODO: redoc.
+
 /**HTTPAsync is a... special AsyncTask for handling network (HTTP) requests using our PostRequest class.
  * HTTPAsync handles the asynchronous requirement for UI threads, and automatically handles user
  * notification for the well defined HTTP errors.
@@ -42,8 +44,14 @@ public class HTTPAsync extends AsyncTask<Void, Void, Void> {
 	
 	/**Does the logging operation executed in onPostExecute.*/
 	protected void alertSystem() {
+		if ( (response == -1) && (responseString.length() > 3) ) {
+			//TODO: Eli. this is absolutely untested.
+			Log.w("HTTPAsync", "DOING SOMETHING DANGEROUS");
+			response = Integer.parseInt( responseString.substring(0, 2) );
+		}
+		
 		if (response == -1 && responseString == null) {
-			Log.e("HTTPAsync", "WARNING: the response and responseString variables were never set, HTTPAsync is unable to handle user notification."); }
+			Log.e("HTTPAsync", "WARNING: the response and responseString variables were never set, HTTPAsync is unable check validity."); }
 		else if ((response == -1) && (responseString.length() == 3)) {		
 			Log.e("HTTPAsync", responseCodeAlert( Integer.parseInt(responseString)));  }
 		else if (response != 200) {
