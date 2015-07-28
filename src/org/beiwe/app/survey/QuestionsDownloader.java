@@ -13,12 +13,12 @@ import android.util.Log;
 
 public class QuestionsDownloader {
 	
-	public void downloadJsonQuestions() {
+	public static void downloadJsonQuestions() {
 		Log.d("QuestionsDownloader", "downloadJSONQuestions() called");
 		doDownload("INSERT URL HERE");
 	}
 
-	private void doDownload(final String url) { new HTTPAsync(url) {
+	private static void doDownload(final String url) { new HTTPAsync(url) {
 		@Override
 		protected Void doInBackground(Void... arg0) {
 			//FIXME: FIND THE CORRECT DOWNLOAD URL AND RETRIEVE IT FROM STRINGS.XML

@@ -31,7 +31,8 @@ public class SurveyActivity extends SessionActivity {
 		setContentView(R.layout.activity_survey);
 		Intent triggerIntent = getIntent();
 		surveyId = triggerIntent.getStringExtra("surveyId");
-		QuestionsDownloader downloader = new QuestionsDownloader(getApplicationContext());
+		//TODO: this is now irrelevant, and does not appear to ever be used...
+//		QuestionsDownloader downloader = new QuestionsDownloader();
 
 		if (savedInstanceState == null) {
 			Bundle extras = getIntent().getExtras();
