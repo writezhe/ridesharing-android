@@ -3,7 +3,7 @@ package org.beiwe.app.ui.registration;
 import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
 import org.beiwe.app.RunningBackgroundProcessActivity;
-import org.beiwe.app.networking.HTTPAsync;
+import org.beiwe.app.networking.HTTPUIAsync;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.survey.TextFieldKeyboard;
@@ -80,7 +80,7 @@ public class RegisterActivity extends RunningBackgroundProcessActivity {
 	
 	/**Implements the server request logic for user device registration. 
 	 * @param url the URL for device registration*/
-	private void doRegister(final String url) { new HTTPAsync(url, this) {
+	private void doRegister(final String url) { new HTTPUIAsync(url, this) {
 		@Override
 		protected Void doInBackground(Void... arg0) {
 			parameters = PostRequest.makeParameter("bluetooth_id", DeviceInfo.getBlootoothMAC() ) +

@@ -1,7 +1,7 @@
 package org.beiwe.app.session;
 
 import org.beiwe.app.R;
-import org.beiwe.app.networking.HTTPAsync;
+import org.beiwe.app.networking.HTTPUIAsync;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.PersistentData;
@@ -60,7 +60,7 @@ public class ResetPassword {
 	/** Runs the network operation to reset the password on the server.*/
 	public void doResetPasswordRequest() {
 		String url = appContext.getString(R.string.reset_password_url);
-		new HTTPAsync(url, currentActivity) {
+		new HTTPUIAsync(url, currentActivity) {
 			
 			@Override
 			protected Void doInBackground(Void... arg0)  {
