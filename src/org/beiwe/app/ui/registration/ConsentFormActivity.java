@@ -45,7 +45,7 @@ public class ConsentFormActivity extends RunningBackgroundProcessActivity {
 		PersistentData.loginOrRefreshLogin();
 
 		// Download the survey questions and schedule the surveys
-		QuestionsDownloader.downloadJsonQuestions();
+		QuestionsDownloader.downloadJsonQuestions(getApplicationContext());
 
 		//This is important.  we need to start timers 
 		backgroundProcess.startTimers();

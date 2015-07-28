@@ -359,7 +359,7 @@ public class BackgroundService extends Service {
 
 			//Downloads the most recent survey questions and schedules the surveys.
 			if (intent.getAction().equals( appContext.getString(R.string.check_for_new_surveys_intent))) {
-				QuestionsDownloader.downloadJsonQuestions(); }
+				QuestionsDownloader.downloadJsonQuestions( getApplicationContext() ); }
 		}
 	};
 	

@@ -55,7 +55,7 @@ public class SurveyScheduler {
 		long newAlarmTime = findNextAlarmTime(timesList);  
 	}
 	private static Long findNextAlarmTime( ArrayList<ArrayList<Integer>> timesList) {
-		//probably easier to comprehend by running this in a function and just returning on a successful time fit.
+		//TODO: Josh. please double check for me that I am creating a calendar object in the phone's timezone.
 		Calendar todayCalendar = Calendar.getInstance();
 		todayCalendar.set(todayCalendar.YEAR, todayCalendar.MONTH, todayCalendar.DAY_OF_MONTH, 0, 0, 0);
 		Long startOfDay = todayCalendar.getTimeInMillis();

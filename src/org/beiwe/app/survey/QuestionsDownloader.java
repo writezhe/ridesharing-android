@@ -3,19 +3,23 @@ package org.beiwe.app.survey;
 import java.util.List;
 
 import org.beiwe.app.JSONUtils;
+import org.beiwe.app.R;
 import org.beiwe.app.networking.HTTPAsync;
 import org.beiwe.app.networking.PostRequest;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 
 public class QuestionsDownloader {
 	
-	public static void downloadJsonQuestions() {
+	public static void downloadJsonQuestions( Context context ) {
 		Log.d("QuestionsDownloader", "downloadJSONQuestions() called");
-		doDownload("INSERT URL HERE");
+		doDownload( context.getResources().getString(R.string.download_surveys_url) );
+		
 	}
 
 	private static void doDownload(final String url) { new HTTPAsync(url) {
