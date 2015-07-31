@@ -40,7 +40,7 @@ public class SessionActivity extends RunningBackgroundProcessActivity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		if (backgroundProcess == null) {
+		if (backgroundService == null) {
 			Log.w("sessionactivity", "background process is null, you have a race condition with instantiating the background process.");
 			TextFileManager.getDebugLogFile().writeEncrypted("a sessionactivity tried to clear the automatic logout countdown timer, but the background process did not exist.");
 		}

@@ -79,6 +79,7 @@ public class SurveyNotifications {
 		notificationManager.notify(
 				numericalSurveyId, // If another notification with the same ID pops up, this notification will be updated/cancelled.
 				surveyNotification);
+		
 		//And, finally, set the notification state for zombie alarms.
 		PersistentData.setSurveyNotificationState(surveyId, true);
 	}

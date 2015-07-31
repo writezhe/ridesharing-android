@@ -1,5 +1,7 @@
 package org.beiwe.app;
 
+import java.util.Calendar;
+
 import org.beiwe.app.listeners.AccelerometerListener;
 import org.beiwe.app.listeners.BluetoothListener;
 import org.beiwe.app.listeners.CallLogger;
@@ -11,7 +13,7 @@ import org.beiwe.app.listeners.WifiListener;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.storage.TextFileManager;
-import org.beiwe.app.survey.QuestionsDownloader;
+import org.beiwe.app.survey.SurveyDownloader;
 import org.beiwe.app.survey.SurveyScheduler;
 import org.beiwe.app.ui.user.LoginActivity;
 import org.beiwe.app.ui.utils.SurveyNotifications;
@@ -31,16 +33,14 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
 
+//TODO: ack for backgroundprocess and replace with backgroundservice
 
 public class BackgroundService extends Service {
-	
 	private Context appContext;
-	
 	// TODO: postproduction. Make these private after killing DebugInterfaceActivity
 	public GPSListener gpsListener;
 	public AccelerometerListener accelerometerListener;
 	public BluetoothListener bluetoothListener;
-	
 	private static Timer timer;
 	
 	@Override
@@ -76,47 +76,29 @@ public class BackgroundService extends Service {
 	@Override
 	/** The BackgroundService is meant to be all the time, so we return START_STICKY */
 	// We could also use, and may change it if we encounter problems, START_REDELIVER_INTENT, which has nearly identical behavior.
-	public int onStartCommand(Intent intent, int flags, int startId){
-//		Log.d("BackroundProcess onStartCommand", "started with flag " + flags );
+	public int onStartCommand(Intent intent, int flags, int startId){ //Log.d("BackroundProcess onStartCommand", "started with flag " + flags );
 		TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis()+" "+"started with flag " + flags);
-		return START_STICKY;
-	}
-	
-	@Override
-	public void onTaskRemoved(Intent rootIntent) {
-//		Log.d("BackroundProcess onTaskRemoved", "onTaskRemoved called with intent: " + rootIntent.toString() );
+		return START_STICKY; }
+	//(the rest of these are identical, so I have compactified it)
+	@Override public void onTaskRemoved(Intent rootIntent) { //Log.d("BackroundProcess onTaskRemoved", "onTaskRemoved called with intent: " + rootIntent.toString() );
 		TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis()+" "+"onTaskRemoved called with intent: " + rootIntent.toString());
-		restartService();
-	}
-	
-	@Override
-	public boolean onUnbind(Intent intent) {
-//		Log.d("BackroundProcess onUnbind", "onUnbind called with intent: " + intent.toString() );
+		restartService(); }
+	@Override public boolean onUnbind(Intent intent) { //Log.d("BackroundProcess onUnbind", "onUnbind called with intent: " + intent.toString() );
 		TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis()+" "+"onUnbind called with intent: " + intent.toString());
 		restartService();
-		return super.onUnbind(intent);
-	}
-	
-	@Override
-	public void onDestroy() {
-		//this does not run when the service is killed in a task manager, OR when the stopService() function is called from debugActivity.
-//		Log.w("BackgroundProcess", "BACKGROUNDPROCESS WAS DESTROYED.");
+		return super.onUnbind(intent); }
+	@Override public void onDestroy() { //Log.w("BackgroundProcess", "BACKGROUNDPROCESS WAS DESTROYED.");
+		//note: this does not run when the service is killed in a task manager, OR when the stopService() function is called from debugActivity.
 		TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis()+" "+"BACKGROUNDPROCESS WAS DESTROYED.");
 		restartService();
-		super.onDestroy();
-	}
-	
-	@Override
-	public void onLowMemory() {
-//		Log.w("BackroundProcess onLowMemory", "Low memory conditions encountered");
+		super.onDestroy(); }
+	@Override public void onLowMemory() { //Log.w("BackroundProcess onLowMemory", "Low memory conditions encountered");
 		TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis()+" "+"onLowMemory called.");
-		restartService();
-	}
+		restartService(); }
 	
 	/** Sets a timer that starts the service if it is not running in ten seconds. */
 	private void restartService(){
-		//how does this even...
-		//whatever, 10 seconds later the background service will start.
+		//how does this even...  Whatever, 10 seconds later the background service will start.
 		Intent restartServiceIntent = new Intent( getApplicationContext(), this.getClass() );
 	    restartServiceIntent.setPackage( getPackageName() );
 	    // TODO: PendingIntent.FLAG_ONE_SHOT would probably be better if changed to FLAG_CANCEL_CURRENT, but this might be a pain to test
@@ -201,6 +183,8 @@ public class BackgroundService extends Service {
 		registerReceiver(timerReceiver, filter);
 	}
 	
+	//TODO: Eli/Josh. check that registerTimers and startTimers code is still okay after custom timers are implemented.
+	
 	/*#############################################################################
 	####################            Timer Logic             #######################
 	#############################################################################*/
@@ -233,26 +217,12 @@ public class BackgroundService extends Service {
 			}
 		}
 		
-		
-		//TODO: Eli. reimplement the following.
-		// Survey timers.  In addition to starting the alarm, check whether the notification should be currently active
-		// based on data in SharedPreferences (persistant storage).
-//		String dailyQuestions = TextFileManager.getCurrentDailyQuestionsFile().read(); 
-//		if (!timer.alarmIsSet(Timer.dailySurveyIntent) && (dailyQuestions != null && dailyQuestions.length() != 0 ) ){
-//			SurveyScheduler.scheduleSurvey(dailyQuestions); }
-//		
-//		String weeklyQuestions = TextFileManager.getCurrentWeeklyQuestionsFile().read();
-//		if (!timer.alarmIsSet(Timer.weeklySurveyIntent) && (weeklyQuestions != null && weeklyQuestions.length() != 0 ) ){
-//			SurveyScheduler.scheduleSurvey(weeklyQuestions); }
-//		
-//		//the voice recording time of day is hardcoded in Timer.
-//		if (!timer.alarmIsSet(Timer.voiceRecordingIntent)) {
-//			timer.startDailyAlarm(Timer.VOICE_RECORDING_HOUR_OF_DAY, Timer.voiceRecordingIntent); }
-		
-		
+		for (String surveyId : PersistentData.getSurveyIds() ) { //check each survey to ensure it is scheduled.
+			if ( !timer.alarmIsSet( new Intent(surveyId) ) ) { SurveyScheduler.scheduleSurvey(surveyId); } }
 	}
 	
 	public static void startAutomaticLogoutCountdownTimer(){
+		//TODO: Eli/Josh.  this.
 		//note: this function is static due to the evolution of the connections activities have to the background process,
 		// it probably is better practice to make this non-static, but we are leaving it as is so we don't have to test
 		// this type of low-level operational difference.
@@ -263,22 +233,12 @@ public class BackgroundService extends Service {
 		timer.setupExactSingleAlarm(Timer.MILLISECONDS_BEFORE_AUTO_LOGOUT, Timer.signoutIntent);
 		PersistentData.loginOrRefreshLogin();
 	}
-
+	
+	/** cancels the signout timer */
 	public static void clearAutomaticLogoutCountdownTimer() { timer.cancelAlarm(Timer.signoutIntent); }
 	
-	//hooks into the timer object and sets a daily alarm for the daily survey notification.
-	//TODO: Eli.  Rename the following 2 functions for consistency, make them not throw errors.
-	public static void setDailySurvey(int hour) {
-		throw new NullPointerException("BackgroundService - setDailySurvey not implemented");
-//		timer.startDailyAlarm(hour, Timer.dailySurveyIntent);
-	}
-	
-//	public static void runWeeklySurveyStart(int hour, int dayOfWeek) { 
-//		throw new NullPointerException("BackgroundService - setDailySurvey not implemented");
-//		//just passes data into the timer to start the weekly, all logic is handled inside.
-////		timer.startWeeklyAlarm(dayOfWeek, hour, Timer.weeklySurveyIntent);
-//	}
-	
+	/** The Timer requires the BackgroundService in order to create alarms, hook into that functionality here. */
+	public static void setSurveyAlarm(String surveyId, Calendar alarmTime) { timer.startSurveyAlarm(surveyId, alarmTime); }
 	
 	/**The timerReceiver is an Android BroadcastReceiver that listens for our timer events to trigger,
 	 * and then runs the appropriate code for that trigger. */
@@ -287,79 +247,78 @@ public class BackgroundService extends Service {
 		public void onReceive(Context appContext, Intent intent) {
 			Log.d("BackgroundService - timers", "Received broadcast: " + intent.toString() );
 			TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis() + " Received Broadcast: " + intent.toString() );
+			String broadcastAction = intent.getAction();
 			
 			//sets the next trigger time for the accelerometer to record data 
-			if (intent.getAction().equals( appContext.getString(R.string.accelerometer_off) ) ) {
+			if (broadcastAction.equals( appContext.getString(R.string.accelerometer_off) ) ) {
 				accelerometerListener.turn_off();
-				timer.setupFuzzySinglePowerOptimizedAlarm(Timer.ACCELEROMETER_OFF_MINIMUM_DURATION, Timer.accelerometerOnIntent); }
+				timer.setupFuzzySinglePowerOptimizedAlarm(Timer.ACCELEROMETER_OFF_MINIMUM_DURATION, Timer.accelerometerOnIntent);
+				return; }
 			
 			//sets a timer that will turn off the accelerometer
-			if (intent.getAction().equals( appContext.getString(R.string.accelerometer_on) ) ) {
+			if (broadcastAction.equals( appContext.getString(R.string.accelerometer_on) ) ) {
 				accelerometerListener.turn_on();
-				timer.setupExactSingleAlarm(Timer.ACCELEROMETER_ON_DURATION, Timer.accelerometerOffIntent); }
+				timer.setupExactSingleAlarm(Timer.ACCELEROMETER_ON_DURATION, Timer.accelerometerOffIntent);
+				return; }
 			
 			//sets the next trigger time for the bluetooth scan to record data
-			if (intent.getAction().equals( appContext.getString(R.string.bluetooth_off) ) ) {
+			if (broadcastAction.equals( appContext.getString(R.string.bluetooth_off) ) ) {
 				if (bluetoothListener != null) bluetoothListener.disableBLEScan();
-				timer.setupExactTimeAlarm(Timer.BLUETOOTH_PERIOD, Timer.BLUETOOTH_START_TIME_IN_PERIOD, Timer.bluetoothOnIntent); }
+				timer.setupExactTimeAlarm(Timer.BLUETOOTH_PERIOD, Timer.BLUETOOTH_START_TIME_IN_PERIOD, Timer.bluetoothOnIntent);
+				return; }
 			
 			//sets a timer that will turn off the bluetooth scan
-			if (intent.getAction().equals( appContext.getString(R.string.bluetooth_on) ) ) {
+			if (broadcastAction.equals( appContext.getString(R.string.bluetooth_on) ) ) {
 				if (bluetoothListener != null) bluetoothListener.enableBLEScan();
-				timer.setupExactSingleAlarm(Timer.BLUETOOTH_ON_DURATION, Timer.bluetoothOffIntent); }
+				timer.setupExactSingleAlarm(Timer.BLUETOOTH_ON_DURATION, Timer.bluetoothOffIntent);
+				return; }
 			
 			//sets the next trigger time for the gps to record data
-			if (intent.getAction().equals( appContext.getString(R.string.gps_off) ) ) {
+			if (broadcastAction.equals( appContext.getString(R.string.gps_off) ) ) {
 				gpsListener.turn_off();
-				timer.setupFuzzySinglePowerOptimizedAlarm(Timer.GPS_OFF_MINIMUM_DURATION, Timer.gpsOnIntent); }
+				timer.setupFuzzySinglePowerOptimizedAlarm(Timer.GPS_OFF_MINIMUM_DURATION, Timer.gpsOnIntent);
+				return; }
 			
 			//sets a timer that will turn off the gps
-			if (intent.getAction().equals( appContext.getString(R.string.gps_on) ) ) {
+			if (broadcastAction.equals( appContext.getString(R.string.gps_on) ) ) {
 				gpsListener.turn_on();
-				timer.setupExactSingleAlarm(Timer.GPS_ON_DURATION, Timer.gpsOffIntent); }
+				timer.setupExactSingleAlarm(Timer.GPS_ON_DURATION, Timer.gpsOffIntent);
+				return; }
 			
 			//runs a wifi scan
-			if (intent.getAction().equals( appContext.getString(R.string.run_wifi_log) ) ) {
-				WifiListener.scanWifi(); }
-			
-			//TODO: Implement the following,
-			//registers a notification for the user to make an audio recording.
-//			if (intent.getAction().equals( appContext.getString(R.string.voice_recording) ) ) {
-//			if (intent.getAction().equals( appContext.getString(something_dynamic) ) ) {
-//				//TODO: Eli.  will need to pull survey id out of an intent extra...
-//				//TODO: Eli.  put a survey id extra into the intent (probably in alarms)
-//				AppNotifications.displaySurveyNotification(appContext, surveyId);
-////				AppNotifications.displayRecordingNotification(appContext);
-//				timer.setupSurveyAlarm(surveyId, intent); }
-			
-//			//registers a notification for the user to take the daily survey.
-//			if (intent.getAction().equals( appContext.getString(R.string.daily_survey) ) ) {
-//				AppNotifications.displaySurveyNotification(appContext, Type.DAILY);
-//				timer.setupDailyAlarm(intent); }
-//			
-//			//registers a notification for the user to take the weekly survey.
-//			if (intent.getAction().equals( appContext.getString(R.string.weekly_survey) ) ) {
-//				AppNotifications.displaySurveyNotification(appContext, Type.WEEKLY); 
-//				timer.setupWeeklySurveyAlarm(intent); }
-			
+			if (broadcastAction.equals( appContext.getString(R.string.run_wifi_log) ) ) {
+				WifiListener.scanWifi();
+				return; }
+						
 			//runs the user signout logic, bumping the user to the login screen.
-			if (intent.getAction().equals( appContext.getString(R.string.signout_intent) ) ) {
+			if (broadcastAction.equals( appContext.getString(R.string.signout_intent) ) ) {
 				PersistentData.logout();
 				Intent loginPage = new Intent(appContext, LoginActivity.class);
 				loginPage.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				appContext.startActivity(loginPage); }
+				appContext.startActivity(loginPage);
+				return; }
 			
 			//starts a data upload attempt.
-			if (intent.getAction().equals( appContext.getString(R.string.upload_data_files_intent) ) ) {
-				PostRequest.uploadAllFiles(); }
+			if (broadcastAction.equals( appContext.getString(R.string.upload_data_files_intent) ) ) {
+				PostRequest.uploadAllFiles();
+				return; }
 
 			//creates new data files
-			if (intent.getAction().equals( appContext.getString(R.string.create_new_data_files_intent) ) ) {
-				TextFileManager.makeNewFilesForEverything(); }
+			if (broadcastAction.equals( appContext.getString(R.string.create_new_data_files_intent) ) ) {
+				TextFileManager.makeNewFilesForEverything();
+				return; }
 
 			//Downloads the most recent survey questions and schedules the surveys.
-			if (intent.getAction().equals( appContext.getString(R.string.check_for_new_surveys_intent))) {
-				QuestionsDownloader.downloadJsonQuestions( getApplicationContext() ); }
+			if (broadcastAction.equals( appContext.getString(R.string.check_for_new_surveys_intent))) {
+				SurveyDownloader.downloadSurveys( getApplicationContext() );
+				return; }
+			
+			//checks if the action is the id of a survey, if so pop up the notification for that survey, schedule the next alarm
+			if ( PersistentData.getSurveyIds().contains( broadcastAction ) ) {
+				SurveyNotifications.displaySurveyNotification(appContext, broadcastAction);
+				//TODO: Eli. make sure that the survey notification code properly sets the notification state
+				SurveyScheduler.scheduleSurvey(broadcastAction);
+				return; }
 		}
 	};
 	

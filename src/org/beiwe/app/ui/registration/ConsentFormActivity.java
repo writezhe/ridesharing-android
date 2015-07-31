@@ -4,7 +4,7 @@ import org.beiwe.app.R;
 import org.beiwe.app.RunningBackgroundProcessActivity;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.storage.TextFileManager;
-import org.beiwe.app.survey.QuestionsDownloader;
+import org.beiwe.app.survey.SurveyDownloader;
 import org.beiwe.app.ui.LoadingActivity;
 
 
@@ -45,10 +45,10 @@ public class ConsentFormActivity extends RunningBackgroundProcessActivity {
 		PersistentData.loginOrRefreshLogin();
 
 		// Download the survey questions and schedule the surveys
-		QuestionsDownloader.downloadJsonQuestions(getApplicationContext());
+		SurveyDownloader.downloadSurveys(getApplicationContext());
 
 		//This is important.  we need to start timers 
-		backgroundProcess.startTimers();
+		backgroundService.startTimers();
 
 		// Create new data files, these will now have a patientID prepended to those files
 		TextFileManager.makeNewFilesForEverything();

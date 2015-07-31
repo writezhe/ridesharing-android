@@ -35,7 +35,7 @@ public class RunningBackgroundProcessActivity extends Activity {
 	 * We ensure the BackgroundProcess is running in the onResume call, and functionality that
 	 * relies on the BackgroundProcess is always tied to UI elements, reducing the chance of
 	 * a null backgroundProcess variable to essentially zero. */
-	protected BackgroundService backgroundProcess;
+	protected BackgroundService backgroundService;
 
 	//an unused variable for tracking whether the background process is connected, uncomment if we ever need that.
 //	protected boolean isBound = false;
@@ -46,7 +46,7 @@ public class RunningBackgroundProcessActivity extends Activity {
 	    public void onServiceConnected(ComponentName name, IBinder binder) {
 	        Log.d("ServiceConnection", "Background Process Connected");
 	        BackgroundProcessBinder some_binder = (BackgroundProcessBinder) binder;
-	        backgroundProcess = some_binder.getService();
+	        backgroundService = some_binder.getService();
 	        doBackgroundDependantTasks();
 //	        isBound = true;
 	    }
@@ -54,7 +54,7 @@ public class RunningBackgroundProcessActivity extends Activity {
 	    @Override
 	    public void onServiceDisconnected(ComponentName name) {
 	        Log.d("ServiceConnection", "Background Process Disconnected");
-	        backgroundProcess = null;
+	        backgroundService = null;
 //	        isBound = false;
 	    }
 	};

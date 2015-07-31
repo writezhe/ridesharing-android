@@ -14,154 +14,140 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:onClick="printInternalLog"
-	        android:text="@string/button_print_log" />
-	    
+	        android:text="Print Internal Log" />
+
 	    <Button
 	        android:id="@+id/buttonClearInternalLog"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:onClick="clearInternalLog"
-	        android:text="@string/button_clear_log" />
+	        android:text="Clear Internal Log" />
 
 	    <Button
 	        android:id="@+id/buttonUpload"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:onClick="uploadDataFiles"
-	        android:text="@string/button_upload" />
-	    
+	        android:text="Upload Data Files" />
+
+   	    <Button
+	        android:id="@+id/buttonDownload"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="runSurveyDownload"
+	        android:text="Check For New Surveys" />
+
 	    <Button
 	        android:id="@+id/makeNewFiles"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:onClick="makeNewFiles"
-	        android:text="@string/button_make_new_files" />
+	        android:text="Make New Files" />
 
 	    <Button
 	        android:id="@+id/buttonGoToAudioRecorder"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:onClick="goToAudioRecorder"
-	        android:text="@string/button_go_to_audio_recorder_activity" />
-
-	    <Button
-	        android:id="@+id/buttonGoToSurvey"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:onClick="goToSurvey"
-	        android:text="@string/button_go_to_survey" />
+	        android:text="Go to Audio Recorder" />
 
 	    <Button
 	        android:id="@+id/buttonDeleteEverything"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:onClick="deleteEverything"
-	        android:text="@string/button_delete_everything" />
-		
+	        android:text="Delete Everything (except encryption key)" />
+
 	    <Button
 	        android:id="@+id/buttonListFiles"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:onClick="listFiles"
-	        android:text="@string/button_list_files" />
-	    
+	        android:text="List All Files in Log" />
+
 	    <Button
 	        android:id="@+id/buttonStartBluetooth"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:onClick="bluetoothButtonStart"
-	        android:text="@string/button_bluetooth_start" />
-	    
+	        android:text="Start Bluetooth Scan" />
+
 	    <Button
 	        android:id="@+id/buttonStopBluetooth"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:onClick="bluetoothButtonStop"
-	        android:text="@string/button_bluetooth_stop" />
-	    
+	        android:text="Stop Bluetooth Scan" />
+
 	    <Button
 	        android:id="@+id/buttonToggleGPS"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:onClick="toggleGPS"
-	        android:text="@string/button_toggle_gps" />
+	        android:text="Toggle GPS" />
 
 	    <Button
 	        android:id="@+id/buttonToggleAccelerometer"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:onClick="toggleAccelerometer"
-	        android:text="@string/button_toggle_accelerometer" />
-	    
+	        android:text="Toggle Accelerometer" />
+
 	    <Button
 	        android:id="@+id/buttonWifiScan"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:onClick="scanWifi"
-	        android:text="@string/button_wifi_scan" />
+	        android:text="Scan Wifi" />
 
 	    <Button
 	        android:id="@+id/signout"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:onClick="signOut"
-	        android:text="@string/signout" />
+	        android:text="Sign Out" />
 
 		<Button
 		    android:id="@+id/buttonTimer"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:onClick="buttonTimer"
-		    android:text="@string/timer_button" />
-		
+		    android:text="Run Start Timer Logic" />
+
 		<Button
 		    android:id="@+id/buttonGetKeyFile"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:onClick="getKeyFile"
-		    android:text="@string/button_logcat_key_file" />
+		    android:text="Print Key File" />
 
 		<Button
 	        android:id="@+id/testEncryption"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:onClick="testEncrypt"
-	        android:text="@string/button_encryption" />
-		
+	        android:text="Test encryption" />
+
 		<Button
-	        android:id="@+id/buttonPopDailySurveyNotification"
+	        android:id="@+id/buttonPopSurveyNotifications"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:onClick="popDailySurveyNotification"
-	        android:text="@string/button_show_daily_survey_notification" />
-		
-		<Button
-	        android:id="@+id/buttonPopWeeklySurveyNotification"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:onClick="popWeeklySurveyNotification"
-	        android:text="@string/button_show_weekly_survey_notification" />
-		
-		<Button
-	        android:id="@+id/buttonPopAudioSurveyNotification"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:onClick="popAudioSurveyNotification"
-	        android:text="@string/button_show_audio_survey_notification" />
+	        android:text="Show Survey Notifications" />
 
 		<Button
 		    android:id="@+id/buttonAlarmStates"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:onClick="alarmStates"
-		    android:text="@string/button_prior_alarm_times" />
-		
+		    android:text="Log Prior Alarm Times" />
+
 		<Button
 	        android:id="@+id/loadMainMenu"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:onClick="loadMainMenu"
-	        android:text="@string/button_go_to_main_menu" />
-		
+	        android:text="Go To Main Menu" />
+
 	</LinearLayout>
 </ScrollView>

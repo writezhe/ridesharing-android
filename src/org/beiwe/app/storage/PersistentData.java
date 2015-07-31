@@ -280,14 +280,13 @@ public class PersistentData {
 	//TODO: Eli.  We need surveyIds to either be or be convertible in a repeatable manner to ints.
 	//TODO: Eli.  we might need a mapping of survey Ids to survey id ints.
 
-	public static List<String> getSurveyIds() {
-		return JSONUtils.jsonArrayToStringList(getSurveyIdsJsonArray());
-	}
+	public static List<String> getSurveyIds() { return JSONUtils.jsonArrayToStringList(getSurveyIdsJsonArray()); }
 
 	private static JSONArray getSurveyIdsJsonArray() {
 		JSONArray jsonSurveyIdArray;
-		String jsonString = pref.getString("jsondata", "0");
-		if (jsonString == "0") { return new JSONArray();  } //return empty if the list is empty
+		String jsonString = pref.getString(SURVEY_IDS, "0");
+		Log.d("persistant data", "getting ids: " + jsonString);
+		if (jsonString == "0") { return new JSONArray(); } //return empty if the list is empty
 		try { jsonSurveyIdArray = new JSONArray(jsonString); }
 		catch (JSONException e) { throw new NullPointerException("getSurveyIds failed, json string was: " + jsonString ); }
 		return jsonSurveyIdArray;
@@ -298,33 +297,15 @@ public class PersistentData {
 		List<String> list = JSONUtils.jsonArrayToStringList( getSurveyIdsJsonArray() );
 		if ( !list.contains(surveyId) ) {
 			list.add(surveyId);
-			editor.putString(SURVEY_IDS, new JSONArray(list).toString() ) ;
+			Log.d("persistant data", "adding id: " + surveyId);
+			Log.d("persistant data", "new ids: " + new JSONArray(list).toString() );
+			editor.putString(SURVEY_IDS, new JSONArray(list).toString() );
+			editor.commit();
 		}
 		else { throw new NullPointerException("duplicate survey id added"); }
 		//TODO: Eli. Define Behavior for duplicate entries, probably at download...
 	}
 	
-	/**Takes a JSONArray of survey IDs from the survey updates and returns a list of new surveyIds, and deletes Old surveys and unschedules them.
-	 * @param surveyIds
-	 * @return  */
-	public static List <String> compareSurveyIds( JSONArray surveyIds ) {
-		List <String> newSurveyIdList = JSONUtils.jsonArrayToStringList(surveyIds);
-		List <String> oldSurveyIdList = getSurveyIds();
-		List <String> ret = new ArrayList <String>();
-		for (String newId : newSurveyIdList ) { //for each new survey Id...
-			if ( !oldSurveyIdList.contains(newId) ) { //if survey Id is a new one, add to return list.
-				ret.add(newId);
-			}
-		}
-		for (String oldId : oldSurveyIdList ) { //for each old survey Id...
-			if ( !newSurveyIdList.contains(oldId) ) { //if survey Id is not in the new list, delete all associated data
-				//TOD: Eli. unschedule old survey notification...
-				throw new NullPointerException("surveys currently scheduled need to be unscheduled");
-//				deleteSurvey(oldId);
-			}
-		}
-		return ret;
-	}
 	
 	
 	//All we do is use the shared prefs as a key value store of json, and we just interpret the json each time.
@@ -342,7 +323,7 @@ public class PersistentData {
 	
 	public static long getPriorSurveyAlarmTime(String surveyId) { return pref.getLong( surveyId + "-prior_alarm", MAX_LONG); }
 	
-	private static void createSurveyData(String surveyId, String content, String times, String type){
+	public static void createSurveyData(String surveyId, String content, String times, String type){
 		editor.putString(surveyId + "-content", content);
 		editor.putString(surveyId + "-times", times);
 		editor.putString(surveyId + "-type", type);

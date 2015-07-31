@@ -162,63 +162,15 @@ public class Timer {
 		setExactAlarm(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
 	}
 	
-	//TODO: eli. write a single timer function that takes a... list, probably, and gets days of week out of it, and a time of day
-//	/**Sets up and starts an alarm that will trigger on the hour provided.  The intent will have
-//	 * an Extra added to it defining the time of day.
-//	 * Usage: when this intent is received by a BroadcastReceiver simply call setupDailyAlarm
-//	 * and pass in the intent, setupDailyAlarm handles it from there.
-//	 * @param hourOfDay in 24-hr time, when the alarm should fire. E.g., "19" means 7pm every day
-//	 * @param intentToBeBroadcast the intent to be broadcast when the alarm fires      */
-//	public void startDailyAlarm(int hourOfDay, Intent intentToBeBroadcast) {
-//		intentToBeBroadcast.putExtra("hour_of_day", hourOfDay);			
-//		setupDailyAlarm(intentToBeBroadcast);
-//	}
-//	
-//	
-//	/**Sets up and starts an alarm that will trigger on the hour and day of the week provided. The
-//	 * intent will have extras added to it defining the day and time of day.
-//	 * Usage: when this intent is received by a BroadcastReceiver simply call setupWeeklySurveyAlarm
-//	 * and pass in the intent, setupWeeklySurveyAlarm handles it from there.
-//	 * @param dayOfWeek the integer value of the day of the week to run the survey
-//	 * @param hourOfDay the hour in the day that the weekly survey should be run at. */
-//	public void startWeeklyAlarm(int dayOfWeek, int hourOfDay, Intent intentToBeBroadcast){
-//		intentToBeBroadcast.putExtra("day_of_week", dayOfWeek);
-//		intentToBeBroadcast.putExtra("hour_of_day", hourOfDay);
-//		setupWeeklySurveyAlarm(intentToBeBroadcast);
-//	}
-	
-	public void startSurveyAlarm(String surveyId, int dayOfWeek, int hourOfDay, Intent intentToBeBroadcast){
-		intentToBeBroadcast.putExtra("day_of_week", dayOfWeek);
-		intentToBeBroadcast.putExtra("hour_of_day", hourOfDay);
+	public void startSurveyAlarm(String surveyId, Calendar alarmTime){
+		Intent intentToBeBroadcast = new Intent(surveyId);
+		intentToBeBroadcast.putExtra("day_of_week", alarmTime.DAY_OF_WEEK);
+		intentToBeBroadcast.putExtra("hour_of_day", alarmTime.HOUR_OF_DAY);
 		setupSurveyAlarm(surveyId, intentToBeBroadcast);
 	}
 	
-//	/**Takes a specially prepared intent and sets it to go off at the time provided.
-//	 * @param intentToBeBroadcast an intent that has been prepared by the startDailyAlarm function.*/
-//	public void setupDailyAlarm(Intent intentToBeBroadcast) {
-//		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
-//		int hourOfDay = intentToBeBroadcast.getExtras().getInt("hour_of_day");
-//		
-//		Calendar date = new GregorianCalendar();
-//		date.set(Calendar.HOUR_OF_DAY, hourOfDay);
-//		date.set(Calendar.MINUTE, 0);
-//		date.set(Calendar.SECOND, 0);
-//		date.set(Calendar.MILLISECOND, 0);
-//		long nextTriggerTime = date.getTimeInMillis();
-//		// If today's trigger time has already passed, set the alarm for tomorrow.  This should universally occur except at registration and reboots.
-//		if (nextTriggerTime < System.currentTimeMillis() ) { nextTriggerTime += ONE_DAY_IN_MILLISECONDS; }
-////		checkForMissedAlarm(intentToBeBroadcast, nextTriggerTime);
-//		long timeTillFire = nextTriggerTime - System.currentTimeMillis();
-//		Log.i("Timer.java", "josh DailyAlarm timeTillFire = " + timeTillFire + " milliseconds from now");
-//		setExactAlarm(AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingIntent);
-//		if (dailySurveyIntent.filterEquals(intentToBeBroadcast) ){ PersistentData.setDailySurveyAlarm(nextTriggerTime); }
-//		if (voiceRecordingIntent.filterEquals(intentToBeBroadcast) ){ PersistentData.setAudioAlarm(nextTriggerTime); }
-//	}
-	
-	
 	/**Takes a specially prepared intent and sets it to go off at the day and time provided
 	 * @param intentToBeBroadcast an intent that has been prepared by the startWeeklyAlarm function.*/
-	//formerly setupWeeklySurveyAlarm
 	public void setupSurveyAlarm(String surveyId, Intent intentToBeBroadcast) {
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
 		int dayOfWeek = intentToBeBroadcast.getExtras().getInt("day_of_week");
@@ -257,7 +209,7 @@ public class Timer {
 	
 	/* ##################################################################################
 	 * ############################ Other Utility Functions #############################
-	 * ################################################################################*/
+	 * ################################################################################*/	
 	
 	/** In API 19 and above, alarms are inexact (to save power).  In API 18 and
 	 *  below, alarms are exact.
@@ -280,13 +232,17 @@ public class Timer {
 		else { alarmManager.setExact(type, triggerAtMillis, operation); }
 	}
 	
-	/**Cancels an alarm.
+	/**Cancels an alarm, does not return any info about whether the alarm existed.
 	 * @param intentToBeBroadcast an Intent identifying the alarm to cancel. */
 	public void cancelAlarm(Intent intentToBeBroadcast) {
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
 		alarmManager.cancel(pendingIntent);
 	}
-
+	
+	/** Cancels any survey alarm trigger for the provided surveyId.
+	 * Does not return any info about whether the alarm existed. */
+	public void cancelSurveyAlarm( String surveyId ){ cancelAlarm(new Intent(surveyId) ); }
+	
 	/**Checks if an alarm is set.
 	 * @param intent an Intent identifying the alarm to check.
 	 * @return Returns TRUE if there is an alarm set matching that intent; otherwise false. */

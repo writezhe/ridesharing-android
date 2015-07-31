@@ -12,6 +12,7 @@ import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.AudioRecorderActivity;
+import org.beiwe.app.survey.SurveyDownloader;
 import org.beiwe.app.survey.SurveyActivity;
 import org.beiwe.app.ui.user.LoginActivity;
 import org.beiwe.app.ui.user.MainMenuActivity;
@@ -48,6 +49,8 @@ public class DebugInterfaceActivity extends SessionActivity {
 	
 	public void uploadDataFiles(View view) { PostRequest.uploadAllFiles(); }
 	
+	public void runSurveyDownload(View view) { SurveyDownloader.downloadSurveys(getApplicationContext()); }
+	
 	public void goToAudioRecorder(View view) { startActivity( new Intent(this, AudioRecorderActivity.class) ); }
 	
 	public void goToSurvey(View view) { startActivity( new Intent(this, SurveyActivity.class) ); }
@@ -64,16 +67,14 @@ public class DebugInterfaceActivity extends SessionActivity {
 	}
 	
 	public void toggleAccelerometer(View view) {
-		Boolean accel_state = backgroundProcess.accelerometerListener.toggle();
+		Boolean accel_state = backgroundService.accelerometerListener.toggle();
 		Log.i("Toggle Accelerometer button pressed", "Accel state: " + accel_state.toString() ); }
 	
 	public void toggleGPS(View view) {
-		Boolean gps_state = backgroundProcess.gpsListener.toggle();
+		Boolean gps_state = backgroundService.gpsListener.toggle();
 		Log.i("Toggle GPS button pressed", "GPS state: " + gps_state.toString() ); }
 	
-	public void signOut (View view) {
-		super.logoutUser();
-	}
+	public void signOut (View view) { super.logoutUser(); }
 	
 	public void scanWifi (View view) { WifiListener.scanWifi(); }
 	
@@ -81,12 +82,11 @@ public class DebugInterfaceActivity extends SessionActivity {
 
 	public void bluetoothButtonStop (View view) { appContext.sendBroadcast(Timer.bluetoothOffIntent); }
 	
-	public void buttonTimer(View view) { backgroundProcess.startTimers(); }
+	public void buttonTimer(View view) { backgroundService.startTimers(); }
 		
 	public void getKeyFile(View view) { Log.i("DEBUG", "key file data: " + TextFileManager.getKeyFile().read()); }
 	
 	public void testEncrypt (View view) {
-//		code commented out because would have to catch an error
 		Log.i("Debug..", TextFileManager.getKeyFile().read());
 		String data = TextFileManager.getKeyFile().read();
 		Log.i("reading keyFile:", data );
@@ -117,20 +117,20 @@ public class DebugInterfaceActivity extends SessionActivity {
 	public void makeNewFiles(View view) { TextFileManager.makeNewFilesForEverything(); }
 	
 	//TODO: Eli. reimplement these.
-	public void popDailySurveyNotification(View view) {
-		Log.e("DebugInterfaceActivity", "not implemented");
-//		AppNotifications.displaySurveyNotification(getApplicationContext(), SurveyType.Type.DAILY);
-	}
-	
-	public void popWeeklySurveyNotification(View view) {
-		Log.e("DebugInterfaceActivity", "not implemented");
-		//AppNotifications.displaySurveyNotification(getApplicationContext(), SurveyType.Type.WEEKLY);
-	}
-	
-	public void popAudioSurveyNotification(View view) {
-		Log.e("DebugInterfaceActivity", "not implemented");
-//		AppNotifications.displayRecordingNotification(appContext);
-	}
+//	public void popDailySurveyNotification(View view) {
+//		Log.e("DebugInterfaceActivity", "not implemented");
+////		AppNotifications.displaySurveyNotification(getApplicationContext(), SurveyType.Type.DAILY);
+//	}
+//	
+//	public void popWeeklySurveyNotification(View view) {
+//		Log.e("DebugInterfaceActivity", "not implemented");
+//		//AppNotifications.displaySurveyNotification(getApplicationContext(), SurveyType.Type.WEEKLY);
+//	}
+//	
+//	public void popAudioSurveyNotification(View view) {
+//		Log.e("DebugInterfaceActivity", "not implemented");
+////		AppNotifications.displayRecordingNotification(appContext);
+//	}
 
 	public void alarmStates(View view) {
 		Log.e("DebugInterfaceActivity", "not implemented");

@@ -47,7 +47,8 @@ public class HTTPAsync extends AsyncTask<Void, Void, Void> {
 		if ( (response == -1) && (responseString.length() > 3) ) {
 			//TODO: Eli. this is absolutely untested.
 			Log.w("HTTPAsync", "DOING SOMETHING DANGEROUS");
-			response = Integer.parseInt( responseString.substring(0, 2) );
+			try { response = Integer.parseInt( responseString.substring(0, 3) ); }
+			catch (NumberFormatException e) { Log.w("HTTPAsync", "NOPE, DIDN'T WORK."); }
 		}
 		
 		if (response == -1 && responseString == null) {
