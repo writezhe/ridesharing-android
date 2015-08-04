@@ -116,21 +116,12 @@ public class DebugInterfaceActivity extends SessionActivity {
 	
 	public void makeNewFiles(View view) { TextFileManager.makeNewFilesForEverything(); }
 	
-	//TODO: Eli. reimplement these.
-//	public void popDailySurveyNotification(View view) {
-//		Log.e("DebugInterfaceActivity", "not implemented");
-////		AppNotifications.displaySurveyNotification(getApplicationContext(), SurveyType.Type.DAILY);
-//	}
-//	
-//	public void popWeeklySurveyNotification(View view) {
-//		Log.e("DebugInterfaceActivity", "not implemented");
-//		//AppNotifications.displaySurveyNotification(getApplicationContext(), SurveyType.Type.WEEKLY);
-//	}
-//	
-//	public void popAudioSurveyNotification(View view) {
-//		Log.e("DebugInterfaceActivity", "not implemented");
-////		AppNotifications.displayRecordingNotification(appContext);
-//	}
+	public void popSurveyNotifications(View view) {
+		Log.e("DebugInterfaceActivity", "not implemented");
+		for (String surveyId : PersistentData.getSurveyIds()){
+			SurveyNotifications.displaySurveyNotification(appContext, surveyId);
+		}
+	}
 
 	public void alarmStates(View view) {
 		Log.e("DebugInterfaceActivity", "not implemented");

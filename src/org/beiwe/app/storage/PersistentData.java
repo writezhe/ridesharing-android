@@ -314,11 +314,6 @@ public class PersistentData {
 	public static String getSurveyType(String surveyId){ return pref.getString(surveyId + "-type", null); }
 	public static Boolean getSurveyNotificationState( String surveyId) { return pref.getBoolean(surveyId + "-notificationState", false ); }
 	
-	public static int getNumericalSurveyId(String surveyId) {
-		Log.e("PersistentDataManager", "getNumericalSurveyId is not implemented.");
-		throw new NullPointerException("getNumericalSurveyId is not implemented.");
-	}
-	
 	public static long getPriorSurveyAlarmTime(String surveyId) { return pref.getLong( surveyId + "-prior_alarm", MAX_LONG); }
 	
 	public static void createSurveyData(String surveyId, String content, String times, String type){

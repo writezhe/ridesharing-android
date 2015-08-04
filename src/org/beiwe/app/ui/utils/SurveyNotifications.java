@@ -30,32 +30,35 @@ public class SurveyNotifications {
 		//it contains the action ("launch this activity class"), and a surveyId.
 		//   the original declaration:  activityIntent = new Intent(surveyType.dictKey);
 		Intent activityIntent = new Intent(surveyId);
-		int numericalSurveyId = PersistentData.getNumericalSurveyId(surveyId);
-		
 		int iconId;
-		//TODO: Eli. make sure we have a consistent use of these type identifiers across both codebases
-		if ( PersistentData.getSurveyType(surveyId) == "android_survey" ) { iconId = R.drawable.survey_icon; }
-		else if ( PersistentData.getSurveyType(surveyId) == "audio_survey" ) { iconId = R.drawable.survey_icon; }
-		else {
-			Log.e("backgroundService", "survey type did not work correctly");
-			throw new NullPointerException("survey type did not work correctly");
-		};
 		
-		//FIXME: Eli.  add logic that checks the survey type and returns the appropriate activity class to launch.
-		activityIntent = new Intent( appContext, AudioRecorderActivity.class );
-        activityIntent.setClass( appContext, SurveyActivity.class );
-        //TODO: Eli. changed this string from "SurveyType" to "SurveyId", look for bugs...
+		//TODO: Eli. make sure we have a consistent use of these type identifiers across both codebases
+		if ( PersistentData.getSurveyType(surveyId).equals("android_survey" ) ) {
+			iconId = R.drawable.survey_icon;
+			activityIntent = new Intent( appContext, SurveyActivity.class );
+	        activityIntent.setClass( appContext, SurveyActivity.class );
+		}
+		else if ( PersistentData.getSurveyType(surveyId).equals("audio_survey" ) ) {
+			iconId = R.drawable.voice_recording_icon;
+			activityIntent = new Intent( appContext, AudioRecorderActivity.class );
+	        activityIntent.setClass( appContext, AudioRecorderActivity.class );
+		}
+		else {
+			Log.e("backgroundService", "survey type did not parse correctly: " + PersistentData.getSurveyType(surveyId));
+			throw new NullPointerException("survey type did not parse correctly: " + PersistentData.getSurveyType(surveyId));
+		}
+		
         activityIntent.putExtra( "SurveyId", surveyId );
-        activityIntent.putExtra( "SurveyIdInt", numericalSurveyId );
 		activityIntent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP ); //modifies behavior when the user is currently in the app.
 
 		/* The pending intent defines properties of the notification itself.
-		 * BUG. Cannot use FLAG_UPDATE_CURRENT, which handles conflicts with multiple notification with the same id, 
-		 * to replace the existing notification.  This variable is supplied later in notificationManager.notify()
-		 * if you use FLAG_UPDATE_CURRENT the notification will not launch the provided activity on android api 19.
-		 * solution: use FLAG_CANCEL_CURRENT, it provides the same functionality for our purposes.
+		 * BUG. Cannot use FLAG_UPDATE_CURRENT, which handles conflicts of multiple notification with the same id, 
+		 * so that the new notification replaces the old one.  if you use FLAG_UPDATE_CURRENT the notification will
+		 * not launch the provided activity on android api 19.
+		 * Solution: use FLAG_CANCEL_CURRENT, it provides the same functionality for our purposes.
 		 * (or add android:exported="true" to the activity's permissions in the Manifest.)
 		 * http://stackoverflow.com/questions/21250364/notification-click-not-launch-the-given-activity-on-nexus-phones */
+		//we manually cancel the notification anyway, so this is likely moot.
 		PendingIntent pendingActivityIntent = PendingIntent.getActivity(appContext,
 				1, // a Request code meaning "close the notification once done"
 				activityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -71,18 +74,24 @@ public class SurveyNotifications {
 		builder.setTicker( appContext.getResources().getString(R.string.new_android_survey_notification_ticker) );
 		builder.setContentIntent(pendingActivityIntent);
 		
+		//This value is used inside the notification as the unique Identifier of that notification.
+		//surveys never change their index in the list, so we can use that value consistently. 
+		int intSurveyId = PersistentData.getSurveyIds().indexOf(surveyId);
+				
+				
 		//Build the notification, interface with a notification manager.
 		Notification surveyNotification = builder.build();
 		NotificationManager notificationManager = (NotificationManager) appContext.getSystemService(Context.NOTIFICATION_SERVICE);
-		notificationManager.cancel(numericalSurveyId); //cancel current
+		notificationManager.cancel(intSurveyId); //cancel current
 		surveyNotification.flags = Notification.FLAG_ONGOING_EVENT;
 		notificationManager.notify(
-				numericalSurveyId, // If another notification with the same ID pops up, this notification will be updated/cancelled.
+				intSurveyId, // If another notification with the same ID pops up, this notification will be updated/cancelled.
 				surveyNotification);
 		
 		//And, finally, set the notification state for zombie alarms.
 		PersistentData.setSurveyNotificationState(surveyId, true);
 	}
+	
 	
 	/**Use to dismiss the notification corresponding the surveyIdInt.
 	 * @param appContext
@@ -90,6 +99,6 @@ public class SurveyNotifications {
 	public static void dismissNotification(Context appContext, String surveyId) {
 		//TODO: Eli.  Test.  I only Think that this value is the correct id to dismiss a notification, previously it used a per-study-type constant in a SurveyType.
 		NotificationManager notificationManager = (NotificationManager) appContext.getSystemService(Context.NOTIFICATION_SERVICE);
-		notificationManager.cancel(PersistentData.getNumericalSurveyId(surveyId));
+		notificationManager.cancel(PersistentData.getSurveyIds().indexOf(surveyId));
 	}
 }
