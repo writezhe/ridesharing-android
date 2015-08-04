@@ -276,10 +276,8 @@ public class PersistentData {
 	
 	//TODO: Eli.  Refactor everything that is setXXX to saveXXX to avoid confusion when setting alarms vs saving alarm values to persistent storage.
 	
-	//TODO: Eli.  we need a storage mechanism of all survey Ids, and these ids need to be convertable to digits.
-	//TODO: Eli.  We need surveyIds to either be or be convertible in a repeatable manner to ints.
-	//TODO: Eli.  we might need a mapping of survey Ids to survey id ints.
-
+	//TODO: Eli.  We need surveyIds to either be or be convertible ints in a repeatable manner to.
+	
 	public static List<String> getSurveyIds() { return JSONUtils.jsonArrayToStringList(getSurveyIdsJsonArray()); }
 
 	private static JSONArray getSurveyIdsJsonArray() {
