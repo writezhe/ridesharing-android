@@ -24,33 +24,34 @@ public class SurveyNotifications {
 	/**Creates a survey notification that transfers the user to the survey activity. 
 	 * Note: the notification can only be dismissed through submitting the survey
 	 * @param appContext */
+	@SuppressWarnings("rawtypes")
 	public static void displaySurveyNotification(Context appContext, String surveyId) {
 		//TODO: Eli. Check that this doc is correct, I might have the intent and pendingintent backwards.
 		//activityIntent contains information on the action triggered by tapping the notification. 
 		//it contains the action ("launch this activity class"), and a surveyId.
 		//   the original declaration:  activityIntent = new Intent(surveyType.dictKey);
-		Intent activityIntent = new Intent(surveyId);
-		int iconId;
-		
+		Intent activityIntent;		
+		NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(appContext);
+		notificationBuilder.setContentTitle( appContext.getString(R.string.app_name) );
 		//TODO: Eli. make sure we have a consistent use of these type identifiers across both codebases
 		if ( PersistentData.getSurveyType(surveyId).equals("android_survey" ) ) {
-			iconId = R.drawable.survey_icon;
-			activityIntent = new Intent( appContext, SurveyActivity.class );
-	        activityIntent.setClass( appContext, SurveyActivity.class );
+			activityIntent = new Intent(appContext, SurveyActivity.class);
+			notificationBuilder.setTicker( appContext.getResources().getString(R.string.new_android_survey_notification_ticker) );
+			notificationBuilder.setContentText( appContext.getResources().getString(R.string.new_android_survey_notification_details) );
+			notificationBuilder.setSmallIcon(R.drawable.survey_icon);
+			notificationBuilder.setLargeIcon( BitmapFactory.decodeResource(appContext.getResources(), R.drawable.survey_icon ) );
 		}
 		else if ( PersistentData.getSurveyType(surveyId).equals("audio_survey" ) ) {
-			iconId = R.drawable.voice_recording_icon;
-			activityIntent = new Intent( appContext, AudioRecorderActivity.class );
-	        activityIntent.setClass( appContext, AudioRecorderActivity.class );
+			activityIntent = new Intent(appContext, AudioRecorderActivity.class);
+			notificationBuilder.setTicker( appContext.getResources().getString(R.string.new_audio_survey_notification_ticker) );
+			notificationBuilder.setContentText( appContext.getResources().getString(R.string.new_audio_survey_notification_details) );
+			notificationBuilder.setSmallIcon(R.drawable.voice_recording_icon);
+			notificationBuilder.setLargeIcon( BitmapFactory.decodeResource(appContext.getResources(), R.drawable.voice_recording_icon) );
 		}
-		else {
-			Log.e("backgroundService", "survey type did not parse correctly: " + PersistentData.getSurveyType(surveyId));
-			throw new NullPointerException("survey type did not parse correctly: " + PersistentData.getSurveyType(surveyId));
-		}
-		
-        activityIntent.putExtra( "SurveyId", surveyId );
-		activityIntent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP ); //modifies behavior when the user is currently in the app.
+		else { throw new NullPointerException("survey type did not parse correctly: " + PersistentData.getSurveyType(surveyId)); }
 
+        activityIntent.putExtra( "surveyId", surveyId );
+		activityIntent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP ); //modifies behavior when the user is already in the app.
 		/* The pending intent defines properties of the notification itself.
 		 * BUG. Cannot use FLAG_UPDATE_CURRENT, which handles conflicts of multiple notification with the same id, 
 		 * so that the new notification replaces the old one.  if you use FLAG_UPDATE_CURRENT the notification will
@@ -61,31 +62,20 @@ public class SurveyNotifications {
 		//we manually cancel the notification anyway, so this is likely moot.
 		PendingIntent pendingActivityIntent = PendingIntent.getActivity(appContext,
 				1, // a Request code meaning "close the notification once done"
-				activityIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+				activityIntent,
+				PendingIntent.FLAG_CANCEL_CURRENT);
 		
-		//TODO: Eli. this is the original call to the now defunct setup function, note the survey icon argument
-//		Notification surveyNotification = setupNotification(appContext, surveyIdInt, R.drawable.survey_icon, surveyIdInt);
-		// and this was the variables in the function definition: Context appContext, int notifCode, int iconID, int surveyIdInt
-		NotificationCompat.Builder builder = new NotificationCompat.Builder(appContext);		
-		builder.setSmallIcon(iconId);
-        builder.setLargeIcon( BitmapFactory.decodeResource(appContext.getResources(), iconId) );
-		builder.setContentTitle( appContext.getString(R.string.app_name) );
-		builder.setContentText( appContext.getResources().getString(R.string.new_android_survey_notification_details) );
-		builder.setTicker( appContext.getResources().getString(R.string.new_android_survey_notification_ticker) );
-		builder.setContentIntent(pendingActivityIntent);
+		notificationBuilder.setContentIntent(pendingActivityIntent);
+		Notification surveyNotification = notificationBuilder.build();
+		surveyNotification.flags = Notification.FLAG_ONGOING_EVENT;
 		
 		//This value is used inside the notification as the unique Identifier of that notification.
 		//surveys never change their index in the list, so we can use that value consistently. 
-		int intSurveyId = PersistentData.getSurveyIds().indexOf(surveyId);
-				
-				
-		//Build the notification, interface with a notification manager.
-		Notification surveyNotification = builder.build();
+		int uniqueIntegerSurveyId = PersistentData.getSurveyIds().indexOf(surveyId);
 		NotificationManager notificationManager = (NotificationManager) appContext.getSystemService(Context.NOTIFICATION_SERVICE);
-		notificationManager.cancel(intSurveyId); //cancel current
-		surveyNotification.flags = Notification.FLAG_ONGOING_EVENT;
+		notificationManager.cancel(uniqueIntegerSurveyId); //cancel current		
 		notificationManager.notify(
-				intSurveyId, // If another notification with the same ID pops up, this notification will be updated/cancelled.
+				uniqueIntegerSurveyId, // If another notification with the same ID pops up, this notification will be updated/cancelled.
 				surveyNotification);
 		
 		//And, finally, set the notification state for zombie alarms.
