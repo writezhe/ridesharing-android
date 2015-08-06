@@ -190,7 +190,7 @@ public class Timer {
 		long timeTillFire = nextTriggerTime - System.currentTimeMillis();
 		Log.i("Timer.java", "josh WeeklyAlarm timeTillFire = " + timeTillFire + " milliseconds from now");
 		setExactAlarm(AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingIntent);
-		PersistentData.savePriorSurveyAlarmTime(surveyId, nextTriggerTime);
+		PersistentData.setPriorSurveyAlarmTime(surveyId, nextTriggerTime);
 	}
 		
 	

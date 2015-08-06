@@ -65,7 +65,6 @@ public class PersistentData {
 	private static final String WIFI_LOG_FREQUENCY_SECONDS = "wifi_log_frequency_seconds";
 	private static final String SURVEY_IDS = "survey_ids";
 
-
 	/*#####################################################################################
 	################################### Initializing ######################################
 	#####################################################################################*/
@@ -147,10 +146,9 @@ public class PersistentData {
 
 	
 	/*#####################################################################################
-	#################################### Study State ######################################
+	################################# Application State ###################################
 	#####################################################################################*/
 
-	//TODO: Eli.  hook into these toggls during registration.
 	public static boolean getAccelerometerEnabled(){ return pref.getBoolean(ACCELEROMETER, false); }
 	public static boolean getGpsEnabled(){ return pref.getBoolean(GPS, false); }
 	public static boolean getCallsEnabled(){ return pref.getBoolean(CALLS, false); }
@@ -158,19 +156,6 @@ public class PersistentData {
 	public static boolean getWifiEnabled(){ return pref.getBoolean(WIFI, false); }
 	public static boolean getBluetoothEnabled(){ return pref.getBoolean(BLUETOOTH, false); }
 	public static boolean getPowerStateEnabled(){ return pref.getBoolean(POWER_STATE, false); }
-	public static long getAccelerometerOffDurationSeconds() { return pref.getLong(ACCELEROMETER_OFF_DURATION_SECONDS, MAX_LONG); }
-	public static long getAccelerometerOnDurationSeconds() { return pref.getLong(ACCELEROMETER_ON_DURATION_SECONDS, MAX_LONG); }
-	public static long getBluetoothOnDurationSeconds() { return pref.getLong(BLUETOOTH_ON_DURATION_SECONDS, MAX_LONG); }
-	public static long getBluetoothTotalDurationSeconds() { return pref.getLong(BLUETOOTH_TOTAL_DURATION_SECONDS, MAX_LONG); }
-	public static long getBluetoothGlobalOffsetSeconds() { return pref.getLong(BLUETOOTH_GLOBAL_OFFSET_SECONDS, MAX_LONG); }
-	public static long getCheckForNewSurveysFrequencySeconds() { return pref.getLong(CHECK_FOR_NEW_SURVEYS_FREQUENCY_SECONDS, MAX_LONG); }
-	public static long getCreateNewDataFilesFrequencySeconds() { return pref.getLong(CREATE_NEW_DATA_FILES_FREQUENCY_SECONDS, MAX_LONG); }
-	public static long getGpsOffDurationSeconds() { return pref.getLong(GPS_OFF_DURATION_SECONDS, MAX_LONG); }
-	public static long getGpsOnDurationSeconds() { return pref.getLong(GPS_ON_DURATION_SECONDS, MAX_LONG); }
-	public static long getSecondsBeforeAutoLogout() { return pref.getLong(SECONDS_BEFORE_AUTO_LOGOUT, MAX_LONG); }
-	public static long getUploadDataFilesFrequencySeconds() { return pref.getLong(UPLOAD_DATA_FILES_FREQUENCY_SECONDS, MAX_LONG); }
-	public static long getVoiceRecordingMaxTimeLengthSeconds() { return pref.getLong(VOICE_RECORDING_MAX_TIME_LENGTH_SECONDS, MAX_LONG); }
-	public static long getWifiLogFrequencySeconds() { return pref.getLong(WIFI_LOG_FREQUENCY_SECONDS, MAX_LONG); }
 	
 	public static void setAccelerometerEnabled(boolean enabled) {
 		editor.putBoolean(ACCELEROMETER, enabled);
@@ -193,6 +178,25 @@ public class PersistentData {
 	public static void setPowerStateEnabled(boolean enabled) {
 		editor.putBoolean(POWER_STATE, enabled);
 		editor.commit(); }
+	
+	/*#####################################################################################
+	################################# Application State ###################################
+	#####################################################################################*/
+	
+	//FIXME: Eli+Josh. IMPLEMENT TOGGLES. Hook into these toggles during registration.
+	public static long getAccelerometerOffDurationSeconds() { return pref.getLong(ACCELEROMETER_OFF_DURATION_SECONDS, MAX_LONG); }
+	public static long getAccelerometerOnDurationSeconds() { return pref.getLong(ACCELEROMETER_ON_DURATION_SECONDS, MAX_LONG); }
+	public static long getBluetoothOnDurationSeconds() { return pref.getLong(BLUETOOTH_ON_DURATION_SECONDS, MAX_LONG); }
+	public static long getBluetoothTotalDurationSeconds() { return pref.getLong(BLUETOOTH_TOTAL_DURATION_SECONDS, MAX_LONG); }
+	public static long getBluetoothGlobalOffsetSeconds() { return pref.getLong(BLUETOOTH_GLOBAL_OFFSET_SECONDS, MAX_LONG); }
+	public static long getCheckForNewSurveysFrequencySeconds() { return pref.getLong(CHECK_FOR_NEW_SURVEYS_FREQUENCY_SECONDS, MAX_LONG); }
+	public static long getCreateNewDataFilesFrequencySeconds() { return pref.getLong(CREATE_NEW_DATA_FILES_FREQUENCY_SECONDS, MAX_LONG); }
+	public static long getGpsOffDurationSeconds() { return pref.getLong(GPS_OFF_DURATION_SECONDS, MAX_LONG); }
+	public static long getGpsOnDurationSeconds() { return pref.getLong(GPS_ON_DURATION_SECONDS, MAX_LONG); }
+	public static long getSecondsBeforeAutoLogout() { return pref.getLong(SECONDS_BEFORE_AUTO_LOGOUT, MAX_LONG); }
+	public static long getUploadDataFilesFrequencySeconds() { return pref.getLong(UPLOAD_DATA_FILES_FREQUENCY_SECONDS, MAX_LONG); }
+	public static long getVoiceRecordingMaxTimeLengthSeconds() { return pref.getLong(VOICE_RECORDING_MAX_TIME_LENGTH_SECONDS, MAX_LONG); }
+	public static long getWifiLogFrequencySeconds() { return pref.getLong(WIFI_LOG_FREQUENCY_SECONDS, MAX_LONG); }
 
 	public static void setAccelerometerOffDurationSeconds(long seconds) {
 		editor.putLong(ACCELEROMETER_OFF_DURATION_SECONDS, seconds);
@@ -234,7 +238,6 @@ public class PersistentData {
 		editor.putLong(WIFI_LOG_FREQUENCY_SECONDS, seconds);
 		editor.commit(); }
 
-
 	/*###########################################################################################
 	################################### User Credentials ########################################
 	###########################################################################################*/
@@ -272,11 +275,7 @@ public class PersistentData {
 	
 	/*###########################################################################################
 	###################################### Survey Info ##########################################
-	####################### We have Zombie Highlander Notifications ###########################*/
-	
-	//TODO: Eli.  Refactor everything that is setXXX to saveXXX to avoid confusion when setting alarms vs saving alarm values to persistent storage.
-	
-	//TODO: Eli.  We need surveyIds to either be or be convertible ints in a repeatable manner to.
+	###########################################################################################*/
 	
 	public static List<String> getSurveyIds() { return JSONUtils.jsonArrayToStringList(getSurveyIdsJsonArray()); }
 
@@ -289,40 +288,28 @@ public class PersistentData {
 		catch (JSONException e) { throw new NullPointerException("getSurveyIds failed, json string was: " + jsonString ); }
 		return jsonSurveyIdArray;
 	}
-	
-	
+		
 	public static void addSurveyId(String surveyId) {
 		List<String> list = JSONUtils.jsonArrayToStringList( getSurveyIdsJsonArray() );
 		if ( !list.contains(surveyId) ) {
 			list.add(surveyId);
-			Log.d("persistant data", "adding id: " + surveyId);
-			Log.d("persistant data", "new ids: " + new JSONArray(list).toString() );
 			editor.putString(SURVEY_IDS, new JSONArray(list).toString() );
 			editor.commit();
 		}
-		else { throw new NullPointerException("duplicate survey id added"); }
-		//TODO: Eli. Define Behavior for duplicate entries, probably at download...
+		else { throw new NullPointerException("duplicate survey id added"); } //TODO: Eli/Josh.  I am unaware of how this code could ever possible run because we ensure uniqueness in the downloader.  thoughts?
 	}
 	
-	
-	
-	//All we do is use the shared prefs as a key value store of json, and we just interpret the json each time.
-	//todo: Eli. determine how/whether to handle this returning nulls
-	public static String getSurveyContent(String surveyId){ return pref.getString(surveyId + "-content", null); }
 	public static String getSurveyTimes(String surveyId){ return pref.getString(surveyId + "-times", null); }
-
+	public static String getSurveyContent(String surveyId){ return pref.getString(surveyId + "-content", null); }
 	public static String getSurveyType(String surveyId){ return pref.getString(surveyId + "-type", null); }
 	public static Boolean getSurveyNotificationState( String surveyId) { return pref.getBoolean(surveyId + "-notificationState", false ); }
 	
-	public static long getPriorSurveyAlarmTime(String surveyId) { return pref.getLong( surveyId + "-prior_alarm", MAX_LONG); }
-	
-	public static void createSurveyData(String surveyId, String content, String times, String type){
-		editor.putString(surveyId + "-content", content);
-		editor.putString(surveyId + "-times", times);
-		editor.putString(surveyId + "-type", type);
-		editor.commit();
+	public static void createSurveyData(String surveyId, String content, String timings, String type){
+		setSurveyContent(surveyId,  content);
+		setSurveyTimes(surveyId, timings);
+		setSurveyType(surveyId, type);
 	}
-	//TODO: Eli.  I think we do still need the following (or at least they would be useful/efficient) 
+	//individual setters
 	public static void setSurveyContent(String surveyId, String content){
 		editor.putString(surveyId + "-content", content);
 		editor.commit(); }
@@ -332,16 +319,20 @@ public class PersistentData {
 	public static void setSurveyType(String surveyId, String type){
 		editor.putString(surveyId + "-type", type);
 		editor.commit(); }
-	
+	//survey state storage
 	public static void setSurveyNotificationState(String surveyId, Boolean bool ) {
 		editor.putBoolean(surveyId + "-notificationState", bool );
 		editor.commit(); }
-	public static void savePriorSurveyAlarmTime(String surveyId, long time) {
+	
+	//FIXME: Eli. This is not used.
+	public static void setPriorSurveyAlarmTime(String surveyId, long time) {
 		editor.putLong(surveyId + "-prior_alarm", time);
 		editor.commit(); }
+	public static long getPriorSurveyAlarmTime(String surveyId) { return pref.getLong( surveyId + "-prior_alarm", MAX_LONG); }
 	
 	public static void deleteSurvey(String surveyId) {
 		//todo: Eli. can a remove operation fail if the key does not exist? if so how do we handle that.
+		//TODO: eli. test that all these operations actually happen with the commit.
 		editor.remove(surveyId + "-content");
 		editor.remove(surveyId + "-times");
 		editor.remove(surveyId + "-type");

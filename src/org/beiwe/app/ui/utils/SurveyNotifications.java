@@ -26,16 +26,14 @@ public class SurveyNotifications {
 	 * @param appContext */
 	@SuppressWarnings("rawtypes")
 	public static void displaySurveyNotification(Context appContext, String surveyId) {
-		//TODO: Eli. Check that this doc is correct, I might have the intent and pendingintent backwards.
 		//activityIntent contains information on the action triggered by tapping the notification. 
-		//it contains the action ("launch this activity class"), and a surveyId.
-		//   the original declaration:  activityIntent = new Intent(surveyType.dictKey);
 		Intent activityIntent;		
 		NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(appContext);
 		notificationBuilder.setContentTitle( appContext.getString(R.string.app_name) );
-		//TODO: Eli. make sure we have a consistent use of these type identifiers across both codebases
+		//TODO: Eli. make sure we have a consistent use of these survey type identifiers across both codebases
 		if ( PersistentData.getSurveyType(surveyId).equals("android_survey" ) ) {
 			activityIntent = new Intent(appContext, SurveyActivity.class);
+			activityIntent.setAction("org.beiwe.app.start_android_survey"); //todo: put in strings
 			notificationBuilder.setTicker( appContext.getResources().getString(R.string.new_android_survey_notification_ticker) );
 			notificationBuilder.setContentText( appContext.getResources().getString(R.string.new_android_survey_notification_details) );
 			notificationBuilder.setSmallIcon(R.drawable.survey_icon);
@@ -43,6 +41,7 @@ public class SurveyNotifications {
 		}
 		else if ( PersistentData.getSurveyType(surveyId).equals("audio_survey" ) ) {
 			activityIntent = new Intent(appContext, AudioRecorderActivity.class);
+			activityIntent.setAction("org.beiwe.app.start_audio_survey");  //todo: put in strings
 			notificationBuilder.setTicker( appContext.getResources().getString(R.string.new_audio_survey_notification_ticker) );
 			notificationBuilder.setContentText( appContext.getResources().getString(R.string.new_audio_survey_notification_details) );
 			notificationBuilder.setSmallIcon(R.drawable.voice_recording_icon);
@@ -63,8 +62,7 @@ public class SurveyNotifications {
 		PendingIntent pendingActivityIntent = PendingIntent.getActivity(appContext,
 				1, // a Request code meaning "close the notification once done"
 				activityIntent,
-				PendingIntent.FLAG_CANCEL_CURRENT);
-		
+				PendingIntent.FLAG_CANCEL_CURRENT);		
 		notificationBuilder.setContentIntent(pendingActivityIntent);
 		Notification surveyNotification = notificationBuilder.build();
 		surveyNotification.flags = Notification.FLAG_ONGOING_EVENT;

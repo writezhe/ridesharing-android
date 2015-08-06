@@ -117,7 +117,6 @@ public class DebugInterfaceActivity extends SessionActivity {
 	public void makeNewFiles(View view) { TextFileManager.makeNewFilesForEverything(); }
 	
 	public void popSurveyNotifications(View view) {
-		Log.e("DebugInterfaceActivity", "not implemented");
 		for (String surveyId : PersistentData.getSurveyIds()){
 			SurveyNotifications.displaySurveyNotification(appContext, surveyId);
 		}

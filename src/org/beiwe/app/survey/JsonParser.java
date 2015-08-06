@@ -32,18 +32,15 @@ public class JsonParser {
 
 	/**Add all survey questions to the provided surveyLayout View object
 	 * @param surveyLayout */
-	public String renderSurveyFromJSON(LinearLayout surveyLayout, String jsonSurveyString) {
+	public void renderSurveyFromJSON(LinearLayout surveyLayout, String jsonSurveyString) {
 		LinearLayout questionsLayout = (LinearLayout) surveyLayout.findViewById(R.id.surveyQuestionsLayout);
 		try { //Every single line here can throw a JSONException
-			JSONObject wholeSurveyObject = new JSONObject(jsonSurveyString);
-			JSONArray jsonQuestions = wholeSurveyObject.getJSONArray("questions");
-			String surveyId = wholeSurveyObject.getString("survey_id");
+			JSONArray jsonQuestions = new JSONArray(jsonSurveyString);
 			// Iterate over the array, and add each question to the survey View
 			for (int i = 0; i < jsonQuestions.length(); i++) {
 				View question = renderQuestionFromJSON(jsonQuestions.getJSONObject(i));
 				questionsLayout.addView(question);
 			}
-			return surveyId;
 		}
 		catch (JSONException e) {
 			// If rendering or parsing failed, display the error widget instead
@@ -51,7 +48,6 @@ public class JsonParser {
 			e.printStackTrace();
 			surveyLayout.removeAllViews();
 			surveyLayout.addView(errorWidget);
-			return "";
 		}
 	}
 

@@ -56,32 +56,31 @@ public class SurveyDownloader {
 		for (String surveyString : surveys){
 			try { surveyJSON = new JSONObject(surveyString); }
 			catch (JSONException e) { throw new NullPointerException("JSON fail 1"); }
-			Log.d("debugging survey update", "whole thing: " + surveyJSON.toString());
+//			Log.d("debugging survey update", "whole thing: " + surveyJSON.toString());
 			
 			try { surveyId = surveyJSON.getString("_id"); }
 			catch (JSONException e) { throw new NullPointerException("JSON fail 2"); }
-			Log.d("debugging survey update", "id: " + surveyId.toString());
+//			Log.d("debugging survey update", "id: " + surveyId.toString());
 			
 			try { surveyType = surveyJSON.getString("survey_type"); }
 			catch (JSONException e) { throw new NullPointerException("JSON fail 2.5"); }
-			Log.d("debugging survey update", "type: " + surveyType.toString());
+//			Log.d("debugging survey update", "type: " + surveyType.toString());
 			
 			try { jsonQuestionsString = surveyJSON.getString("content"); }
 			catch (JSONException e) {throw new NullPointerException("JSON fail 3"); }
-			Log.d("debugging survey update", "questions: " + jsonQuestionsString);
+//			Log.d("debugging survey update", "questions: " + jsonQuestionsString);
 			
 			try { jsonTimingsString = surveyJSON.getString("timings"); }
 			catch (JSONException e) {throw new NullPointerException("JSON fail 4"); }
-			Log.d("debugging survey update", "timings: " + jsonTimingsString);
+//			Log.d("debugging survey update", "timings: " + jsonTimingsString);
 			
 			if ( oldSurveyIds.contains(surveyId) ) { //if surveyId already exists, check for changes, add to list of new survey ids.
-				Log.e("debugging survey update", "check for changes");
-				
+				Log.e("debugging survey update", "checking for changes");
+				Log.w("debugging survey update", "setting content to: " + jsonQuestionsString);
 				PersistentData.setSurveyContent(surveyId, jsonQuestionsString);
 				PersistentData.setSurveyType(surveyId, surveyType);				
 				if (PersistentData.getSurveyTimes(surveyId) != jsonTimingsString) {
 					SurveyScheduler.scheduleSurvey(surveyId);
-					
 				}
 				newSurveyIds.add(surveyId);
 			}

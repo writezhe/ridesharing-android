@@ -42,7 +42,6 @@ public class TextFileManager {
 
 	//Delimiter and newline strings
 	public static final String DELIMITER = ",";
-	private static String EMPTY_HEADER = "";
 	
 	//Static instances of the individual FileManager objects.
 	private static TextFileManager GPSFile;
@@ -106,7 +105,7 @@ public class TextFileManager {
 		
 		//the key file for encryption (it is persistent and never written to)
 		keyFile = new TextFileManager(appContext, "keyFile", "", true, true, false);
-		// Persistent files
+		// Persistent files (old, no longer used, but this is an example of a persistent file (one that does not get abandoned at shut-down/initialization) )
 //		currentDailyQuestions = new TextFileManager(appContext, "currentDailyQuestionsFile.json", EMPTY_HEADER, true, true, false);
 //		currentWeeklyQuestions = new TextFileManager(appContext, "currentWeeklyQuestionsFile.json", EMPTY_HEADER, true, true, false);
 		// The debug file is no longer persistent, so that we can upload it to the server associated with a user, otherwise it has the name "logfile.txt" and fails to upload.
@@ -119,8 +118,8 @@ public class TextFileManager {
 		powerStateLog = new TextFileManager(appContext, "powerState", PowerStateListener.header, false, false, true);
 		bluetoothLog = new TextFileManager(appContext, "bluetoothLog", BluetoothListener.header, false, false, true);
 		// Files created on specific events/written to in one go.
-		surveyTimings = new TextFileManager(appContext, "surveyTimings", SurveyTimingsRecorder.header, false, false, true);
-		surveyAnswers = new TextFileManager(appContext, "surveyAnswers", SurveyAnswersRecorder.header, false, false, true);
+		surveyTimings = new TextFileManager(appContext, "surveyTimings_", SurveyTimingsRecorder.header, false, false, true);
+		surveyAnswers = new TextFileManager(appContext, "surveyAnswers_", SurveyAnswersRecorder.header, false, false, true);
 		wifiLog = new TextFileManager(appContext, "wifiLog", WifiListener.header, false, false, true);
 		
 		started = true;

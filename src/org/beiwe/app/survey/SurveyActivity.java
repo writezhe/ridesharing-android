@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -24,19 +25,17 @@ public class SurveyActivity extends SessionActivity {
 	private SurveyAnswersRecorder answersRecorder;
 	private String surveyId;
 	
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_survey);
 		Intent triggerIntent = getIntent();
 		surveyId = triggerIntent.getStringExtra("surveyId");
-		//TODO: this is now irrelevant, and does not appear to ever be used...
-//		QuestionsDownloader downloader = new QuestionsDownloader();
-
+		
 		if (savedInstanceState == null) {
 			Bundle extras = getIntent().getExtras();
 			if (extras != null) {
+				Log.d("Survey renderer", "surveyId: " + surveyId);
 				renderSurvey( PersistentData.getSurveyContent(surveyId) );
 			}
 		}
@@ -50,7 +49,7 @@ public class SurveyActivity extends SessionActivity {
 		LinearLayout surveyLayout = (LinearLayout) findViewById(R.id.surveyLayout);
 		// Parse the JSON list of questions and render them as Views
 		JsonParser jsonParser = new JsonParser(getApplicationContext());
-		surveyId = jsonParser.renderSurveyFromJSON(surveyLayout, jsonSurveyString);
+		jsonParser.renderSurveyFromJSON(surveyLayout, jsonSurveyString);
 		// Record the time that the survey was first visible to the user
 		SurveyTimingsRecorder.recordSurveyFirstDisplayed(surveyId);
 	}
@@ -107,5 +106,4 @@ public class SurveyActivity extends SessionActivity {
 		SurveyNotifications.dismissNotification(getApplicationContext(), surveyId);
 		finish();
 	}
-		
 }
