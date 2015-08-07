@@ -23,7 +23,7 @@ public class Timer {
 	private AlarmManager alarmManager;
 	private Context appContext;
 
-	// TODO postproduction: change these to non-debug values
+	// TODO: change these to editable values assigned on registration.
 	// How frequently it attempts to upload data files
 	public static final long UPLOAD_DATA_FILES_PERIOD = 60 * 1000L;
 	// How frequently new data files are created
@@ -101,11 +101,7 @@ public class Timer {
 		gpsOnIntent = setupIntent( appContext.getString(R.string.gps_on) );
 		
 		// Set up event triggering alarm intents
-		//TODO: Eli. these survey intents will need to dynamically generated, they should probably contain a survey id.
-//		dailySurveyIntent = setupIntent( appContext.getString(R.string.daily_survey) );
 		signoutIntent = setupIntent( appContext.getString(R.string.signout_intent) );
-//		voiceRecordingIntent = setupIntent( appContext.getString(R.string.voice_recording) );
-//		weeklySurveyIntent = setupIntent( appContext.getString(R.string.weekly_survey) );
 		wifiLogIntent = setupIntent( appContext.getString(R.string.run_wifi_log) );
 		uploadDatafilesIntent = setupIntent( appContext.getString(R.string.upload_data_files_intent) );
 		createNewDataFilesIntent = setupIntent( appContext.getString(R.string.create_new_data_files_intent) );

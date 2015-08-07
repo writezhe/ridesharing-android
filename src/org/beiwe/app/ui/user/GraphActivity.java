@@ -45,7 +45,7 @@ public class GraphActivity extends SessionActivity {
 		// Enable Javascript to display the graph, as well as initial scale
 		browserSettings.setJavaScriptEnabled(true);
 		browser.setInitialScale(200);
-		//TODO: Eli. Ki[[ this use of securityparameters, make securityparameters private.
+		//TODO: Eli. find a way to Kill this use of securityparameters, make securityparameters private.
 		String postData = PostRequest.securityParameters(null);
 		String graphUrl = getApplicationContext().getString(R.string.graph_url);
 		browser.postUrl(graphUrl, EncodingUtils.getBytes(postData, "BASE64"));

@@ -28,7 +28,6 @@ public class SurveyDownloader {
 	private static void doDownload(final String url) { new HTTPAsync(url) {
 		@Override
 		protected Void doInBackground(Void... arg0) {
-			//FIXME: FIND THE CORRECT DOWNLOAD URL AND RETRIEVE IT FROM STRINGS.XML
 			String parameters = "";
 			responseString = PostRequest.httpRequestString( parameters, url);
 			return null; //hate

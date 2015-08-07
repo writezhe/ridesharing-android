@@ -85,7 +85,7 @@ public class SurveyNotifications {
 	 * @param appContext
 	 * @param notifCode */
 	public static void dismissNotification(Context appContext, String surveyId) {
-		//TODO: Eli.  Test.  I only Think that this value is the correct id to dismiss a notification, previously it used a per-study-type constant in a SurveyType.
+		//TODO: Eli.  build button in debug activity to test.
 		NotificationManager notificationManager = (NotificationManager) appContext.getSystemService(Context.NOTIFICATION_SERVICE);
 		notificationManager.cancel(PersistentData.getSurveyIds().indexOf(surveyId));
 	}

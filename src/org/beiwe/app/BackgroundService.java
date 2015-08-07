@@ -220,8 +220,8 @@ public class BackgroundService extends Service {
 			if ( !timer.alarmIsSet( new Intent(surveyId) ) ) { SurveyScheduler.scheduleSurvey(surveyId); } }
 	}
 	
-	public static void startAutomaticLogoutCountdownTimer(){
-		//TODO: Eli/Josh.  this.
+	public void startAutomaticLogoutCountdownTimer(){
+		//TODO: Eli/Josh.  this todo is linked with the access of the startAutomaticLogoutCountdownTimer function in sessionAcivity.  Test this.  It should be entirely functional as a non-static function.
 		//note: this function is static due to the evolution of the connections activities have to the background process,
 		// it probably is better practice to make this non-static, but we are leaving it as is so we don't have to test
 		// this type of low-level operational difference.
