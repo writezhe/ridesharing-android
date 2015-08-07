@@ -72,10 +72,7 @@ public class AudioRecorderActivity extends SessionActivity {
      * After recording, the app will present the user with the play button. */
     @Override
     public void onCreate(Bundle bundle) {
-    	//get info for the survey.
-    	Intent triggerIntent = getIntent();
-    	surveyId = triggerIntent.getStringExtra("surveyId");
-//    	surveyIdInt = triggerIntent.getIntExtra("surveyIdInt", 0); //TODO: Eli.  Do we need to do anything to handle this default value?
+    	surveyId = getIntent().getStringExtra("surveyId");
     	String content = PersistentData.getSurveyContent(surveyId);
     	//TODO: Eli/Josh. write function that grabs the audio prompt from the provided content string, sets up the display text
     	//Json.blabla
