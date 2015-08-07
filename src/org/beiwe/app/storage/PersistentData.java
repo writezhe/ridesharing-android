@@ -324,7 +324,6 @@ public class PersistentData {
 		editor.putBoolean(surveyId + "-notificationState", bool );
 		editor.commit(); }
 	
-	//FIXME: Eli. This is not used.
 	public static void setMostRecentSurveyAlarmTime(String surveyId, long time) {
 		editor.putLong(surveyId + "-prior_alarm", time);
 		editor.commit(); }
