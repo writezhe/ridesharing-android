@@ -66,41 +66,33 @@ public class SurveyScheduler {
 		if (newAlarmTime == null) {
 			Log.w("SurveyScheduler", "there were no times at all in the provided timings list.");
 			return; } 
-		Log.e("Survey Scheduler", "SCHEDULING LOGIC FINISHED, SCHEDULING SURVEY.");
 		BackgroundService.setSurveyAlarm(surveyId, newAlarmTime);
 	}
 	
 	private static Calendar findNextAlarmTime( ArrayList<ArrayList<Integer>> timesList) {
-		//TODO: Josh. please double check for me that I am creating a calendar object in the phone's timezone.
-		Calendar calendar = Calendar.getInstance();
-		Long now = System.currentTimeMillis();
-		Long possibleAlarmTime = null;
-		Long firstPossibleAlarmTime = null;
+		Calendar now = Calendar.getInstance();
+		Calendar startOfDayTime = getTimeFromStartOfDayOffset(0);		
+		
+		Calendar possibleAlarmTime = null;
+		Calendar firstPossibleAlarmTime = null;
 		Boolean firstFlag = true;
-		calendar.set(Calendar.HOUR_OF_DAY, 0);//TODO: probably don't need to set both of these.
-		calendar.set(Calendar.HOUR, 0);
-		calendar.set(Calendar.MINUTE, 0);
-		calendar.set(Calendar.SECOND, 0);
-		calendar.set(Calendar.MILLISECOND, 0);
-		Long startOfDayInMilliseconds = calendar.getTimeInMillis();
+
 		for ( ArrayList<Integer> day : timesList ) { //iterate through the days of the week
-			for (long time : day) { //iterate through the times in each day
+			for (int time : day) { //iterate through the times in each day
 				if (time > 86400 || time < 0) { throw new NullPointerException("time parser received an invalid value in the time parsing: " + time); }
-				time *=1000;
-				possibleAlarmTime = time + startOfDayInMilliseconds;
+				possibleAlarmTime = getTimeFromStartOfDayOffset(time);
 				
 				if (firstFlag) { //grab the first time we come across in case it falls into the edge case.
-					firstPossibleAlarmTime = possibleAlarmTime;
+					firstPossibleAlarmTime = (Calendar) possibleAlarmTime.clone();
 					firstFlag = false; }
 				
-				if (possibleAlarmTime > now ) { //If the time is in the future, return that time.
-					Log.d("Scheduler", "checked " + possibleAlarmTime + ", yup!");
-					calendar.setTimeInMillis(possibleAlarmTime);
-					return calendar; }
-				
-				Log.d("Scheduler", "checked " + possibleAlarmTime + ", nope.");
+				if ( possibleAlarmTime.after( now ) ) { //If the time is in the future, return that time.
+					Log.d("Scheduler", "checked, yup: " + possibleAlarmTime );
+					return possibleAlarmTime; }
+				Log.d("Scheduler", "checked, nope: " + possibleAlarmTime);
 			}
-			startOfDayInMilliseconds += Timer.ONE_DAY_IN_MILLISECONDS; //advance our start of day counter to the next day.
+			//TODO: Eli/Josh.  This line is based on my fuzzy understanding of the java Calendar class.  Please research and help debug.
+			startOfDayTime.add(Calendar.DATE, 1); //advance our start of day to the next day.
 		}
 		//handles the case where the next alarm is earlier in the day than right now, 1 week from now.
 		// (i.e. no matches in the range of times that fall after right now occuring in the list(s) of times
@@ -108,8 +100,20 @@ public class SurveyScheduler {
 		//TODO: Eli/Josh.  determine why the app stalls when nullpointerexceptions are thrown on... non gui threads?  insert a null pointer exception here and comment out the remainer of the function to see what I am talking about.
 //		throw new NullPointerException("totally arbitrary message");
 		if (firstPossibleAlarmTime == null) { return null; }
-		
-		calendar.setTimeInMillis(firstPossibleAlarmTime + Timer.ONE_WEEK_IN_MILLISECONDS);
+		firstPossibleAlarmTime.add(Calendar.DATE, 7);  // advance the date to the following week.
+		return firstPossibleAlarmTime;
+	}
+	
+	private static Calendar getTimeFromStartOfDayOffset(int offset) {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.HOUR_OF_DAY, offset / 3600 );//TODO: Eli/Josh. probably don't need to set both of these?
+//		calendar.set(Calendar.HOUR, offset / 3600 ); //seconds divided by seconds per hour yields hour of day
+		calendar.set(Calendar.MINUTE, offset / 60 % 60); //seconds divided by sixty mod sixty yields minutes
+		calendar.set(Calendar.SECOND, offset % 60); //seconds mod 60 yields seconds into minute
+		calendar.set(Calendar.MILLISECOND, 0);
+		Log.d("scheduler", "time of day  - " + calendar.get(Calendar.HOUR) + ":"  + calendar.get(Calendar.MINUTE)+ ":" + calendar.get(Calendar.SECOND));
+		Log.d("scheduler", "raw t of day - " + offset / 3600 + ":" + offset / 60 % 60 + ":" + offset % 60 );
 		return calendar;
 	}
+
 }
