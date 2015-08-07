@@ -75,11 +75,12 @@ public class SurveyDownloader {
 //			Log.d("debugging survey update", "timings: " + jsonTimingsString);
 			
 			if ( oldSurveyIds.contains(surveyId) ) { //if surveyId already exists, check for changes, add to list of new survey ids.
-				Log.e("debugging survey update", "checking for changes");
-				Log.w("debugging survey update", "setting content to: " + jsonQuestionsString);
+				Log.d("debugging survey update", "checking for changes");
+				Log.d("debugging survey update", "setting content to: " + jsonQuestionsString);
 				PersistentData.setSurveyContent(surveyId, jsonQuestionsString);
 				PersistentData.setSurveyType(surveyId, surveyType);				
 				if (PersistentData.getSurveyTimes(surveyId) != jsonTimingsString) {
+					PersistentData.setSurveyTimes(surveyId, jsonTimingsString);
 					SurveyScheduler.scheduleSurvey(surveyId);
 				}
 				newSurveyIds.add(surveyId);
