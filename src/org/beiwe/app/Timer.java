@@ -164,31 +164,22 @@ public class Timer {
 	
 	public void startSurveyAlarm(String surveyId, Calendar alarmTime){
 		Intent intentToBeBroadcast = new Intent(surveyId);
-		intentToBeBroadcast.putExtra("day_of_week", alarmTime.DAY_OF_WEEK);
-		intentToBeBroadcast.putExtra("hour_of_day", alarmTime.HOUR_OF_DAY);
-		setupSurveyAlarm(surveyId, intentToBeBroadcast);
+		Log.d("timer", "action: " + intentToBeBroadcast.getAction() );
+		setupSurveyAlarm(surveyId, intentToBeBroadcast, alarmTime);
 	}
 	
 	/**Takes a specially prepared intent and sets it to go off at the day and time provided
 	 * @param intentToBeBroadcast an intent that has been prepared by the startWeeklyAlarm function.*/
-	public void setupSurveyAlarm(String surveyId, Intent intentToBeBroadcast) {
+	public void setupSurveyAlarm(String surveyId, Intent intentToBeBroadcast, Calendar alarmTime) {
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
-		int dayOfWeek = intentToBeBroadcast.getExtras().getInt("day_of_week");
-		int hourOfDay = intentToBeBroadcast.getExtras().getInt("hour_of_day");
 		
-		Calendar date = new GregorianCalendar();
-		//Note: day of week is 0 indexed, 0=Sunday.
-		date.set(Calendar.DAY_OF_WEEK, dayOfWeek);
-		date.set(Calendar.HOUR_OF_DAY, hourOfDay);
-		date.set(Calendar.MINUTE, 0);
-		date.set(Calendar.SECOND, 0);
-		date.set(Calendar.MILLISECOND, 0);
-		long nextTriggerTime = date.getTimeInMillis();
+//TODO: debug debug debug...
+		long nextTriggerTime = alarmTime.getTimeInMillis();
 		// If this week's trigger time has already passed, set the alarm for next week.  This should universally occur except at registration and reboots.
-		if (nextTriggerTime < System.currentTimeMillis()) { nextTriggerTime += ONE_WEEK_IN_MILLISECONDS; }
+//		if (nextTriggerTime < System.currentTimeMillis()) { nextTriggerTime += ONE_WEEK_IN_MILLISECONDS; }
 //		triggerAtMillis = System.currentTimeMillis() + 15000; //hax, debug code.
 		long timeTillFire = nextTriggerTime - System.currentTimeMillis();
-		Log.i("Timer.java", "josh WeeklyAlarm timeTillFire = " + timeTillFire + " milliseconds from now");
+		Log.i("Timer.java", "next alarm triggers in = " + timeTillFire / 1000 + " seconds.");
 		setExactAlarm(AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingIntent);
 		PersistentData.setPriorSurveyAlarmTime(surveyId, nextTriggerTime);
 	}
