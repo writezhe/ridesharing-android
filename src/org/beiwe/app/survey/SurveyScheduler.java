@@ -14,8 +14,7 @@ import org.beiwe.app.storage.PersistentData;
 import android.util.Log;
 
 import java.util.ArrayList;
-
-//TODO: Eli. Rewrite day of week logic (looks like this is a rewrite of the entire class...) to grab a list from the json and parse it (possibly just pass it directly, buuuut that seems unsafe.  validate input at least.)  
+  
 //TODO: Eli. document.
 public class SurveyScheduler {
 
@@ -29,10 +28,7 @@ public class SurveyScheduler {
 			throw new NullPointerException(e.getMessage());
 		}
 		
-		Calendar.getInstance();
-		//is it better to do this all as jsonarrays? no.
-		//TODO: I am not convinced that this gets us todays day-of-week ordinal...
-		int today = Calendar.DAY_OF_WEEK;
+		int today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
 		List<String> days = JSONUtils.jsonArrayToStringList(JSONTimes);
 
 		//create a list of days of the week, with order as such:
@@ -56,11 +52,12 @@ public class SurveyScheduler {
 			if (i == today) timesList.add(0, dayInts ); //if index is today, add to beginning
 			if (i > today) timesList.add(1, dayInts ); //if index > today, insert at position [1] 
 		}
+		Log.i("survey scheduler", "timings list: " + timesList);
 		
 //		we now have a double nested list of lists.  element 0 is today, element 1 is tomorrow
 		// the inner list contains the times of day at which the survey should trigger, these times are values between 0 and 86,400
 		// these values are should be sorted.
-		// these values indicate the "seconds past midnightt" of the day that the alarm should trigger.
+		// these values indicate the "seconds past midnight" of the day that the alarm should trigger.
 		// we iterate through the nested list to come to the next time that is after right now.
 		Calendar newAlarmTime = findNextAlarmTime(timesList);
 		if (newAlarmTime == null) {
