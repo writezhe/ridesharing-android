@@ -181,7 +181,7 @@ public class Timer {
 		long timeTillFire = nextTriggerTime - System.currentTimeMillis();
 		Log.i("Timer.java", "next alarm triggers in = " + timeTillFire / 1000 + " seconds.");
 		setExactAlarm(AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingIntent);
-		PersistentData.setPriorSurveyAlarmTime(surveyId, nextTriggerTime);
+		PersistentData.setMostRecentSurveyAlarmTime(surveyId, nextTriggerTime);
 	}
 		
 	

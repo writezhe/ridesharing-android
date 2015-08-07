@@ -325,10 +325,10 @@ public class PersistentData {
 		editor.commit(); }
 	
 	//FIXME: Eli. This is not used.
-	public static void setPriorSurveyAlarmTime(String surveyId, long time) {
+	public static void setMostRecentSurveyAlarmTime(String surveyId, long time) {
 		editor.putLong(surveyId + "-prior_alarm", time);
 		editor.commit(); }
-	public static long getPriorSurveyAlarmTime(String surveyId) { return pref.getLong( surveyId + "-prior_alarm", MAX_LONG); }
+	public static long getMostRecentSurveyAlarmTime(String surveyId) { return pref.getLong( surveyId + "-prior_alarm", MAX_LONG); }
 	
 	public static void deleteSurvey(String surveyId) {
 		//todo: Eli. can a remove operation fail if the key does not exist? if so how do we handle that.

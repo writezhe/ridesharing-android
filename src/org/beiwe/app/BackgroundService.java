@@ -210,9 +210,8 @@ public class BackgroundService extends Service {
 
 		//checks for the current expected state with app notifications. (must be run before we potentially set new alarms)
 		Long now = System.currentTimeMillis();
-		//TODO: Eli. fairly sure that these should run the (to be implemented) getPriorSurveyAlarmTime function.  (fully aware that the use of "prior" can be confusing.
 		for (String surveyId : PersistentData.getSurveyIds() ){
-			if ( PersistentData.getSurveyNotificationState(surveyId) || PersistentData.getPriorSurveyAlarmTime(surveyId) < now ) {
+			if ( PersistentData.getSurveyNotificationState(surveyId) || PersistentData.getMostRecentSurveyAlarmTime(surveyId) < now ) {
 				SurveyNotifications.displaySurveyNotification(appContext, surveyId);
 			}
 		}
