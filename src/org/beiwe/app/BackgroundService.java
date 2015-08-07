@@ -314,8 +314,9 @@ public class BackgroundService extends Service {
 			
 			//checks if the action is the id of a survey, if so pop up the notification for that survey, schedule the next alarm
 			if ( PersistentData.getSurveyIds().contains( broadcastAction ) ) {
+				//TODO: Eli. debug this, it is not working...
+				Log.w("BACKGROUND PROCESS", "trying to start notification: " + broadcastAction);
 				SurveyNotifications.displaySurveyNotification(appContext, broadcastAction);
-				//TODO: Eli. make sure that the survey notification code properly sets the notification state
 				SurveyScheduler.scheduleSurvey(broadcastAction);
 				return; }
 		}
