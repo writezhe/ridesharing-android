@@ -150,8 +150,8 @@ public class BluetoothListener extends BroadcastReceiver {
 		if ( isBluetoothEnabled() ) {
 			if ( bluetoothAdapter.startLeScan(bluetoothCallback) ) {
 				Log.d("bluetooth", "bluetooth LE scan started successfully."); }
-			else { Log.d("bluetooth", "bluetooth LE scan NOT started successfully."); } }
-		else { Log.d("bluetooth", "bluetooth was not enabled."); } }
+			else { Log.w("bluetooth", "bluetooth LE scan NOT started successfully."); } }
+		else { Log.w("bluetooth", "bluetooth was not enabled."); } }
 
 	
 	/** LeScanCallback is code that is run when a Bluetooth LE scan returns some data.
