@@ -23,7 +23,7 @@ public class Timer {
 	private AlarmManager alarmManager;
 	private Context appContext;
 
-	// TODO: change these to editable values assigned on registration.
+	// FIXME: feature: Eli/Josh. change these to editable values assigned on registration.
 	// How frequently it attempts to upload data files
 	public static final long UPLOAD_DATA_FILES_PERIOD = 60 * 1000L;
 	// How frequently new data files are created
@@ -168,8 +168,6 @@ public class Timer {
 	 * @param intentToBeBroadcast an intent that has been prepared by the startWeeklyAlarm function.*/
 	public void setupSurveyAlarm(String surveyId, Intent intentToBeBroadcast, Calendar alarmTime) {
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
-		
-//TODO: debug debug debug...
 		long nextTriggerTime = alarmTime.getTimeInMillis();
 		// If this week's trigger time has already passed, set the alarm for next week.  This should universally occur except at registration and reboots.
 //		if (nextTriggerTime < System.currentTimeMillis()) { nextTriggerTime += ONE_WEEK_IN_MILLISECONDS; }

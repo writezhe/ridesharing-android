@@ -101,7 +101,7 @@ public class BackgroundService extends Service {
 		//how does this even...  Whatever, 10 seconds later the background service will start.
 		Intent restartServiceIntent = new Intent( getApplicationContext(), this.getClass() );
 	    restartServiceIntent.setPackage( getPackageName() );
-	    // TODO: PendingIntent.FLAG_ONE_SHOT would probably be better if changed to FLAG_CANCEL_CURRENT, but this might be a pain to test
+	    // TODO: Research. Eli/Josh. We may want to change PendingIntent.FLAG_ONE_SHOT to FLAG_CANCEL_CURRENT, research the benefits, this might be a pain to test...
 	    PendingIntent restartServicePendingIntent = PendingIntent.getService( getApplicationContext(), 1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT );
 	    AlarmManager alarmService = (AlarmManager) getApplicationContext().getSystemService( Context.ALARM_SERVICE );
 	    alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 500, restartServicePendingIntent);
@@ -182,8 +182,6 @@ public class BackgroundService extends Service {
 		filter.addAction( appContext.getString( R.string.check_for_new_surveys_intent ) );
 		registerReceiver(timerReceiver, filter);
 	}
-	
-	//TODO: Eli/Josh. check that registerTimers and startTimers code is still okay after custom timers are implemented.
 	
 	/*#############################################################################
 	####################            Timer Logic             #######################

@@ -19,7 +19,7 @@ import android.util.Log;
  * This is a STATIC method, and is called from the background process
  * 
  * @author Eli Jones */
-//TODO: Eli. Redoc.
+//TODO: Low priority: Eli. Redoc.
 public class SurveyNotifications {
 	/**Creates a survey notification that transfers the user to the survey activity. 
 	 * Note: the notification can only be dismissed through submitting the survey

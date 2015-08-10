@@ -14,7 +14,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-//TODO: Eli/Josh. Reenable ssl
+//FIXME: Eli/Josh. Reenable ssl, kill use of HTTP
 //import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.http.client.methods.HttpPost;
@@ -30,7 +30,7 @@ import android.util.Log;
  * All HTTP connections are HTTPS, and automatically include a password and identifying information. 
  * @author Josh, Eli, Dor */
 
-//TODO: Eli. update docs, this does not adequately state that it puts into any request automatic security parameters.
+//TODO: Low priority. Eli. update docs, this does not adequately state that it puts into any request automatic security parameters.
 public class PostRequest {
 
 	private static Context appContext;	

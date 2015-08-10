@@ -54,7 +54,7 @@ public class SmsReceivedLogger extends BroadcastReceiver {
                      String data = "" + System.currentTimeMillis() + TextFileManager.DELIMITER;
                      data += EncryptionEngine.hashPhoneNumber(incomingNumber) + TextFileManager.DELIMITER;
                      data += "received MMS" + TextFileManager.DELIMITER;
-//                     TODO: determine if we can get the length of the text, if it has an attachment.
+//                     TODO: Low priority. feature. determine if we can get the length of the text, if it has an attachment.
 //                     Log.i("SMSReceivedLogger", "data = " + data);
                      TextFileManager.getTextsLogFile().writeEncrypted(data);
                  }

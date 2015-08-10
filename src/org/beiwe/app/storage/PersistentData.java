@@ -123,7 +123,7 @@ public class PersistentData {
 	 * @return true or false based on password requirements.*/
 	public static boolean passwordMeetsRequirements(String password, Activity currentActivity) {
 		// If the password has too few characters, pop up an alert saying so
-		int minPasswordLength = 1; // TODO postproduction: set the minPasswordLength to something higher than 1
+		int minPasswordLength = 1; // TODO: postproduction: set the minPasswordLength to something higher than 1
 		if (password.length() < minPasswordLength) {
 			String alertMessage = String.format(appContext.getString(R.string.password_too_short), minPasswordLength);
 			AlertsManager.showAlert(alertMessage, currentActivity);
@@ -183,7 +183,7 @@ public class PersistentData {
 	################################# Application State ###################################
 	#####################################################################################*/
 	
-	//FIXME: Eli+Josh. IMPLEMENT TOGGLES. Hook into these toggles during registration.
+	//FIXME: FEATURE. Eli/Josh. IMPLEMENT TOGGLES. Hook into these toggles during registration.
 	public static long getAccelerometerOffDurationSeconds() { return pref.getLong(ACCELEROMETER_OFF_DURATION_SECONDS, MAX_LONG); }
 	public static long getAccelerometerOnDurationSeconds() { return pref.getLong(ACCELEROMETER_ON_DURATION_SECONDS, MAX_LONG); }
 	public static long getBluetoothOnDurationSeconds() { return pref.getLong(BLUETOOTH_ON_DURATION_SECONDS, MAX_LONG); }

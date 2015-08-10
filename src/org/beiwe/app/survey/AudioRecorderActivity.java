@@ -74,13 +74,14 @@ public class AudioRecorderActivity extends SessionActivity {
     public void onCreate(Bundle bundle) {
     	surveyId = getIntent().getStringExtra("surveyId");
     	String content = PersistentData.getSurveyContent(surveyId);
-    	//TODO: Eli/Josh. write function that grabs the audio prompt from the provided content string, sets up the display text
-    	//Json.blabla
-    	// Get the survey layout objects that we'll add questions to
+    	/*FIXME: Feature. Eli/Josh.  Implement custom audio surveys. 
+    	1. Write function that pulls the audio prompt text from the provided json content string.
+    	2. Set the text element to the proper string.
+    	3. ensure that alarms/notifications properly start the audio surveys. */
+    	
+    	// grab the layout element objects that we will add questions to:
 //    	TextView textbox = findViewById(R.id.the correct textview id...);
-//    	textbox.setText(prompt);
-    	//TODO: Eli. set prompt text to the provided text in the layout
-    	//TODO: ensure that this behavior does not kill the app if a survey download event occurs and rewrites the survey. 
+//    	textbox.setText(prompt); 
     	super.onCreate(bundle);
         setContentView(R.layout.activity_audio_recorder);
         

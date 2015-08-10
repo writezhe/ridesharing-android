@@ -3,7 +3,7 @@ package org.beiwe.app.networking;
 import android.os.AsyncTask;
 import android.util.Log;
 
-//TODO: redoc.
+//TODO: Low priority: Eli. Redoc.
 
 /**HTTPAsync is a... special AsyncTask for handling network (HTTP) requests using our PostRequest class.
  * HTTPAsync handles the asynchronous requirement for UI threads, and automatically handles user
@@ -45,7 +45,7 @@ public class HTTPAsync extends AsyncTask<Void, Void, Void> {
 	/**Does the logging operation executed in onPostExecute.*/
 	protected void alertSystem() {
 		if ( (response == -1) && (responseString.length() > 3) ) {
-			//TODO: Eli. this is absolutely untested.
+			//TODO: Eli. find a better way to do this/determine if we actually need to do this. whatever we do, document it.  This is spamming logcat.
 			Log.w("HTTPAsync", "DOING SOMETHING DANGEROUS");
 			try { response = Integer.parseInt( responseString.substring(0, 3) ); }
 			catch (NumberFormatException e) { Log.w("HTTPAsync", "NOPE, DIDN'T WORK."); }
@@ -60,7 +60,7 @@ public class HTTPAsync extends AsyncTask<Void, Void, Void> {
 	}
 	
 	
-	//TODO: Eli/Josh.  move these error messages to strings.xml
+	//TODO: Low priority. Eli/Josh.  move these error messages to strings.xml
 	/**Checks a given response code sent from the server, and then returns a string corresponding to that code's meaning.
 	 * @param responseCode
 	 * @return String to be displayed on the Alert in case of a problem	 */

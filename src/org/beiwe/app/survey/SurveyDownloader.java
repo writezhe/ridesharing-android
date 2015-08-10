@@ -93,7 +93,7 @@ public class SurveyDownloader {
 		
 		for (String oldSurveyId : oldSurveyIds){ //for each old survey id
 			if ( !newSurveyIds.contains( oldSurveyId ) ) { //check if it is still a valid survey (it the list of new survey ids.)
-				//	TODO: Eli. unschedule old survey alarm, delete
+				//	FIXME: Eli. implement unscheduling old survey alarm, delete
 				throw new NullPointerException("surveys currently scheduled need to be unscheduled");
 			}
 		}
