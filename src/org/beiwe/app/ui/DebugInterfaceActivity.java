@@ -123,10 +123,9 @@ public class DebugInterfaceActivity extends SessionActivity {
 	}
 
 	public void alarmStates(View view) {
-		Log.e("DebugInterfaceActivity", "not implemented");
-		//TODO: reimplement.
-//		Log.i("audio", "" +PersistentData.getAudioAlarmTime() + ", " + PersistentData.getCorrectAudioNotificationState() );
-//		Log.i("daily", "" + PersistentData.getDailySurveyAlarmTime()  + ", " + PersistentData.getCorrectDailyNotificationState());
-//		Log.i("weekly", "" + PersistentData.getWeeklySurveyAlarmTime() + ", " + PersistentData.getCorrectWeeklyNotificationState()) ;
+		for (String surveyId : PersistentData.getSurveyIds()){
+			SurveyNotifications.displaySurveyNotification(appContext, surveyId);
+			Log.i("most recent alarm state", "" +PersistentData.getMostRecentSurveyAlarmTime(surveyId) + ", " + PersistentData.getSurveyNotificationState(surveyId)) ; 
+		}
 	}
 }
