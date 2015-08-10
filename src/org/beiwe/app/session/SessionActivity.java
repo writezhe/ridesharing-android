@@ -57,8 +57,7 @@ public class SessionActivity extends RunningBackgroundProcessActivity {
 	/** If the user is NOT logged in, take them to the login page */
 	protected void authenticateAndLoginIfNecessary() {
 		if ( PersistentData.isLoggedIn() ) {
-			//TODO: Eli. this todo is linked with the todo in background service attached to startAutomaticLogoutCountdownTimer. 
-			backgroundService.startAutomaticLogoutCountdownTimer(); }
+			BackgroundService.startAutomaticLogoutCountdownTimer(); }
 		else {
 			startActivity(new Intent(this, LoginActivity.class) ); }
 	}

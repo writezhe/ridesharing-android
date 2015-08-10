@@ -220,14 +220,15 @@ public class BackgroundService extends Service {
 			if ( !timer.alarmIsSet( new Intent(surveyId) ) ) { SurveyScheduler.scheduleSurvey(surveyId); } }
 	}
 	
-	public void startAutomaticLogoutCountdownTimer(){
-		//TODO: Eli/Josh.  this todo is linked with the access of the startAutomaticLogoutCountdownTimer function in sessionAcivity.  Test this.  It should be entirely functional as a non-static function.
-		//note: this function is static due to the evolution of the connections activities have to the background process,
-		// it probably is better practice to make this non-static, but we are leaving it as is so we don't have to test
-		// this type of low-level operational difference.
+	/**Refreshes the logout timer.
+	 * This function has a THEORETICAL race condition, where the BackgroundService is not fully instantiated by a session activity,
+	 * in this case we log an error to the debug log, print the error, and then wait for it to crash.  In testing on a (much) older
+	 * version of the app we would occasionally see the error message, but we have never (august 10 2015) actually seen the app crash
+	 * inside this code. */
+	public static void startAutomaticLogoutCountdownTimer(){
 		if (timer == null) {
-			Log.w("bacgroundProcess", "timer is null, this is about to crash");
-			TextFileManager.getDebugLogFile().writeEncrypted("our not-quite-race-condition encountered, the timer was null when the background process was supposed to be instantiated");
+			Log.e("bacgroundProcess", "timer is null, BackgroundService may be about to crash, the Timer was null when the BackgroundService was supposed to be fully instantiated.");
+			TextFileManager.getDebugLogFile().writeEncrypted("our not-quite-race-condition encountered, Timer was null when the BackgroundService was supposed to be fully instantiated");
 		}
 		timer.setupExactSingleAlarm(Timer.MILLISECONDS_BEFORE_AUTO_LOGOUT, Timer.signoutIntent);
 		PersistentData.loginOrRefreshLogin();
@@ -314,7 +315,7 @@ public class BackgroundService extends Service {
 			
 			//checks if the action is the id of a survey, if so pop up the notification for that survey, schedule the next alarm
 			if ( PersistentData.getSurveyIds().contains( broadcastAction ) ) {
-				//TODO: Eli. debug this, it is not working...
+				//FIXME: Eli.  WE ARE NOT REGISTERING INTENTS. FIX THIS. IF THAT DOES NOT WORK: alarms are not reading this code.  check if the above logic ever executes and returns too early, check values of broadcast actions, check values of the intents in the alarm manager.  
 				Log.w("BACKGROUND PROCESS", "trying to start notification: " + broadcastAction);
 				SurveyNotifications.displaySurveyNotification(appContext, broadcastAction);
 				SurveyScheduler.scheduleSurvey(broadcastAction);
