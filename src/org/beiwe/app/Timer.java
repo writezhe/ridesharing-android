@@ -1,7 +1,6 @@
 package org.beiwe.app;
 
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Random;
 
 import org.beiwe.app.storage.PersistentData;
@@ -223,11 +222,7 @@ public class Timer {
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
 		alarmManager.cancel(pendingIntent);
 	}
-	
-	/** Cancels any survey alarm trigger for the provided surveyId.
-	 * Does not return any info about whether the alarm existed. */
-	public void cancelSurveyAlarm( String surveyId ){ cancelAlarm(new Intent(surveyId) ); }
-	
+		
 	/**Checks if an alarm is set.
 	 * @param intent an Intent identifying the alarm to check.
 	 * @return Returns TRUE if there is an alarm set matching that intent; otherwise false. */
