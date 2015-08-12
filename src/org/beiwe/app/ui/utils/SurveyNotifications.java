@@ -10,10 +10,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 /**The purpose of this class is to deal with all that has to do with Survey Notifications.
  * This is a STATIC method, and is called from the background process
@@ -24,7 +22,6 @@ public class SurveyNotifications {
 	/**Creates a survey notification that transfers the user to the survey activity. 
 	 * Note: the notification can only be dismissed through submitting the survey
 	 * @param appContext */
-	@SuppressWarnings("rawtypes")
 	public static void displaySurveyNotification(Context appContext, String surveyId) {
 		//activityIntent contains information on the action triggered by tapping the notification. 
 		Intent activityIntent;		
@@ -67,13 +64,15 @@ public class SurveyNotifications {
 		Notification surveyNotification = notificationBuilder.build();
 		surveyNotification.flags = Notification.FLAG_ONGOING_EVENT;
 		
-		//This value is used inside the notification as the unique Identifier of that notification.
-		//surveys never change their index in the list, so we can use that value consistently. 
-		int uniqueIntegerSurveyId = PersistentData.getSurveyIds().indexOf(surveyId);
+		//This value is used inside the notification as the unique Identifier of that notification (it has to be an int)
+		//note: recommendations about not using the .hashCode function in java are in usually regards to Object.hashCode(),
+		//or are about the fact that the specific hash algorithm is not necessarily consistent between versions of the JVM.
+		// If you look at the source of the String class hashCode function you will see that it operates on the value of the string, this is all we need.
+		int surveyIdHash = surveyId.hashCode();
 		NotificationManager notificationManager = (NotificationManager) appContext.getSystemService(Context.NOTIFICATION_SERVICE);
-		notificationManager.cancel(uniqueIntegerSurveyId); //cancel current		
+		notificationManager.cancel(surveyIdHash); //cancel current
 		notificationManager.notify(
-				uniqueIntegerSurveyId, // If another notification with the same ID pops up, this notification will be updated/cancelled.
+				surveyIdHash, // If another notification with the same ID pops up, this notification will be updated/cancelled.
 				surveyNotification);
 		
 		//And, finally, set the notification state for zombie alarms.
@@ -85,8 +84,7 @@ public class SurveyNotifications {
 	 * @param appContext
 	 * @param notifCode */
 	public static void dismissNotification(Context appContext, String surveyId) {
-		//TODO: Eli.  build button in debug activity to test.
-		NotificationManager notificationManager = (NotificationManager) appContext.getSystemService(Context.NOTIFICATION_SERVICE);
-		notificationManager.cancel(PersistentData.getSurveyIds().indexOf(surveyId));
+ 		NotificationManager notificationManager = (NotificationManager) appContext.getSystemService(Context.NOTIFICATION_SERVICE);
+		notificationManager.cancel(surveyId.hashCode());
 	}
 }
