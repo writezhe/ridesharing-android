@@ -299,6 +299,16 @@ public class PersistentData {
 		else { throw new NullPointerException("duplicate survey id added"); } //TODO: Eli/Josh.  I am unaware of how this code could ever possible run because we ensure uniqueness in the downloader.  thoughts?
 	}
 	
+	private static void removeSurveyId(String surveyId) {
+		List<String> list = JSONUtils.jsonArrayToStringList( getSurveyIdsJsonArray() );
+		if ( list.contains(surveyId) ) {
+			list.remove(surveyId);
+			editor.putString(SURVEY_IDS, new JSONArray(list).toString() );
+			editor.commit();
+		}
+		else { throw new NullPointerException("survey id does not exist"); } //TODO: Eli/Josh.  like in addSurveyId, I am unaware of how this code could ever possible run because we ensure uniqueness in the downloader.  thoughts?
+	}
+	
 	public static String getSurveyTimes(String surveyId){ return pref.getString(surveyId + "-times", null); }
 	public static String getSurveyContent(String surveyId){ return pref.getString(surveyId + "-content", null); }
 	public static String getSurveyType(String surveyId){ return pref.getString(surveyId + "-type", null); }
@@ -330,12 +340,11 @@ public class PersistentData {
 	public static long getMostRecentSurveyAlarmTime(String surveyId) { return pref.getLong( surveyId + "-prior_alarm", MAX_LONG); }
 	
 	public static void deleteSurvey(String surveyId) {
-		//todo: Eli. can a remove operation fail if the key does not exist? if so how do we handle that.
-		//TODO: eli. test that all these operations actually happen with the commit.
 		editor.remove(surveyId + "-content");
 		editor.remove(surveyId + "-times");
 		editor.remove(surveyId + "-type");
 		editor.remove(surveyId + "-notificationState");
 		editor.commit();
+		removeSurveyId(surveyId);
 	}
 }
