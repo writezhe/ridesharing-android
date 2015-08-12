@@ -48,6 +48,13 @@ public class SurveyNotifications {
 
         activityIntent.putExtra( "surveyId", surveyId );
 		activityIntent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP ); //modifies behavior when the user is already in the app.
+		
+		//This value is used inside the notification (and the pending intent) as the unique Identifier of that notification, this value must be an int.
+		//note: recommendations about not using the .hashCode function in java are in usually regards to Object.hashCode(),
+		// or are about the fact that the specific hash algorithm is not necessarily consistent between versions of the JVM.
+		// If you look at the source of the String class hashCode function you will see that it operates on the value of the string, this is all we need.
+		int surveyIdHash = surveyId.hashCode();
+		
 		/* The pending intent defines properties of the notification itself.
 		 * BUG. Cannot use FLAG_UPDATE_CURRENT, which handles conflicts of multiple notification with the same id, 
 		 * so that the new notification replaces the old one.  if you use FLAG_UPDATE_CURRENT the notification will
@@ -56,21 +63,14 @@ public class SurveyNotifications {
 		 * (or add android:exported="true" to the activity's permissions in the Manifest.)
 		 * http://stackoverflow.com/questions/21250364/notification-click-not-launch-the-given-activity-on-nexus-phones */
 		//we manually cancel the notification anyway, so this is likely moot.
-		PendingIntent pendingActivityIntent = PendingIntent.getActivity(appContext,
-				1, // a Request code meaning "close the notification once done"
-				activityIntent,
-				PendingIntent.FLAG_CANCEL_CURRENT);		
+		PendingIntent pendingActivityIntent = PendingIntent.getActivity(appContext, surveyIdHash, activityIntent, PendingIntent.FLAG_CANCEL_CURRENT);		
 		notificationBuilder.setContentIntent(pendingActivityIntent);
 		Notification surveyNotification = notificationBuilder.build();
 		surveyNotification.flags = Notification.FLAG_ONGOING_EVENT;
 		
-		//This value is used inside the notification as the unique Identifier of that notification (it has to be an int)
-		//note: recommendations about not using the .hashCode function in java are in usually regards to Object.hashCode(),
-		//or are about the fact that the specific hash algorithm is not necessarily consistent between versions of the JVM.
-		// If you look at the source of the String class hashCode function you will see that it operates on the value of the string, this is all we need.
-		int surveyIdHash = surveyId.hashCode();
+
 		NotificationManager notificationManager = (NotificationManager) appContext.getSystemService(Context.NOTIFICATION_SERVICE);
-		notificationManager.cancel(surveyIdHash); //cancel current
+		notificationManager.cancel(surveyIdHash); //cancel any current notification with this id hash
 		notificationManager.notify(
 				surveyIdHash, // If another notification with the same ID pops up, this notification will be updated/cancelled.
 				surveyNotification);
