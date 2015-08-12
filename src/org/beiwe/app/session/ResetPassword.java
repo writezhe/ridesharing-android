@@ -63,7 +63,7 @@ public class ResetPassword {
 		new HTTPUIAsync(url, currentActivity) {
 			
 			@Override
-			protected Void doInBackground(Void... arg0)  {
+			protected Void doInBackground(Void... arg0) {
 				parameters = PostRequest.makeParameter("new_password", newPassword);
 				response = PostRequest.httpRequestcode(parameters, url, hashedCurrentPassword);
 				return null;

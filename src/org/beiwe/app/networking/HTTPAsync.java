@@ -45,14 +45,14 @@ public class HTTPAsync extends AsyncTask<Void, Void, Void> {
 	/**Does the logging operation executed in onPostExecute.*/
 	protected void alertSystem() {
 		if ( (response == -1) && (responseString.length() > 3) ) {
-			//TODO: Eli. find a better way to do this/determine if we actually need to do this. whatever we do, document it.  This is spamming logcat.
+			//TODO: Eli. Since HTTPAsync was refactored it has become unclear whether the http requests properly handle response codes.  Investigate, redoc, determine behavior.
 			Log.w("HTTPAsync", "DOING SOMETHING DANGEROUS");
 			try { response = Integer.parseInt( responseString.substring(0, 3) ); }
-			catch (NumberFormatException e) { Log.w("HTTPAsync", "NOPE, DIDN'T WORK."); }
+			catch (NumberFormatException e) { Log.w("HTTPAsync", "You are not setting the value of the response code.  Please set the local variable 'responseCode' to an  appropriate value."); }
 		}
 		
 		if (response == -1 && responseString == null) {
-			Log.e("HTTPAsync", "WARNING: the response and responseString variables were never set, HTTPAsync is unable check validity."); }
+			Log.w("HTTPAsync", "WARNING: the response and responseString variables were never set, HTTPAsync is unable check validity."); }
 		else if ((response == -1) && (responseString.length() == 3)) {		
 			Log.e("HTTPAsync", responseCodeAlert( Integer.parseInt(responseString)));  }
 		else if (response != 200) {

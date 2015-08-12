@@ -59,6 +59,8 @@ public class HTTPUIAsync extends HTTPAsync {
 	 * any additional special response and user notification logic required by your code.*/
 	@Override
 	protected void onPostExecute(Void arg) {
+		//TODO: Eli. Part of cleaning up httpAsync, uncommenting the following line causes a crash on password reset.  investigate.
+//		super.onPostExecute(arg);
 		if (alertSpinner != null) alertSpinner.setVisibility(View.GONE);
 		alertUser();
 	}

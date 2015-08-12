@@ -67,7 +67,6 @@ public class SurveyNotifications {
 		notificationBuilder.setContentIntent(pendingActivityIntent);
 		Notification surveyNotification = notificationBuilder.build();
 		surveyNotification.flags = Notification.FLAG_ONGOING_EVENT;
-		
 
 		NotificationManager notificationManager = (NotificationManager) appContext.getSystemService(Context.NOTIFICATION_SERVICE);
 		notificationManager.cancel(surveyIdHash); //cancel any current notification with this id hash
