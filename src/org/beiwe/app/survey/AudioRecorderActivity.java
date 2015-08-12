@@ -41,6 +41,9 @@ import android.widget.Toast;
  * http://developer.android.com/guide/topics/media/audio-capture.html
  * 
  * @author Josh Zagorsky, Eli Jones */
+
+//FIXME: Eli. check that file handling to only upload retired files is actually functional for the voice recording files.
+
 public class AudioRecorderActivity extends SessionActivity {
     private static final String LOG_TAG = "AudioRecorderActivity";
     private static boolean displayPlaybackButton = false;
