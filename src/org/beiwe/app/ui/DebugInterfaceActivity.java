@@ -1,6 +1,7 @@
 package org.beiwe.app.ui;
 
 import java.security.spec.InvalidKeySpecException;
+import java.util.List;
 
 import org.beiwe.app.R;
 import org.beiwe.app.Timer;
@@ -11,7 +12,6 @@ import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.storage.TextFileManager;
-import org.beiwe.app.survey.AudioRecorderActivity;
 import org.beiwe.app.survey.SurveyDownloader;
 import org.beiwe.app.survey.SurveyActivity;
 import org.beiwe.app.ui.user.LoginActivity;
@@ -50,9 +50,7 @@ public class DebugInterfaceActivity extends SessionActivity {
 	public void uploadDataFiles(View view) { PostRequest.uploadAllFiles(); }
 	
 	public void runSurveyDownload(View view) { SurveyDownloader.downloadSurveys(getApplicationContext()); }
-	
-	public void goToAudioRecorder(View view) { startActivity( new Intent(this, AudioRecorderActivity.class) ); }
-	
+		
 	public void goToSurvey(View view) { startActivity( new Intent(this, SurveyActivity.class) ); }
 	
 	public void deleteEverything(View view) {
@@ -73,8 +71,6 @@ public class DebugInterfaceActivity extends SessionActivity {
 	public void toggleGPS(View view) {
 		Boolean gps_state = backgroundService.gpsListener.toggle();
 		Log.i("Toggle GPS button pressed", "GPS state: " + gps_state.toString() ); }
-	
-	public void signOut (View view) { super.logoutUser(); }
 	
 	public void scanWifi (View view) { WifiListener.scanWifi(); }
 	
@@ -122,9 +118,9 @@ public class DebugInterfaceActivity extends SessionActivity {
 		}
 	}
 
-	public void alarmStates(View view) {
-		for (String surveyId : PersistentData.getSurveyIds()){
-			SurveyNotifications.displaySurveyNotification(appContext, surveyId);
+	public void getAlarmStates(View view) {
+		List<String> ids = PersistentData.getSurveyIds();
+		for (String surveyId : ids){
 			Log.i("most recent alarm state", "" +PersistentData.getMostRecentSurveyAlarmTime(surveyId) + ", " + PersistentData.getSurveyNotificationState(surveyId)) ; 
 		}
 	}

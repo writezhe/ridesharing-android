@@ -45,13 +45,6 @@
 	        android:text="Make New Files" />
 
 	    <Button
-	        android:id="@+id/buttonGoToAudioRecorder"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:onClick="goToAudioRecorder"
-	        android:text="Go to Audio Recorder" />
-
-	    <Button
 	        android:id="@+id/buttonDeleteEverything"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
@@ -63,7 +56,7 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:onClick="listFiles"
-	        android:text="List All Files in Log" />
+	        android:text="List All Files" />
 
 	    <Button
 	        android:id="@+id/buttonStartBluetooth"
@@ -100,13 +93,6 @@
 	        android:onClick="scanWifi"
 	        android:text="Scan Wifi" />
 
-	    <Button
-	        android:id="@+id/signout"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:onClick="signOut"
-	        android:text="Sign Out" />
-
 		<Button
 		    android:id="@+id/buttonTimer"
 		    android:layout_width="wrap_content"
@@ -139,8 +125,8 @@
 		    android:id="@+id/buttonAlarmStates"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
-		    android:onClick="alarmStates"
-		    android:text="Log Prior Alarm Times" />
+		    android:onClick="getAlarmStates"
+		    android:text="Log Most Recent Alarm Times" />
 
 		<Button
 	        android:id="@+id/loadMainMenu"
