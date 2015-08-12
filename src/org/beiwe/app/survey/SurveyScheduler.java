@@ -10,8 +10,12 @@ import org.beiwe.app.JSONUtils;
 import org.beiwe.app.Timer;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.beiwe.app.BackgroundService.BackgroundProcessBinder;
 import org.beiwe.app.storage.PersistentData;
 
+import android.content.ComponentName;
+import android.content.ServiceConnection;
+import android.os.IBinder;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -35,20 +39,24 @@ public class SurveyScheduler {
 		try { JSONTimes = new JSONArray(timeString); }
 		catch (JSONException e) { e.printStackTrace(); //If this fails we have significant problems, but probably the errors come from external factors.
 			throw new NullPointerException(e.getMessage()); }
-		List<String> days = JSONUtils.jsonArrayToStringList(JSONTimes);
+		List<String> jsonDays = JSONUtils.jsonArrayToStringList(JSONTimes);
 		
-		//we will now create a list of days of the week, with order like this:
+		//create a list of days of the week, with order like this:
 		// 0: today, 1: tomorrow, 2: day after ...
+		List<String> reorderedDays = new ArrayList<String>();
+		reorderedDays.addAll( jsonDays.subList( today, jsonDays.size() ) );
+		reorderedDays.addAll( jsonDays.subList(0, today) );
+		
 		for (int i=0; i <= 6; i++) {
-			try { dayJSON = new JSONArray(days.get(i)); }  //convert to json array
+			try { dayJSON = new JSONArray(reorderedDays.get(i)); }  //convert to json array
 			catch (JSONException e) { e.printStackTrace(); //Again, if this crashes we have problems but they probably come from external factors.
 				throw new NullPointerException(e.getMessage()); }
 			dayInts = JSONUtils.jsonArrayToIntegerList(dayJSON); //convert to (iteraable) list of ints
 			Collections.sort(dayInts); //ensure sorted because... because.
-			if (i < today) { timesList.add( dayInts ); } //if index < today, add to end
-			if (i == today) { timesList.add(0, dayInts ); } //if index is today, add to beginning
-			if (i > today) { timesList.add(1, dayInts ); } //if index > today, insert at position [1]
+			timesList.add( dayInts );
 		}
+//		Log.d("Scheduler", "day list before sorting: " + reorderedDays);
+		Log.d("Scheduler", "day list after sorting:  " + timesList);
 		
 //		we now have a double nested list of lists.  element 0 is today, element 1 is tomorrow
 		// the inner list contains the times of day at which the survey should trigger, these times are values between 0 and 86,400
@@ -64,13 +72,14 @@ public class SurveyScheduler {
 	
 	private static Calendar findNextAlarmTime( ArrayList<ArrayList<Integer>> timesList) {
 		Calendar now = Calendar.getInstance();
-//		Log.d("scheduler", "now: " + now);
 		Calendar possibleAlarmTime = null;
 		Calendar firstPossibleAlarmTime = null;
 		Boolean firstFlag = true;
 		int days = 0;
 		for ( ArrayList<Integer> day : timesList ) { //iterate through the days of the week
+//			Log.i("scheduler", "day: " + days);
 			for (int time : day) { //iterate through the times in each day
+//				Log.i("scheduler", "time: " + time);
 				if (time > 86400 || time < 0) { throw new NullPointerException("time parser received an invalid value in the time parsing: " + time); }
 				possibleAlarmTime = getTimeFromStartOfDayOffset(time);
 				if (firstFlag) { //grab the first time we come across in case it falls into the edge case.
@@ -79,7 +88,7 @@ public class SurveyScheduler {
 				}
 				possibleAlarmTime.add(Calendar.DATE, days); //add to this time the appropriate number of days
 				if ( possibleAlarmTime.after( now ) ) { //If the time is in the future, return that time.
-//					Log.d("Scheduler", "checked, yup: " + possibleAlarmTime );
+					Log.d("Scheduler", "checked, yup: " + possibleAlarmTime );
 					return possibleAlarmTime;
 				}
 //				Log.d("Scheduler", "checked, nope: " + possibleAlarmTime);
@@ -91,19 +100,19 @@ public class SurveyScheduler {
 //		throw new NullPointerException("totally arbitrary message");
 		if (firstPossibleAlarmTime == null) { return null; }
 		firstPossibleAlarmTime.add(Calendar.DATE, 7);  // advance the date to the following week.
+//		Log.d("Scheduler", "reverting to fallback: " + firstPossibleAlarmTime );
 		return firstPossibleAlarmTime;
 	}
 	
 	private static Calendar getTimeFromStartOfDayOffset(int offset) {
 		Calendar calendar = Calendar.getInstance();
-		calendar.set(Calendar.HOUR_OF_DAY, offset / 3600 ); //seconds divided by seconds per hour yields hour of day
-//		calendar.set(Calendar.HOUR, offset / 3600 ); //this one appears to be derived, so we don't bother setting it.
+		calendar.set(Calendar.HOUR_OF_DAY, offset / 3600 ); //seconds divided by seconds per hour yields hour of day (this is the 24-hour time of day
+//		calendar.set(Calendar.HOUR, offset / 3600 ); //do not set this value, it will override the hour_of_day value and do it incorrectly.
 		calendar.set(Calendar.MINUTE, offset / 60 % 60); //seconds divided by sixty mod sixty yields minutes
 		calendar.set(Calendar.SECOND, offset % 60); //seconds mod 60 yields seconds into minute
 		calendar.set(Calendar.MILLISECOND, 0);
-//		Log.d("scheduler", "time of day  - " + calendar.get(Calendar.HOUR) + ":"  + calendar.get(Calendar.MINUTE)+ ":" + calendar.get(Calendar.SECOND));
-//		Log.d("scheduler", "raw t of day - " + offset / 3600 + ":" + offset / 60 % 60 + ":" + offset % 60 );
+		calendar.setFirstDayOfWeek(Calendar.SUNDAY);
+//		Log.d("generated time", calendar.toString());
 		return calendar;
 	}
-
 }

@@ -1,6 +1,7 @@
 package org.beiwe.app;
 
 import java.util.Calendar;
+import java.util.List;
 
 import org.beiwe.app.listeners.AccelerometerListener;
 import org.beiwe.app.listeners.BluetoothListener;
@@ -43,6 +44,14 @@ public class BackgroundService extends Service {
 	public BluetoothListener bluetoothListener;
 	private static Timer timer;
 	
+	
+	//localHandle is how static functions access the currently instantiated background service.
+	//It is to be used ONLY to register new surveys with the running background service, because
+	//that code needs to be able to update the IntentFilters associated with timerReceiver.
+	//This is Really Hacky and terrible style, but it is okay because the scheduling code can only ever
+	//begin to run with an already fully instantiated background service.
+	private static BackgroundService localHandle;
+	
 	@Override
 	/** onCreate is essentially the constructor for the service, initialize variables here.*/
 	public void onCreate() {
@@ -61,11 +70,12 @@ public class BackgroundService extends Service {
 		startMmsSentLogger();
 		startCallLogger();
 		startPowerStateListener();
-		registerTimers();
-		
+		localHandle = this;  //yes yes I know.
+		registerTimers(appContext);
 		DeviceInfo.getPhoneNumber();
 		//If this device is registered, start timers!
 		if (PersistentData.isRegistered()) { startTimers(); }
+		
 	}
 
 	
@@ -161,10 +171,14 @@ public class BackgroundService extends Service {
 		PowerStateListener.start();
 	}
 	
+	
+	
 	/** create timers that will trigger events throughout the program, and
 	 * register the custom Intents with the controlMessageReceiver. */
-	private void registerTimers() {
-		timer = new Timer(this);
+	//This can be called
+	@SuppressWarnings("static-access")
+	public static void registerTimers(Context appContext) {
+		localHandle.timer = new Timer(localHandle);
 		IntentFilter filter = new IntentFilter();
 		filter.addAction( appContext.getString( R.string.accelerometer_off ) );
 		filter.addAction( appContext.getString( R.string.accelerometer_on ) );
@@ -180,7 +194,9 @@ public class BackgroundService extends Service {
 		filter.addAction( appContext.getString( R.string.upload_data_files_intent ) );
 		filter.addAction( appContext.getString( R.string.create_new_data_files_intent ) );
 		filter.addAction( appContext.getString( R.string.check_for_new_surveys_intent ) );
-		registerReceiver(timerReceiver, filter);
+		List<String> surveyIds = PersistentData.getSurveyIds();
+		for (String surveyId : surveyIds) { filter.addAction(surveyId); }
+		appContext.registerReceiver(localHandle.timerReceiver, filter);
 	}
 	
 	/*#############################################################################
@@ -238,8 +254,12 @@ public class BackgroundService extends Service {
 	/** The Timer requires the BackgroundService in order to create alarms, hook into that functionality here. */
 	public static void setSurveyAlarm(String surveyId, Calendar alarmTime) { timer.startSurveyAlarm(surveyId, alarmTime); }
 	
+	
+	
+	
 	/**The timerReceiver is an Android BroadcastReceiver that listens for our timer events to trigger,
 	 * and then runs the appropriate code for that trigger. */
+	//programmer note: this variable is instantiated here AT CONSTRUCTION, BEFORE onCreate runs.
 	private BroadcastReceiver timerReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context appContext, Intent intent) {
@@ -313,7 +333,6 @@ public class BackgroundService extends Service {
 			
 			//checks if the action is the id of a survey, if so pop up the notification for that survey, schedule the next alarm
 			if ( PersistentData.getSurveyIds().contains( broadcastAction ) ) {
-				//FIXME: Eli.  WE ARE NOT REGISTERING INTENTS. FIX THIS. IF THAT DOES NOT WORK: alarms are not reading this code.  check if the above logic ever executes and returns too early, check values of broadcast actions, check values of the intents in the alarm manager.  
 				Log.w("BACKGROUND PROCESS", "trying to start notification: " + broadcastAction);
 				SurveyNotifications.displaySurveyNotification(appContext, broadcastAction);
 				SurveyScheduler.scheduleSurvey(broadcastAction);
