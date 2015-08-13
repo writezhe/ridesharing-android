@@ -1,7 +1,7 @@
 package org.beiwe.app.ui.user;
 
 import org.beiwe.app.R;
-import org.beiwe.app.RunningBackgroundProcessActivity;
+import org.beiwe.app.RunningBackgroundServiceActivity;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.survey.TextFieldKeyboard;
 import org.beiwe.app.ui.registration.ForgotPasswordActivity;
@@ -19,7 +19,7 @@ import android.widget.EditText;
  * it bumps the user to this screen.  This timer occurs in the Background process, so the
  * timer still triggers even if the app has been backgrounded or killed from the task switcher.
  * @authors Dor Samet, Eli Jones */
-public class LoginActivity extends RunningBackgroundProcessActivity {	
+public class LoginActivity extends RunningBackgroundServiceActivity {	
 	private EditText password;
 	private Context appContext;
 	

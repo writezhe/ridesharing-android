@@ -2,7 +2,7 @@ package org.beiwe.app.ui.registration;
 
 import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
-import org.beiwe.app.RunningBackgroundProcessActivity;
+import org.beiwe.app.RunningBackgroundServiceActivity;
 import org.beiwe.app.networking.HTTPUIAsync;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.storage.PersistentData;
@@ -21,7 +21,7 @@ import android.widget.EditText;
  * @author Dor Samet, Eli Jones */
 
 @SuppressLint("ShowToast")
-public class RegisterActivity extends RunningBackgroundProcessActivity {
+public class RegisterActivity extends RunningBackgroundServiceActivity {
 	// Private fields
 	private EditText userID;
 	private EditText password;

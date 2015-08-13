@@ -1,7 +1,7 @@
 package org.beiwe.app.ui.registration;
 
 import org.beiwe.app.R;
-import org.beiwe.app.RunningBackgroundProcessActivity;
+import org.beiwe.app.RunningBackgroundServiceActivity;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.SurveyDownloader;
@@ -14,7 +14,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-public class ConsentFormActivity extends RunningBackgroundProcessActivity {
+public class ConsentFormActivity extends RunningBackgroundServiceActivity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

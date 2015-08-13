@@ -1,7 +1,7 @@
 package org.beiwe.app.ui.registration;
 
 import org.beiwe.app.R;
-import org.beiwe.app.RunningBackgroundProcessActivity;
+import org.beiwe.app.RunningBackgroundServiceActivity;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.survey.TextFieldKeyboard;
 import org.beiwe.app.ui.utils.AlertsManager;
@@ -11,7 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-public class PhoneNumberEntryActivity extends RunningBackgroundProcessActivity {
+public class PhoneNumberEntryActivity extends RunningBackgroundServiceActivity {
 	private EditText primaryCarePhone;
 	private EditText passwordResetPhone;
 	private int phoneNumberLength = 10;

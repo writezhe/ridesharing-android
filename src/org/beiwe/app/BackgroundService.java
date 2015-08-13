@@ -75,7 +75,6 @@ public class BackgroundService extends Service {
 		DeviceInfo.getPhoneNumber();
 		//If this device is registered, start timers!
 		if (PersistentData.isRegistered()) { startTimers(); }
-		
 	}
 
 	

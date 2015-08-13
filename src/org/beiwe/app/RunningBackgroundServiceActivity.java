@@ -29,7 +29,7 @@ import android.view.View;
  * 
  * @author Eli Jones, Josh Zagorsky
  */
-public class RunningBackgroundProcessActivity extends Activity {
+public class RunningBackgroundServiceActivity extends Activity {
 	
 	/** The backgroundProcess variable is an Activity's connection to the ... BackgroundProcess.
 	 * We ensure the BackgroundProcess is running in the onResume call, and functionality that

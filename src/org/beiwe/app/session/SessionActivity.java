@@ -2,7 +2,7 @@ package org.beiwe.app.session;
 
 import org.beiwe.app.BackgroundService;
 import org.beiwe.app.R;
-import org.beiwe.app.RunningBackgroundProcessActivity;
+import org.beiwe.app.RunningBackgroundServiceActivity;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.ui.registration.ResetPasswordActivity;
@@ -22,7 +22,7 @@ import android.view.MenuItem;
  * 
  * @author Eli Jones, Josh Zagorsky
  */
-public class SessionActivity extends RunningBackgroundProcessActivity {
+public class SessionActivity extends RunningBackgroundServiceActivity {
 	
 	/*####################################################################
 	########################## Log-in Logic ##############################

@@ -1,7 +1,7 @@
 package org.beiwe.app.ui.registration;
 
 import org.beiwe.app.R;
-import org.beiwe.app.RunningBackgroundProcessActivity;
+import org.beiwe.app.RunningBackgroundServiceActivity;
 import org.beiwe.app.session.ResetPassword;
 import org.beiwe.app.storage.PersistentData;
 
@@ -15,7 +15,7 @@ import android.widget.TextView;
 /**
  * @author Dor Samet, Eli Jones
  */
-public class ForgotPasswordActivity extends RunningBackgroundProcessActivity {
+public class ForgotPasswordActivity extends RunningBackgroundServiceActivity {
 	// extends RunningBackgroundProcessActivity
 	
 	@Override

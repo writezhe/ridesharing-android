@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.spec.InvalidKeySpecException;
 
+import org.beiwe.app.JSONUtils;
 import org.beiwe.app.R;
 import org.beiwe.app.Timer;
 import org.beiwe.app.session.SessionActivity;
@@ -17,6 +18,8 @@ import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.ui.user.MainMenuActivity;
 import org.beiwe.app.ui.utils.SurveyNotifications;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import android.content.Context;
 import android.content.Intent;
@@ -62,10 +65,8 @@ public class AudioRecorderActivity extends SessionActivity {
     private Button recordingButton;
     
     private final Handler recordingTimeoutHandler = new Handler();
-    
     private String surveyId;
-    private int surveyIdInt;
-    private String surveyPrompt;
+    
     
     /*#########################################################
     ################## Activity Overrides ##################### 
@@ -76,15 +77,17 @@ public class AudioRecorderActivity extends SessionActivity {
     @Override
     public void onCreate(Bundle bundle) {
     	surveyId = getIntent().getStringExtra("surveyId");
-    	String content = PersistentData.getSurveyContent(surveyId);
     	/*FIXME: Feature. Eli/Josh.  Implement custom audio surveys. 
     	1. Write function that pulls the audio prompt text from the provided json content string.
     	2. Set the text element to the proper string.
     	3. ensure that alarms/notifications properly start the audio surveys. */
     	
+		Intent triggerIntent = getIntent();
+		surveyId = triggerIntent.getStringExtra("surveyId");
+    	
     	// grab the layout element objects that we will add questions to:
-//    	TextView textbox = findViewById(R.id.the correct textview id...);
-//    	textbox.setText(prompt); 
+		TextView textbox = (TextView) findViewById(R.id.record_activity_textview );
+		textbox.setText( getPromptText(surveyId) );
     	super.onCreate(bundle);
         setContentView(R.layout.activity_audio_recorder);
         
@@ -97,7 +100,17 @@ public class AudioRecorderActivity extends SessionActivity {
     	// Each time the screen is flipped, the app checks if it's time to show the play button
     	setPlayButtonVisibility();
     }
-
+    
+    private String getPromptText(String surveyId) {
+		try { return JSONUtils.jsonArrayToStringList( new JSONArray(PersistentData.getSurveyContent(surveyId) ) ).get(0); }
+		catch (JSONException e) {
+			Log.e("Audio Survey", "audio survey received either no or invalid prompt text.");
+			e.printStackTrace();
+			//TODO: Eli/Josh.  update the default prompt string to be... not a question?
+			return getApplicationContext().getString(R.string.record_activity_default_message);
+		}
+    }
+    
 
     @Override
 	public void onDestroy() {

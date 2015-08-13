@@ -1,7 +1,7 @@
 package org.beiwe.app.ui.registration;
 
 import org.beiwe.app.R;
-import org.beiwe.app.RunningBackgroundProcessActivity;
+import org.beiwe.app.RunningBackgroundServiceActivity;
 import org.beiwe.app.session.ResetPassword;
 
 import android.annotation.SuppressLint;
@@ -15,7 +15,7 @@ import android.widget.EditText;
  */
 
 @SuppressLint("ShowToast")
-public class ResetPasswordActivity extends RunningBackgroundProcessActivity {
+public class ResetPasswordActivity extends RunningBackgroundServiceActivity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

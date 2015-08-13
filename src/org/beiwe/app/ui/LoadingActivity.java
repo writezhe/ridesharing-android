@@ -5,7 +5,7 @@ import java.security.NoSuchAlgorithmException;
 
 import org.beiwe.app.BackgroundService;
 import org.beiwe.app.R;
-import org.beiwe.app.RunningBackgroundProcessActivity;
+import org.beiwe.app.RunningBackgroundServiceActivity;
 import org.beiwe.app.BackgroundService.BackgroundProcessBinder;
 import org.beiwe.app.R.layout;
 import org.beiwe.app.R.string;
@@ -30,7 +30,7 @@ import android.util.Log;
  * note: this cannot be a SessionActvity, doing so would cause it to instantiate itself infinitely when a user is logged out. 
  * @author Eli Jones, Dor Samet */
 
-public class LoadingActivity extends RunningBackgroundProcessActivity {
+public class LoadingActivity extends RunningBackgroundServiceActivity {
 	
 	//swap the commented line below to enable/disable the debuginterface
 	@SuppressWarnings("rawtypes")
