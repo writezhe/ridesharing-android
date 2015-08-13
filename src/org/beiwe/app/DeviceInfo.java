@@ -8,7 +8,7 @@ import android.provider.Settings;
 import android.telephony.TelephonyManager;
 
 
-/**This is a class that NEEDS to be instantiated in the background process. In order to get the Android ID, the class needs
+/**This is a class that NEEDS to be instantiated in the background service. In order to get the Android ID, the class needs
  * Context. Once instantiated, the class assigns two variables for AndroidID and BluetoothMAC. Once they are instantiated,
  * they can be called from different classes to be used. They are hashed when they are called.
  * 

@@ -10,7 +10,7 @@ import org.beiwe.app.JSONUtils;
 import org.beiwe.app.Timer;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.beiwe.app.BackgroundService.BackgroundProcessBinder;
+import org.beiwe.app.BackgroundService.BackgroundServiceBinder;
 import org.beiwe.app.storage.PersistentData;
 
 import android.content.ComponentName;

@@ -35,7 +35,7 @@ public class BootListener extends BroadcastReceiver {
 	
 	/** Does what it says, starts the background service running.
 	 *  called when SDcard available and on device startup. */	
-	private void startBackgroundProcess(Context externalContext){
+	private void startBackgroundService(Context externalContext){
 		Intent intent_to_start_background_service = new Intent(externalContext, BackgroundService.class);
 		intent_to_start_background_service.addFlags(Intent.FLAG_FROM_BACKGROUND);
 	    externalContext.startService(intent_to_start_background_service);
@@ -49,16 +49,16 @@ public class BootListener extends BroadcastReceiver {
 			/** Check whether the app is installed on the SD card, if so we need to
 			 *  stop and wait for the ACTION_EXTERNAL_APPLICATIONS_AVAILABLE intent. 
 			 *  intent to be sent to us. */
-			//if the app is Not on an sd card, start up the background process/service.
+			//if the app is Not on an sd card, start up the background service.
 			try { if ( checkForSDCardInstall(externalContext) ) { return; } }
 			catch (NameNotFoundException e) { e.printStackTrace(); }
-			startBackgroundProcess(externalContext); }
+			startBackgroundService(externalContext); }
 		
 		if (intent.getAction().equals(Intent.ACTION_EXTERNAL_APPLICATIONS_AVAILABLE)) {
 			/** Almost identical to the boot_completed code, but invert the logic. */
-			//If app is installed on the SD card, start the background process/service.
+			//If app is installed on the SD card, start the background service.
 			try { if ( !checkForSDCardInstall(externalContext) ) { return; } }
 			catch (NameNotFoundException e) { e.printStackTrace(); }
-			startBackgroundProcess(externalContext); }
+			startBackgroundService(externalContext); }
 	}
 }

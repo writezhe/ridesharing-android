@@ -95,7 +95,7 @@
         <service
             android:name=".BackgroundService"
             android:exported="false"
-            android:label="BackgroundProcess-thing" />
+            android:label="BackgroundService-thing" />
 
         <!-- RECEIVERS -->
 

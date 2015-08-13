@@ -21,7 +21,7 @@ import android.util.Log;
 	The UI does not allow toggling bluetooth on and off quickly.  It waits for the turning on/off state to finish.
 	There is about a ... half second? lag between the turning on/off state broadcast and the actually on/off broadcast.     
 
-LG G2 does not interrupt the whole process of turning off and turning on :) There is a lag of about a half a second in
+LG G2 does not interrupt the whole service of turning off and turning on :) There is a lag of about a half a second in
 between phases
 
 https://developer.android.com/guide/topics/connectivity/bluetooth-le.html
@@ -70,7 +70,7 @@ public class BluetoothListener extends BroadcastReceiver {
 			/* It would be nice to insert the following check, but constructors for BroadcastReceivers must have 0 arguments,
 			  or else android os will not be able to instantiate it when it receives a broadcast.
 			  The PackageManager.FEATURE_BLUETOOTH_LE requires a Context that we do not have access to here,
-			  so the check is run before instantiation in the background process.
+			  so the check is run before instantiation in the background service.
 			  the check: !appContext.getPackageManager().hasSystemFeature( PackageManager.FEATURE_BLUETOOTH_LE) */ 
 			this.bluetoothExists = false;
 			return; }

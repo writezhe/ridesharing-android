@@ -14,7 +14,7 @@ import android.content.IntentFilter;
 import android.os.SystemClock;
 import android.util.Log;
 
-/** The Timer class provides a meeans of setting various timers.  These are used by the BackgroundProcess
+/** The Timer class provides a meeans of setting various timers.  These are used by the BackgroundService
  * for devices that must be turned on/off, and timing the user to automatically logout after a period of time.
  * This class includes all the Intents and IntentFilters we for trigged broadcasts.
  * @author Eli, Dor */
@@ -87,9 +87,9 @@ public class Timer {
 	public IntentFilter getCheckForNewSurveysIntent() { return new IntentFilter( checkForNewSurveysIntent.getAction() ); }
 		
 	// Constructor
-	public Timer( BackgroundService backgroundProcess ) {
-		appContext = backgroundProcess.getApplicationContext();
-		alarmManager = (AlarmManager)( backgroundProcess.getSystemService( Context.ALARM_SERVICE ));
+	public Timer( BackgroundService backgroundService ) {
+		appContext = backgroundService.getApplicationContext();
+		alarmManager = (AlarmManager)( backgroundService.getSystemService( Context.ALARM_SERVICE ));
 		
 		// double alarm intents
 		accelerometerOffIntent = setupIntent( appContext.getString(R.string.accelerometer_off) );
@@ -111,7 +111,7 @@ public class Timer {
 	 * ############################ Common Code #############################
 	 * ####################################################################*/
 	
-	// Setup custom intents to be sent to the listeners running in the background process
+	// Setup custom intents to be sent to the listeners running in the background service
 	private static Intent setupIntent( String action ){
 		Intent newIntent = new Intent();
 		newIntent.setAction( action );
@@ -124,7 +124,7 @@ public class Timer {
 	
 	/* "Actions" in Android are saved as DNS-styled strings, "ACTION_CALL" is actually the string "android.intent.action.CALL".
 	 * When using an IntentFilter as an... "action filter", we use this convention.
-	 * This Intent/IntentFilter is registered with the background process, and will broadcast start the provided PendingIntent.
+	 * This Intent/IntentFilter is registered with the background service, and will broadcast start the provided PendingIntent.
 	 * 
 	 * Vocab:
 	 *  Fuzzy: an alarm that has a random interval added to the trigger time, for the purpose of load distribution.

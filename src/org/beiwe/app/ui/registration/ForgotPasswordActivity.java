@@ -16,7 +16,6 @@ import android.widget.TextView;
  * @author Dor Samet, Eli Jones
  */
 public class ForgotPasswordActivity extends RunningBackgroundServiceActivity {
-	// extends RunningBackgroundProcessActivity
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

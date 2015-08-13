@@ -34,8 +34,6 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.util.Log;
 
-//TODO: ack for backgroundprocess and replace with backgroundservice
-
 public class BackgroundService extends Service {
 	private Context appContext;
 	// TODO: postproduction. Make these private after killing DebugInterfaceActivity
@@ -85,23 +83,23 @@ public class BackgroundService extends Service {
 	@Override
 	/** The BackgroundService is meant to be all the time, so we return START_STICKY */
 	// We could also use, and may change it if we encounter problems, START_REDELIVER_INTENT, which has nearly identical behavior.
-	public int onStartCommand(Intent intent, int flags, int startId){ //Log.d("BackroundProcess onStartCommand", "started with flag " + flags );
+	public int onStartCommand(Intent intent, int flags, int startId){ //Log.d("BackroundService onStartCommand", "started with flag " + flags );
 		TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis()+" "+"started with flag " + flags);
 		return START_STICKY; }
 	//(the rest of these are identical, so I have compactified it)
-	@Override public void onTaskRemoved(Intent rootIntent) { //Log.d("BackroundProcess onTaskRemoved", "onTaskRemoved called with intent: " + rootIntent.toString() );
+	@Override public void onTaskRemoved(Intent rootIntent) { //Log.d("BackroundService onTaskRemoved", "onTaskRemoved called with intent: " + rootIntent.toString() );
 		TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis()+" "+"onTaskRemoved called with intent: " + rootIntent.toString());
 		restartService(); }
-	@Override public boolean onUnbind(Intent intent) { //Log.d("BackroundProcess onUnbind", "onUnbind called with intent: " + intent.toString() );
+	@Override public boolean onUnbind(Intent intent) { //Log.d("BackroundService onUnbind", "onUnbind called with intent: " + intent.toString() );
 		TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis()+" "+"onUnbind called with intent: " + intent.toString());
 		restartService();
 		return super.onUnbind(intent); }
-	@Override public void onDestroy() { //Log.w("BackgroundProcess", "BACKGROUNDPROCESS WAS DESTROYED.");
+	@Override public void onDestroy() { //Log.w("BackgroundService", "BackgroundService was destroyed.");
 		//note: this does not run when the service is killed in a task manager, OR when the stopService() function is called from debugActivity.
-		TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis()+" "+"BACKGROUNDPROCESS WAS DESTROYED.");
+		TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis()+" "+"BackgroundService was destroyed.");
 		restartService();
 		super.onDestroy(); }
-	@Override public void onLowMemory() { //Log.w("BackroundProcess onLowMemory", "Low memory conditions encountered");
+	@Override public void onLowMemory() { //Log.w("BackroundService onLowMemory", "Low memory conditions encountered");
 		TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis()+" "+"onLowMemory called.");
 		restartService(); }
 	
@@ -116,7 +114,7 @@ public class BackgroundService extends Service {
 	    alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 500, restartServicePendingIntent);
 	}
 	
-	/** Stops the BackgroundProcess instance. */
+	/** Stops the BackgroundService instance. */
 	public void stop() { this.stopSelf(); }
 	
 	/*#############################################################################
@@ -128,14 +126,14 @@ public class BackgroundService extends Service {
 	 * Checking for Bluetooth LE is necessary because it is an optional extension to Bluetooth 4.0. */
 	public void startBluetooth(){
 		//Note: the Bluetooth listener is a BroadcastReceiver, which means it must have a 0-argument constructor so android can instantiate it on broadcast receipts.
-		//The following check must be made, but it requires a Context that we cannot pass into the BluetoothListener, so we do the check in the BackgroundProcess.
+		//The following check must be made, but it requires a Context that we cannot pass into the BluetoothListener, so we do the check in the BackgroundService.
 		if ( appContext.getPackageManager().hasSystemFeature( PackageManager.FEATURE_BLUETOOTH_LE ) ) {
 			this.bluetoothListener = new BluetoothListener(); 
 			if ( this.bluetoothListener.isBluetoothEnabled() ) {
-				Log.i("Background Process", "success, actually doing bluetooth things.");
+				Log.i("Background Service", "success, actually doing bluetooth things.");
 				registerReceiver(this.bluetoothListener, new IntentFilter("android.bluetooth.adapter.action.STATE_CHANGED") );
 			} else {
-				Log.e("Background Process", "bluetooth Failure. Should not have gotten this far.");
+				Log.e("Background Service", "bluetooth Failure. Should not have gotten this far.");
 				TextFileManager.getDebugLogFile().writeEncrypted("bluetooth Failure, device should not have gotten to this line of code");
 			}
 		}
@@ -240,7 +238,7 @@ public class BackgroundService extends Service {
 	 * inside this code. */
 	public static void startAutomaticLogoutCountdownTimer(){
 		if (timer == null) {
-			Log.e("bacgroundProcess", "timer is null, BackgroundService may be about to crash, the Timer was null when the BackgroundService was supposed to be fully instantiated.");
+			Log.e("bacgroundService", "timer is null, BackgroundService may be about to crash, the Timer was null when the BackgroundService was supposed to be fully instantiated.");
 			TextFileManager.getDebugLogFile().writeEncrypted("our not-quite-race-condition encountered, Timer was null when the BackgroundService was supposed to be fully instantiated");
 		}
 		timer.setupExactSingleAlarm(Timer.MILLISECONDS_BEFORE_AUTO_LOGOUT, Timer.signoutIntent);
@@ -332,7 +330,7 @@ public class BackgroundService extends Service {
 			
 			//checks if the action is the id of a survey, if so pop up the notification for that survey, schedule the next alarm
 			if ( PersistentData.getSurveyIds().contains( broadcastAction ) ) {
-				Log.w("BACKGROUND PROCESS", "trying to start notification: " + broadcastAction);
+				Log.w("BACKGROUND SERVICE", "trying to start notification: " + broadcastAction);
 				SurveyNotifications.displaySurveyNotification(appContext, broadcastAction);
 				SurveyScheduler.scheduleSurvey(broadcastAction);
 				return; }
@@ -343,12 +341,12 @@ public class BackgroundService extends Service {
 	############## code related to onStartCommand and binding to an activity ###################
 	##########################################################################################*/
 	@Override
-	public IBinder onBind(Intent arg0) { return new BackgroundProcessBinder(); }
+	public IBinder onBind(Intent arg0) { return new BackgroundServiceBinder(); }
 	
 	/**A public "Binder" class for Activities to access.
-	 * Provides a (safe) handle to the background process using the onStartCommand code
-	 * used in every RunningBackgroundProcessActivity */
-	public class BackgroundProcessBinder extends Binder {
+	 * Provides a (safe) handle to the background Service using the onStartCommand code
+	 * used in every RunningBackgroundServiceActivity */
+	public class BackgroundServiceBinder extends Binder {
         public BackgroundService getService() {
             return BackgroundService.this;
         }

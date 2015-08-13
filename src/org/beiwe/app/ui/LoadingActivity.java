@@ -6,7 +6,7 @@ import java.security.NoSuchAlgorithmException;
 import org.beiwe.app.BackgroundService;
 import org.beiwe.app.R;
 import org.beiwe.app.RunningBackgroundServiceActivity;
-import org.beiwe.app.BackgroundService.BackgroundProcessBinder;
+import org.beiwe.app.BackgroundService.BackgroundServiceBinder;
 import org.beiwe.app.R.layout;
 import org.beiwe.app.R.string;
 import org.beiwe.app.storage.EncryptionEngine;
@@ -22,7 +22,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
-/**The LoadingActivity is a temporary RunningBackgroundProcessActivity (Not a SessionActivity,
+/**The LoadingActivity is a temporary RunningBackgroundServiceActivity (Not a SessionActivity,
  * check out those classes if you are confused) that pops up when the user opens the app.
  * This activity runs some simple checks to make sure that the device can actually run the app,
  * and then bumps the user to the correct screen (Register or MainMenu).
@@ -36,25 +36,25 @@ public class LoadingActivity extends RunningBackgroundServiceActivity {
 	@SuppressWarnings("rawtypes")
 	public static Class loadThisActivity = DebugInterfaceActivity.class;
 //	public static Class loadThisActivity = MainMenuActivity.class;
-	
-	protected BackgroundService backgroundProcess;
+	//TODO: Low priority.  Eli.  Why does this reimplement functionality in RunningBackgroundService? investigate.
+	protected BackgroundService backgroundService;
 	protected boolean isBound = false;
 	
 	/**The ServiceConnection Class is our trigger for events that rely on the BackgroundService */
-	protected ServiceConnection backgroundProcessConnection = new ServiceConnection() {
+	protected ServiceConnection backgroundServiceConnection = new ServiceConnection() {
 	    @Override
 	    public void onServiceConnected(ComponentName name, IBinder binder) {
-	        Log.d("loading ServiceConnection", "Background Process Connected");
-	        BackgroundProcessBinder some_binder = (BackgroundProcessBinder) binder;
-	        backgroundProcess = some_binder.getService();
+	        Log.d("loading ServiceConnection", "Background Service Connected");
+	        BackgroundServiceBinder some_binder = (BackgroundServiceBinder) binder;
+	        backgroundService = some_binder.getService();
 	        isBound = true;
 	        loadingSequence();
 	    }
 
 	    @Override
 	    public void onServiceDisconnected(ComponentName name) {
-	        Log.d("loading ServiceConnection", "Background Process Disconnected");
-	        backgroundProcess = null;
+	        Log.d("loading ServiceConnection", "Background Service Disconnected");
+	        backgroundService = null;
 	        isBound = false;
 	    }
 	};
@@ -71,7 +71,7 @@ public class LoadingActivity extends RunningBackgroundServiceActivity {
 			Intent startingIntent = new Intent(this.getApplicationContext(), BackgroundService.class);
 			startingIntent.addFlags(Intent.FLAG_FROM_BACKGROUND);
 			startService(startingIntent);
-			bindService( startingIntent, backgroundProcessConnection, Context.BIND_AUTO_CREATE);
+			bindService( startingIntent, backgroundServiceConnection, Context.BIND_AUTO_CREATE);
 		}
 		else { failureExit(); }
 		
@@ -89,7 +89,7 @@ public class LoadingActivity extends RunningBackgroundServiceActivity {
 		if ( !PersistentData.isRegistered() ){ startActivity(new Intent(this, RegisterActivity.class) ); }
 		//if device is registered push user to the main menu.
 		else { startActivity(new Intent(this, loadThisActivity) ); }
-		unbindService(backgroundProcessConnection);
+		unbindService(backgroundServiceConnection);
 		finish(); //destroy the loading screen
 	}
 	

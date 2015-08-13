@@ -17,7 +17,7 @@ import android.view.MenuItem;
 /**
  * All Activities in the app WHICH REQUIRE THE USER TO BE LOGGED IN extend this Activity.
  * If the user is not logged in, he/she is bumped to a login screen.
- * This Activity also extends RunningBackgroundProcessActivity, which makes the app's key
+ * This Activity also extends RunningBackgroundServiceActivity, which makes the app's key
  * services run before the interface is allowed to interact with it.
  * 
  * @author Eli Jones, Josh Zagorsky
@@ -41,8 +41,8 @@ public class SessionActivity extends RunningBackgroundServiceActivity {
 	protected void onPause() {
 		super.onPause();
 		if (backgroundService == null) {
-			Log.w("sessionactivity", "background process is null, you have a race condition with instantiating the background process.");
-			TextFileManager.getDebugLogFile().writeEncrypted("a sessionactivity tried to clear the automatic logout countdown timer, but the background process did not exist.");
+			Log.w("sessionactivity", "background service is null, you have a race condition with instantiating the background service.");
+			TextFileManager.getDebugLogFile().writeEncrypted("a sessionactivity tried to clear the automatic logout countdown timer, but the background service did not exist.");
 		}
 		BackgroundService.clearAutomaticLogoutCountdownTimer();
 	}

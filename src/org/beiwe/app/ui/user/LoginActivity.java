@@ -16,7 +16,7 @@ import android.widget.EditText;
 
 /**The LoginActivity presents the user with a password prompt.
  * When the app has had no activity (defined as the time since a SessionActiviy last loaded)
- * it bumps the user to this screen.  This timer occurs in the Background process, so the
+ * it bumps the user to this screen.  This timer occurs in the Background Service, so the
  * timer still triggers even if the app has been backgrounded or killed from the task switcher.
  * @authors Dor Samet, Eli Jones */
 public class LoginActivity extends RunningBackgroundServiceActivity {	
