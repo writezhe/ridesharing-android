@@ -22,6 +22,8 @@ import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.storage.TextFileManager;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.content.Context;
 import android.util.Log;
@@ -175,18 +177,44 @@ public class PostRequest {
 		HttpURLConnection connection = setupHTTP(parameters, url, null);
 		int response = connection.getResponseCode();
 		if ( response == 200 ) {
-			String key = readResponse(connection) ;
-			if ( !key.startsWith("MIIBI") ) {
-				Log.e("PostRequest - register", " Received an invalid encryption key from server: " + key );
-				return 2; }
-			Log.d( "PostRequest", "Received a key: " + key );
-			TextFileManager.getKeyFile().deleteSafely();
-			TextFileManager.getKeyFile().writePlaintext( key );
+			String responseBody = readResponse(connection);
+			try {
+				JSONObject responseJSON = new JSONObject(responseBody);
+				String key = responseJSON.getString("client_public_key");
+				writeKey(key, response);
+				JSONObject deviceSettings = responseJSON.getJSONObject("device_settings");
+				writeDeviceSettings(deviceSettings);
+			} catch (JSONException e) {
+				// TODO: Josh, handle this error
+				e.printStackTrace();
+			}
 		}
 		connection.disconnect();
 		return response;
 	}
 
+	
+	private static int writeKey(String key, int httpResponse) {
+		if ( !key.startsWith("MIIBI") ) {
+			Log.e("PostRequest - register", " Received an invalid encryption key from server: " + key );
+			return 2; }
+		Log.d( "PostRequest", "Received a key: " + key );
+		TextFileManager.getKeyFile().deleteSafely();
+		TextFileManager.getKeyFile().writePlaintext( key );
+		return httpResponse;
+	}
+	
+	
+	// TODO: Josh, probably move this function into another file, just for code cleanliness reasons
+	private static void writeDeviceSettings(JSONObject deviceSettings) throws JSONException {
+		int accelerometerOffDuration = deviceSettings.getInt("accelerometer_off_duration_seconds");
+		PersistentData.setAccelerometerOffDurationSeconds(accelerometerOffDuration);
+		int accelerometerOnDuration = deviceSettings.getInt("accelerometer_on_duration_seconds");
+		PersistentData.setAccelerometerOnDurationSeconds(accelerometerOnDuration);
+		// TODO: Josh, add the rest of the timer constants
+		// TODO: Josh, add the strings (this will require changes to the web interface/server 
+	}
+	
 
 	/** Constructs and sends a multipart HTTP POST request with a file attached.
 	 * This function uses minimalHTTP() directly because it needs to add a header (?) to the HttpURLConnection object before it writes a file to it.
