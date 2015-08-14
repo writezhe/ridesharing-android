@@ -1,7 +1,6 @@
 package org.beiwe.app.survey;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import org.beiwe.app.BackgroundService;
@@ -9,14 +8,12 @@ import org.beiwe.app.JSONUtils;
 import org.beiwe.app.R;
 import org.beiwe.app.networking.HTTPAsync;
 import org.beiwe.app.networking.PostRequest;
-import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.ui.utils.SurveyNotifications;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.AlarmManager;
 import android.content.Context;
 import android.util.Log;
 

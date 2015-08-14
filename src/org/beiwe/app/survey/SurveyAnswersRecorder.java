@@ -7,7 +7,6 @@ import org.beiwe.app.R;
 import org.beiwe.app.storage.TextFileManager;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;

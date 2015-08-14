@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
 import android.provider.Telephony.TextBasedSmsColumns;
-import android.util.Log;
 
 /**
  * Records outgoing SMS messages when they're sent

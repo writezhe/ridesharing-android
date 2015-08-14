@@ -1,24 +1,17 @@
 package org.beiwe.app.survey;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import org.beiwe.app.BackgroundService;
 import org.beiwe.app.JSONUtils;
-import org.beiwe.app.Timer;
+import org.beiwe.app.storage.PersistentData;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.beiwe.app.BackgroundService.BackgroundServiceBinder;
-import org.beiwe.app.storage.PersistentData;
 
-import android.content.ComponentName;
-import android.content.ServiceConnection;
-import android.os.IBinder;
 import android.util.Log;
-
-import java.util.ArrayList;
   
 //TODO: Low priority. Eli. document.
 public class SurveyScheduler {

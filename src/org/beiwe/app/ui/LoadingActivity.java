@@ -4,11 +4,9 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 
 import org.beiwe.app.BackgroundService;
+import org.beiwe.app.BackgroundService.BackgroundServiceBinder;
 import org.beiwe.app.R;
 import org.beiwe.app.RunningBackgroundServiceActivity;
-import org.beiwe.app.BackgroundService.BackgroundServiceBinder;
-import org.beiwe.app.R.layout;
-import org.beiwe.app.R.string;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.ui.registration.RegisterActivity;

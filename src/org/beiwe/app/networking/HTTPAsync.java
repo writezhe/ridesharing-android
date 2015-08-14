@@ -2,7 +2,6 @@ package org.beiwe.app.networking;
 
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.NumberPicker;
 
 //TODO: Low priority: Eli. Redoc.
 

@@ -8,7 +8,6 @@ import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
-import android.util.Log;
 
 /**MMSSentLogger listens for outgoing MMSes.
  * In order to catch outgoing MMSes we need to monitor the texts database using a ContentObserver
