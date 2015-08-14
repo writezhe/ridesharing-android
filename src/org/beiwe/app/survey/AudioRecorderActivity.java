@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.spec.InvalidKeySpecException;
 
-import org.beiwe.app.JSONUtils;
 import org.beiwe.app.R;
 import org.beiwe.app.Timer;
 import org.beiwe.app.session.SessionActivity;
@@ -33,7 +32,6 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 	
@@ -76,20 +74,14 @@ public class AudioRecorderActivity extends SessionActivity {
      * After recording, the app will present the user with the play button. */
     @Override
     public void onCreate(Bundle bundle) {
-    	surveyId = getIntent().getStringExtra("surveyId");
-    	/*FIXME: Feature. Eli/Josh.  Implement custom audio surveys. 
-    	1. Write function that pulls the audio prompt text from the provided json content string.
-    	2. Set the text element to the proper string.
-    	3. ensure that alarms/notifications properly start the audio surveys. */
-    	
-		Intent triggerIntent = getIntent();
-		surveyId = triggerIntent.getStringExtra("surveyId");
+    	super.onCreate(bundle);
+        setContentView(R.layout.activity_audio_recorder);
+
+        surveyId = getIntent().getStringExtra("surveyId");
     	
     	// grab the layout element objects that we will add questions to:
 		TextView textbox = (TextView) findViewById(R.id.record_activity_textview );
 		textbox.setText( getPromptText(surveyId) );
-    	super.onCreate(bundle);
-        setContentView(R.layout.activity_audio_recorder);
         
         String fileDirectory = getApplicationContext().getFilesDir().getAbsolutePath() + "/";
         unencryptedTempAudioFilePath = fileDirectory + unencryptedTempAudioFileName;
@@ -102,11 +94,13 @@ public class AudioRecorderActivity extends SessionActivity {
     }
     
     private String getPromptText(String surveyId) {
-		try { return JSONUtils.jsonArrayToStringList( new JSONArray(PersistentData.getSurveyContent(surveyId) ) ).get(0); }
-		catch (JSONException e) {
+		try {
+			JSONArray contentArray = new JSONArray(PersistentData.getSurveyContent(surveyId));
+			return contentArray.getString(0);
+		} catch (JSONException e) {
 			Log.e("Audio Survey", "audio survey received either no or invalid prompt text.");
 			e.printStackTrace();
-			//TODO: Eli/Josh.  update the default prompt string to be... not a question?
+			//TODO: Low Priority. Eli/Josh.  update the default prompt string to be... not a question?
 			return getApplicationContext().getString(R.string.record_activity_default_message);
 		}
     }
