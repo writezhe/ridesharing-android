@@ -43,8 +43,6 @@ import android.widget.Toast;
  * 
  * @author Josh Zagorsky, Eli Jones */
 
-//FIXME: Eli. check that file handling to only upload retired files is actually functional for the voice recording files.
-
 public class AudioRecorderActivity extends SessionActivity {
     private static final String LOG_TAG = "AudioRecorderActivity";
     private static boolean displayPlaybackButton = false;
@@ -94,6 +92,7 @@ public class AudioRecorderActivity extends SessionActivity {
     }
     
     private String getPromptText(String surveyId) {
+    	//FIXME: Eli. change container to be a json object with key 'prompt'.
 		try {
 			JSONArray contentArray = new JSONArray(PersistentData.getSurveyContent(surveyId));
 			return contentArray.getString(0);

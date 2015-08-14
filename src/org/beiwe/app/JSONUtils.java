@@ -6,6 +6,8 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+//TODO: Low priority.  Eli/Josh. There are probably some more code snippets (json renderer? audio recorder activity?) that could be thrown in here.
+
 public class JSONUtils {
 	public static List<String> jsonArrayToStringList( JSONArray array ) {
 		ArrayList<String> ret = new ArrayList<String>(array.length() );

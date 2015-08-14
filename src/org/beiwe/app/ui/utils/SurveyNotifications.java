@@ -27,7 +27,6 @@ public class SurveyNotifications {
 		Intent activityIntent;		
 		NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(appContext);
 		notificationBuilder.setContentTitle( appContext.getString(R.string.app_name) );
-		//TODO: Eli. make sure we have a consistent use of these survey type identifiers across both codebases
 		if ( PersistentData.getSurveyType(surveyId).equals("tracking_survey" ) ) {
 			activityIntent = new Intent(appContext, SurveyActivity.class);
 			activityIntent.setAction("org.beiwe.app.start_android_survey"); //todo: put in strings

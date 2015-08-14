@@ -55,10 +55,7 @@ public class TextFileManager {
 	private static TextFileManager surveyTimings;
 	private static TextFileManager surveyAnswers;
 	private static TextFileManager wifiLog;
-	
-//	private static TextFileManager currentDailyQuestions;
-//	private static TextFileManager currentWeeklyQuestions;
-	
+		
 	private static TextFileManager keyFile;
 	
 	//"global" static variables
@@ -79,8 +76,6 @@ public class TextFileManager {
 	public static TextFileManager getSurveyTimingsFile(){ if ( surveyTimings == null ) throwGetterError(); return surveyTimings; }
 	public static TextFileManager getSurveyAnswersFile(){ if ( surveyAnswers == null ) throwGetterError(); return surveyAnswers; }
 	//the persistent files
-//	public static TextFileManager getCurrentDailyQuestionsFile(){ if ( currentDailyQuestions == null ) throwGetterError(); return currentDailyQuestions; }
-//	public static TextFileManager getCurrentWeeklyQuestionsFile(){ if ( currentWeeklyQuestions == null ) throwGetterError(); return currentWeeklyQuestions; }
 	public static TextFileManager getDebugLogFile(){ if ( debugLogFile == null ) throwGetterError(); return debugLogFile; }
 	public static TextFileManager getKeyFile() { if ( keyFile == null ) throwGetterError(); return keyFile; }
 	
@@ -307,8 +302,6 @@ public class TextFileManager {
 		Collections.addAll(files, getAllFiles());
 		
 		// These files should never be uploaded
-//		files.remove(TextFileManager.getCurrentDailyQuestionsFile().fileName);
-//		files.remove(TextFileManager.getCurrentWeeklyQuestionsFile().fileName);
 		files.remove(TextFileManager.getKeyFile().fileName);
 		files.remove(AudioRecorderActivity.unencryptedTempAudioFileName);
 		
@@ -348,10 +341,6 @@ public class TextFileManager {
 		Collections.addAll(files, getAllFilesSafely());
 		
 		//Need to do this crap or else we end up deleting the persistent files repeatedly
-//		files.remove(TextFileManager.getCurrentDailyQuestionsFile().fileName);
-//		TextFileManager.getCurrentDailyQuestionsFile().deleteSafely();
-//		files.remove(TextFileManager.getCurrentWeeklyQuestionsFile().fileName);
-//		TextFileManager.getCurrentWeeklyQuestionsFile().deleteSafely();
 		files.remove(TextFileManager.getDebugLogFile().fileName);
 		TextFileManager.getDebugLogFile().deleteSafely();
 		files.remove(TextFileManager.getKeyFile().fileName);
@@ -362,6 +351,7 @@ public class TextFileManager {
 			try { appContext.deleteFile(file_name); }
 			catch (Exception e) {
 				Log.e("TextFileManager", "could not delete file " + file_name); 
-				e.printStackTrace(); } }
+				e.printStackTrace(); }
+		}
 	}	
 }

@@ -14,7 +14,8 @@ import android.telephony.TelephonyManager;
  * 
  * The class is used to grab unique ID data, and pass it to the server. The data is used while authenticating users
  * 
- * @author Dor Samet, Eli Jones */
+ * @author Dor Samet, Eli Jones */  
+
 public class DeviceInfo {
 	private static String androidID;
 	private static String bluetoothMAC;

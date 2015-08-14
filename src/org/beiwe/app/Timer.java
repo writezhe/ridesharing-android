@@ -168,8 +168,6 @@ public class Timer {
 	public void setupSurveyAlarm(String surveyId, Intent intentToBeBroadcast, Calendar alarmTime) {
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
 		long nextTriggerTime = alarmTime.getTimeInMillis();
-		// If this week's trigger time has already passed, set the alarm for next week.  This should universally occur except at registration and reboots.
-//		if (nextTriggerTime < System.currentTimeMillis()) { nextTriggerTime += ONE_WEEK_IN_MILLISECONDS; }
 //		triggerAtMillis = System.currentTimeMillis() + 15000; //hax, debug code.
 		long timeTillFire = nextTriggerTime - System.currentTimeMillis();
 		Log.i("Timer.java", "next alarm triggers in = " + timeTillFire / 1000 + " seconds.");

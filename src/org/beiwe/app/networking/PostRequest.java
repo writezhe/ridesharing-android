@@ -30,7 +30,7 @@ import android.util.Log;
  * All HTTP connections are HTTPS, and automatically include a password and identifying information. 
  * @author Josh, Eli, Dor */
 
-//TODO: Low priority. Eli. update docs, this does not adequately state that it puts into any request automatic security parameters.
+//TODO: Low priority. Eli. clean this up and update docs. It does not adequately state that it puts into any request automatic security parameters, and it is not obvious why some of the functions exist (minimal http thing)
 public class PostRequest {
 
 	private static Context appContext;	

@@ -115,6 +115,7 @@ public class BackgroundService extends Service {
 	}
 	
 	/** Stops the BackgroundService instance. */
+	//TODO: Low priority.  This is not used anywhere.
 	public void stop() { this.stopSelf(); }
 	
 	/*#############################################################################
@@ -133,6 +134,7 @@ public class BackgroundService extends Service {
 				Log.i("Background Service", "success, actually doing bluetooth things.");
 				registerReceiver(this.bluetoothListener, new IntentFilter("android.bluetooth.adapter.action.STATE_CHANGED") );
 			} else {
+				//TODO: Low priority. Eli. Track down why this error log pops up, cleanup.
 				Log.e("Background Service", "bluetooth Failure. Should not have gotten this far.");
 				TextFileManager.getDebugLogFile().writeEncrypted("bluetooth Failure, device should not have gotten to this line of code");
 			}
@@ -172,7 +174,6 @@ public class BackgroundService extends Service {
 	
 	/** create timers that will trigger events throughout the program, and
 	 * register the custom Intents with the controlMessageReceiver. */
-	//This can be called
 	@SuppressWarnings("static-access")
 	public static void registerTimers(Context appContext) {
 		localHandle.timer = new Timer(localHandle);
@@ -250,8 +251,6 @@ public class BackgroundService extends Service {
 	
 	/** The Timer requires the BackgroundService in order to create alarms, hook into that functionality here. */
 	public static void setSurveyAlarm(String surveyId, Calendar alarmTime) { timer.startSurveyAlarm(surveyId, alarmTime); }
-	
-	
 	
 	
 	/**The timerReceiver is an Android BroadcastReceiver that listens for our timer events to trigger,
