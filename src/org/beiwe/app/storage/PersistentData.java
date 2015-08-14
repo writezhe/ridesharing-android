@@ -1,22 +1,17 @@
 package org.beiwe.app.storage;
-import org.beiwe.app.JSONUtils;
-
-import java.util.ArrayList;
 import java.util.List;
 
+import org.beiwe.app.JSONUtils;
 import org.beiwe.app.R;
-import org.beiwe.app.Timer;
 import org.beiwe.app.ui.utils.AlertsManager;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**A class for managing patient login sessions.
  * Uses SharedPreferences in order to save username-password combinations.
@@ -92,7 +87,7 @@ public class PersistentData {
 
 	/** Set the login session to expire a fixed amount of time in the future */
 	public static void loginOrRefreshLogin() {
-		editor.putLong(LOGIN_EXPIRATION, System.currentTimeMillis() + Timer.MILLISECONDS_BEFORE_AUTO_LOGOUT);
+		editor.putLong(LOGIN_EXPIRATION, System.currentTimeMillis() + getMillisecondsBeforeAutoLogout());
 		editor.commit(); }
 
 	/** Set the login session to "expired" */
@@ -182,21 +177,36 @@ public class PersistentData {
 	/*#####################################################################################
 	################################# Application State ###################################
 	#####################################################################################*/
+
+	// Default timings (only used if app doesn't download custom timings)
+	private static final long DEFAULT_ACCELEROMETER_OFF_MINIMUM_DURATION = 10;
+	private static final long DEFAULT_ACCELEROMETER_ON_DURATION = 10 * 60;
+	private static final long DEFAULT_BLUETOOTH_ON_DURATION = 1 * 60;
+	private static final long DEFAULT_BLUETOOTH_TOTAL_DURATION = 5 * 60;
+	private static final long DEFAULT_BLUETOOTH_GLOBAL_OFFSET = 0 * 60;
+	private static final long DEFAULT_CHECK_FOR_NEW_SURVEYS_PERIOD = 24 * 60 * 60;
+	private static final long DEFAULT_CREATE_NEW_DATA_FILES_PERIOD = 15 * 60;
+	private static final long DEFAULT_GPS_OFF_MINIMUM_DURATION = 5 * 60;
+	private static final long DEFAULT_GPS_ON_DURATION = 5 * 60;
+	private static final long DEFAULT_SECONDS_BEFORE_AUTO_LOGOUT = 5 * 60;
+	private static final long DEFAULT_UPLOAD_DATA_FILES_PERIOD = 60;
+	private static final long DEFAULT_VOICE_RECORDING_MAX_TIME_LENGTH = 4 * 60;
+	private static final long DEFAULT_WIFI_LOG_FREQUENCY = 5 * 60;
 	
 	//FIXME: FEATURE. Eli/Josh. IMPLEMENT TOGGLES. Hook into these toggles during registration.
-	public static long getAccelerometerOffDurationSeconds() { return pref.getLong(ACCELEROMETER_OFF_DURATION_SECONDS, MAX_LONG); }
-	public static long getAccelerometerOnDurationSeconds() { return pref.getLong(ACCELEROMETER_ON_DURATION_SECONDS, MAX_LONG); }
-	public static long getBluetoothOnDurationSeconds() { return pref.getLong(BLUETOOTH_ON_DURATION_SECONDS, MAX_LONG); }
-	public static long getBluetoothTotalDurationSeconds() { return pref.getLong(BLUETOOTH_TOTAL_DURATION_SECONDS, MAX_LONG); }
-	public static long getBluetoothGlobalOffsetSeconds() { return pref.getLong(BLUETOOTH_GLOBAL_OFFSET_SECONDS, MAX_LONG); }
-	public static long getCheckForNewSurveysFrequencySeconds() { return pref.getLong(CHECK_FOR_NEW_SURVEYS_FREQUENCY_SECONDS, MAX_LONG); }
-	public static long getCreateNewDataFilesFrequencySeconds() { return pref.getLong(CREATE_NEW_DATA_FILES_FREQUENCY_SECONDS, MAX_LONG); }
-	public static long getGpsOffDurationSeconds() { return pref.getLong(GPS_OFF_DURATION_SECONDS, MAX_LONG); }
-	public static long getGpsOnDurationSeconds() { return pref.getLong(GPS_ON_DURATION_SECONDS, MAX_LONG); }
-	public static long getSecondsBeforeAutoLogout() { return pref.getLong(SECONDS_BEFORE_AUTO_LOGOUT, MAX_LONG); }
-	public static long getUploadDataFilesFrequencySeconds() { return pref.getLong(UPLOAD_DATA_FILES_FREQUENCY_SECONDS, MAX_LONG); }
-	public static long getVoiceRecordingMaxTimeLengthSeconds() { return pref.getLong(VOICE_RECORDING_MAX_TIME_LENGTH_SECONDS, MAX_LONG); }
-	public static long getWifiLogFrequencySeconds() { return pref.getLong(WIFI_LOG_FREQUENCY_SECONDS, MAX_LONG); }
+	public static long getAccelerometerOffDurationMilliseconds() { return 1000L * pref.getLong(ACCELEROMETER_OFF_DURATION_SECONDS, DEFAULT_ACCELEROMETER_OFF_MINIMUM_DURATION); }
+	public static long getAccelerometerOnDurationMilliseconds() { return 1000L * pref.getLong(ACCELEROMETER_ON_DURATION_SECONDS, DEFAULT_ACCELEROMETER_ON_DURATION); }
+	public static long getBluetoothOnDurationMilliseconds() { return 1000L * pref.getLong(BLUETOOTH_ON_DURATION_SECONDS, DEFAULT_BLUETOOTH_ON_DURATION); }
+	public static long getBluetoothTotalDurationMilliseconds() { return 1000L * pref.getLong(BLUETOOTH_TOTAL_DURATION_SECONDS, DEFAULT_BLUETOOTH_TOTAL_DURATION); }
+	public static long getBluetoothGlobalOffsetMilliseconds() { return 1000L * pref.getLong(BLUETOOTH_GLOBAL_OFFSET_SECONDS, DEFAULT_BLUETOOTH_GLOBAL_OFFSET); }
+	public static long getCheckForNewSurveysFrequencyMilliseconds() { return 1000L * pref.getLong(CHECK_FOR_NEW_SURVEYS_FREQUENCY_SECONDS, DEFAULT_CHECK_FOR_NEW_SURVEYS_PERIOD); }
+	public static long getCreateNewDataFilesFrequencyMilliseconds() { return 1000L * pref.getLong(CREATE_NEW_DATA_FILES_FREQUENCY_SECONDS, DEFAULT_CREATE_NEW_DATA_FILES_PERIOD); }
+	public static long getGpsOffDurationMilliseconds() { return 1000L * pref.getLong(GPS_OFF_DURATION_SECONDS, DEFAULT_GPS_OFF_MINIMUM_DURATION); }
+	public static long getGpsOnDurationMilliseconds() { return 1000L * pref.getLong(GPS_ON_DURATION_SECONDS, DEFAULT_GPS_ON_DURATION); }
+	public static long getMillisecondsBeforeAutoLogout() { return 1000L * pref.getLong(SECONDS_BEFORE_AUTO_LOGOUT, DEFAULT_SECONDS_BEFORE_AUTO_LOGOUT); }
+	public static long getUploadDataFilesFrequencyMilliseconds() { return 1000L * pref.getLong(UPLOAD_DATA_FILES_FREQUENCY_SECONDS, DEFAULT_UPLOAD_DATA_FILES_PERIOD); }
+	public static long getVoiceRecordingMaxTimeLengthMilliseconds() { return 1000L * pref.getLong(VOICE_RECORDING_MAX_TIME_LENGTH_SECONDS, DEFAULT_VOICE_RECORDING_MAX_TIME_LENGTH); }
+	public static long getWifiLogFrequencyMilliseconds() { return 1000L * pref.getLong(WIFI_LOG_FREQUENCY_SECONDS, DEFAULT_WIFI_LOG_FREQUENCY); }
 
 	public static void setAccelerometerOffDurationSeconds(long seconds) {
 		editor.putLong(ACCELEROMETER_OFF_DURATION_SECONDS, seconds);

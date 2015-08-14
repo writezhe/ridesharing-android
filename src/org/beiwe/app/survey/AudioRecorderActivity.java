@@ -10,7 +10,6 @@ import java.security.InvalidKeyException;
 import java.security.spec.InvalidKeySpecException;
 
 import org.beiwe.app.R;
-import org.beiwe.app.Timer;
 import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.PersistentData;
@@ -259,7 +258,7 @@ public class AudioRecorderActivity extends SessionActivity {
 				showTimeoutToast();
 				stopRecording();
 			}
-		}, Timer.VOICE_RECORDING_MAX_TIME_LENGTH);
+		}, PersistentData.getVoiceRecordingMaxTimeLengthMilliseconds());
     }
     
     
@@ -267,7 +266,7 @@ public class AudioRecorderActivity extends SessionActivity {
     private void showTimeoutToast() {
     	Resources resources = getApplicationContext().getResources();
     	String msg = (String) resources.getText(R.string.timeout_msg_1st_half);
-    	msg += ((float) Timer.VOICE_RECORDING_MAX_TIME_LENGTH / 60 / 1000);
+    	msg += ((float) PersistentData.getVoiceRecordingMaxTimeLengthMilliseconds() / 60 / 1000);
     	msg += resources.getText(R.string.timeout_msg_2nd_half);
     	Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
     }

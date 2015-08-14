@@ -204,21 +204,21 @@ public class BackgroundService extends Service {
 	public void startTimers() {
 		// Sensor timers.
 		if (!timer.alarmIsSet(Timer.accelerometerOnIntent) && !timer.alarmIsSet(Timer.accelerometerOffIntent)) {
-			timer.setupFuzzySinglePowerOptimizedAlarm( Timer.ACCELEROMETER_OFF_MINIMUM_DURATION, Timer.accelerometerOnIntent); }
+			timer.setupFuzzySinglePowerOptimizedAlarm( PersistentData.getAccelerometerOffDurationMilliseconds(), Timer.accelerometerOnIntent); }
 		if (!timer.alarmIsSet(Timer.gpsOnIntent) && !timer.alarmIsSet(Timer.gpsOffIntent)) {
-			timer.setupFuzzySinglePowerOptimizedAlarm( Timer.GPS_OFF_MINIMUM_DURATION, Timer.gpsOnIntent); }
+			timer.setupFuzzySinglePowerOptimizedAlarm( PersistentData.getGpsOffDurationMilliseconds(), Timer.gpsOnIntent); }
 		if (!timer.alarmIsSet(Timer.bluetoothOnIntent) && !timer.alarmIsSet(Timer.bluetoothOffIntent)) {
-			timer.setupExactTimeAlarm(Timer.BLUETOOTH_PERIOD, Timer.BLUETOOTH_START_TIME_IN_PERIOD, Timer.bluetoothOnIntent); }
+			timer.setupExactTimeAlarm(PersistentData.getBluetoothTotalDurationMilliseconds(), PersistentData.getBluetoothGlobalOffsetMilliseconds(), Timer.bluetoothOnIntent); }
 		if (!timer.alarmIsSet(Timer.wifiLogIntent)) {
-			timer.setupFuzzyPowerOptimizedRepeatingAlarm(Timer.WIFI_LOG_PERIOD, Timer.wifiLogIntent); }
+			timer.setupFuzzyPowerOptimizedRepeatingAlarm(PersistentData.getWifiLogFrequencyMilliseconds(), Timer.wifiLogIntent); }
 		
 		// Functionality timers.
-		if (!timer.alarmIsSet(Timer.uploadDatafilesIntent)) {	
-			timer.setupFuzzyPowerOptimizedRepeatingAlarm(Timer.UPLOAD_DATA_FILES_PERIOD, Timer.uploadDatafilesIntent); }
+		if (!timer.alarmIsSet(Timer.uploadDatafilesIntent)) {
+			timer.setupFuzzyPowerOptimizedRepeatingAlarm(PersistentData.getUploadDataFilesFrequencyMilliseconds(), Timer.uploadDatafilesIntent); }
 		if (!timer.alarmIsSet(Timer.createNewDataFilesIntent)) {
-			timer.setupFuzzyPowerOptimizedRepeatingAlarm(Timer.CREATE_NEW_DATA_FILES_PERIOD, Timer.createNewDataFilesIntent); }
+			timer.setupFuzzyPowerOptimizedRepeatingAlarm(PersistentData.getCreateNewDataFilesFrequencyMilliseconds(), Timer.createNewDataFilesIntent); }
 		if (!timer.alarmIsSet(Timer.checkForNewSurveysIntent)) {
-			timer.setupFuzzyPowerOptimizedRepeatingAlarm(Timer.CHECK_FOR_NEW_SURVEYS_PERIOD, Timer.checkForNewSurveysIntent); }
+			timer.setupFuzzyPowerOptimizedRepeatingAlarm(PersistentData.getCheckForNewSurveysFrequencyMilliseconds(), Timer.checkForNewSurveysIntent); }
 
 		//checks for the current expected state with app notifications. (must be run before we potentially set new alarms)
 		Long now = System.currentTimeMillis();
@@ -242,7 +242,7 @@ public class BackgroundService extends Service {
 			Log.e("bacgroundService", "timer is null, BackgroundService may be about to crash, the Timer was null when the BackgroundService was supposed to be fully instantiated.");
 			TextFileManager.getDebugLogFile().writeEncrypted("our not-quite-race-condition encountered, Timer was null when the BackgroundService was supposed to be fully instantiated");
 		}
-		timer.setupExactSingleAlarm(Timer.MILLISECONDS_BEFORE_AUTO_LOGOUT, Timer.signoutIntent);
+		timer.setupExactSingleAlarm(PersistentData.getMillisecondsBeforeAutoLogout(), Timer.signoutIntent);
 		PersistentData.loginOrRefreshLogin();
 	}
 	
@@ -265,38 +265,40 @@ public class BackgroundService extends Service {
 			
 			//sets the next trigger time for the accelerometer to record data 
 			if (broadcastAction.equals( appContext.getString(R.string.accelerometer_off) ) ) {
+				Log.i("*************************", "Accelerometer Off");
 				accelerometerListener.turn_off();
-				timer.setupFuzzySinglePowerOptimizedAlarm(Timer.ACCELEROMETER_OFF_MINIMUM_DURATION, Timer.accelerometerOnIntent);
+				timer.setupFuzzySinglePowerOptimizedAlarm(PersistentData.getAccelerometerOffDurationMilliseconds(), Timer.accelerometerOnIntent);
 				return; }
 			
 			//sets a timer that will turn off the accelerometer
 			if (broadcastAction.equals( appContext.getString(R.string.accelerometer_on) ) ) {
+				Log.i("*************************", "Accelerometer On");
 				accelerometerListener.turn_on();
-				timer.setupExactSingleAlarm(Timer.ACCELEROMETER_ON_DURATION, Timer.accelerometerOffIntent);
+				timer.setupExactSingleAlarm(PersistentData.getAccelerometerOnDurationMilliseconds(), Timer.accelerometerOffIntent);
 				return; }
 			
 			//sets the next trigger time for the bluetooth scan to record data
 			if (broadcastAction.equals( appContext.getString(R.string.bluetooth_off) ) ) {
 				if (bluetoothListener != null) bluetoothListener.disableBLEScan();
-				timer.setupExactTimeAlarm(Timer.BLUETOOTH_PERIOD, Timer.BLUETOOTH_START_TIME_IN_PERIOD, Timer.bluetoothOnIntent);
+				timer.setupExactTimeAlarm(PersistentData.getBluetoothTotalDurationMilliseconds(), PersistentData.getBluetoothGlobalOffsetMilliseconds(), Timer.bluetoothOnIntent);
 				return; }
 			
 			//sets a timer that will turn off the bluetooth scan
 			if (broadcastAction.equals( appContext.getString(R.string.bluetooth_on) ) ) {
 				if (bluetoothListener != null) bluetoothListener.enableBLEScan();
-				timer.setupExactSingleAlarm(Timer.BLUETOOTH_ON_DURATION, Timer.bluetoothOffIntent);
+				timer.setupExactSingleAlarm(PersistentData.getBluetoothOnDurationMilliseconds(), Timer.bluetoothOffIntent);
 				return; }
 			
 			//sets the next trigger time for the gps to record data
 			if (broadcastAction.equals( appContext.getString(R.string.gps_off) ) ) {
 				gpsListener.turn_off();
-				timer.setupFuzzySinglePowerOptimizedAlarm(Timer.GPS_OFF_MINIMUM_DURATION, Timer.gpsOnIntent);
+				timer.setupFuzzySinglePowerOptimizedAlarm(PersistentData.getGpsOffDurationMilliseconds(), Timer.gpsOnIntent);
 				return; }
 			
 			//sets a timer that will turn off the gps
 			if (broadcastAction.equals( appContext.getString(R.string.gps_on) ) ) {
 				gpsListener.turn_on();
-				timer.setupExactSingleAlarm(Timer.GPS_ON_DURATION, Timer.gpsOffIntent);
+				timer.setupExactSingleAlarm(PersistentData.getGpsOnDurationMilliseconds(), Timer.gpsOffIntent);
 				return; }
 			
 			//runs a wifi scan
