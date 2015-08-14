@@ -10,9 +10,10 @@
     tools:context="org.beiwe.app.ui.registration.ConsentFormActivity" >
 
     <TextView
+        android:id="@+id/consent_form_body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/consentForm" />
+        android:text="@string/default_consent_form_text" />
 
     <Button
         android:id="@+id/consentButton"

@@ -153,7 +153,7 @@
     <string name="consentButton"> I Consent </string>
     <string name="doNotConsentButton"> I do not Consent </string> 
     <string name="doNotConsentAlert"> You have indicated you do not consent to the terms of this application.  If you press "I understand" the app will exit, and you will not be enrolled in the study.  If you press "Cancel" the app will not exit and you will be able to press the "I Consent" button, which will then enroll you in the study. </string>
-    <string name="consentForm">
+    <string name="default_consent_form_text">
         The Consent Form\n
         Goes\n
         Here.

@@ -13,6 +13,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 public class ConsentFormActivity extends RunningBackgroundServiceActivity {
 	
@@ -20,6 +21,9 @@ public class ConsentFormActivity extends RunningBackgroundServiceActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_consent_form);
+		
+		TextView consentFormBody = (TextView) findViewById(R.id.consent_form_body);
+		consentFormBody.setText(PersistentData.getConsentFormText());
 	}
 	
 	/** On the press of the do not consent button, we pop up an alert, allowing the user

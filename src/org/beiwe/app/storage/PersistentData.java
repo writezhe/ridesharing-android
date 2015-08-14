@@ -254,6 +254,7 @@ public class PersistentData {
 
 	private static final String ABOUT_PAGE_TEXT_KEY = "about_page_text";
 	private static final String CALL_CLINICIAN_BUTTON_TEXT_KEY = "call_clinician_button_text";
+	private static final String CONSENT_FORM_TEXT_KEY = "consent_form_text";
 	
 	public static String getAboutPageText() {
 		String defaultText = appContext.getString(R.string.default_about_page_text);
@@ -261,8 +262,14 @@ public class PersistentData {
 	}
 	
 	public static String getCallClinicianButtonText() {
+		//TODO: Josh, got an NPE crash here when the app restarted on Debug Menu page; appContext was probably null
 		String defaultText = appContext.getString(R.string.default_call_clinician_text);
 		return pref.getString(CALL_CLINICIAN_BUTTON_TEXT_KEY, defaultText);
+	}
+	
+	public static String getConsentFormText() {
+		String defaultText = appContext.getString(R.string.default_consent_form_text);
+		return pref.getString(CONSENT_FORM_TEXT_KEY, defaultText);
 	}
 
 	/*###########################################################################################
