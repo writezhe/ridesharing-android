@@ -26,7 +26,6 @@ public class HTTPUIAsync extends HTTPAsync {
 	private View alertSpinner;
 	// Common variables
 	protected Activity activity;
-	protected int response = -1;
 	protected String responseString = null; //if this variable is still null after an attempt to execute then the request failed.
 	
 	/**An HTTPAsyc instance will begin execution immediately upon instantiation.
@@ -50,17 +49,17 @@ public class HTTPUIAsync extends HTTPAsync {
 	/** Your code should override doInBackground function, do NOT call super.doInBackground().*/
 	@Override
 	protected Void doInBackground(Void... arg0) {
-		Log.e("AsyncPostRequest", "You are not using this right, exiting program for your own good");
+		Log.e("HTTPUIAsync", "You are not using this right, exiting program for your own good");
 		System.exit(1);
 		return null; //Hate.
 	}
 	
 	/** Your code should override the onPostExecute function, call super.onPostExecute(), and handle
-	 * any additional special response and user notification logic required by your code.*/
+	 * any additional special response and user notification logic required by your code.
+	 * */
 	@Override
 	protected void onPostExecute(Void arg) {
-		//TODO: Eli. Part of cleaning up httpAsync, uncommenting the following line causes a crash on password reset.  investigate.
-//		super.onPostExecute(arg);
+		super.onPostExecute(arg);
 		if (alertSpinner != null) alertSpinner.setVisibility(View.GONE);
 		alertUser();
 	}
@@ -71,18 +70,12 @@ public class HTTPUIAsync extends HTTPAsync {
 	 * @param the response HTTP code from the PostRequest */
 	protected void alertUser() {   activity.runOnUiThread(new Runnable() {
 		public void run() {
-			if (response == -1 && responseString == null) {
-				Log.e("HTTPAsync", "WARNING: the response and responseString variables were never set, HTTPAsync is unable to handle user notification.");
-				return;
-			}
-			if ((response == -1) && (responseString.length() == 3)) {
-				try {
-					//when a PostRequest 
-					AlertsManager.showAlert(responseCodeAlert( Integer.parseInt(responseString) ), activity);   }
-				catch (Exception e) {
-					AlertsManager.showAlert(responseCodeAlert( 1 ), activity); } }
-			else if (response != 200) {
-				AlertsManager.showAlert(responseCodeAlert(response), activity); }
+			if (responseCode == -1 && responseString == null) { Log.e("HTTPUIAsync", "WARNING: the responseCode and responseString variables were never set, HTTPAsync is unable to handle user notification."); }
+			else if ((responseCode == -1) && (responseString.length() == 3)) {
+				try { AlertsManager.showAlert(responseCodeAlert( Integer.parseInt(responseString) ), activity); } //display a real error.
+				catch (NumberFormatException e) { AlertsManager.showAlert( responseCodeAlert( 1 ), activity); } } //display the default error.
+			else if (responseCode != 200) {
+				AlertsManager.showAlert(responseCodeAlert(responseCode), activity); }
 		} }	);
 	}
 }

@@ -9,7 +9,6 @@ import org.beiwe.app.ui.utils.AlertsManager;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.widget.Toast;
 
 /**
@@ -30,29 +29,22 @@ public class ResetPassword {
 	private Context appContext;
 	private String hashedCurrentPassword;
 	private String newPassword;
-	
 
 	public ResetPassword(Activity currentActivity) {
 		this.currentActivity = currentActivity;
 		this.appContext = currentActivity.getApplicationContext();
 	}
 	
-	
 	public void checkInputsAndTryToResetPassword(String currentPassword, String newPassword, String confirmNewPassword) {
 		this.hashedCurrentPassword = EncryptionEngine.safeHash(currentPassword);
 		this.newPassword = newPassword;
-
 		// If the new passwords don't match, pop up an alert, and do nothing else
 		if (!newPassword.equals(confirmNewPassword)) {
 			AlertsManager.showAlert(appContext.getString(R.string.password_mismatch), currentActivity);
 			return;
 		}
-
 		// If the new password has too few characters, pop up an alert, and do nothing else
-		if (!PersistentData.passwordMeetsRequirements(newPassword, currentActivity)) {
-			return;
-		}
-		
+		if (!PersistentData.passwordMeetsRequirements(newPassword, currentActivity)) { return; }
 		// If new password and confirm new password are valid, try resetting them on the server
 		doResetPasswordRequest();
 	}
@@ -65,26 +57,21 @@ public class ResetPassword {
 			@Override
 			protected Void doInBackground(Void... arg0) {
 				parameters = PostRequest.makeParameter("new_password", newPassword);
-				response = PostRequest.httpRequestcode(parameters, url, hashedCurrentPassword);
+				responseCode = PostRequest.httpRequestcode(parameters, url, hashedCurrentPassword);
 				return null;
 			}
 			
 			@Override
 			protected void onPostExecute(Void arg) {
 				super.onPostExecute(arg);
-				Log.d("ResetPassword.java", "HTTP response code = " + response);
-				
-				if (response == 200) {
+				if (responseCode == 200) {
 					// Set the password on the device to the new permanent password
 					PersistentData.setPassword(newPassword);
-					
 					// Set the user to "logged in"
 					PersistentData.loginOrRefreshLogin();
-
 					// Show a Toast with a "Success!" message
 					String message = appContext.getString(R.string.pass_reset_complete);
 					Toast.makeText(appContext, message, Toast.LENGTH_LONG).show();
-					
 					// Kill the activity
 					currentActivity.finish();
 				}

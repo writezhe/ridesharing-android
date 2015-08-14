@@ -36,15 +36,16 @@ public class SurveyDownloader {
 		}
 		@Override
 		protected void onPostExecute(Void arg) {
+			responseCode = updateSurveys( appContext, responseString);
 			super.onPostExecute(arg);
-			updateSurveys( responseString, appContext );
 		} }.execute();
 	}
 
-	private static void updateSurveys(String jsonString, Context appContext){
+	//Returns an appropriate return code for the httpAsync error parsing.  -1 if something goes wrong, 200 if it works.
+	private static int updateSurveys( Context appContext, String jsonString){
 		List<String> surveys;
 		try { surveys = JSONUtils.jsonArrayToStringList( new JSONArray(jsonString) );}
-		catch (JSONException e) { throw new NullPointerException("JSON PARSING FAIL FAIL FAIL"); }
+		catch (JSONException e) { Log.e("Survey Downloader", "JSON PARSING FAIL FAIL FAIL"); return -1; }
 		
 		JSONObject surveyJSON;
 		List<String> oldSurveyIds = PersistentData.getSurveyIds();
@@ -56,23 +57,23 @@ public class SurveyDownloader {
 		
 		for (String surveyString : surveys){
 			try { surveyJSON = new JSONObject(surveyString); }
-			catch (JSONException e) { throw new NullPointerException("JSON fail 1"); }
+			catch (JSONException e) { Log.e("Survey Downloader", "JSON fail 1"); return -1; }
 //			Log.d("debugging survey update", "whole thing: " + surveyJSON.toString());
 			
 			try { surveyId = surveyJSON.getString("_id"); }
-			catch (JSONException e) { throw new NullPointerException("JSON fail 2"); }
+			catch (JSONException e) { Log.e("Survey Downloader", "JSON fail 2"); return -1; }
 //			Log.d("debugging survey update", "id: " + surveyId.toString());
 			
 			try { surveyType = surveyJSON.getString("survey_type"); }
-			catch (JSONException e) { throw new NullPointerException("JSON fail 2.5"); }
+			catch (JSONException e) { Log.e("Survey Downloader", "JSON fail 2.5"); return -1; }
 //			Log.d("debugging survey update", "type: " + surveyType.toString());
 			
 			try { jsonQuestionsString = surveyJSON.getString("content"); }
-			catch (JSONException e) {throw new NullPointerException("JSON fail 3"); }
+			catch (JSONException e) { Log.e("Survey Downloader", "JSON fail 3"); return -1; }
 //			Log.d("debugging survey update", "questions: " + jsonQuestionsString);
 			
 			try { jsonTimingsString = surveyJSON.getString("timings"); }
-			catch (JSONException e) {throw new NullPointerException("JSON fail 4"); }
+			catch (JSONException e) { Log.e("Survey Downloader", "JSON fail 4"); return -1; }
 //			Log.d("debugging survey update", "timings: " + jsonTimingsString);
 			
 			if ( oldSurveyIds.contains(surveyId) ) { //if surveyId already exists, check for changes, add to list of new survey ids.
@@ -107,5 +108,6 @@ public class SurveyDownloader {
 				BackgroundService.registerTimers(appContext);
 			}
 		}
+		return 200;
 	}
 }

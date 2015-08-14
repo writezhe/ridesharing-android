@@ -87,18 +87,18 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 						PostRequest.makeParameter("new_password", newPassword) +
 						PostRequest.makeParameter("phone_number", DeviceInfo.getPhoneNumber() )  + 
 						PostRequest.makeParameter("device_id", DeviceInfo.getAndroidID() );
-			response = PostRequest.httpRegister(parameters, url);
+			responseCode = PostRequest.httpRegister(parameters, url);
 			return null; //hate
 		}
 		
 		@Override
 		protected void onPostExecute(Void arg) {
-			if (response == 200) {
+			if (responseCode == 200) {
 				PersistentData.setPassword(newPassword);
 				activity.startActivity(new Intent(activity.getApplicationContext(), PhoneNumberEntryActivity.class) );
 				activity.finish();
 			}
-			else if (response == 2) {
+			else if (responseCode == 2) {
 				AlertsManager.showAlert( "Received an invalid encryption key, please contact your administrator.", this.activity );
 				super.onPostExecute(arg);
 			}

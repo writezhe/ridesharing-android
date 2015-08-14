@@ -2,6 +2,7 @@ package org.beiwe.app.networking;
 
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.NumberPicker;
 
 //TODO: Low priority: Eli. Redoc.
 
@@ -20,7 +21,7 @@ public class HTTPAsync extends AsyncTask<Void, Void, Void> {
 	
 	protected String url;
 	protected String parameters = "";
-	protected int response = -1;
+	protected int responseCode = -1;
 	protected String responseString = null; //if this variable is still null after an attempt to execute then the request failed.
 	
 	/**An HTTPAsyc instance will begin execution immediately upon instantiation.
@@ -44,19 +45,13 @@ public class HTTPAsync extends AsyncTask<Void, Void, Void> {
 	
 	/**Does the logging operation executed in onPostExecute.*/
 	protected void alertSystem() {
-		if ( (response == -1) && (responseString.length() > 3) ) {
-			//TODO: Eli. Since HTTPAsync was refactored it has become unclear whether the http requests properly handle response codes.  Investigate, redoc, determine behavior.
-			Log.w("HTTPAsync", "DOING SOMETHING DANGEROUS");
-			try { response = Integer.parseInt( responseString.substring(0, 3) ); }
-			catch (NumberFormatException e) { Log.w("HTTPAsync", "You are not setting the value of the response code.  Please set the local variable 'responseCode' to an  appropriate value."); }
+		if (responseCode == -1 && responseString == null) {
+			Log.w("HTTPAsync", "WARNING: the responseCode and responseString variables were never set, HTTPAsync is unable check validity."); }
+		else if ((responseCode == -1) && (responseString.length() == 3)) {
+			try { Log.e("HTTPAsync", responseCodeAlert( Integer.parseInt(responseString))); }
+			catch (NumberFormatException e) { Log.w("HTTPAsync", "Unable to determine http response code." ); }
 		}
-		
-		if (response == -1 && responseString == null) {
-			Log.w("HTTPAsync", "WARNING: the response and responseString variables were never set, HTTPAsync is unable check validity."); }
-		else if ((response == -1) && (responseString.length() == 3)) {		
-			Log.e("HTTPAsync", responseCodeAlert( Integer.parseInt(responseString)));  }
-		else if (response != 200) {
-			Log.e("HTTPAsync", responseCodeAlert(response)); }
+		else if (responseCode != 200) { Log.e("HTTPAsync", responseCodeAlert(responseCode)); }
 	}
 	
 	
