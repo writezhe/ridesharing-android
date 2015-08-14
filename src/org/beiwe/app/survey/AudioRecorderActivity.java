@@ -18,6 +18,7 @@ import org.beiwe.app.ui.user.MainMenuActivity;
 import org.beiwe.app.ui.utils.SurveyNotifications;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.Intent;
@@ -96,8 +97,8 @@ public class AudioRecorderActivity extends SessionActivity {
     private String getPromptText(String surveyId) {
     	//FIXME: Eli. change container to be a json object with key 'prompt'.
 		try {
-			JSONArray contentArray = new JSONArray(PersistentData.getSurveyContent(surveyId));
-			return contentArray.getString(0);
+			JSONObject contentArray = new JSONArray(PersistentData.getSurveyContent(surveyId)).getJSONObject(0);
+			return contentArray.getString("prompt");
 		} catch (JSONException e) {
 			Log.e("Audio Survey", "audio survey received either no or invalid prompt text.");
 			e.printStackTrace();
