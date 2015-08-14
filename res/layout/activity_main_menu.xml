@@ -39,6 +39,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="callClinician"
-        android:text="@string/call_my_clinician" />
+        android:text="@string/default_call_clinician_text" />
 
 </LinearLayout>

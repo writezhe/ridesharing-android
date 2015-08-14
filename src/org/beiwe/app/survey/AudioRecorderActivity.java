@@ -86,6 +86,9 @@ public class AudioRecorderActivity extends SessionActivity {
     	playButton = (Button) findViewById(R.id.play_button);
     	recordingButton = (Button) findViewById(R.id.recording_button);
         
+    	Button callClinicianButton = (Button) findViewById(R.id.record_activity_call_clinician);
+    	callClinicianButton.setText(PersistentData.getCallClinicianButtonText());
+    	
     	// Each time the screen is flipped, the app checks if it's time to show the play button
     	setPlayButtonVisibility();
     }

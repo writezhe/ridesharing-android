@@ -96,7 +96,7 @@
     <string name="title_activity_main_menu">Beiwe Main Screen</string>
     <string name="main_menu_top_message">Welcome to Beiwe!</string>
     <string name="main_menu_view_graph">View survey answers on graph</string>
-    <string name="main_menu_call_my_clinician">Call My Clinician</string>
+    <string name="default_call_clinician_text">Call My Clinician</string>
     <string name="title_activity_graph">Previous Survey Answers</string>
 
     <!-- Recording Activity -->
@@ -137,7 +137,6 @@
     <string name="menu_sign_out">Sign Out</string>
     <string name="menu_change_password">Change Password</string>
     <string name="menu_about">About This App</string>
-    <string name="call_my_clinician">Call My Clinician</string>
     <string name="call_research_assistant">Call Research Assistant</string>
     
     <!-- About Page -->

@@ -249,6 +249,17 @@ public class PersistentData {
 		editor.commit(); }
 
 	/*###########################################################################################
+	################################### Text Strings ############################################
+	###########################################################################################*/
+
+	private static final String CALL_CLINICIAN_BUTTON_TEXT_KEY = "call_clinician_button_text";
+
+	public static String getCallClinicianButtonText() {
+		String defaultText = appContext.getString(R.string.default_call_clinician_text);
+		return pref.getString(CALL_CLINICIAN_BUTTON_TEXT_KEY, defaultText);
+	}
+
+	/*###########################################################################################
 	################################### User Credentials ########################################
 	###########################################################################################*/
 

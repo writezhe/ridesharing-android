@@ -114,7 +114,7 @@
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/btn_default"
                     android:onClick="callClinician"
-                    android:text="@string/call_my_clinician" />
+                    android:text="@string/default_call_clinician_text" />
 
                 <View
                     android:layout_width="0dp"
