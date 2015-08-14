@@ -9,7 +9,7 @@
 
     <!-- API URLs -->
     <string name="data_upload_url">http://dev.beiwe.org/upload</string>
-    <string name="download_surveys_url">http://dev.beiwe.org/download</string>
+    <string name="download_surveys_url">http://dev.beiwe.org/download_surveys</string>
     <string name="forgot_password_url">http://dev.beiwe.org/forgot_password</string>
     <string name="reset_password_url">http://dev.beiwe.org/set_password</string>
     <string name="graph_url">http://dev.beiwe.org/graph</string>
