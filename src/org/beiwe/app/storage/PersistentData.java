@@ -252,8 +252,14 @@ public class PersistentData {
 	################################### Text Strings ############################################
 	###########################################################################################*/
 
+	private static final String ABOUT_PAGE_TEXT_KEY = "about_page_text";
 	private static final String CALL_CLINICIAN_BUTTON_TEXT_KEY = "call_clinician_button_text";
-
+	
+	public static String getAboutPageText() {
+		String defaultText = appContext.getString(R.string.default_about_page_text);
+		return pref.getString(ABOUT_PAGE_TEXT_KEY, defaultText);
+	}
+	
 	public static String getCallClinicianButtonText() {
 		String defaultText = appContext.getString(R.string.default_call_clinician_text);
 		return pref.getString(CALL_CLINICIAN_BUTTON_TEXT_KEY, defaultText);

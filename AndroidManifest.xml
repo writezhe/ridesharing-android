@@ -133,11 +133,11 @@
             android:label="@string/title_activity_reset_password" >
         </activity>
         <activity
-            android:name=".user.AboutActivityLoggedOut"
+            android:name=".ui.user.AboutActivityLoggedOut"
             android:label="@string/title_activity_about" >
         </activity>
         <activity
-            android:name=".user.AboutActivityLoggedIn"
+            android:name=".ui.user.AboutActivityLoggedIn"
             android:label="@string/title_activity_about" >
         </activity>
         <activity
