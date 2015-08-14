@@ -29,7 +29,7 @@
 
     <!-- Survey Activity Strings -->
     <string name="survey_submit_button">Submit Answers</string>
-    <string name="survey_submit_success_message">Thank you for completing the survey.  Don\'t forget, no clinician will see your answers.  So, if you need help or you\'re thinking about harming yourself, please call your clinician.  You can also press the \"Call My Clinician\" button above to call your clinician.</string>
+    <string name="default_survey_submit_success_message">Thank you for completing the survey.  Don\'t forget, no clinician will see your answers.  So, if you need help or you\'re thinking about harming yourself, please call your clinician.  You can also press the \"Call My Clinician\" button above to call your clinician.</string>
     <string name="survey_submit_error_message">There has been an error; your answers may not have been recorded and saved</string>
     <string name="survey_loading_text" tools:ignore="TypographyEllipsis">Downloading the most up-to-date survey questions from the server...</string>
 

@@ -255,6 +255,7 @@ public class PersistentData {
 	private static final String ABOUT_PAGE_TEXT_KEY = "about_page_text";
 	private static final String CALL_CLINICIAN_BUTTON_TEXT_KEY = "call_clinician_button_text";
 	private static final String CONSENT_FORM_TEXT_KEY = "consent_form_text";
+	private static final String SURVEY_SUBMIT_SUCCESS_TOAST_TEXT_KEY = "survey_submit_success_toast_text";
 	
 	public static String getAboutPageText() {
 		String defaultText = appContext.getString(R.string.default_about_page_text);
@@ -270,6 +271,11 @@ public class PersistentData {
 	public static String getConsentFormText() {
 		String defaultText = appContext.getString(R.string.default_consent_form_text);
 		return pref.getString(CONSENT_FORM_TEXT_KEY, defaultText);
+	}
+	
+	public static String getSurveySubmitSuccessToastText() {
+		String defaultText = appContext.getString(R.string.default_survey_submit_success_message);
+		return pref.getString(SURVEY_SUBMIT_SUCCESS_TOAST_TEXT_KEY, defaultText);
 	}
 
 	/*###########################################################################################

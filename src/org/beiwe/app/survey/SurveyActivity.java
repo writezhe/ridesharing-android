@@ -92,13 +92,14 @@ public class SurveyActivity extends SessionActivity {
 	/**Write the Survey answers to a new SurveyAnswers.csv file, and show a Toast reporting either success or failure*/
 	private void recordAnswersAndClose() {
 		// Write the data to a SurveyAnswers file
-		int messageId = 0;
-		if (answersRecorder.writeLinesToFile(surveyId)) { messageId = R.string.survey_submit_success_message; }
-		else { messageId = R.string.survey_submit_error_message;		}
-		
 		// Show a Toast telling the user either "Thanks, success!" or "Oops, there was an error"
-		String msg = getApplicationContext().getResources().getString(messageId);
-		Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+		String toastMsg = null;
+		if (answersRecorder.writeLinesToFile(surveyId)) {
+			toastMsg = PersistentData.getSurveySubmitSuccessToastText();
+		} else {
+			toastMsg = getApplicationContext().getResources().getString(R.string.survey_submit_error_message);
+		}
+		Toast.makeText(getApplicationContext(), toastMsg, Toast.LENGTH_LONG).show();
 
 		// Close the Activity
 		startActivity(new Intent(getApplicationContext(), MainMenuActivity.class));
