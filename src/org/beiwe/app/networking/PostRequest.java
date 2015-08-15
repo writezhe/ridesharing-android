@@ -14,10 +14,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-//FIXME: Eli/Josh. Reenable ssl, kill use of HTTP
 import javax.net.ssl.HttpsURLConnection;
 
-//import org.apache.http.client.methods.HttpPost;
 import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
 import org.beiwe.app.storage.PersistentData;
