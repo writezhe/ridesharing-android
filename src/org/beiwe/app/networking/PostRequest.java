@@ -15,9 +15,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 //FIXME: Eli/Josh. Reenable ssl, kill use of HTTP
-//import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.HttpsURLConnection;
 
-import org.apache.http.client.methods.HttpPost;
+//import org.apache.http.client.methods.HttpPost;
 import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
 import org.beiwe.app.storage.PersistentData;
@@ -260,9 +260,9 @@ public class PostRequest {
 		// Run the HTTP POST on a separate thread
 		if ( !NetworkUtility.getWifiState(appContext) ) { return; }
 		ExecutorService executor = Executors.newFixedThreadPool(1);
-		Callable <HttpPost> thread = new Callable<HttpPost>() {
+		Callable <HttpsURLConnection> thread = new Callable<HttpsURLConnection>() {
 			@Override
-			public synchronized HttpPost call() {
+			public synchronized HttpsURLConnection call() {
 				Log.i("PostRequest.java", "Uploading files");
 				doTryUploadDelete();
 				return null; //(indentation was stupid, made a function.)
