@@ -259,24 +259,30 @@ public class PersistentData {
 	
 	public static String getAboutPageText() {
 		String defaultText = appContext.getString(R.string.default_about_page_text);
-		return pref.getString(ABOUT_PAGE_TEXT_KEY, defaultText);
-	}
-	
+		return pref.getString(ABOUT_PAGE_TEXT_KEY, defaultText); }
 	public static String getCallClinicianButtonText() {
 		//TODO: Josh, got an NPE crash here when the app restarted on Debug Menu page; appContext was probably null
 		String defaultText = appContext.getString(R.string.default_call_clinician_text);
-		return pref.getString(CALL_CLINICIAN_BUTTON_TEXT_KEY, defaultText);
-	}
-	
+		return pref.getString(CALL_CLINICIAN_BUTTON_TEXT_KEY, defaultText); }
 	public static String getConsentFormText() {
 		String defaultText = appContext.getString(R.string.default_consent_form_text);
-		return pref.getString(CONSENT_FORM_TEXT_KEY, defaultText);
-	}
-	
+		return pref.getString(CONSENT_FORM_TEXT_KEY, defaultText); }
 	public static String getSurveySubmitSuccessToastText() {
 		String defaultText = appContext.getString(R.string.default_survey_submit_success_message);
-		return pref.getString(SURVEY_SUBMIT_SUCCESS_TOAST_TEXT_KEY, defaultText);
-	}
+		return pref.getString(SURVEY_SUBMIT_SUCCESS_TOAST_TEXT_KEY, defaultText); }
+	
+	public static void setAboutPageText(String text) {
+		editor.putString(ABOUT_PAGE_TEXT_KEY, text);
+		editor.commit(); }
+	public static void setCallClinicianButtonText(String text) {
+		editor.putString(CALL_CLINICIAN_BUTTON_TEXT_KEY, text);
+		editor.commit(); }
+	public static void setConsentFormText(String text) {
+		editor.putString(CONSENT_FORM_TEXT_KEY, text);
+		editor.commit(); }
+	public static void setSurveySubmitSuccessToastText(String text) {
+		editor.putString(SURVEY_SUBMIT_SUCCESS_TOAST_TEXT_KEY, text);
+		editor.commit(); }
 
 	/*###########################################################################################
 	################################### User Credentials ########################################

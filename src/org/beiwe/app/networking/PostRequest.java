@@ -232,7 +232,16 @@ public class PostRequest {
 		PersistentData.setVoiceRecordingMaxTimeLengthSeconds(voiceRecordingMaxTimeLengthSeconds);
 		int wifiLogFrequencySeconds = deviceSettings.getInt("wifi_log_frequency_seconds");
 		PersistentData.setWifiLogFrequencySeconds(wifiLogFrequencySeconds);
-		// TODO: Josh, add the strings (this will require changes to the web interface/server 
+		
+		// Write text strings
+		String aboutPageText = deviceSettings.getString("about_page_text");
+		PersistentData.setAboutPageText(aboutPageText);
+		String callClinicianButtonText = deviceSettings.getString("call_clinician_button_text");
+		PersistentData.setCallClinicianButtonText(callClinicianButtonText);
+		String consentFormText = deviceSettings.getString("consent_form_text");
+		PersistentData.setConsentFormText(consentFormText);
+		String surveySubmitSuccessToastText = deviceSettings.getString("survey_submit_success_toast_text");
+		PersistentData.setSurveySubmitSuccessToastText(surveySubmitSuccessToastText);
 	}
 	
 
