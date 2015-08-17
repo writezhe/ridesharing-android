@@ -205,11 +205,33 @@ public class PostRequest {
 	
 	// TODO: Josh, probably move this function into another file, just for code cleanliness reasons
 	private static void writeDeviceSettings(JSONObject deviceSettings) throws JSONException {
+		// Write timer settings
 		int accelerometerOffDuration = deviceSettings.getInt("accelerometer_off_duration_seconds");
 		PersistentData.setAccelerometerOffDurationSeconds(accelerometerOffDuration);
 		int accelerometerOnDuration = deviceSettings.getInt("accelerometer_on_duration_seconds");
 		PersistentData.setAccelerometerOnDurationSeconds(accelerometerOnDuration);
-		// TODO: Josh, add the rest of the timer constants
+		int bluetoothOnDurationSeconds = deviceSettings.getInt("bluetooth_on_duration_seconds");
+		PersistentData.setBluetoothOnDurationSeconds(bluetoothOnDurationSeconds);
+		int bluetoothTotalDurationSeconds = deviceSettings.getInt("bluetooth_total_duration_seconds");
+		PersistentData.setBluetoothTotalDurationSeconds(bluetoothTotalDurationSeconds);
+		int bluetoothGlobalOffsetSeconds = deviceSettings.getInt("bluetooth_global_offset_seconds");
+		PersistentData.setBluetoothGlobalOffsetSeconds(bluetoothGlobalOffsetSeconds);
+		int checkForNewSurveysSeconds = deviceSettings.getInt("check_for_new_surveys_frequency_seconds");
+		PersistentData.setCheckForNewSurveysFrequencySeconds(checkForNewSurveysSeconds);
+		int createNewDataFilesFrequencySeconds = deviceSettings.getInt("create_new_data_files_frequency_seconds");
+		PersistentData.setCreateNewDataFilesFrequencySeconds(createNewDataFilesFrequencySeconds);
+		int gpsOffDurationSeconds = deviceSettings.getInt("gps_off_duration_seconds");
+		PersistentData.setGpsOffDurationSeconds(gpsOffDurationSeconds);
+		int gpsOnDurationSeconds = deviceSettings.getInt("gps_on_duration_seconds");
+		PersistentData.setGpsOnDurationSeconds(gpsOnDurationSeconds);
+		int secondsBeforeAutoLogout = deviceSettings.getInt("seconds_before_auto_logout");
+		PersistentData.setSecondsBeforeAutoLogout(secondsBeforeAutoLogout);
+		int uploadDataFilesFrequencySeconds = deviceSettings.getInt("upload_data_files_frequency_seconds");
+		PersistentData.setUploadDataFilesFrequencySeconds(uploadDataFilesFrequencySeconds);
+		int voiceRecordingMaxTimeLengthSeconds = deviceSettings.getInt("voice_recording_max_time_length_seconds");
+		PersistentData.setVoiceRecordingMaxTimeLengthSeconds(voiceRecordingMaxTimeLengthSeconds);
+		int wifiLogFrequencySeconds = deviceSettings.getInt("wifi_log_frequency_seconds");
+		PersistentData.setWifiLogFrequencySeconds(wifiLogFrequencySeconds);
 		// TODO: Josh, add the strings (this will require changes to the web interface/server 
 	}
 	
