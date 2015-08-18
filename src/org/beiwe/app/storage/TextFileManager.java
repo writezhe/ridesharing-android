@@ -85,6 +85,7 @@ public class TextFileManager {
 	private String header = null;
 	private Boolean persistent = null;
 	private Boolean encrypted = null;
+	private Boolean isDummy = true;
 	private byte[] AESKey = null;
 	
 	/*###############################################################################
@@ -97,25 +98,24 @@ public class TextFileManager {
 	 * @param appContext a Context, provided by the app. */
 	public static synchronized void initialize(Context appContext){
 		if ( started ) { return; }
-		
 		//the key file for encryption (it is persistent and never written to)
-		keyFile = new TextFileManager(appContext, "keyFile", "", true, true, false);
+		keyFile = new TextFileManager(appContext, "keyFile", "", true, true, false, false);
 		// Persistent files (old, no longer used, but this is an example of a persistent file (one that does not get abandoned at shut-down/initialization) )
 //		currentDailyQuestions = new TextFileManager(appContext, "currentDailyQuestionsFile.json", EMPTY_HEADER, true, true, false);
 //		currentWeeklyQuestions = new TextFileManager(appContext, "currentWeeklyQuestionsFile.json", EMPTY_HEADER, true, true, false);
 		// The debug file is no longer persistent, so that we can upload it to the server associated with a user, otherwise it has the name "logfile.txt" and fails to upload.
-		debugLogFile = new TextFileManager(appContext, "logFile", "THIS LINE IS A LOG FILE HEADER", false, false, true);
+		debugLogFile = new TextFileManager(appContext, "logFile", "THIS LINE IS A LOG FILE HEADER", false, false, true, false);
 		// Regularly/periodically-created files
-		GPSFile = new TextFileManager(appContext, "gps", GPSListener.header, false, false, true);
-		accelFile = new TextFileManager(appContext, "accel", AccelerometerListener.header, false, false, true);
-		textsLog = new TextFileManager(appContext, "textsLog", SmsSentLogger.header, false, false, true);
-		callLog = new TextFileManager(appContext, "callLog", CallLogger.header, false, false, true);
-		powerStateLog = new TextFileManager(appContext, "powerState", PowerStateListener.header, false, false, true);
-		bluetoothLog = new TextFileManager(appContext, "bluetoothLog", BluetoothListener.header, false, false, true);
+		GPSFile = new TextFileManager(appContext, "gps", GPSListener.header, false, false, true, !PersistentData.getGpsEnabled());
+		accelFile = new TextFileManager(appContext, "accel", AccelerometerListener.header, false, false, true, !PersistentData.getAccelerometerEnabled());
+		textsLog = new TextFileManager(appContext, "textsLog", SmsSentLogger.header, false, false, true, !PersistentData.getTextsEnabled());
+		callLog = new TextFileManager(appContext, "callLog", CallLogger.header, false, false, true, !PersistentData.getCallsEnabled());
+		powerStateLog = new TextFileManager(appContext, "powerState", PowerStateListener.header, false, false, true, !PersistentData.getPowerStateEnabled());
+		bluetoothLog = new TextFileManager(appContext, "bluetoothLog", BluetoothListener.header, false, false, true, !PersistentData.getBluetoothEnabled());
 		// Files created on specific events/written to in one go.
-		surveyTimings = new TextFileManager(appContext, "surveyTimings_", SurveyTimingsRecorder.header, false, false, true);
-		surveyAnswers = new TextFileManager(appContext, "surveyAnswers_", SurveyAnswersRecorder.header, false, false, true);
-		wifiLog = new TextFileManager(appContext, "wifiLog", WifiListener.header, false, false, true);
+		surveyTimings = new TextFileManager(appContext, "surveyTimings_", SurveyTimingsRecorder.header, false, false, true, false);
+		surveyAnswers = new TextFileManager(appContext, "surveyAnswers_", SurveyAnswersRecorder.header, false, false, true, false);
+		wifiLog = new TextFileManager(appContext, "wifiLog", WifiListener.header, false, false, true, !PersistentData.getWifiEnabled());
 		
 		started = true;
 	}
@@ -132,13 +132,14 @@ public class TextFileManager {
 	 * @param persistent Set this to true for a persistent file.  Persistent files are not currently encryptable.
 	 * @param openOnInstantiation This boolean value dictates whether the file should be opened, mostly this is used in conjunction persistent files so that they can be read from.
 	 * @param encrypted Set this to True if the file will have encrypted writes. */
-	private TextFileManager(Context appContext, String name, String header, Boolean persistent, Boolean openOnInstantiation, Boolean encrypted ){
+	private TextFileManager(Context appContext, String name, String header, Boolean persistent, Boolean openOnInstantiation, Boolean encrypted, Boolean isDummy ){
 		TextFileManager.appContext = appContext;
 		if ( persistent && encrypted ) { throw new NullPointerException("Persistent files do not support encryption."); }
 		this.name = name;
 		this.header = header;
 		this.persistent = persistent;
 		this.encrypted = encrypted;
+		this.isDummy = isDummy;
 		if (openOnInstantiation) { this.newFile(); } //immediately creating a file on instantiation was a common code pattern.
 	}
 	
@@ -149,6 +150,7 @@ public class TextFileManager {
 	 * Fails when files are not allowed to be written to. (the rule is no encrypted writes until registraction is complete.
 	 * @return A boolean value of whether a new file has been created.*/
 	public synchronized boolean newFile(){
+		if (this.isDummy) { return false; }
 		//handle the naming cases for persistent vs. non-persistent files
 		if ( this.persistent ) { this.fileName = this.name; } 
 		else { // if user has not registered, stop non-persistent file generation
@@ -171,6 +173,7 @@ public class TextFileManager {
 	 * Survey ID so that the file name reads like this:
 	 * [USERID]_SurveyAnswers[SURVEYID]_[TIMESTAMP].csv
 	 * @param surveyId */
+	//does not require dummy check, just setting attributes on the in-memory variable
 	public synchronized void newFile(String surveyId) {
 		String nameHolder = this.name;
 		this.name += surveyId;
@@ -187,6 +190,7 @@ public class TextFileManager {
 	 * file, a new file will be created.
 	 * @param data any unicode valid string*/
 	public synchronized void writePlaintext(String data){
+		if (this.isDummy) { return; }
 		if (fileName == null) this.newFile();
 		FileOutputStream outStream;
 		try {							//write the output, we always want mode append
@@ -206,6 +210,7 @@ public class TextFileManager {
 	/**Encrypts string data and writes it to a file.
 	 * @param data any unicode valid string */
 	public synchronized void writeEncrypted(String data) {
+		if (this.isDummy) { return; }
 		if ( !this.encrypted ) throw new NullPointerException( this.name + "is not supposed to have encrypted writes!" );
 		if ( fileName == null ) { //when newFile fails we are not allowed to write to files.
 			if (!this.newFile() ) { return; }
@@ -223,6 +228,7 @@ public class TextFileManager {
 	
 	/**@return A string of the file contents. */
 	public synchronized String read() {
+		if (this.isDummy) { return this.name + " is a dummy file."; }
 		BufferedInputStream bufferedInputStream;
 		StringBuffer stringBuffer = new StringBuffer();
 		int data;
@@ -250,12 +256,11 @@ public class TextFileManager {
 	###############################################################################*/
 	
 	/** Delete the reference to the file so that it can be uploaded */
-	public synchronized void closeFile() {
-		this.fileName = null;
-	}
+	public synchronized void closeFile() { this.fileName = null; }
 	
 	/** Deletes a file in the safest possible way, based on the file type (persistent-nonpersistent). */
 	public synchronized void deleteSafely() {
+		if (this.isDummy) { return; }
 		String oldFileName = this.fileName;
 		// For files that are persistant we have to do a slightly unsafe deletion, for everything else
 		// we allocate the new file and then delete the old file.

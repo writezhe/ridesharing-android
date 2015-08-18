@@ -141,7 +141,7 @@ public class PersistentData {
 
 	
 	/*#####################################################################################
-	################################# Application State ###################################
+	################################# Listener Settings ###################################
 	#####################################################################################*/
 
 	public static boolean getAccelerometerEnabled(){ return pref.getBoolean(ACCELEROMETER, false); }
@@ -175,7 +175,7 @@ public class PersistentData {
 		editor.commit(); }
 	
 	/*#####################################################################################
-	################################# Application State ###################################
+	################################## Timer Settings #####################################
 	#####################################################################################*/
 
 	// Default timings (only used if app doesn't download custom timings)
@@ -358,6 +358,7 @@ public class PersistentData {
 	public static String getSurveyContent(String surveyId){ return pref.getString(surveyId + "-content", null); }
 	public static String getSurveyType(String surveyId){ return pref.getString(surveyId + "-type", null); }
 	public static Boolean getSurveyNotificationState( String surveyId) { return pref.getBoolean(surveyId + "-notificationState", false ); }
+	public static long getMostRecentSurveyAlarmTime(String surveyId) { return pref.getLong( surveyId + "-prior_alarm", MAX_LONG); }
 	
 	public static void createSurveyData(String surveyId, String content, String timings, String type){
 		setSurveyContent(surveyId,  content);
@@ -378,11 +379,9 @@ public class PersistentData {
 	public static void setSurveyNotificationState(String surveyId, Boolean bool ) {
 		editor.putBoolean(surveyId + "-notificationState", bool );
 		editor.commit(); }
-	
 	public static void setMostRecentSurveyAlarmTime(String surveyId, long time) {
 		editor.putLong(surveyId + "-prior_alarm", time);
 		editor.commit(); }
-	public static long getMostRecentSurveyAlarmTime(String surveyId) { return pref.getLong( surveyId + "-prior_alarm", MAX_LONG); }
 	
 	public static void deleteSurvey(String surveyId) {
 		editor.remove(surveyId + "-content");

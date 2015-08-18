@@ -58,19 +58,6 @@ public class AccelerometerListener implements SensorEventListener{
 		accelSensorManager.unregisterListener(this);
 		enabled = false; }
 	
-	/** If the accelerometer exists, toggle its state.
-	 * @return Boolean.  True means it has been turned on, false means it has been turned off. */
-	public synchronized Boolean toggle(){
-		if ( !this.exists ){ return false; }
-		else {
-			if (enabled) {
-				this.turn_off();
-				return enabled; }	
-			else {
-				this.turn_on();
-				return enabled; } }
-	}
-	
 	/** Update the accuracy, synchronized so very closely timed trigger events do not overlap.
 	 * (only triggered by the system.) */
 	@Override

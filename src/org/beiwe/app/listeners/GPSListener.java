@@ -87,14 +87,6 @@ public class GPSListener implements LocationListener {
 		enabled = false;
 	}
 	
-	/**Checks for state of the GPSListener, turns it on/off accordingly
-	 * @return Boolean.  True if on, false if off.	 */
-	public synchronized Boolean toggle() {
-		if ( enabled ) { this.turn_off(); }
-		else { this.turn_on(); }
-		return enabled;
-	}
-	
 	/** pushes an update to us whenever there is a location update. */
 	@Override
 	public void onLocationChanged(Location location) {		

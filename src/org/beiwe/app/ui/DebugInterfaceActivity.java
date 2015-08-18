@@ -5,15 +5,12 @@ import java.util.List;
 
 import org.beiwe.app.R;
 import org.beiwe.app.Timer;
-import org.beiwe.app.listeners.WifiListener;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.storage.TextFileManager;
-import org.beiwe.app.survey.SurveyActivity;
 import org.beiwe.app.survey.SurveyDownloader;
-import org.beiwe.app.ui.user.LoginActivity;
 import org.beiwe.app.ui.user.MainMenuActivity;
 import org.beiwe.app.ui.utils.SurveyNotifications;
 
@@ -35,64 +32,35 @@ public class DebugInterfaceActivity extends SessionActivity {
 		appContext = this.getApplicationContext();
 	}
 	
+	
+	//Intent triggers caught in BackgroundService
+	public void accelerometerOn (View view) { appContext.sendBroadcast( Timer.accelerometerOnIntent ); }
+	public void accelerometerOff (View view) { appContext.sendBroadcast( Timer.accelerometerOffIntent ); }	
+	public void gpsOn (View view) { appContext.sendBroadcast( Timer.gpsOnIntent ); }
+	public void gpsOff (View view) { appContext.sendBroadcast( Timer.gpsOffIntent ); }
+	public void scanWifi (View view) { appContext.sendBroadcast( Timer.wifiLogIntent ); }
+	public void bluetoothButtonStart (View view) { appContext.sendBroadcast(Timer.bluetoothOnIntent); }
+	public void bluetoothButtonStop (View view) { appContext.sendBroadcast(Timer.bluetoothOffIntent); }
+	
+	
+	//raw debugging info
 	public void printInternalLog(View view) {
 		Log.i("print log button pressed", "press.");
 		String log = TextFileManager.getDebugLogFile().read();
-		
 		for( String line : log.split("\n") ) {
 			Log.i( "log file...", line ); }
 //		Log.i("log file encrypted", EncryptionEngine.encryptAES(log) );
 	}
-	
-	public void clearInternalLog(View view) { TextFileManager.getDebugLogFile().deleteSafely(); }
-	
-	public void uploadDataFiles(View view) { PostRequest.uploadAllFiles(); }
-	
-	public void runSurveyDownload(View view) { SurveyDownloader.downloadSurveys(getApplicationContext()); }
-		
-	public void goToSurvey(View view) { startActivity( new Intent(this, SurveyActivity.class) ); }
-	
-	public void deleteEverything(View view) {
-		Log.i("Delete Everything button pressed", "poke.");
-		for( String file : TextFileManager.getAllFiles() ) {
-			Log.i( "files...", file); }
-		TextFileManager.deleteEverything(); }
-	
-	public void listFiles(View view){
-		for( String file : TextFileManager.getAllFiles() ) {
-			Log.i( "files...", file); }
-	}
-	
-	public void toggleAccelerometer(View view) {
-		Boolean accel_state = backgroundService.accelerometerListener.toggle();
-		Log.i("Toggle Accelerometer button pressed", "Accel state: " + accel_state.toString() ); }
-	
-	public void toggleGPS(View view) {
-		Boolean gps_state = backgroundService.gpsListener.toggle();
-		Log.i("Toggle GPS button pressed", "GPS state: " + gps_state.toString() ); }
-	
-	public void scanWifi (View view) { WifiListener.scanWifi(); }
-	
-	public void bluetoothButtonStart (View view) { appContext.sendBroadcast(Timer.bluetoothOnIntent); }
-
-	public void bluetoothButtonStop (View view) { appContext.sendBroadcast(Timer.bluetoothOffIntent); }
-	
-	public void buttonTimer(View view) { backgroundService.startTimers(); }
-		
-	public void getKeyFile(View view) { Log.i("DEBUG", "key file data: " + TextFileManager.getKeyFile().read()); }
-	
 	public void testEncrypt (View view) {
 		Log.i("Debug..", TextFileManager.getKeyFile().read());
 		String data = TextFileManager.getKeyFile().read();
 		Log.i("reading keyFile:", data );
-		
 		try { EncryptionEngine.readKey(); }
 		catch (InvalidKeySpecException e) {
 			Log.e("DebugInterfaceActivity", "this is only partially implemented, unknown behavior");
 			e.printStackTrace();
 			throw new NullPointerException("some form of encryption error, type 1");
 		}
-
 		String encrypted;
 		try { encrypted = EncryptionEngine.encryptRSA("ThIs Is a TeSt".getBytes() ).toString(); }
 		catch (InvalidKeySpecException e) {
@@ -104,26 +72,6 @@ public class DebugInterfaceActivity extends SessionActivity {
 		Log.i("test encrypt - output:", encrypted );
 		Log.i("test hash:", EncryptionEngine.safeHash( encrypted ) );
 	}
-	
-	public void resetPassword(View view) { startActivity(new Intent(appContext, LoginActivity.class) ); }
-
-	public void loadMainMenu(View view) { startActivity(new Intent(appContext, MainMenuActivity.class) ); }
-	
-	public void makeNewFiles(View view) { TextFileManager.makeNewFilesForEverything(); }
-	
-	public void popSurveyNotifications(View view) {
-		for (String surveyId : PersistentData.getSurveyIds()){
-			SurveyNotifications.displaySurveyNotification(appContext, surveyId);
-		}
-	}
-
-	public void getAlarmStates(View view) {
-		List<String> ids = PersistentData.getSurveyIds();
-		for (String surveyId : ids){
-			Log.i("most recent alarm state", "" +PersistentData.getMostRecentSurveyAlarmTime(surveyId) + ", " + PersistentData.getSurveyNotificationState(surveyId)) ; 
-		}
-	}
-	
 	public void logDataToggles(View view) {
 		Log.i("DebugInterfaceActivity.logDataToggles()", "Accelerometer: " + Boolean.toString(PersistentData.getAccelerometerEnabled()));
 		Log.i("DebugInterfaceActivity.logDataToggles()", "GPS: " + Boolean.toString(PersistentData.getGpsEnabled()));
@@ -132,5 +80,40 @@ public class DebugInterfaceActivity extends SessionActivity {
 		Log.i("DebugInterfaceActivity.logDataToggles()", "WiFi: " + Boolean.toString(PersistentData.getWifiEnabled()));
 		Log.i("DebugInterfaceActivity.logDataToggles()", "Bluetooth: " + Boolean.toString(PersistentData.getBluetoothEnabled()));
 		Log.i("DebugInterfaceActivity.logDataToggles()", "Power State: " + Boolean.toString(PersistentData.getPowerStateEnabled()));
+	}
+	public void getAlarmStates(View view) {
+		List<String> ids = PersistentData.getSurveyIds();
+		for (String surveyId : ids){
+			Log.i("most recent alarm state", "" +PersistentData.getMostRecentSurveyAlarmTime(surveyId) + ", " + PersistentData.getSurveyNotificationState(surveyId)) ; 
+		}
+	}
+	public void clearInternalLog(View view) { TextFileManager.getDebugLogFile().deleteSafely(); }
+	public void getKeyFile(View view) { Log.i("DEBUG", "key file data: " + TextFileManager.getKeyFile().read()); }
+	
+	
+	//network operations
+	public void uploadDataFiles(View view) { PostRequest.uploadAllFiles(); }
+	public void runSurveyDownload(View view) { SurveyDownloader.downloadSurveys(getApplicationContext()); }
+	public void buttonTimer(View view) { backgroundService.startTimers(); }	
+	
+	
+	//file operations
+	public void makeNewFiles(View view) { TextFileManager.makeNewFilesForEverything(); }
+	public void deleteEverything(View view) {
+		Log.i("Delete Everything button pressed", "poke.");
+		for( String file : TextFileManager.getAllFiles() ) {
+			Log.i( "files...", file); }
+		TextFileManager.deleteEverything(); }
+	public void listFiles(View view){
+		for( String file : TextFileManager.getAllFiles() ) {
+			Log.i( "files...", file); }
+	}
+
+	//ui operations
+	public void loadMainMenu(View view) { startActivity(new Intent(appContext, MainMenuActivity.class) ); }
+	public void popSurveyNotifications(View view) {
+		for (String surveyId : PersistentData.getSurveyIds()){
+			SurveyNotifications.displaySurveyNotification(appContext, surveyId);
+		}
 	}
 }

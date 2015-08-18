@@ -73,25 +73,37 @@
 	        android:text="Stop Bluetooth Scan" />
 
 	    <Button
-	        android:id="@+id/buttonToggleGPS"
+	        android:id="@+id/buttonEnableGPS"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:onClick="toggleGPS"
-	        android:text="Toggle GPS" />
+	        android:onClick="gpsOn"
+	        android:text="Enable GPS (app broadcast)" />
+	    <Button
+	        android:id="@+id/buttonDisableGPS"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="gpsOff"
+	        android:text="Disable GPS (app broadcast)" />
 
 	    <Button
-	        android:id="@+id/buttonToggleAccelerometer"
+	        android:id="@+id/buttonEnableAccelerometer"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:onClick="toggleAccelerometer"
-	        android:text="Toggle Accelerometer" />
+	        android:onClick="accelerometerOn"
+	        android:text="Accelerometer On (system broadcast)" />
+	    <Button
+	        android:id="@+id/buttonTDisableAccelerometer"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:onClick="accelerometerOff"
+	        android:text="Accelerometer Off (app broadcast)" />
 
 	    <Button
 	        android:id="@+id/buttonWifiScan"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:onClick="scanWifi"
-	        android:text="Scan Wifi" />
+	        android:text="Scan Wifi (app broadcast)" />
 
 		<Button
 		    android:id="@+id/buttonTimer"

@@ -126,22 +126,24 @@ public class BackgroundService extends Service {
 	 * Note: Bluetooth has several checks to make sure that it actually exists on the device with the capabilities we need.
 	 * Checking for Bluetooth LE is necessary because it is an optional extension to Bluetooth 4.0. */
 	public void startBluetooth(){
-		//Note: the Bluetooth listener is a BroadcastReceiver, which means it must have a 0-argument constructor so android can instantiate it on broadcast receipts.
+		//Note: the Bluetooth listener is a BroadcastReceiver, which means it must have a 0-argument constructor in order for android can instantiate it on broadcast receipts.
 		//The following check must be made, but it requires a Context that we cannot pass into the BluetoothListener, so we do the check in the BackgroundService.
-		if ( appContext.getPackageManager().hasSystemFeature( PackageManager.FEATURE_BLUETOOTH_LE ) ) {
-			this.bluetoothListener = new BluetoothListener(); 
+		if ( appContext.getPackageManager().hasSystemFeature( PackageManager.FEATURE_BLUETOOTH_LE ) && PersistentData.getBluetoothEnabled() ) {
+			this.bluetoothListener = new BluetoothListener();
 			if ( this.bluetoothListener.isBluetoothEnabled() ) {
 				Log.i("Background Service", "success, actually doing bluetooth things.");
-				registerReceiver(this.bluetoothListener, new IntentFilter("android.bluetooth.adapter.action.STATE_CHANGED") );
-			} else {
-				//TODO: Low priority. Eli. Track down why this error log pops up, cleanup.
+				registerReceiver(this.bluetoothListener, new IntentFilter("android.bluetooth.adapter.action.STATE_CHANGED") ); }
+			else {
+				//TODO: Low priority. Eli. Track down why this error log pops up, cleanup.  -- the above check should be for the (new) doesBluetoothCapabilityExist function instead of isBluetoothEnabled
 				Log.e("Background Service", "bluetooth Failure. Should not have gotten this far.");
-				TextFileManager.getDebugLogFile().writeEncrypted("bluetooth Failure, device should not have gotten to this line of code");
-			}
+				TextFileManager.getDebugLogFile().writeEncrypted("bluetooth Failure, device should not have gotten to this line of code"); }
 		}
 		else {
-			TextFileManager.getDebugLogFile().writeEncrypted("Device does not support bluetooth LE, bluetooth features disabled.");
-			this.bluetoothListener = null; } 
+			if (PersistentData.getBluetoothEnabled()) {
+				TextFileManager.getDebugLogFile().writeEncrypted("Device does not support bluetooth LE, bluetooth features disabled.");
+				Log.w("BackgroundService bluetooth init", "Device does not support bluetooth LE, bluetooth features disabled."); }
+			else { Log.d("BackgroundService bluetooth init", "Bluetooth not enabled for study."); }
+			this.bluetoothListener = null; }
 	}
 	
 	/** Initializes the sms logger. */
@@ -169,7 +171,6 @@ public class BackgroundService extends Service {
 		registerReceiver( (BroadcastReceiver) new PowerStateListener(), filter);
 		PowerStateListener.start();
 	}
-	
 	
 	
 	/** create timers that will trigger events throughout the program, and
@@ -203,13 +204,13 @@ public class BackgroundService extends Service {
 	
 	public void startTimers() {
 		// Sensor timers.
-		if (!timer.alarmIsSet(Timer.accelerometerOnIntent) && !timer.alarmIsSet(Timer.accelerometerOffIntent)) {
+		if (PersistentData.getAccelerometerEnabled() && !timer.alarmIsSet(Timer.accelerometerOnIntent) && !timer.alarmIsSet(Timer.accelerometerOffIntent)) {
 			timer.setupFuzzySinglePowerOptimizedAlarm( PersistentData.getAccelerometerOffDurationMilliseconds(), Timer.accelerometerOnIntent); }
-		if (!timer.alarmIsSet(Timer.gpsOnIntent) && !timer.alarmIsSet(Timer.gpsOffIntent)) {
+		if (PersistentData.getGpsEnabled() && !timer.alarmIsSet(Timer.gpsOnIntent) && !timer.alarmIsSet(Timer.gpsOffIntent)) {
 			timer.setupFuzzySinglePowerOptimizedAlarm( PersistentData.getGpsOffDurationMilliseconds(), Timer.gpsOnIntent); }
-		if (!timer.alarmIsSet(Timer.bluetoothOnIntent) && !timer.alarmIsSet(Timer.bluetoothOffIntent)) {
+		if (PersistentData.getBluetoothEnabled() && !timer.alarmIsSet(Timer.bluetoothOnIntent) && !timer.alarmIsSet(Timer.bluetoothOffIntent)) {
 			timer.setupExactTimeAlarm(PersistentData.getBluetoothTotalDurationMilliseconds(), PersistentData.getBluetoothGlobalOffsetMilliseconds(), Timer.bluetoothOnIntent); }
-		if (!timer.alarmIsSet(Timer.wifiLogIntent)) {
+		if (PersistentData.getWifiEnabled() && !timer.alarmIsSet(Timer.wifiLogIntent)) {
 			timer.setupFuzzyPowerOptimizedRepeatingAlarm(PersistentData.getWifiLogFrequencyMilliseconds(), Timer.wifiLogIntent); }
 		
 		// Functionality timers.
@@ -224,8 +225,7 @@ public class BackgroundService extends Service {
 		Long now = System.currentTimeMillis();
 		for (String surveyId : PersistentData.getSurveyIds() ){
 			if ( PersistentData.getSurveyNotificationState(surveyId) || PersistentData.getMostRecentSurveyAlarmTime(surveyId) < now ) {
-				SurveyNotifications.displaySurveyNotification(appContext, surveyId);
-			}
+				SurveyNotifications.displaySurveyNotification(appContext, surveyId); }
 		}
 		
 		for (String surveyId : PersistentData.getSurveyIds() ) { //check each survey to ensure it is scheduled.
@@ -272,6 +272,7 @@ public class BackgroundService extends Service {
 			
 			//sets a timer that will turn off the accelerometer
 			if (broadcastAction.equals( appContext.getString(R.string.accelerometer_on) ) ) {
+				if ( !PersistentData.getAccelerometerEnabled() ) { Log.e("BackgroundService Listener", "invalid Accelerometer on received"); return; }
 				Log.i("*************************", "Accelerometer On");
 				accelerometerListener.turn_on();
 				timer.setupExactSingleAlarm(PersistentData.getAccelerometerOnDurationMilliseconds(), Timer.accelerometerOffIntent);
@@ -279,12 +280,13 @@ public class BackgroundService extends Service {
 			
 			//sets the next trigger time for the bluetooth scan to record data
 			if (broadcastAction.equals( appContext.getString(R.string.bluetooth_off) ) ) {
-				if (bluetoothListener != null) bluetoothListener.disableBLEScan();
+				if ( bluetoothListener != null) bluetoothListener.disableBLEScan();
 				timer.setupExactTimeAlarm(PersistentData.getBluetoothTotalDurationMilliseconds(), PersistentData.getBluetoothGlobalOffsetMilliseconds(), Timer.bluetoothOnIntent);
 				return; }
 			
 			//sets a timer that will turn off the bluetooth scan
 			if (broadcastAction.equals( appContext.getString(R.string.bluetooth_on) ) ) {
+				if ( !PersistentData.getBluetoothEnabled() ) { Log.e("BackgroundService Listener", "invalid Bluetooth on received"); return; }
 				if (bluetoothListener != null) bluetoothListener.enableBLEScan();
 				timer.setupExactSingleAlarm(PersistentData.getBluetoothOnDurationMilliseconds(), Timer.bluetoothOffIntent);
 				return; }
@@ -297,12 +299,14 @@ public class BackgroundService extends Service {
 			
 			//sets a timer that will turn off the gps
 			if (broadcastAction.equals( appContext.getString(R.string.gps_on) ) ) {
+				if ( !PersistentData.getGpsEnabled() ) { Log.e("BackgroundService Listener", "invalid GPS on received"); return; }
 				gpsListener.turn_on();
 				timer.setupExactSingleAlarm(PersistentData.getGpsOnDurationMilliseconds(), Timer.gpsOffIntent);
 				return; }
 			
 			//runs a wifi scan
 			if (broadcastAction.equals( appContext.getString(R.string.run_wifi_log) ) ) {
+				if ( !PersistentData.getWifiEnabled() ) { Log.e("BackgroundService Listener", "invalid WiFi scan received"); return; }
 				WifiListener.scanWifi();
 				return; }
 						
