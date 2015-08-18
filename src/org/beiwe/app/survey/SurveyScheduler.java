@@ -6,8 +6,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.beiwe.app.BackgroundService;
-import org.beiwe.app.JSONUtils;
 import org.beiwe.app.storage.PersistentData;
+import org.beiwe.app.ui.utils.JSONUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 

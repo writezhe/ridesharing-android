@@ -1,9 +1,9 @@
 package org.beiwe.app.storage;
 import java.util.List;
 
-import org.beiwe.app.JSONUtils;
 import org.beiwe.app.R;
 import org.beiwe.app.ui.utils.AlertsManager;
+import org.beiwe.app.ui.utils.JSONUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -357,6 +357,7 @@ public class PersistentData {
 	public static String getSurveyTimes(String surveyId){ return pref.getString(surveyId + "-times", null); }
 	public static String getSurveyContent(String surveyId){ return pref.getString(surveyId + "-content", null); }
 	public static String getSurveyType(String surveyId){ return pref.getString(surveyId + "-type", null); }
+	public static String getSurveySettings(String surveyId){ return pref.getString(surveyId + "-settings", null); }
 	public static Boolean getSurveyNotificationState( String surveyId) { return pref.getBoolean(surveyId + "-notificationState", false ); }
 	public static long getMostRecentSurveyAlarmTime(String surveyId) { return pref.getLong( surveyId + "-prior_alarm", MAX_LONG); }
 	
@@ -375,6 +376,11 @@ public class PersistentData {
 	public static void setSurveyType(String surveyId, String type){
 		editor.putString(surveyId + "-type", type);
 		editor.commit(); }
+	public static void setSurveySettings(String surveyId, String settings){
+		editor.putString(surveyId + "-settings", settings);
+		editor.commit();
+	}
+	
 	//survey state storage
 	public static void setSurveyNotificationState(String surveyId, Boolean bool ) {
 		editor.putBoolean(surveyId + "-notificationState", bool );
@@ -383,11 +389,13 @@ public class PersistentData {
 		editor.putLong(surveyId + "-prior_alarm", time);
 		editor.commit(); }
 	
+	
 	public static void deleteSurvey(String surveyId) {
 		editor.remove(surveyId + "-content");
 		editor.remove(surveyId + "-times");
 		editor.remove(surveyId + "-type");
 		editor.remove(surveyId + "-notificationState");
+		editor.remove(surveyId + "-settings");
 		editor.commit();
 		removeSurveyId(surveyId);
 	}

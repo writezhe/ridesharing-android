@@ -1,4 +1,4 @@
-package org.beiwe.app;
+package org.beiwe.app.ui.utils;
 
 import java.util.ArrayList;
 import java.util.List;

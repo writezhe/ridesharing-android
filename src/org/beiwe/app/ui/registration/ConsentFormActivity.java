@@ -2,9 +2,9 @@ package org.beiwe.app.ui.registration;
 
 import org.beiwe.app.R;
 import org.beiwe.app.RunningBackgroundServiceActivity;
+import org.beiwe.app.networking.SurveyDownloader;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.storage.TextFileManager;
-import org.beiwe.app.survey.SurveyDownloader;
 import org.beiwe.app.ui.LoadingActivity;
 
 

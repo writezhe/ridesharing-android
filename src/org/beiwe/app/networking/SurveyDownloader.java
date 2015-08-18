@@ -1,14 +1,13 @@
-package org.beiwe.app.survey;
+package org.beiwe.app.networking;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.beiwe.app.BackgroundService;
-import org.beiwe.app.JSONUtils;
 import org.beiwe.app.R;
-import org.beiwe.app.networking.HTTPAsync;
-import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.storage.PersistentData;
+import org.beiwe.app.survey.SurveyScheduler;
+import org.beiwe.app.ui.utils.JSONUtils;
 import org.beiwe.app.ui.utils.SurveyNotifications;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -51,6 +50,7 @@ public class SurveyDownloader {
 		String surveyType;
 		String jsonQuestionsString;
 		String jsonTimingsString;
+		String jsonSettingsString;
 		
 		for (String surveyString : surveys){
 			try { surveyJSON = new JSONObject(surveyString); }
@@ -73,10 +73,15 @@ public class SurveyDownloader {
 			catch (JSONException e) { Log.e("Survey Downloader", "JSON fail 4"); return -1; }
 //			Log.d("debugging survey update", "timings: " + jsonTimingsString);
 			
+			try { jsonSettingsString = surveyJSON.getString("settings"); }
+			catch (JSONException e) { Log.e("Survey Downloader", "JSON settings not present"); return -1; }
+//			Log.d("debugging survey update", "settings: " + jsonSettingsString);
+			
 			if ( oldSurveyIds.contains(surveyId) ) { //if surveyId already exists, check for changes, add to list of new survey ids.
 				Log.d("debugging survey update", "checking for changes");
 				PersistentData.setSurveyContent(surveyId, jsonQuestionsString);
 				PersistentData.setSurveyType(surveyId, surveyType);
+				PersistentData.setSurveySettings(surveyId, jsonSettingsString);
 //				Log.d("debugging survey update", "A is incoming, B is current.");
 //				Log.d("debugging survey update", "A) " + jsonTimingsString);
 //				Log.d("debugging survey update", "B) " + PersistentData.getSurveyTimes(surveyId) );
