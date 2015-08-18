@@ -95,7 +95,6 @@ public class AudioRecorderActivity extends SessionActivity {
     }
     
     private String getPromptText(String surveyId) {
-    	//FIXME: Eli. change container to be a json object with key 'prompt'.
 		try {
 			JSONObject contentArray = new JSONArray(PersistentData.getSurveyContent(surveyId)).getJSONObject(0);
 			return contentArray.getString("prompt");

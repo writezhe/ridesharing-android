@@ -122,6 +122,13 @@
 	        android:text="Show Survey Notifications" />
 
 		<Button
+		    android:id="@+id/buttonLogDataToggles"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:onClick="logDataToggles"
+		    android:text="Log Data Stream Toggles" />
+
+		<Button
 		    android:id="@+id/buttonAlarmStates"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
