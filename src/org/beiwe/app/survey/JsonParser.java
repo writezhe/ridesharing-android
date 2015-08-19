@@ -3,6 +3,7 @@ package org.beiwe.app.survey;
 import org.beiwe.app.R;
 import org.beiwe.app.ui.TextFieldType;
 import org.beiwe.app.ui.TextFieldType.Type;
+import org.beiwe.app.ui.utils.JSONUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,15 +29,17 @@ public class JsonParser {
 		LayoutInflater inflater = (LayoutInflater) appContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		errorWidget = inflater.inflate(R.layout.survey_info_textbox, null);
 	}
-
+	
 
 	/**Add all survey questions to the provided surveyLayout View object
 	 * @param surveyLayout */
-	public void renderSurveyFromJSON(LinearLayout surveyLayout, String jsonSurveyString) {
+	public void renderSurveyFromJSON(LinearLayout surveyLayout, String jsonSurveyString, Boolean randomize, int numberQuestions) {
 		LinearLayout questionsLayout = (LinearLayout) surveyLayout.findViewById(R.id.surveyQuestionsLayout);
 		try { //Every single line here can throw a JSONException
 			JSONArray jsonQuestions = new JSONArray(jsonSurveyString);
 			// Iterate over the array, and add each question to the survey View
+			if (randomize) {jsonQuestions = JSONUtils.shuffleJSONArray(jsonQuestions, numberQuestions); }
+			
 			for (int i = 0; i < jsonQuestions.length(); i++) {
 				View question = renderQuestionFromJSON(jsonQuestions.getJSONObject(i));
 				questionsLayout.addView(question);

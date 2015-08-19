@@ -4,7 +4,10 @@ import org.beiwe.app.R;
 import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.ui.user.MainMenuActivity;
+import org.beiwe.app.ui.utils.JSONUtils;
 import org.beiwe.app.ui.utils.SurveyNotifications;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -24,6 +27,9 @@ public class SurveyActivity extends SessionActivity {
 	
 	private SurveyAnswersRecorder answersRecorder;
 	private String surveyId;
+	private JSONObject surveySettings;
+	
+	
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +37,13 @@ public class SurveyActivity extends SessionActivity {
 		setContentView(R.layout.activity_survey);
 		Intent triggerIntent = getIntent();
 		surveyId = triggerIntent.getStringExtra("surveyId");
+		
+		try { surveySettings = new JSONObject( PersistentData.getSurveySettings(surveyId) ); }
+		catch (JSONException e) {
+			Log.e("Survey Activity", "There was an error parsing survey settings");
+			e.printStackTrace();
+			surveySettings = new JSONObject();
+		}
 		
 		if (savedInstanceState == null) {
 			Bundle extras = getIntent().getExtras();
@@ -49,7 +62,10 @@ public class SurveyActivity extends SessionActivity {
 		LinearLayout surveyLayout = (LinearLayout) findViewById(R.id.surveyLayout);
 		// Parse the JSON list of questions and render them as Views
 		JsonParser jsonParser = new JsonParser(getApplicationContext());
-		jsonParser.renderSurveyFromJSON(surveyLayout, jsonSurveyString);
+		Boolean randomizeWithReplacement = surveySettings.optBoolean(getString(R.string.randomizeWithReplacement), false);
+		int numberQuestions = surveySettings.optInt(getString(R.string.numberQuestions), 0);
+		jsonParser.renderSurveyFromJSON(surveyLayout, jsonSurveyString, randomizeWithReplacement, numberQuestions );
+		
 		// Record the time that the survey was first visible to the user
 		SurveyTimingsRecorder.recordSurveyFirstDisplayed(surveyId);
 	}

@@ -158,5 +158,9 @@
         Goes\n
         Here.
     </string>
-    
+
+    <!-- Survey Settings Keys -->
+    <string name="randomizeWithReplacement"> randomize_with_replacement </string>
+    <string name="numberQuestions"> number_questions </string>
+
 </resources>
