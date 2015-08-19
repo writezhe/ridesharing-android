@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.beiwe.app.BackgroundService;
+import org.beiwe.app.JSONUtils;
 import org.beiwe.app.R;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.survey.SurveyScheduler;
-import org.beiwe.app.ui.utils.JSONUtils;
 import org.beiwe.app.ui.utils.SurveyNotifications;
 import org.json.JSONArray;
 import org.json.JSONException;

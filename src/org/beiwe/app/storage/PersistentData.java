@@ -1,9 +1,9 @@
 package org.beiwe.app.storage;
 import java.util.List;
 
+import org.beiwe.app.JSONUtils;
 import org.beiwe.app.R;
 import org.beiwe.app.ui.utils.AlertsManager;
-import org.beiwe.app.ui.utils.JSONUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 

@@ -1,10 +1,10 @@
 package org.beiwe.app.survey;
 
+import org.beiwe.app.JSONUtils;
 import org.beiwe.app.R;
 import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.ui.user.MainMenuActivity;
-import org.beiwe.app.ui.utils.JSONUtils;
 import org.beiwe.app.ui.utils.SurveyNotifications;
 import org.json.JSONException;
 import org.json.JSONObject;

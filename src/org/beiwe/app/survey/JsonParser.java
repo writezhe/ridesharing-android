@@ -1,9 +1,9 @@
 package org.beiwe.app.survey;
 
+import org.beiwe.app.JSONUtils;
 import org.beiwe.app.R;
 import org.beiwe.app.ui.TextFieldType;
 import org.beiwe.app.ui.TextFieldType.Type;
-import org.beiwe.app.ui.utils.JSONUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
