@@ -5,8 +5,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import org.beiwe.app.storage.PersistentData;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.util.Log;
 
@@ -50,5 +52,38 @@ public class JSONUtils {
 		else { jsonArray = JSONUtils.stringListToJSONArray(javaList.subList(0, numberElements)); }
 		return jsonArray;
 	}
+
+		
 	
+	public static JSONArray shuffleJSONArrayWithMemory(JSONArray jsonArray, int numberElements, String surveyId) {
+		List<String> javaQuestionsList = JSONUtils.jsonArrayToStringList(jsonArray);
+		Collections.shuffle(javaQuestionsList, new Random(System.currentTimeMillis()) );
+		List<String> returnList = new ArrayList<String>(numberElements);
+		List<String> existingQuestionIds = PersistentData.getSurveyQuestionMemory(surveyId);
+		
+		JSONObject questionJSON = null;
+		String questionId;
+		
+		for (String questionString : javaQuestionsList) {
+			try { questionJSON = new JSONObject(questionString); }
+			catch (JSONException e) { e.printStackTrace(); throw new NullPointerException("question string is not a json object: " + questionString); }
+			
+			questionId = questionJSON.optString("question_id");
+			if (questionId == null) { throw new NullPointerException("question_id does not exist in question..."); }
+			
+			if ( existingQuestionIds.contains(questionId) ) { continue; }
+			else {
+				PersistentData.addSurveyQuestionMemory(surveyId, questionId);
+				returnList.add(questionString);
+				if (returnList.size() == numberElements) { break; }
+			}
+		}
+		
+		if (returnList.size() == 0 && javaQuestionsList.size() > 0) {
+			PersistentData.clearSurveyQuestionMemory(surveyId);
+			return shuffleJSONArrayWithMemory(jsonArray, numberElements, surveyId);
+		}
+		
+		return JSONUtils.stringListToJSONArray(returnList);
+	}
 }

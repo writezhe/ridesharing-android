@@ -62,9 +62,12 @@ public class SurveyActivity extends SessionActivity {
 		LinearLayout surveyLayout = (LinearLayout) findViewById(R.id.surveyLayout);
 		// Parse the JSON list of questions and render them as Views
 		JsonParser jsonParser = new JsonParser(getApplicationContext());
-		Boolean randomizeWithReplacement = surveySettings.optBoolean(getString(R.string.randomizeWithReplacement), false);
+		
+		Boolean randomizeWithMemory = surveySettings.optBoolean(getString(R.string.randomizeWithMemory), false);
+		Boolean randomize = surveySettings.optBoolean(getString(R.string.randomize), false);
+		
 		int numberQuestions = surveySettings.optInt(getString(R.string.numberQuestions), 0);
-		jsonParser.renderSurveyFromJSON(surveyLayout, jsonSurveyString, randomizeWithReplacement, numberQuestions );
+		jsonParser.renderSurveyFromJSON(surveyLayout, jsonSurveyString, surveyId, randomize, numberQuestions, randomizeWithMemory );
 		
 		// Record the time that the survey was first visible to the user
 		SurveyTimingsRecorder.recordSurveyFirstDisplayed(surveyId);

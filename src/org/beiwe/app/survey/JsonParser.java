@@ -2,6 +2,7 @@ package org.beiwe.app.survey;
 
 import org.beiwe.app.JSONUtils;
 import org.beiwe.app.R;
+import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.ui.TextFieldType;
 import org.beiwe.app.ui.TextFieldType.Type;
 import org.json.JSONArray;
@@ -30,16 +31,16 @@ public class JsonParser {
 		errorWidget = inflater.inflate(R.layout.survey_info_textbox, null);
 	}
 	
-
+	
 	/**Add all survey questions to the provided surveyLayout View object
 	 * @param surveyLayout */
-	public void renderSurveyFromJSON(LinearLayout surveyLayout, String jsonSurveyString, Boolean randomize, int numberQuestions) {
+	public void renderSurveyFromJSON(LinearLayout surveyLayout, String jsonSurveyString, String surveyId, Boolean randomize, int numberQuestions, Boolean randomizeWithMemory) {
 		LinearLayout questionsLayout = (LinearLayout) surveyLayout.findViewById(R.id.surveyQuestionsLayout);
 		try { //Every single line here can throw a JSONException
 			JSONArray jsonQuestions = new JSONArray(jsonSurveyString);
 			// Iterate over the array, and add each question to the survey View
-			if (randomize) {jsonQuestions = JSONUtils.shuffleJSONArray(jsonQuestions, numberQuestions); }
-			
+			if (randomize && !randomizeWithMemory) { jsonQuestions = JSONUtils.shuffleJSONArray(jsonQuestions, numberQuestions); }
+			if (randomize && randomizeWithMemory) { jsonQuestions = JSONUtils.shuffleJSONArrayWithMemory(jsonQuestions, numberQuestions, surveyId); }
 			for (int i = 0; i < jsonQuestions.length(); i++) {
 				View question = renderQuestionFromJSON(jsonQuestions.getJSONObject(i));
 				questionsLayout.addView(question);
@@ -119,7 +120,7 @@ public class JsonParser {
 	 * @param key the JSON key
 	 * @return return an empty String instead of throwing a JSONException */
 	private String getStringFromJSONObject(JSONObject obj, String key) {
-		try { return obj.getString(key);}
+		try { return obj.getString(key); }
 		catch (JSONException e) { return ""; }
 	}
 

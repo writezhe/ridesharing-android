@@ -78,14 +78,14 @@
     <string name="invalid_user_id">Invalid user ID</string>
     <string name="invalid_password">Invalid password</string>
     <string name="couldnt_register">Could not register this device</string>
-	
+
     <!-- Phone Numbers -->
     <string name="title_activity_phone_number_entry">PhoneNumberEntry</string>
     <string name="number_entry_top_message">Number Entry</string>
     <string name="number_entry_button">Set Numbers</string>
     <string name="primaryCarePrompt">The phone number of your primary care physician</string>
     <string name="passwordResetPrompt">The phone number for the research assistant</string>
-    
+
     <!-- Loading Activity Strings -->
     <string name="loading_activity_loading_message" tools:ignore="TypographyEllipsis">Loading...</string>
     <string name="survey_notification_title_template">Survey: %1$s</string>
@@ -138,20 +138,20 @@
     <string name="menu_change_password">Change Password</string>
     <string name="menu_about">About This App</string>
     <string name="call_research_assistant">Call Research Assistant</string>
-    
+
     <!-- About Page -->
     <string name="title_activity_about">About Beiwe</string>
     <string name="default_about_page_text">Beiwe is an application that runs on your cell phone and helps researchers collect information about your health and behaviors. It asks you to fill out short surveys, and to make a recording of your voice, once a day. Beiwe continuously collects information about your location (using your phone\'s GPS) and how much you move around (using your phone\'s accelerometer). It also monitors how much you use your phone for calling and texting, and it keeps track of the different people you communicate with. Importantly, Beiwe does not record the names or phone numbers of anyone you communicate with. While it can tell if you call the same person more than once, it does not know who that person is. Beiwe does not record the content of your text messages or phone calls. It also keeps track of the different Wi-Fi networks in your area, but the names of those networks are replaced with random codes. Finally, Beiwe can tell if you are near another phone that is also running this application.\n\nAlthough Beiwe collects a large amount of data, all of this data is processed to protect your privacy. This means that the application does not know your name, your phone number, or anything else that could identify you. Beiwe only knows you by an identification number. Because Beiwe does not know who you are, it cannot communicate with your clinician if you are ill or in danger. Researchers will not review the data Beiwe collects until the end of the study. To make it easier for you to connect with your clinician, the \"Call my Clinician\" button appears at the top of every page. In order for the button to work, you must enter your clinician\'s phone number into Beiwe. You can change it as often as needed.\n\nBeiwe was conceived and designed by Dr. Jukka-Pekka \"JP\" Onnela at the Harvard School of Public Health. The research study in which you are enrolled is run by Dr. Roy Perlis at Massachusetts General Hospital. The software was built by Zagaran, Inc., in Cambridge, Massachusetts.</string>
     <string name="send_recording_notification">Send Recording Notification</string>
-	
+
     <!-- Phone Numbers -->
     <string name="phone_number_length_error"> "Phone numbers must be exactly %d digits long." </string>
     <string name="enter_phone_numbers">You must enter values for the two phone numbers above </string>
-    
+
     <!-- Consent Form -->
     <string name="title_activity_consent_form">ConsentForm</string>
     <string name="consentButton"> I Consent </string>
-    <string name="doNotConsentButton"> I do not Consent </string> 
+    <string name="doNotConsentButton"> I do not Consent </string>
     <string name="doNotConsentAlert"> You have indicated you do not consent to the terms of this application.  If you press "I understand" the app will exit, and you will not be enrolled in the study.  If you press "Cancel" the app will not exit and you will be able to press the "I Consent" button, which will then enroll you in the study. </string>
     <string name="default_consent_form_text">
         The Consent Form\n
@@ -160,7 +160,8 @@
     </string>
 
     <!-- Survey Settings Keys -->
-    <string name="randomizeWithReplacement"> randomize_with_replacement </string>
+    <string name="randomize"> randomize </string>
+    <string name="randomizeWithMemory"> randomize_with_memory </string>
     <string name="numberQuestions"> number_questions </string>
 
 </resources>

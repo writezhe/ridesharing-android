@@ -59,6 +59,7 @@ public class PersistentData {
 	private static final String VOICE_RECORDING_MAX_TIME_LENGTH_SECONDS = "voice_recording_max_time_length_seconds";
 	private static final String WIFI_LOG_FREQUENCY_SECONDS = "wifi_log_frequency_seconds";
 	private static final String SURVEY_IDS = "survey_ids";
+	private static final String SURVEY_QUESTION_IDS = "question_ids";
 
 	/*#####################################################################################
 	################################### Initializing ######################################
@@ -323,37 +324,7 @@ public class PersistentData {
 	###########################################################################################*/
 	
 	public static List<String> getSurveyIds() { return JSONUtils.jsonArrayToStringList(getSurveyIdsJsonArray()); }
-
-	private static JSONArray getSurveyIdsJsonArray() {
-		JSONArray jsonSurveyIdArray;
-		String jsonString = pref.getString(SURVEY_IDS, "0");
-		Log.d("persistant data", "getting ids: " + jsonString);
-		if (jsonString == "0") { return new JSONArray(); } //return empty if the list is empty
-		try { jsonSurveyIdArray = new JSONArray(jsonString); }
-		catch (JSONException e) { throw new NullPointerException("getSurveyIds failed, json string was: " + jsonString ); }
-		return jsonSurveyIdArray;
-	}
-		
-	public static void addSurveyId(String surveyId) {
-		List<String> list = JSONUtils.jsonArrayToStringList( getSurveyIdsJsonArray() );
-		if ( !list.contains(surveyId) ) {
-			list.add(surveyId);
-			editor.putString(SURVEY_IDS, new JSONArray(list).toString() );
-			editor.commit();
-		}
-		else { throw new NullPointerException("duplicate survey id added"); } //TODO: Eli/Josh.  I am unaware of how this code could ever possible run because we ensure uniqueness in the downloader.  thoughts?
-	}
-	
-	private static void removeSurveyId(String surveyId) {
-		List<String> list = JSONUtils.jsonArrayToStringList( getSurveyIdsJsonArray() );
-		if ( list.contains(surveyId) ) {
-			list.remove(surveyId);
-			editor.putString(SURVEY_IDS, new JSONArray(list).toString() );
-			editor.commit();
-		}
-		else { throw new NullPointerException("survey id does not exist"); } //TODO: Eli/Josh.  like in addSurveyId, I am unaware of how this code could ever possible run because we ensure uniqueness in the downloader.  thoughts?
-	}
-	
+	public static List<String> getSurveyQuestionMemory(String surveyId) { return JSONUtils.jsonArrayToStringList(getSurveyQuestionMemoryJsonArray(surveyId)); }
 	public static String getSurveyTimes(String surveyId){ return pref.getString(surveyId + "-times", null); }
 	public static String getSurveyContent(String surveyId){ return pref.getString(surveyId + "-content", null); }
 	public static String getSurveyType(String surveyId){ return pref.getString(surveyId + "-type", null); }
@@ -377,6 +348,7 @@ public class PersistentData {
 		editor.putString(surveyId + "-type", type);
 		editor.commit(); }
 	public static void setSurveySettings(String surveyId, String settings){
+		Log.d("presistent data", "setting survey settings: " + settings);
 		editor.putString(surveyId + "-settings", settings);
 		editor.commit();
 	}
@@ -396,7 +368,61 @@ public class PersistentData {
 		editor.remove(surveyId + "-type");
 		editor.remove(surveyId + "-notificationState");
 		editor.remove(surveyId + "-settings");
+		editor.remove(surveyId + "-questionIds");
 		editor.commit();
 		removeSurveyId(surveyId);
+	}
+	
+	//array style storage and removal for surveyIds and questionIds	
+	private static JSONArray getSurveyIdsJsonArray() {
+		String jsonString = pref.getString(SURVEY_IDS, "0");
+		Log.d("persistant data", "getting ids: " + jsonString);
+		if (jsonString == "0") { return new JSONArray(); } //return empty if the list is empty
+		try { return new JSONArray(jsonString); }
+		catch (JSONException e) { throw new NullPointerException("getSurveyIds failed, json string was: " + jsonString ); }
+	}
+		
+	public static void addSurveyId(String surveyId) {
+		List<String> list = JSONUtils.jsonArrayToStringList( getSurveyIdsJsonArray() );
+		if ( !list.contains(surveyId) ) {
+			list.add(surveyId);
+			editor.putString(SURVEY_IDS, new JSONArray(list).toString() );
+			editor.commit();
+		}
+		else { throw new NullPointerException("duplicate survey id added: " + surveyId); } //TODO: Eli/Josh.  I am unaware of how this code could ever possible run because we ensure uniqueness in the downloader.  thoughts?
+	}
+	
+	private static void removeSurveyId(String surveyId) {
+		List<String> list = JSONUtils.jsonArrayToStringList( getSurveyIdsJsonArray() );
+		if ( list.contains(surveyId) ) {
+			list.remove(surveyId);
+			editor.putString(SURVEY_IDS, new JSONArray(list).toString() );
+			editor.commit();
+		}
+		else { throw new NullPointerException("survey id does not exist: " + surveyId); } //TODO: Eli/Josh.  like in addSurveyId, I am unaware of how this code could ever possible run because we ensure uniqueness in the downloader.  thoughts?
+	}
+	
+
+	private static JSONArray getSurveyQuestionMemoryJsonArray( String surveyId ) {
+		String jsonString = pref.getString(surveyId + "-questionIds", "0");
+		if (jsonString == "0") { return new JSONArray(); } //return empty if the list is empty
+		try { return new JSONArray(jsonString); }
+		catch (JSONException e) { throw new NullPointerException("getSurveyIds failed, json string was: " + jsonString ); }
+	}
+		
+	public static void addSurveyQuestionMemory(String surveyId, String questionId) {
+		List<String> list = getSurveyQuestionMemory(surveyId);
+		Log.d("persistent data", "adding questionId: " + questionId);
+		if ( !list.contains(questionId) ) {
+			list.add(questionId);
+			editor.putString(surveyId + "-questionIds", new JSONArray(list).toString() );
+			editor.commit();
+		}
+		else { throw new NullPointerException("duplicate question id added: " + questionId); } //TODO: Eli/Josh.  I am unaware of how this code could ever possible run because we ensure uniqueness in the downloader.  thoughts?
+	}
+	
+	public static void clearSurveyQuestionMemory(String surveyId) {
+		editor.putString(surveyId + "-questionIds", new JSONArray().toString() );
+		editor.commit();
 	}
 }
