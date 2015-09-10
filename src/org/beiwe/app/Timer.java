@@ -85,46 +85,31 @@ public class Timer {
 	private static Intent setupIntent( String action ){
 		Intent newIntent = new Intent();
 		newIntent.setAction( action );
-		return newIntent; }
-	
+		return newIntent;
+	}
 	
 	/* ###############################################################################################
 	 * ############################ The Various Types of Alarms Creation #############################
 	 * #############################################################################################*/
-	
-	/* "Actions" in Android are saved as DNS-styled strings, "ACTION_CALL" is actually the string "android.intent.action.CALL".
-	 * When using an IntentFilter as an... "action filter", we use this convention.
-	 * This Intent/IntentFilter is registered with the background service, and will broadcast start the provided PendingIntent.
-	 * 
-	 * Vocab:
-	 *  Fuzzy: an alarm that has a random interval added to the trigger time, for the purpose of load distribution.
-	 *  	a fuzzy alarm will be delayed by up to one half hour. 
-	 *  Exact: an alarm that Will go off at EXACTLY the time declared. (guaranteed by Android OS)
-	 *  Power Optimized: an alarm that will trigger to go off close to the time given, but may be shifted around by Android OS
-	 *  	in or to cluster power usage events close together to save battery.
-	 *  Single: this alarm will happen once.
-	 *  Double: a specific, common pattern in this code base, where one alarm triggers a second alarm.
-	 *  Repeating: an alarm that will repeat based on some well defined interval. */
-	
-	public void setupFuzzySinglePowerOptimizedAlarm(Long milliseconds, Intent intentToBeBroadcast) {
-		long nextTriggerTime = SystemClock.elapsedRealtime() + milliseconds + getRandomTimeOffset(); 
-		PendingIntent pendingTimerIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
-		alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, nextTriggerTime, pendingTimerIntent);
-	}
-	
-	/**Creates an alarm that will trigger within one half hour of the declared time, and then every hour thereafter
-	 * but in a "nice" way so Android can cluster power usage events close together to save battery. */
-	public void setupFuzzyPowerOptimizedRepeatingAlarm(long millisecondsRepeatInterval, Intent intentToBeBroadcast) {
-		//this repeating alarm uses the RTC flag, it will not wake up the device, and it adds in a random interval up to one half hour 
-		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
-		alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis() + getRandomTimeOffset(), millisecondsRepeatInterval, pendingIntent);
-	}
 	
 	/** Single exact alarm for an event that happens once */
 	public void setupExactSingleAlarm(Long milliseconds, Intent intentToBeBroadcast) {
 		Long triggerTime = System.currentTimeMillis() + milliseconds;
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
 		setExactAlarm(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
+	}
+	
+	/** setupExactTimeAlarm creates an Exact Alarm that will go off at a specific time within a
+	 * period, e.g. every hour (period), at 47 minutes past the hour (start time within period).
+	 * setupExactTimeAlarm is used for the Bluetooth timer, so that every device that has this app
+	 * turns on its Bluetooth at the same moment. */
+	public void setupExactSingleAbsoluteTimeAlarm(long period, long startTimeInPeriod, Intent intentToBeBroadcast) {
+		long currentTime = System.currentTimeMillis();
+		// current unix time (mod) 3,600,000 milliseconds = the next hour-boundry, to which we add the EXACT_REPEAT_TIMER_OFFSET.
+		Long nextTriggerTime = currentTime - ( currentTime % period ) + startTimeInPeriod;
+		if (nextTriggerTime < currentTime) { nextTriggerTime += period; }
+		PendingIntent pendingTimerIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
+		setExactAlarm(AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingTimerIntent);
 	}
 	
 	public void startSurveyAlarm(String surveyId, Calendar alarmTime){
@@ -144,20 +129,7 @@ public class Timer {
 		setExactAlarm(AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingIntent);
 		PersistentData.setMostRecentSurveyAlarmTime(surveyId, nextTriggerTime);
 	}
-		
 	
-	/** setupExactTimeAlarm creates an Exact Alarm that will go off at a specific time within a
-	 * period, e.g. every hour (period), at 47 minutes past the hour (start time within period).
-	 * setupExactTimeAlarm is used for the Bluetooth timer, so that every device that has this app
-	 * turns on its Bluetooth at the same moment. */
-	public void setupExactTimeAlarm(long period, long startTimeInPeriod, Intent intentToBeBroadcast) {
-		long currentTime = System.currentTimeMillis();
-		// current unix time (mod) 3,600,000 milliseconds = the next hour-boundry, to which we add the EXACT_REPEAT_TIMER_OFFSET.
-		Long nextTriggerTime = currentTime - ( currentTime % period ) + startTimeInPeriod;
-		if (nextTriggerTime < currentTime) { nextTriggerTime += period; }
-		PendingIntent pendingTimerIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
-		setExactAlarm(AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingTimerIntent);
-	}
 	
 	/* ##################################################################################
 	 * ############################ Other Utility Functions #############################
@@ -198,15 +170,5 @@ public class Timer {
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intent, PendingIntent.FLAG_NO_CREATE);
 		if (pendingIntent == null) { return false; }
 		else { return true; }
-	}
-	
-	/** Grabs an offset for use in the fuzzy alarms.
-	 * Some alarms interact poorly if they all go off at once either on a single device, or across all devices
-	 * running this software simultaneously.  A worst case would be if every device triggered simultaneous data uploads.
-	 * @return a random int bounded by one half hour*/
-	private static int getRandomTimeOffset(){
-//		return new Random().nextInt((int) AlarmManager.INTERVAL_HALF_HOUR);
-		//TODO: postproduction.  using a 10 second offset for debugging.
-		return new Random().nextInt(10000);
 	}
 }

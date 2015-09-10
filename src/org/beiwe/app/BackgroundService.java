@@ -205,21 +205,21 @@ public class BackgroundService extends Service {
 	public void startTimers() {
 		// Sensor timers.
 		if (PersistentData.getAccelerometerEnabled() && !timer.alarmIsSet(Timer.accelerometerOnIntent) && !timer.alarmIsSet(Timer.accelerometerOffIntent)) {
-			timer.setupFuzzySinglePowerOptimizedAlarm( PersistentData.getAccelerometerOffDurationMilliseconds(), Timer.accelerometerOnIntent); }
+			timer.setupExactSingleAlarm( PersistentData.getAccelerometerOffDurationMilliseconds(), Timer.accelerometerOnIntent); }
 		if (PersistentData.getGpsEnabled() && !timer.alarmIsSet(Timer.gpsOnIntent) && !timer.alarmIsSet(Timer.gpsOffIntent)) {
-			timer.setupFuzzySinglePowerOptimizedAlarm( PersistentData.getGpsOffDurationMilliseconds(), Timer.gpsOnIntent); }
+			timer.setupExactSingleAlarm( PersistentData.getGpsOffDurationMilliseconds(), Timer.gpsOnIntent); }
 		if (PersistentData.getBluetoothEnabled() && !timer.alarmIsSet(Timer.bluetoothOnIntent) && !timer.alarmIsSet(Timer.bluetoothOffIntent)) {
-			timer.setupExactTimeAlarm(PersistentData.getBluetoothTotalDurationMilliseconds(), PersistentData.getBluetoothGlobalOffsetMilliseconds(), Timer.bluetoothOnIntent); }
+			timer.setupExactSingleAbsoluteTimeAlarm(PersistentData.getBluetoothTotalDurationMilliseconds(), PersistentData.getBluetoothGlobalOffsetMilliseconds(), Timer.bluetoothOnIntent); }
 		if (PersistentData.getWifiEnabled() && !timer.alarmIsSet(Timer.wifiLogIntent)) {
-			timer.setupFuzzyPowerOptimizedRepeatingAlarm(PersistentData.getWifiLogFrequencyMilliseconds(), Timer.wifiLogIntent); }
+			timer.setupExactSingleAlarm(PersistentData.getWifiLogFrequencyMilliseconds(), Timer.wifiLogIntent); }
 		
 		// Functionality timers.
 		if (!timer.alarmIsSet(Timer.uploadDatafilesIntent)) {
-			timer.setupFuzzyPowerOptimizedRepeatingAlarm(PersistentData.getUploadDataFilesFrequencyMilliseconds(), Timer.uploadDatafilesIntent); }
+			timer.setupExactSingleAlarm(PersistentData.getUploadDataFilesFrequencyMilliseconds(), Timer.uploadDatafilesIntent); }
 		if (!timer.alarmIsSet(Timer.createNewDataFilesIntent)) {
-			timer.setupFuzzyPowerOptimizedRepeatingAlarm(PersistentData.getCreateNewDataFilesFrequencyMilliseconds(), Timer.createNewDataFilesIntent); }
+			timer.setupExactSingleAlarm(PersistentData.getCreateNewDataFilesFrequencyMilliseconds(), Timer.createNewDataFilesIntent); }
 		if (!timer.alarmIsSet(Timer.checkForNewSurveysIntent)) {
-			timer.setupFuzzyPowerOptimizedRepeatingAlarm(PersistentData.getCheckForNewSurveysFrequencyMilliseconds(), Timer.checkForNewSurveysIntent); }
+			timer.setupExactSingleAlarm(PersistentData.getCheckForNewSurveysFrequencyMilliseconds(), Timer.checkForNewSurveysIntent); }
 
 		//checks for the current expected state with app notifications. (must be run before we potentially set new alarms)
 		Long now = System.currentTimeMillis();
@@ -265,15 +265,13 @@ public class BackgroundService extends Service {
 			
 			//sets the next trigger time for the accelerometer to record data 
 			if (broadcastAction.equals( appContext.getString(R.string.accelerometer_off) ) ) {
-				Log.i("*************************", "Accelerometer Off");
 				accelerometerListener.turn_off();
-				timer.setupFuzzySinglePowerOptimizedAlarm(PersistentData.getAccelerometerOffDurationMilliseconds(), Timer.accelerometerOnIntent);
+				timer.setupExactSingleAlarm(PersistentData.getAccelerometerOffDurationMilliseconds(), Timer.accelerometerOnIntent);
 				return; }
 			
 			//sets a timer that will turn off the accelerometer
 			if (broadcastAction.equals( appContext.getString(R.string.accelerometer_on) ) ) {
 				if ( !PersistentData.getAccelerometerEnabled() ) { Log.e("BackgroundService Listener", "invalid Accelerometer on received"); return; }
-				Log.i("*************************", "Accelerometer On");
 				accelerometerListener.turn_on();
 				timer.setupExactSingleAlarm(PersistentData.getAccelerometerOnDurationMilliseconds(), Timer.accelerometerOffIntent);
 				return; }
@@ -281,7 +279,7 @@ public class BackgroundService extends Service {
 			//sets the next trigger time for the bluetooth scan to record data
 			if (broadcastAction.equals( appContext.getString(R.string.bluetooth_off) ) ) {
 				if ( bluetoothListener != null) bluetoothListener.disableBLEScan();
-				timer.setupExactTimeAlarm(PersistentData.getBluetoothTotalDurationMilliseconds(), PersistentData.getBluetoothGlobalOffsetMilliseconds(), Timer.bluetoothOnIntent);
+				timer.setupExactSingleAbsoluteTimeAlarm(PersistentData.getBluetoothTotalDurationMilliseconds(), PersistentData.getBluetoothGlobalOffsetMilliseconds(), Timer.bluetoothOnIntent);
 				return; }
 			
 			//sets a timer that will turn off the bluetooth scan
@@ -294,7 +292,7 @@ public class BackgroundService extends Service {
 			//sets the next trigger time for the gps to record data
 			if (broadcastAction.equals( appContext.getString(R.string.gps_off) ) ) {
 				gpsListener.turn_off();
-				timer.setupFuzzySinglePowerOptimizedAlarm(PersistentData.getGpsOffDurationMilliseconds(), Timer.gpsOnIntent);
+				timer.setupExactSingleAlarm(PersistentData.getGpsOffDurationMilliseconds(), Timer.gpsOnIntent);
 				return; }
 			
 			//sets a timer that will turn off the gps
@@ -308,6 +306,7 @@ public class BackgroundService extends Service {
 			if (broadcastAction.equals( appContext.getString(R.string.run_wifi_log) ) ) {
 				if ( !PersistentData.getWifiEnabled() ) { Log.e("BackgroundService Listener", "invalid WiFi scan received"); return; }
 				WifiListener.scanWifi();
+				timer.setupExactSingleAlarm(PersistentData.getWifiLogFrequencyMilliseconds(), Timer.wifiLogIntent);
 				return; }
 						
 			//runs the user signout logic, bumping the user to the login screen.
@@ -321,16 +320,19 @@ public class BackgroundService extends Service {
 			//starts a data upload attempt.
 			if (broadcastAction.equals( appContext.getString(R.string.upload_data_files_intent) ) ) {
 				PostRequest.uploadAllFiles();
+				timer.setupExactSingleAlarm(PersistentData.getUploadDataFilesFrequencyMilliseconds(), Timer.uploadDatafilesIntent);
 				return; }
 
 			//creates new data files
 			if (broadcastAction.equals( appContext.getString(R.string.create_new_data_files_intent) ) ) {
 				TextFileManager.makeNewFilesForEverything();
+				timer.setupExactSingleAlarm(PersistentData.getCreateNewDataFilesFrequencyMilliseconds(), Timer.createNewDataFilesIntent);
 				return; }
 
 			//Downloads the most recent survey questions and schedules the surveys.
 			if (broadcastAction.equals( appContext.getString(R.string.check_for_new_surveys_intent))) {
 				SurveyDownloader.downloadSurveys( getApplicationContext() );
+				timer.setupExactSingleAlarm(PersistentData.getCheckForNewSurveysFrequencyMilliseconds(), Timer.checkForNewSurveysIntent);
 				return; }
 			
 			//checks if the action is the id of a survey, if so pop up the notification for that survey, schedule the next alarm
