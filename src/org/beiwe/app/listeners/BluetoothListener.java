@@ -92,10 +92,13 @@ public class BluetoothListener extends BroadcastReceiver {
 		if (!bluetoothExists) { return false; }
 		Log.d("BluetoothListener", "disable bluetooth.");
 		internalBluetoothState = false;
-		if ( bluetoothAdapter.getBondedDevices().isEmpty() ) {
-			Log.d("BluetoothListener", "found a bonded bluetooth device, will not be turning off bluetooth.");
-			externalBluetoothState = true; }
-		
+		//TODO: Eli. this check was incorrect for 13 months, however bonded devices are not the same as connected devices.
+		//This check was never relevent before (nobody ever noticed), so now we are just removing the check entirely.
+		//If we want to implement more bluetooth safety checks, see http://stackoverflow.com/questions/3932228/list-connected-bluetooth-devices 
+//		if ( bluetoothAdapter.getBondedDevices().isEmpty() ) {
+//			Log.d("BluetoothListener", "found a bonded bluetooth device, will not be turning off bluetooth.");
+//			externalBluetoothState = true; }
+//		
 		if ( !externalBluetoothState ) { //if the outside world and us agree that it should be off, turn it off
 			this.bluetoothAdapter.disable();
 			return true; }
