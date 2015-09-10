@@ -29,7 +29,7 @@
 
     <!-- Survey Activity Strings -->
     <string name="survey_submit_button">Submit Answers</string>
-    <string name="default_survey_submit_success_message">Thank you for completing the survey.  Don\'t forget, no clinician will see your answers.  So, if you need help or you\'re thinking about harming yourself, please call your clinician.  You can also press the \"Call My Clinician\" button above to call your clinician.</string>
+    <string name="default_survey_submit_success_message">Thank you for completing the survey.  A clinician will not see your answers immediately, so if you need help or are thinking about harming yourself, please contact your clinician.  You can also press the \"Call My Clinician\" button. </string>
     <string name="survey_submit_error_message">There has been an error; your answers may not have been recorded and saved</string>
     <string name="survey_loading_text" tools:ignore="TypographyEllipsis">Downloading the most up-to-date survey questions from the server...</string>
 
@@ -83,8 +83,8 @@
     <string name="title_activity_phone_number_entry">PhoneNumberEntry</string>
     <string name="number_entry_top_message">Number Entry</string>
     <string name="number_entry_button">Set Numbers</string>
-    <string name="primaryCarePrompt">The phone number of your primary care physician</string>
-    <string name="passwordResetPrompt">The phone number for the research assistant</string>
+    <string name="primaryCarePrompt">The phone number of the primary researcher</string>
+    <string name="passwordResetPrompt">The phone number of the study research assistant</string>
 
     <!-- Loading Activity Strings -->
     <string name="loading_activity_loading_message" tools:ignore="TypographyEllipsis">Loading...</string>
