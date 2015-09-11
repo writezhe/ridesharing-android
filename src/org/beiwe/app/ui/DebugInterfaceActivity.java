@@ -116,4 +116,8 @@ public class DebugInterfaceActivity extends SessionActivity {
 			SurveyNotifications.displaySurveyNotification(appContext, surveyId);
 		}
 	}
+	
+	//crash operations (No, really, we actually need this.)
+	public void crashUi(View view) { throw new NullPointerException("oops, you bwoke it."); }
+	public void crashBackgroundService(View view) { backgroundService.crashBackgroundService(); }
 }

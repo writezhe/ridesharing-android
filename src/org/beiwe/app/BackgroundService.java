@@ -344,6 +344,9 @@ public class BackgroundService extends Service {
 		}
 	};
 	
+	//misclanie
+	public void crashBackgroundService() { throw new NullPointerException("stop poking me!"); }
+	
 	/*##########################################################################################
 	############## code related to onStartCommand and binding to an activity ###################
 	##########################################################################################*/
