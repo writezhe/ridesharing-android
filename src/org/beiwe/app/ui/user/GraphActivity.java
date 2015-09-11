@@ -39,6 +39,9 @@ public class GraphActivity extends SessionActivity {
 		// Instantiating web view to be embedded in the page
 		WebView browser = (WebView) findViewById(R.id.graph_pastResults);
 		WebSettings browserSettings = browser.getSettings();
+		browserSettings.setBuiltInZoomControls(true);
+		browserSettings.setDisplayZoomControls(false);
+		browserSettings.setSupportZoom(true);
 		browser.setWebViewClient(new WebViewClient() {
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -49,7 +52,11 @@ public class GraphActivity extends SessionActivity {
 
 		// Enable Javascript to display the graph, as well as initial scale
 		browserSettings.setJavaScriptEnabled(true);
-		browser.setInitialScale(200);
+//		browser.setInitialScale(100);
+//		browser.setFitsSystemWindows(true);
+//		browser.setOverScrollMode(android.view.View.OVER_SCROLL_ALWAYS);
+		browser.setNetworkAvailable(true);
+
 		//TODO: Low priority. Eli. find a way to Kill this use of securityparameters, make securityparameters private.
 		String postData = PostRequest.securityParameters(null);
 		String graphUrl = getApplicationContext().getString(R.string.graph_url);
