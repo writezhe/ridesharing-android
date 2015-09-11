@@ -94,9 +94,10 @@ public class SurveyDownloader {
 			else { //if survey is new, create new survey entry.
 				Log.d("debugging survey update", "CREATE A SURVEY");
 				PersistentData.addSurveyId(surveyId);
-				PersistentData.createSurveyData(surveyId, jsonQuestionsString, jsonTimingsString, surveyType);
+				PersistentData.createSurveyData(surveyId, jsonQuestionsString, jsonTimingsString, surveyType, jsonSettingsString);
 				BackgroundService.registerTimers(appContext);
 				SurveyScheduler.scheduleSurvey(surveyId);
+				SurveyScheduler.checkImmediateTriggerSurvey(appContext, surveyId);
 			}
 		}
 		

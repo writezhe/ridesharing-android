@@ -163,5 +163,6 @@
     <string name="randomize"> randomize </string>
     <string name="randomizeWithMemory"> randomize_with_memory </string>
     <string name="numberQuestions"> number_questions </string>
+    <string name="triggeredSurvey"> triggered_survey </string>
 
 </resources>

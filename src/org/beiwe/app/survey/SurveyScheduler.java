@@ -7,15 +7,34 @@ import java.util.List;
 
 import org.beiwe.app.BackgroundService;
 import org.beiwe.app.JSONUtils;
+import org.beiwe.app.R;
 import org.beiwe.app.storage.PersistentData;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
   
 //TODO: Low priority. Eli. document.
 public class SurveyScheduler {
-
+	
+	public static void checkImmediateTriggerSurvey(Context appContext, String surveyId) {
+		JSONObject surveySettings;
+		try { surveySettings = new JSONObject( PersistentData.getSurveySettings(surveyId) ); }
+		catch (JSONException e) {
+			Log.e("SurveyScheduler", "There was an error parsing survey settings");
+			e.printStackTrace();
+			surveySettings = new JSONObject();
+		}
+		Log.i("SurveyScheduler", "id: " + surveyId + ", survey settings: " + surveySettings );
+		if (surveySettings.optBoolean(appContext.getString(R.string.triggeredSurvey), false) ) {
+//			Log.i("SurveyScheduler", "it's triggered! yaaay!");
+			appContext.sendBroadcast(new Intent(surveyId));
+		}
+	}
+	
 	public static void scheduleSurvey(String surveyId) {
 		int today;
 		JSONArray JSONTimes;

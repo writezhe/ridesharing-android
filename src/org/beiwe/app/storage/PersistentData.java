@@ -332,10 +332,11 @@ public class PersistentData {
 	public static Boolean getSurveyNotificationState( String surveyId) { return pref.getBoolean(surveyId + "-notificationState", false ); }
 	public static long getMostRecentSurveyAlarmTime(String surveyId) { return pref.getLong( surveyId + "-prior_alarm", MAX_LONG); }
 	
-	public static void createSurveyData(String surveyId, String content, String timings, String type){
+	public static void createSurveyData(String surveyId, String content, String timings, String type, String settings){
 		setSurveyContent(surveyId,  content);
 		setSurveyTimes(surveyId, timings);
 		setSurveyType(surveyId, type);
+		setSurveySettings(surveyId, settings);
 	}
 	//individual setters
 	public static void setSurveyContent(String surveyId, String content){
@@ -348,7 +349,7 @@ public class PersistentData {
 		editor.putString(surveyId + "-type", type);
 		editor.commit(); }
 	public static void setSurveySettings(String surveyId, String settings){
-		Log.d("presistent data", "setting survey settings: " + settings);
+//		Log.d("presistent data", "setting survey settings: " + settings);
 		editor.putString(surveyId + "-settings", settings);
 		editor.commit();
 	}
