@@ -7,6 +7,7 @@ import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.ui.registration.ResetPasswordActivity;
 import org.beiwe.app.ui.user.AboutActivityLoggedIn;
+import org.beiwe.app.ui.user.GraphActivity;
 import org.beiwe.app.ui.user.LoginActivity;
 
 import android.content.Intent;
@@ -99,6 +100,8 @@ public class SessionActivity extends RunningBackgroundServiceActivity {
 		case R.id.menu_about:
 			startActivity(new Intent(getApplicationContext(), AboutActivityLoggedIn.class));
 			return true;
+		case R.id.view_survey_answers:
+			startActivity(new Intent(getApplicationContext(), GraphActivity.class));
 		default:
 			return super.onOptionsItemSelected(item);
 		}

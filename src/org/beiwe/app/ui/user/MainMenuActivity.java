@@ -27,5 +27,5 @@ public class MainMenuActivity extends SessionActivity {
 	############################## Buttons ####################################
 	#########################################################################*/
 	
-	public void graphResults (View v) { startActivity( new Intent(getApplicationContext(), GraphActivity.class) ); }
+//	public void graphResults (View v) { startActivity( new Intent(getApplicationContext(), GraphActivity.class) ); }
 }

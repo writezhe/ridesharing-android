@@ -138,6 +138,7 @@
     <string name="menu_change_password">Change Password</string>
     <string name="menu_about">About This App</string>
     <string name="call_research_assistant">Call Research Assistant</string>
+    <string name="view_survey_answers">View Survey Answers</string>
 
     <!-- About Page -->
     <string name="title_activity_about">About Beiwe</string>
