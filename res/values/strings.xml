@@ -160,9 +160,9 @@
     </string>
 
     <!-- Survey Settings Keys -->
-    <string name="randomize"> randomize </string>
-    <string name="randomizeWithMemory"> randomize_with_memory </string>
-    <string name="numberQuestions"> number_questions </string>
-    <string name="triggeredSurvey"> triggered_survey </string>
+    <string name="randomize">randomize</string>
+    <string name="randomizeWithMemory">randomize_with_memory</string>
+    <string name="numberQuestions">number_of_random_questions</string>
+    <string name="triggeredSurvey">trigger_on_first_download</string>
 
 </resources>
