@@ -27,7 +27,8 @@ public class SurveyDownloader {
 		@Override
 		protected Void doInBackground(Void... arg0) {
 			String parameters = "";
-			responseString = PostRequest.httpRequestString( parameters, url);
+			try { responseString = PostRequest.httpRequestString( parameters, url); }
+			catch (NullPointerException e) {  }
 			return null; //hate
 		}
 		@Override
@@ -39,6 +40,10 @@ public class SurveyDownloader {
 
 	//Returns an appropriate return code for the httpAsync error parsing.  -1 if something goes wrong, 200 if it works.
 	private static int updateSurveys( Context appContext, String jsonString){
+		if (jsonString == null) {
+			Log.e("Survey Downloader", "jsonString is null, probably have no network connection. squashing.");
+			return -1; }
+		
 		List<String> surveys;
 		try { surveys = JSONUtils.jsonArrayToStringList( new JSONArray(jsonString) );}
 		catch (JSONException e) { Log.e("Survey Downloader", "JSON PARSING FAIL FAIL FAIL"); return -1; }
