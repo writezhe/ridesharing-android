@@ -119,16 +119,14 @@
     <string name="new_audio_survey_notification_details">Please make a voice recording.</string>
 
     <!-- Timer Action Strings -->
-    <string name="accelerometer_off">Accelerometer OFF</string>
-    <string name="accelerometer_on">Accelerometer On</string>
-    <string name="bluetooth_off">Bluetooth OFF</string>
-    <string name="bluetooth_on">Bluetooth On</string>
-    <string name="gps_off">GPS OFF</string>
-    <string name="gps_on">GPS On</string>
+    <string name="turn_accelerometer_off">Accelerometer OFF</string>
+    <string name="turn_accelerometer_on">Accelerometer On</string>
+    <string name="turn_bluetooth_off">Bluetooth OFF</string>
+    <string name="turn_bluetooth_on">Bluetooth On</string>
+    <string name="turn_gps_off">GPS OFF</string>
+    <string name="turn_gps_on">GPS On</string>
     <string name="signout_intent">Signout</string>
     <string name="voice_recording">Voice Recording</string>
-    <string name="daily_survey">Daily Survey</string>
-    <string name="weekly_survey">Weekly Survey</string>
     <string name="upload_data_files_intent">Upload data files</string>
     <string name="create_new_data_files_intent">Create new data files</string>
     <string name="check_for_new_surveys_intent">Check for new surveys</string>

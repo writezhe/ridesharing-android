@@ -62,12 +62,12 @@ public class Timer {
 		alarmManager = (AlarmManager)( backgroundService.getSystemService( Context.ALARM_SERVICE ));
 		
 		// double alarm intents
-		accelerometerOffIntent = setupIntent( appContext.getString(R.string.accelerometer_off) );
-		accelerometerOnIntent = setupIntent( appContext.getString(R.string.accelerometer_on) );
-		bluetoothOffIntent = setupIntent( appContext.getString(R.string.bluetooth_off) );
-		bluetoothOnIntent = setupIntent( appContext.getString(R.string.bluetooth_on) );
-		gpsOffIntent = setupIntent( appContext.getString(R.string.gps_off) );
-		gpsOnIntent = setupIntent( appContext.getString(R.string.gps_on) );
+		accelerometerOffIntent = setupIntent( appContext.getString(R.string.turn_accelerometer_off) );
+		accelerometerOnIntent = setupIntent( appContext.getString(R.string.turn_accelerometer_on) );
+		bluetoothOffIntent = setupIntent( appContext.getString(R.string.turn_bluetooth_off) );
+		bluetoothOnIntent = setupIntent( appContext.getString(R.string.turn_bluetooth_on) );
+		gpsOffIntent = setupIntent( appContext.getString(R.string.turn_gps_off) );
+		gpsOnIntent = setupIntent( appContext.getString(R.string.turn_gps_on) );
 		
 		// Set up event triggering alarm intents
 		signoutIntent = setupIntent( appContext.getString(R.string.signout_intent) );
@@ -93,10 +93,11 @@ public class Timer {
 	 * #############################################################################################*/
 	
 	/** Single exact alarm for an event that happens once */
-	public void setupExactSingleAlarm(Long milliseconds, Intent intentToBeBroadcast) {
+	public Long setupExactSingleAlarm(Long milliseconds, Intent intentToBeBroadcast) {
 		Long triggerTime = System.currentTimeMillis() + milliseconds;
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
 		setExactAlarm(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
+		return triggerTime;
 	}
 	
 	/** setupExactTimeAlarm creates an Exact Alarm that will go off at a specific time within a

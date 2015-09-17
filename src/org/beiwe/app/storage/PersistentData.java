@@ -134,6 +134,7 @@ public class PersistentData {
 
  	/**Takes an input string and returns a boolean value stating whether the input matches the current password.
 	 * @param input
+	 * @param input
 	 * @return */
 	public static boolean checkPassword(String input){ return ( getPassword().equals( EncryptionEngine.safeHash(input) ) ); }
 
@@ -252,6 +253,14 @@ public class PersistentData {
 		editor.putLong(WIFI_LOG_FREQUENCY_SECONDS, seconds);
 		editor.commit(); }
 
+	
+	//accelerometer, bluetooth, new surveys, create data files, gps, logout,upload, wifilog (not voice recording, that doesn't apply
+	public static void setMostRecentAlarmTime(String identifier, long time) {
+		editor.putLong(identifier + "-prior_alarm", time);
+		editor.commit(); }
+	public static long getMostRecentAlarmTime(String identifier) { return pref.getLong( identifier + "-prior_alarm", 0); }
+	//we want default to be 0 so that checks "is this value less than the current expected value" (eg "did this timer event pass already")
+	
 	/*###########################################################################################
 	################################### Text Strings ############################################
 	###########################################################################################*/
@@ -295,11 +304,9 @@ public class PersistentData {
 		if (editor == null) Log.e("LoginManager.java", "editor is null");
 		editor.putString(KEY_ID, userID);
 		setPassword(password);
-		editor.commit();
-	}
+		editor.commit(); }
 
 	public static String getPassword() { return pref.getString( KEY_PASSWORD, null ); }
-
 	public static String getPatientID() { return pref.getString(KEY_ID, NULL_ID); }
 
 	/*###########################################################################################
@@ -309,17 +316,13 @@ public class PersistentData {
 	public static String getPrimaryCareNumber() { return pref.getString(PCP_PHONE_KEY, ""); }
 	public static void setPrimaryCareNumber( String phoneNumber) {
 		editor.putString(PCP_PHONE_KEY, phoneNumber );
-		editor.commit();
-	}
+		editor.commit(); }
 
-	public static String getPasswordResetNumber() {
-		return pref.getString(PASSWORD_RESET_NUMBER_KEY, "");
-	}
+	public static String getPasswordResetNumber() { return pref.getString(PASSWORD_RESET_NUMBER_KEY, ""); }
 	
 	public static void setPasswordResetNumber( String phoneNumber ){
 		editor.putString(PASSWORD_RESET_NUMBER_KEY, phoneNumber );
-		editor.commit();
-	}
+		editor.commit(); }
 
 	
 	/*###########################################################################################
