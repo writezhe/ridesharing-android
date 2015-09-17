@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
@@ -57,7 +58,13 @@ public class RunningBackgroundServiceActivity extends Activity {
 //	        isBound = false;
 	    }
 	};
-
+	
+	@Override
+	protected void onCreate(Bundle bundle){ 
+		super.onCreate(bundle); 	
+		PersistentData.initialize(getApplicationContext());
+	}
+	
 	/** Override this function to do tasks on creation, but only after the background Service has been initialized. */
 	protected void doBackgroundDependantTasks() { Log.d("RunningBackgroundServiceActivity", "doBackgroundDependantTasks ran as default (do nothing)"); }
 	
