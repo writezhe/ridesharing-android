@@ -64,6 +64,7 @@ public class HTTPAsync extends AsyncTask<Void, Void, Void> {
 		else if (responseCode == 405) { return "Phone is not registered to this user. Please contact research staff";}
 		else if (responseCode == 502) { return "Please connect to the internet and try again";}
 		else if (responseCode == 1) { return "Someone misconfigured the server, please contact staff";}
-		else { return "An unknown error occured."; }
+		else { Log.e("HTTPAsync", "unknown response code: " + responseCode); 
+			return "An unknown error occured."; }
 	}
 }
