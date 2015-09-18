@@ -44,7 +44,6 @@ public class BackgroundService extends Service {
 	public BluetoothListener bluetoothListener;
 	public static Timer timer;
 	
-	
 	//localHandle is how static functions access the currently instantiated background service.
 	//It is to be used ONLY to register new surveys with the running background service, because
 	//that code needs to be able to update the IntentFilters associated with timerReceiver.
@@ -207,47 +206,42 @@ public class BackgroundService extends Service {
 	
 	public void startTimers() {
 		Long now = System.currentTimeMillis();
-		// Sensor timers.
-		if (PersistentData.getAccelerometerEnabled() && ( //if accelerometer is enabled and 
+		Log.d("BackgroundService", "running start timer logic.");
+		if (PersistentData.getAccelerometerEnabled() && ( //if accelerometer data recording is enabled and 
 				PersistentData.getMostRecentAlarmTime( getString(R.string.turn_accelerometer_on )) < now || //the most recent accelerometer alarm time is in the past, or
-				!timer.alarmIsSet(Timer.accelerometerOnIntent) || !timer.alarmIsSet(Timer.accelerometerOffIntent ) ) ) { //either of the accelerometer alarms are not extant.
-			sendBroadcast( Timer.accelerometerOnIntent );
+				!timer.alarmIsSet(Timer.accelerometerOnIntent) ) ) { //there is no scheduled accelerometer-on timer 
+			sendBroadcast( Timer.accelerometerOnIntent ); // start accelerometer timers (immediately runs accelerometer recording session).
+			//note: when there is no accelerometer-off timer that means we are in-between scans.  This state is fine, so we don't check it.
 		}
 		
-		
-		if (PersistentData.getGpsEnabled() && (  
+		if (PersistentData.getGpsEnabled() && (  //identical logic to accelerometer-start logic
 				PersistentData.getMostRecentAlarmTime( getString( R.string.turn_gps_on )) < now ||
-				!timer.alarmIsSet(Timer.gpsOnIntent) || !timer.alarmIsSet(Timer.gpsOffIntent) ) ) {
-			sendBroadcast( Timer.gpsOnIntent );
-		}
+				!timer.alarmIsSet(Timer.gpsOnIntent) ) ) {
+			sendBroadcast( Timer.gpsOnIntent ); }
 		
-		
-		if (PersistentData.getWifiEnabled() && (
-				PersistentData.getMostRecentAlarmTime( getString(R.string.run_wifi_log)) < now ||
+		if (PersistentData.getWifiEnabled() && ( //identical logic to accelerometer start logic, except we don't have an off-timer to not care about. 
+				PersistentData.getMostRecentAlarmTime( getString(R.string.run_wifi_log)) < now || //the most recent wifi log time is in the past or
 				!timer.alarmIsSet(Timer.wifiLogIntent) ) ) {
-			sendBroadcast( Timer.wifiLogIntent );
-		}
-
+			sendBroadcast( Timer.wifiLogIntent ); }
 		
+		//if Bluetooth recording is enabled and neither of the bluetooth timers have been scheduled set up the next Bluetooth-on alarm.
+		//(Bluetooth needs to run at the specified time, they should not be started if a scheduled event is missed.)
 		if (PersistentData.getBluetoothEnabled() && !timer.alarmIsSet(Timer.bluetoothOnIntent) && !timer.alarmIsSet(Timer.bluetoothOffIntent)) {
 			timer.setupExactSingleAbsoluteTimeAlarm(PersistentData.getBluetoothTotalDurationMilliseconds(), PersistentData.getBluetoothGlobalOffsetMilliseconds(), Timer.bluetoothOnIntent); }
 		
-		// Functionality timers.
-		if (!timer.alarmIsSet(Timer.uploadDatafilesIntent)) {
-			timer.setupExactSingleAlarm(PersistentData.getUploadDataFilesFrequencyMilliseconds(), Timer.uploadDatafilesIntent); }
-		if (!timer.alarmIsSet(Timer.createNewDataFilesIntent)) {
-			timer.setupExactSingleAlarm(PersistentData.getCreateNewDataFilesFrequencyMilliseconds(), Timer.createNewDataFilesIntent); }
-		if (!timer.alarmIsSet(Timer.checkForNewSurveysIntent)) {
-			timer.setupExactSingleAlarm(PersistentData.getCheckForNewSurveysFrequencyMilliseconds(), Timer.checkForNewSurveysIntent); }
+		// Functionality timers.  We don't want to trigger these if one is missed, we actually want to avoid over-triggering. 
+		if (!timer.alarmIsSet(Timer.uploadDatafilesIntent)) { timer.setupExactSingleAlarm(PersistentData.getUploadDataFilesFrequencyMilliseconds(), Timer.uploadDatafilesIntent); }
+		if (!timer.alarmIsSet(Timer.createNewDataFilesIntent)) { timer.setupExactSingleAlarm(PersistentData.getCreateNewDataFilesFrequencyMilliseconds(), Timer.createNewDataFilesIntent); }
+		if (!timer.alarmIsSet(Timer.checkForNewSurveysIntent)) { timer.setupExactSingleAlarm(PersistentData.getCheckForNewSurveysFrequencyMilliseconds(), Timer.checkForNewSurveysIntent); }
 
-		//checks for the current expected state with app notifications. (must be run before we potentially set new alarms)
-		
+		//checks for the current expected state with app notifications,		
 		for (String surveyId : PersistentData.getSurveyIds() ){
 			if ( PersistentData.getSurveyNotificationState(surveyId) || PersistentData.getMostRecentSurveyAlarmTime(surveyId) < now ) {
-				SurveyNotifications.displaySurveyNotification(appContext, surveyId); }
-		}
+				//if survey notification should be active or the most recent alarm time is in the past, trigger the notification.
+				SurveyNotifications.displaySurveyNotification(appContext, surveyId); } }
 		
-		for (String surveyId : PersistentData.getSurveyIds() ) { //check each survey to ensure it is scheduled.
+		//checks that surveys are actually scheduled, if a survey is not scheduled, schedule it!
+		for (String surveyId : PersistentData.getSurveyIds() ) {
 			if ( !timer.alarmIsSet( new Intent(surveyId) ) ) { SurveyScheduler.scheduleSurvey(surveyId); } }
 	}
 	
