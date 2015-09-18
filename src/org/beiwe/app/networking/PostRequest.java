@@ -184,7 +184,7 @@ public class PostRequest {
 				JSONObject deviceSettings = responseJSON.getJSONObject("device_settings");
 				SetDeviceSettings.writeDeviceSettings(deviceSettings);
 			} catch (JSONException e) {
-				// TODO: Josh, handle this error
+				// TODO: Eli.  Improve handling for this error.
 				e.printStackTrace();
 			}
 		}

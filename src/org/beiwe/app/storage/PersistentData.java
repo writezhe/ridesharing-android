@@ -3,6 +3,8 @@ import java.util.List;
 
 import org.beiwe.app.JSONUtils;
 import org.beiwe.app.R;
+import org.beiwe.app.ui.DebugInterfaceActivity;
+import org.beiwe.app.ui.LoadingActivity;
 import org.beiwe.app.ui.utils.AlertsManager;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -119,7 +121,9 @@ public class PersistentData {
 	 * @return true or false based on password requirements.*/
 	public static boolean passwordMeetsRequirements(String password, Activity currentActivity) {
 		// If the password has too few characters, pop up an alert saying so
-		int minPasswordLength = 1; // TODO: postproduction: set the minPasswordLength to something higher than 1
+		int minPasswordLength;
+		if (LoadingActivity.loadThisActivity == DebugInterfaceActivity.class) { minPasswordLength = 1; }
+		else { minPasswordLength = 6; }
 		if (password.length() < minPasswordLength) {
 			String alertMessage = String.format(appContext.getString(R.string.password_too_short), minPasswordLength);
 			AlertsManager.showAlert(alertMessage, currentActivity);
@@ -261,7 +265,6 @@ public class PersistentData {
 		String defaultText = appContext.getString(R.string.default_about_page_text);
 		return pref.getString(ABOUT_PAGE_TEXT_KEY, defaultText); }
 	public static String getCallClinicianButtonText() {
-		//TODO: Josh, got an NPE crash here when the app restarted on Debug Menu page; appContext was probably null
 		String defaultText = appContext.getString(R.string.default_call_clinician_text);
 		return pref.getString(CALL_CLINICIAN_BUTTON_TEXT_KEY, defaultText); }
 	public static String getConsentFormText() {

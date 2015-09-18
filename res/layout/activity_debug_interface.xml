@@ -107,7 +107,7 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:onClick="accelerometerOff"
-	        android:text="Accelerometer Off" />
+	        android:text="Stop Accelerometer Recording" />
 
 	    <Button
 	        android:id="@+id/buttonWifiScan"
@@ -116,7 +116,6 @@
 	        android:onClick="scanWifi"
 	        android:text="Trigger Wifi Scan" />
 	    	    	    	    
-	    
 	    <TextView
 		    android:id="@+id/debugtext7"
 		    android:layout_width="wrap_content"
@@ -213,5 +212,18 @@
 		    android:onClick="crashBackground"
 		    android:text="(dev) Crash Background Service" />
 		
+		<Button
+		    android:id="@+id/buttonCrashBackgroundInFive"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:onClick="crashBackgroundInFive"
+		    android:text="(dev) Crash Background Service in Five" />
+		
+		<Button
+		    android:id="@+id/stopBackgroundService"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:onClick="stopBackgroundService"
+		    android:text="(dev) Stop Background Service Safely" />
 	</LinearLayout>
 </ScrollView>

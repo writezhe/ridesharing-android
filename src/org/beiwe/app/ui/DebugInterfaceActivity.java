@@ -3,6 +3,7 @@ package org.beiwe.app.ui;
 import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 
+import org.beiwe.app.BackgroundService;
 import org.beiwe.app.R;
 import org.beiwe.app.Timer;
 import org.beiwe.app.networking.PostRequest;
@@ -16,6 +17,7 @@ import org.beiwe.app.ui.utils.SurveyNotifications;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -119,5 +121,7 @@ public class DebugInterfaceActivity extends SessionActivity {
 	
 	//crash operations (No, really, we actually need this.)
 	public void crashUi(View view) { throw new NullPointerException("oops, you bwoke it."); }
-	public void crashBackgroundService(View view) { backgroundService.crashBackgroundService(); }
+	public void crashBackground(View view) { backgroundService.crashBackgroundService(); }
+	public void crashBackgroundInFive(View view) { BackgroundService.timer.setupExactSingleAlarm((long) 5000, new Intent("crashBeiwe")); }
+	public void stopBackgroundService(View view) { backgroundService.stop(); }
 }

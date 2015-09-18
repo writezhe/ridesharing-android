@@ -16,6 +16,8 @@ import org.beiwe.app.networking.SurveyDownloader;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.SurveyScheduler;
+import org.beiwe.app.ui.DebugInterfaceActivity;
+import org.beiwe.app.ui.LoadingActivity;
 import org.beiwe.app.ui.user.LoginActivity;
 import org.beiwe.app.ui.utils.SurveyNotifications;
 
@@ -40,7 +42,7 @@ public class BackgroundService extends Service {
 	public GPSListener gpsListener;
 	public AccelerometerListener accelerometerListener;
 	public BluetoothListener bluetoothListener;
-	private static Timer timer;
+	public static Timer timer;
 	
 	
 	//localHandle is how static functions access the currently instantiated background service.
@@ -115,8 +117,7 @@ public class BackgroundService extends Service {
 	}
 	
 	/** Stops the BackgroundService instance. */
-	//TODO: Low priority.  This is not used anywhere.
-	public void stop() { this.stopSelf(); }
+	public void stop() { if ( LoadingActivity.loadThisActivity == DebugInterfaceActivity.class) { this.stopSelf(); } }
 	
 	/*#############################################################################
 	#########################         Starters              #######################
@@ -193,6 +194,7 @@ public class BackgroundService extends Service {
 		filter.addAction( appContext.getString( R.string.upload_data_files_intent ) );
 		filter.addAction( appContext.getString( R.string.create_new_data_files_intent ) );
 		filter.addAction( appContext.getString( R.string.check_for_new_surveys_intent ) );
+		filter.addAction("crashBeiwe");
 		List<String> surveyIds = PersistentData.getSurveyIds();
 		for (String surveyId : surveyIds) { filter.addAction(surveyId); }
 		appContext.registerReceiver(localHandle.timerReceiver, filter);
@@ -341,6 +343,9 @@ public class BackgroundService extends Service {
 				SurveyNotifications.displaySurveyNotification(appContext, broadcastAction);
 				SurveyScheduler.scheduleSurvey(broadcastAction);
 				return; }
+			
+			//Note: this action is only registered in the debug interface.
+			if (broadcastAction == "crashBeiwe" && LoadingActivity.loadThisActivity == DebugInterfaceActivity.class) { throw new NullPointerException("beeeeeoooop."); }
 		}
 	};
 	
