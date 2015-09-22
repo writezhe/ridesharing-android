@@ -75,51 +75,9 @@ public class BackgroundService extends Service {
 		//If this device is registered, start timers!
 		if (PersistentData.isRegistered()) { startTimers(); }
 	}
-<<<<<<< 0e9be843d40242ead1585ad33b6c3b8a61825e6c
-
-	
-	/*##############################################################################
-	########################## Android Service Lifecycle ###########################
-	##############################################################################*/
-	
-	@Override
-	/** The BackgroundService is meant to be all the time, so we return START_STICKY */
-	// We could also use, and may change it if we encounter problems, START_REDELIVER_INTENT, which has nearly identical behavior.
-	public int onStartCommand(Intent intent, int flags, int startId){ //Log.d("BackroundService onStartCommand", "started with flag " + flags );
-		TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis()+" "+"started with flag " + flags);
-		return START_STICKY; }
-	//(the rest of these are identical, so I have compactified it)
-	@Override public void onTaskRemoved(Intent rootIntent) { //Log.d("BackroundService onTaskRemoved", "onTaskRemoved called with intent: " + rootIntent.toString() );
-		TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis()+" "+"onTaskRemoved called with intent: " + rootIntent.toString());
-		restartService(); }
-	@Override public boolean onUnbind(Intent intent) { //Log.d("BackroundService onUnbind", "onUnbind called with intent: " + intent.toString() );
-		TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis()+" "+"onUnbind called with intent: " + intent.toString());
-		restartService();
-		return super.onUnbind(intent); }
-	@Override public void onDestroy() { //Log.w("BackgroundService", "BackgroundService was destroyed.");
-		//note: this does not run when the service is killed in a task manager, OR when the stopService() function is called from debugActivity.
-		TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis()+" "+"BackgroundService was destroyed.");
-		restartService();
-		super.onDestroy(); }
-	@Override public void onLowMemory() { //Log.w("BackroundService onLowMemory", "Low memory conditions encountered");
-		TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis()+" "+"onLowMemory called.");
-		restartService(); }
-	
-	/** Sets a timer that starts the service if it is not running in ten seconds. */
-	private void restartService(){
-		//how does this even...  Whatever, 10 seconds later the background service will start.
-		Intent restartServiceIntent = new Intent( getApplicationContext(), this.getClass() );
-	    restartServiceIntent.setPackage( getPackageName() );
-	    // TODO: Research. Eli/Josh. We may want to change PendingIntent.FLAG_ONE_SHOT to FLAG_CANCEL_CURRENT, research the benefits, this might be a pain to test...
-	    PendingIntent restartServicePendingIntent = PendingIntent.getService( getApplicationContext(), 1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT );
-	    AlarmManager alarmService = (AlarmManager) getApplicationContext().getSystemService( Context.ALARM_SERVICE );
-	    alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 500, restartServicePendingIntent);
-	}
 	
 	/** Stops the BackgroundService instance. */
 	public void stop() { if ( LoadingActivity.loadThisActivity == DebugInterfaceActivity.class) { this.stopSelf(); } }
-=======
->>>>>>> changes timers for wifi, accelerometer, and gps so that they do not get reset
 	
 	/*#############################################################################
 	#########################         Starters              #######################
