@@ -99,7 +99,7 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 				activity.finish();
 			}
 			else if (responseCode == 2) {
-				AlertsManager.showAlert( "Received an invalid encryption key, please contact your administrator.", this.activity );
+				AlertsManager.showAlert( getString(R.string.invalid_encryption_key), this.activity );
 				super.onPostExecute(arg);
 			}
 			else {

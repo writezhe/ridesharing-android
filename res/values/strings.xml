@@ -26,6 +26,7 @@
     <!-- Error Messages -->
     <string name="question_error_text">If you are reading this, something broke. Please contact the study administrators, and tell them that there is a bug in the survey!</string>
     <string name="invalid_device">This device does not meet minimum specifications for this app, to avoid any issues resulting from this please uninstall the app.</string>
+    <string name="invalid_encryption_key">Received an invalid encryption key, please contact the a Beiwe administrator.</string>
 
     <!-- Survey Activity Strings -->
     <string name="survey_submit_button">Submit Answers</string>
