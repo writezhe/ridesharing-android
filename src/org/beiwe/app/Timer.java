@@ -92,7 +92,8 @@ public class Timer {
 	 * ############################ The Various Types of Alarms Creation #############################
 	 * #############################################################################################*/
 	
-	/** Single exact alarm for an event that happens once */
+	/** Single exact alarm for an event that happens once.
+	 * @return a long of the system time in milliseconds that the alarm was set for. */
 	public Long setupExactSingleAlarm(Long milliseconds, Intent intentToBeBroadcast) {
 		Long triggerTime = System.currentTimeMillis() + milliseconds;
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
