@@ -169,7 +169,7 @@ public class BackgroundService extends Service {
 				PersistentData.getMostRecentAlarmTime( getString(R.string.turn_accelerometer_on )) < now || //the most recent accelerometer alarm time is in the past, or
 				!timer.alarmIsSet(Timer.accelerometerOnIntent) ) ) { //there is no scheduled accelerometer-on timer 
 			sendBroadcast( Timer.accelerometerOnIntent ); // start accelerometer timers (immediately runs accelerometer recording session).
-			//note: when there is no accelerometer-off timer that means we are in-between scans.  This state is fine, so we don't check it.
+			//note: when there is no accelerometer-off timer that means we are in-between scans.  This state is fine, so we don't check for it.
 		}
 		
 		if (PersistentData.getGpsEnabled() && (  //identical logic to accelerometer-start logic
@@ -182,17 +182,17 @@ public class BackgroundService extends Service {
 				!timer.alarmIsSet(Timer.wifiLogIntent) ) ) {
 			sendBroadcast( Timer.wifiLogIntent ); }
 		
-		//if Bluetooth recording is enabled and neither of the bluetooth timers have been scheduled set up the next Bluetooth-on alarm.
-		//(Bluetooth needs to run at the specified time, they should not be started if a scheduled event is missed.)
-		if (PersistentData.getBluetoothEnabled() && !timer.alarmIsSet(Timer.bluetoothOnIntent) && !timer.alarmIsSet(Timer.bluetoothOffIntent)) {
+		//if Bluetooth recording is enabled and there is no scheduled next-bluetooth-enable event, set up the next Bluetooth-on alarm.
+		//(Bluetooth needs to run at absolute points in time, it should not be started if a scheduled event is missed.)
+		if (PersistentData.getBluetoothEnabled() && !timer.alarmIsSet(Timer.bluetoothOnIntent)) {
 			timer.setupExactSingleAbsoluteTimeAlarm(PersistentData.getBluetoothTotalDurationMilliseconds(), PersistentData.getBluetoothGlobalOffsetMilliseconds(), Timer.bluetoothOnIntent); }
 		
-		// Functionality timers.  We don't want to trigger these if one is missed, we actually want to avoid over-triggering. 
+		// Functionality timers. We don't need aggressive checking for if these timers have been missed, as long as they run eventually it is fine.
 		if (!timer.alarmIsSet(Timer.uploadDatafilesIntent)) { timer.setupExactSingleAlarm(PersistentData.getUploadDataFilesFrequencyMilliseconds(), Timer.uploadDatafilesIntent); }
 		if (!timer.alarmIsSet(Timer.createNewDataFilesIntent)) { timer.setupExactSingleAlarm(PersistentData.getCreateNewDataFilesFrequencyMilliseconds(), Timer.createNewDataFilesIntent); }
 		if (!timer.alarmIsSet(Timer.checkForNewSurveysIntent)) { timer.setupExactSingleAlarm(PersistentData.getCheckForNewSurveysFrequencyMilliseconds(), Timer.checkForNewSurveysIntent); }
 
-		//checks for the current expected state with app notifications,		
+		//checks for the current expected state for survey notifications,
 		for (String surveyId : PersistentData.getSurveyIds() ){
 			if ( PersistentData.getSurveyNotificationState(surveyId) || PersistentData.getMostRecentSurveyAlarmTime(surveyId) < now ) {
 				//if survey notification should be active or the most recent alarm time is in the past, trigger the notification.
@@ -223,17 +223,17 @@ public class BackgroundService extends Service {
 	/** The Timer requires the BackgroundService in order to create alarms, hook into that functionality here. */
 	public static void setSurveyAlarm(String surveyId, Calendar alarmTime) { timer.startSurveyAlarm(surveyId, alarmTime); }
 	
-	
 	/**The timerReceiver is an Android BroadcastReceiver that listens for our timer events to trigger,
-	 * and then runs the appropriate code for that trigger. */
-	//programmer note: this variable is instantiated here AT CONSTRUCTION, BEFORE onCreate runs.
+	 * and then runs the appropriate code for that trigger. 
+	 * Note: every condition has a return statement at the end; this is because the trigger survey notification
+	 * action requires a fairly expensive dive into PersistantData JSON unpacking.*/ 
 	private BroadcastReceiver timerReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context appContext, Intent intent) {
+		@Override public void onReceive(Context appContext, Intent intent) {
 			Log.d("BackgroundService - timers", "Received broadcast: " + intent.toString() );
 			TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis() + " Received Broadcast: " + intent.toString() );
 			String broadcastAction = intent.getAction();
 			
+			/** Disable active sensor */
 			if (broadcastAction.equals( appContext.getString(R.string.turn_accelerometer_off) ) ) {
 				accelerometerListener.turn_off();
 				return; }
@@ -241,37 +241,58 @@ public class BackgroundService extends Service {
 				gpsListener.turn_off();
 				return; }
 			
-			
-			//sets timers for accelerometer
-			if (broadcastAction.equals( appContext.getString(R.string.turn_accelerometer_on) ) ) {
+			/** Enable active sensors, reset timers. */
+			if (broadcastAction.equals( appContext.getString(R.string.turn_accelerometer_on) ) ) { //accelerometer
 				if ( !PersistentData.getAccelerometerEnabled() ) { Log.e("BackgroundService Listener", "invalid Accelerometer on received"); return; }
 				accelerometerListener.turn_on();
+				//start both the sensor-off-action timer, and the next sensor-on-timer.
 				timer.setupExactSingleAlarm(PersistentData.getAccelerometerOnDurationMilliseconds(), Timer.accelerometerOffIntent);
 				long alarmTime = timer.setupExactSingleAlarm(PersistentData.getAccelerometerOffDurationMilliseconds() + PersistentData.getAccelerometerOnDurationMilliseconds(), Timer.accelerometerOnIntent);
+				//record the system time that the next alarm is supposed to go off at, so that we can recover in the event of a reboot or crash. 
 				PersistentData.setMostRecentAlarmTime(getString(R.string.turn_accelerometer_on), alarmTime );
 				return; }
-			//sets timers for GPS
-			if (broadcastAction.equals( appContext.getString(R.string.turn_gps_on) ) ) {
+			if (broadcastAction.equals( appContext.getString(R.string.turn_gps_on) ) ) { //GPS (identical logic to accelerometer above)
 				if ( !PersistentData.getGpsEnabled() ) { Log.e("BackgroundService Listener", "invalid GPS on received"); return; }
 				gpsListener.turn_on();
 				timer.setupExactSingleAlarm(PersistentData.getGpsOnDurationMilliseconds(), Timer.gpsOffIntent);
 				long alarmTime = timer.setupExactSingleAlarm(PersistentData.getGpsOnDurationMilliseconds() + PersistentData.getGpsOffDurationMilliseconds(), Timer.gpsOnIntent);
 				PersistentData.setMostRecentAlarmTime(getString(R.string.turn_gps_on), alarmTime );
 				return; }
-			
-			
-			
-			//runs a wifi scan
-			if (broadcastAction.equals( appContext.getString(R.string.run_wifi_log) ) ) {
+			if (broadcastAction.equals( appContext.getString(R.string.run_wifi_log) ) ) { //run a wifi scan.  Very similar to accelerometer/GPS, but there is no off-timer.
 				if ( !PersistentData.getWifiEnabled() ) { Log.e("BackgroundService Listener", "invalid WiFi scan received"); return; }
 				WifiListener.scanWifi();
 				long alarmTime = timer.setupExactSingleAlarm(PersistentData.getWifiLogFrequencyMilliseconds(), Timer.wifiLogIntent);
 				PersistentData.setMostRecentAlarmTime( getString(R.string.run_wifi_log), alarmTime );
 				return; }
 			
+			/** Bluetooth timers are unlike GPS and Accelerometer because it uses an absolute-point-in-time as a trigger, and therefore we don't need to store most-recent-timer state.
+			 * The Bluetooth-on action sets the corresponding Bluetooth-off timer, the Bluetooth-off action sets the next Bluetooth-on timer.*/
+			if (broadcastAction.equals( appContext.getString(R.string.turn_bluetooth_on) ) ) {
+				if ( !PersistentData.getBluetoothEnabled() ) { Log.e("BackgroundService Listener", "invalid Bluetooth on received"); return; }
+				if (bluetoothListener != null) bluetoothListener.enableBLEScan();
+				timer.setupExactSingleAlarm(PersistentData.getBluetoothOnDurationMilliseconds(), Timer.bluetoothOffIntent);
+				return; }
+			if (broadcastAction.equals( appContext.getString(R.string.turn_bluetooth_off) ) ) {
+				if ( bluetoothListener != null) bluetoothListener.disableBLEScan();
+				timer.setupExactSingleAbsoluteTimeAlarm(PersistentData.getBluetoothTotalDurationMilliseconds(), PersistentData.getBluetoothGlobalOffsetMilliseconds(), Timer.bluetoothOnIntent);
+				return; }			
 			
-			
-			//runs the user signout logic, bumping the user to the login screen.
+			//starts a data upload attempt.
+			if (broadcastAction.equals( appContext.getString(R.string.upload_data_files_intent) ) ) {
+				PostRequest.uploadAllFiles();
+				timer.setupExactSingleAlarm(PersistentData.getUploadDataFilesFrequencyMilliseconds(), Timer.uploadDatafilesIntent);
+				return; }
+			//creates new data files
+			if (broadcastAction.equals( appContext.getString(R.string.create_new_data_files_intent) ) ) {
+				TextFileManager.makeNewFilesForEverything();
+				timer.setupExactSingleAlarm(PersistentData.getCreateNewDataFilesFrequencyMilliseconds(), Timer.createNewDataFilesIntent);
+				return; }
+			//Downloads the most recent survey questions and schedules the surveys.
+			if (broadcastAction.equals( appContext.getString(R.string.check_for_new_surveys_intent))) {
+				SurveyDownloader.downloadSurveys( getApplicationContext() );
+				timer.setupExactSingleAlarm(PersistentData.getCheckForNewSurveysFrequencyMilliseconds(), Timer.checkForNewSurveysIntent);
+				return; }
+			// Signs out the user. (does not set up a timer, that is handled in activity and sign-in logic) 
 			if (broadcastAction.equals( appContext.getString(R.string.signout_intent) ) ) {
 				PersistentData.logout();
 				Intent loginPage = new Intent(appContext, LoginActivity.class);
@@ -279,55 +300,18 @@ public class BackgroundService extends Service {
 				appContext.startActivity(loginPage);
 				return; }
 			
-			
-			//starts a data upload attempt.
-			if (broadcastAction.equals( appContext.getString(R.string.upload_data_files_intent) ) ) {
-				PostRequest.uploadAllFiles();
-				timer.setupExactSingleAlarm(PersistentData.getUploadDataFilesFrequencyMilliseconds(), Timer.uploadDatafilesIntent);
-				return; }
-
-			//creates new data files
-			if (broadcastAction.equals( appContext.getString(R.string.create_new_data_files_intent) ) ) {
-				TextFileManager.makeNewFilesForEverything();
-				timer.setupExactSingleAlarm(PersistentData.getCreateNewDataFilesFrequencyMilliseconds(), Timer.createNewDataFilesIntent);
-				return; }
-
-			//Downloads the most recent survey questions and schedules the surveys.
-			if (broadcastAction.equals( appContext.getString(R.string.check_for_new_surveys_intent))) {
-				SurveyDownloader.downloadSurveys( getApplicationContext() );
-				timer.setupExactSingleAlarm(PersistentData.getCheckForNewSurveysFrequencyMilliseconds(), Timer.checkForNewSurveysIntent);
-				return; }
-			
-			
-			
-			//sets the next trigger time for the bluetooth scan to record data
-			if (broadcastAction.equals( appContext.getString(R.string.turn_bluetooth_off) ) ) {
-				if ( bluetoothListener != null) bluetoothListener.disableBLEScan();
-				timer.setupExactSingleAbsoluteTimeAlarm(PersistentData.getBluetoothTotalDurationMilliseconds(), PersistentData.getBluetoothGlobalOffsetMilliseconds(), Timer.bluetoothOnIntent);
-				return; }
-			
-			//sets a timer that will turn off the bluetooth scan
-			if (broadcastAction.equals( appContext.getString(R.string.turn_bluetooth_on) ) ) {
-				if ( !PersistentData.getBluetoothEnabled() ) { Log.e("BackgroundService Listener", "invalid Bluetooth on received"); return; }
-				if (bluetoothListener != null) bluetoothListener.enableBLEScan();
-				timer.setupExactSingleAlarm(PersistentData.getBluetoothOnDurationMilliseconds(), Timer.bluetoothOffIntent);
-				return; }
-			
-			//checks if the action is the id of a survey, if so pop up the notification for that survey, schedule the next alarm
+			//checks if the action is the id of a survey (expensive), if so pop up the notification for that survey, schedule the next alarm
 			if ( PersistentData.getSurveyIds().contains( broadcastAction ) ) {
 				Log.w("BACKGROUND SERVICE", "trying to start notification: " + broadcastAction);
 				SurveyNotifications.displaySurveyNotification(appContext, broadcastAction);
 				SurveyScheduler.scheduleSurvey(broadcastAction);
 				return; }
 			
-			//Note: this action is only registered in the debug interface.
+			//this is a special action that will only run if the app device is in debug mode.
 			if (broadcastAction == "crashBeiwe" && LoadingActivity.loadThisActivity == DebugInterfaceActivity.class) { throw new NullPointerException("beeeeeoooop."); }
 		}
 	};
-	
-	//misclanie
-	public void crashBackgroundService() { throw new NullPointerException("stop poking me!"); }
-	
+		
 	/*##########################################################################################
 	############## code related to onStartCommand and binding to an activity ###################
 	##########################################################################################*/
@@ -347,10 +331,9 @@ public class BackgroundService extends Service {
 	########################## Android Service Lifecycle ###########################
 	##############################################################################*/
 	
-	@Override
 	/** The BackgroundService is meant to be all the time, so we return START_STICKY */
 	// We could also use, and may change it if we encounter problems, START_REDELIVER_INTENT, which has nearly identical behavior.
-	public int onStartCommand(Intent intent, int flags, int startId){ //Log.d("BackroundService onStartCommand", "started with flag " + flags );
+	@Override public int onStartCommand(Intent intent, int flags, int startId){ //Log.d("BackroundService onStartCommand", "started with flag " + flags );
 		TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis()+" "+"started with flag " + flags);
 		return START_STICKY; }
 	//(the rest of these are identical, so I have compactified it)
@@ -380,4 +363,6 @@ public class BackgroundService extends Service {
 	    AlarmManager alarmService = (AlarmManager) getApplicationContext().getSystemService( Context.ALARM_SERVICE );
 	    alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 500, restartServicePendingIntent);
 	}
+	
+	public void crashBackgroundService() { if (LoadingActivity.loadThisActivity == DebugInterfaceActivity.class) { throw new NullPointerException("stop poking me!"); } }
 }
