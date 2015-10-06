@@ -70,6 +70,7 @@ public class GPSListener implements LocationListener {
 		// if already enabled return true.
 		if ( enabled ) {
 			Log.i("GPS","GPS was turned on when it was already on.");
+			//FIXME: Eli. bugtest whether this behavior is necessary, see if anything bad happens if we ignore this case. 
 			return; }
 		//If the feature exists, request locations from it. (enable if their boolean flag is true.)
 		if ( trueGPS ) {			// parameters: provider, minTime, minDistance, listener);
