@@ -23,7 +23,6 @@ import android.util.Log;
 public class GPSListener implements LocationListener {
 	
 	public static String header = "timestamp, latitude, longitude, altitude, accuracy";
-	private TextFileManager GPSFile;
 	
 	private Context appContext;
 	private PackageManager pkgManager;
@@ -48,7 +47,6 @@ public class GPSListener implements LocationListener {
 	public GPSListener (Context appContext){
 		this.appContext = appContext;
 		pkgManager = this.appContext.getPackageManager();
-		GPSFile = TextFileManager.getGPSFile();
 		
 		trueGPS = pkgManager.hasSystemFeature(PackageManager.FEATURE_LOCATION_GPS);
 		networkGPS = pkgManager.hasSystemFeature(PackageManager.FEATURE_LOCATION_NETWORK);
@@ -69,8 +67,7 @@ public class GPSListener implements LocationListener {
 			return; }
 		// if already enabled return true.
 		if ( enabled ) {
-			Log.i("GPS","GPS was turned on when it was already on.");
-			//FIXME: Eli. bugtest whether this behavior is necessary, see if anything bad happens if we ignore this case. 
+			//Log.i("GPS","GPS was turned on when it was already on."); 
 			return; }
 		//If the feature exists, request locations from it. (enable if their boolean flag is true.)
 		if ( trueGPS ) {			// parameters: provider, minTime, minDistance, listener);
@@ -92,6 +89,7 @@ public class GPSListener implements LocationListener {
 	@Override
 	public void onLocationChanged(Location location) {		
 		Long javaTimeCode = System.currentTimeMillis();
+//		Log.d("GPSListener", "gps update...");
 		//order: time, latitude, longitude, altitude, horizontal_accuracy\n
 		String data = javaTimeCode.toString() + TextFileManager.DELIMITER
 				+ location.getLatitude() + TextFileManager.DELIMITER
@@ -99,7 +97,7 @@ public class GPSListener implements LocationListener {
 				+ location.getAltitude() + TextFileManager.DELIMITER
 				+ location.getAccuracy();
 		//note, altitude is notoriously inaccurate, getAccuracy only applies to latitude/longitude
-		GPSFile.writeEncrypted(data);
+		TextFileManager.getGPSFile().writeEncrypted(data);
 	}
 	
 	/*  We do not actually need to implement any of the following overrides.

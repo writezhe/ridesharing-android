@@ -8,13 +8,13 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
 
 public class AccelerometerListener implements SensorEventListener{
 	public static String header = "timestamp,accuracy,x,y,z";
 	
 	private SensorManager accelSensorManager;
 	private Sensor accelSensor;
-	private TextFileManager accelFile = null;
 	
 	private Context appContext;
 	private PackageManager pkgManager;
@@ -35,25 +35,30 @@ public class AccelerometerListener implements SensorEventListener{
 	public AccelerometerListener(Context applicationContext){
 		this.appContext = applicationContext;
 		this.pkgManager = appContext.getPackageManager();
-		this.accelFile = TextFileManager.getAccelFile();
 		this.accuracy = "unknown";
 		this.exists = pkgManager.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER);
 		
 		if (this.exists) {
 			enabled = false;
 			this.accelSensorManager = (SensorManager) appContext.getSystemService(Context.SENSOR_SERVICE);
+			if (this.accelSensorManager ==  null ) { 
+				Log.e("Accelerometer Problems", "accelSensorManager does not exist? (1)" );
+				TextFileManager.getDebugLogFile().writeEncrypted("accelSensorManager does not exist? (1)");
+				exists = false;	}
+			
 			this.accelSensor = accelSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-
-			if (accelSensorManager == null ){ 
-//				Log.e("accelerometer does not exist?", " !!!!!!!!!!!!!!!!!! " );
+			if (this.accelSensor == null ) { 
+				Log.e("Accelerometer Problems", "accelSensor does not exist? (2)" );
+				TextFileManager.getDebugLogFile().writeEncrypted("accelSensor does not exist? (2)");
 				exists = false;	}
 	} }
-	
-	/** Use the public toggle() function to enable/disable */ 
+	 
 	public synchronized void turn_on() {
-		accelSensorManager.registerListener(this, accelSensor, SensorManager.SENSOR_DELAY_NORMAL);
+		if ( !accelSensorManager.registerListener(this, accelSensor, SensorManager.SENSOR_DELAY_NORMAL) ) {
+			Log.e("Accelerometer", "Accelerometer is broken");
+			TextFileManager.getDebugLogFile().writeEncrypted("Trying to start Accelerometer session, device cannot find accelerometer."); }
 		enabled = true;	}
-	/** Use the public toggle() function to enable/disable */
+	
 	public synchronized void turn_off(){
 		accelSensorManager.unregisterListener(this);
 		enabled = false; }
@@ -67,10 +72,10 @@ public class AccelerometerListener implements SensorEventListener{
 	 * (only ever triggered by the system.) */
 	@Override
 	public synchronized void onSensorChanged(SensorEvent arg0) {
+//		Log.e("Accelerometer", "accelerometer update");
 		Long javaTimeCode = System.currentTimeMillis();
 		float[] values = arg0.values;
 		String data = javaTimeCode.toString() + ',' + accuracy + ',' + values[0] + ',' + values[1] + ',' + values[2];
-		
-		accelFile.writeEncrypted(data);
+		TextFileManager.getAccelFile().writeEncrypted(data);
 	}
 }

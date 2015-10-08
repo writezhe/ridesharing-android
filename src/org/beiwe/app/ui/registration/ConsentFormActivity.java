@@ -55,6 +55,7 @@ public class ConsentFormActivity extends RunningBackgroundServiceActivity {
 		backgroundService.startTimers();
 
 		// Create new data files, these will now have a patientID prepended to those files
+		TextFileManager.initialize(getApplicationContext());
 		TextFileManager.makeNewFilesForEverything();
 		
 		// Start the Main Screen Activity, destroy this activity

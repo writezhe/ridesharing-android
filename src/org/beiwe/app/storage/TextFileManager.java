@@ -60,7 +60,6 @@ public class TextFileManager {
 	
 	//"global" static variables
 	private static Context appContext;
-	private static boolean started = false;
 	private static String getter_error = "You tried to access a file before calling TextFileManager.start().";
 	private static void throwGetterError() { throw new NullPointerException( getter_error ); }
 	
@@ -97,7 +96,6 @@ public class TextFileManager {
 	 * Initializes all TextFileManager object instances.  Initialization is idempotent.
 	 * @param appContext a Context, provided by the app. */
 	public static synchronized void initialize(Context appContext){
-		if ( started ) { return; }
 		//the key file for encryption (it is persistent and never written to)
 		keyFile = new TextFileManager(appContext, "keyFile", "", true, true, false, false);
 		// Persistent files (old, no longer used, but this is an example of a persistent file (one that does not get abandoned at shut-down/initialization) )
@@ -116,8 +114,6 @@ public class TextFileManager {
 		surveyTimings = new TextFileManager(appContext, "surveyTimings_", SurveyTimingsRecorder.header, false, false, true, false);
 		surveyAnswers = new TextFileManager(appContext, "surveyAnswers_", SurveyAnswersRecorder.header, false, false, true, false);
 		wifiLog = new TextFileManager(appContext, "wifiLog", WifiListener.header, false, false, true, !PersistentData.getWifiEnabled());
-		
-		started = true;
 	}
 	
 	/*###############################################################################
@@ -140,6 +136,7 @@ public class TextFileManager {
 		this.persistent = persistent;
 		this.encrypted = encrypted;
 		this.isDummy = isDummy;
+		//if (isDummy) { Log.e("TextFileManager", "creating dummy handle for " + this.name); }
 		if (openOnInstantiation) { this.newFile(); } //immediately creating a file on instantiation was a common code pattern.
 	}
 	
