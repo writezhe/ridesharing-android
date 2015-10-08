@@ -89,6 +89,17 @@ public class DebugInterfaceActivity extends SessionActivity {
 			Log.i("most recent alarm state", "" +PersistentData.getMostRecentSurveyAlarmTime(surveyId) + ", " + PersistentData.getSurveyNotificationState(surveyId)) ; 
 		}
 	}
+	
+	public void getEnabledFeatures(View view) {
+		Log.i("feature...", ""+PersistentData.getAccelerometerEnabled() );
+		Log.i("feature...", ""+PersistentData.getGpsEnabled() );
+		Log.i("feature...", ""+PersistentData.getCallsEnabled() );
+		Log.i("feature...", ""+PersistentData.getTextsEnabled() );
+		Log.i("feature...", ""+PersistentData.getWifiEnabled() );
+		Log.i("feature...", ""+PersistentData.getBluetoothEnabled() );
+		Log.i("feature...", ""+PersistentData.getPowerStateEnabled() );
+	}
+	
 	public void clearInternalLog(View view) { TextFileManager.getDebugLogFile().deleteSafely(); }
 	public void getKeyFile(View view) { Log.i("DEBUG", "key file data: " + TextFileManager.getKeyFile().read()); }
 	

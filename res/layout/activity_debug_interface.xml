@@ -199,6 +199,14 @@
 		    android:text="(dev) Log Most Recent Alarm Times" />
 		
 		<Button
+		    android:id="@+id/buttonFeaturesEnabled"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:onClick="getEnabledFeatures"
+		    android:text="(dev) Log Enbled Features" />
+		
+		
+		<Button
 		    android:id="@+id/buttonCrashUi"
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
