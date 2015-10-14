@@ -245,8 +245,9 @@ public class PostRequest {
 
 	/** Uploads all available files on a separate thread. */
 	public static void uploadAllFiles() {
-		// Run the HTTP POST on a separate thread
+		// Only upload data files over WiFi; if not connected to WiFi, return here
 		if ( !NetworkUtility.getWifiState(appContext) ) { return; }
+		// Run the HTTP POST on a separate thread
 		ExecutorService executor = Executors.newFixedThreadPool(1);
 		Callable <HttpsURLConnection> thread = new Callable<HttpsURLConnection>() {
 			@Override
