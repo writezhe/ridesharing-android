@@ -34,11 +34,15 @@ public class DeviceInfo {
 		TelephonyManager phoneManager = (TelephonyManager) appContext.getSystemService(Context.TELEPHONY_SERVICE);
 		phoneNumber = phoneManager.getLine1Number();
 		if (phoneNumber == null) phoneNumber = "";
-	} 
-
-	public static String getAndroidID() { return EncryptionEngine.safeHash(androidID); }
-	 
-	public static String getBlootoothMAC() { return EncryptionEngine.safeHash(bluetoothMAC); }
+	}
 	
+	public static String getAndroidVersion() { return android.os.Build.VERSION.RELEASE; }
+	public static String getProduct() { return android.os.Build.PRODUCT; }
+	public static String getBrand() { return android.os.Build.BRAND; }
+	public static String getHardwareId() { return android.os.Build.HARDWARE; }
+	public static String getManufacturer() { return android.os.Build.MANUFACTURER; }
+	public static String getModel() { return android.os.Build.MODEL; }
+	public static String getAndroidID() { return EncryptionEngine.safeHash(androidID); }
+	public static String getBlootoothMAC() { return EncryptionEngine.safeHash(bluetoothMAC); }
 	public static String getPhoneNumber() { return EncryptionEngine.hashPhoneNumber(phoneNumber); }
 }

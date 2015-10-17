@@ -83,10 +83,18 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 	private void doRegister(final String url) { new HTTPUIAsync(url, this) {
 		@Override
 		protected Void doInBackground(Void... arg0) {
-			parameters = PostRequest.makeParameter("bluetooth_id", DeviceInfo.getBlootoothMAC() ) +
+			parameters= PostRequest.makeParameter("bluetooth_id", DeviceInfo.getBlootoothMAC() ) +
 						PostRequest.makeParameter("new_password", newPassword) +
-						PostRequest.makeParameter("phone_number", DeviceInfo.getPhoneNumber() )  + 
-						PostRequest.makeParameter("device_id", DeviceInfo.getAndroidID() );
+						PostRequest.makeParameter("phone_number", DeviceInfo.getPhoneNumber() ) + 
+						PostRequest.makeParameter("device_id", DeviceInfo.getAndroidID() ) +
+						PostRequest.makeParameter("device_os", "Android") +
+						PostRequest.makeParameter("os_version", DeviceInfo.getAndroidVersion() ) +
+						PostRequest.makeParameter("hardware_id", DeviceInfo.getHardwareId() ) +
+						PostRequest.makeParameter("brand", DeviceInfo.getBrand() ) +
+						PostRequest.makeParameter("manufacturer", DeviceInfo.getManufacturer() ) +
+						PostRequest.makeParameter("model", DeviceInfo.getModel() ) +
+						PostRequest.makeParameter("product", DeviceInfo.getProduct() );
+					
 			responseCode = PostRequest.httpRegister(parameters, url);
 			return null; //hate
 		}
