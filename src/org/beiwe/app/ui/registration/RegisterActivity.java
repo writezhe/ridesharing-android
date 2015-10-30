@@ -93,7 +93,8 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 						PostRequest.makeParameter("brand", DeviceInfo.getBrand() ) +
 						PostRequest.makeParameter("manufacturer", DeviceInfo.getManufacturer() ) +
 						PostRequest.makeParameter("model", DeviceInfo.getModel() ) +
-						PostRequest.makeParameter("product", DeviceInfo.getProduct() );
+						PostRequest.makeParameter("product", DeviceInfo.getProduct() ) +
+						PostRequest.makeParameter("beiwe_version", DeviceInfo.getBeiweVersion() );
 					
 			responseCode = PostRequest.httpRegister(parameters, url);
 			return null; //hate

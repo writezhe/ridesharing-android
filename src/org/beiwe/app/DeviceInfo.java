@@ -17,6 +17,11 @@ import android.telephony.TelephonyManager;
  * @author Dor Samet, Eli Jones */  
 
 public class DeviceInfo {
+	/* TODO:  Ensure this number is updated whenever a version of the app is pushed to the website for any reason.
+	 * Version history:
+	 * 1: add additional device data during the registration process, including this version number. */
+	private static Integer beiweVersion = 1; 
+	
 	private static String androidID;
 	private static String bluetoothMAC;
 	private static String phoneNumber;
@@ -36,6 +41,7 @@ public class DeviceInfo {
 		if (phoneNumber == null) phoneNumber = "";
 	}
 	
+	public static String getBeiweVersion() { return beiweVersion.toString(); }
 	public static String getAndroidVersion() { return android.os.Build.VERSION.RELEASE; }
 	public static String getProduct() { return android.os.Build.PRODUCT; }
 	public static String getBrand() { return android.os.Build.BRAND; }
