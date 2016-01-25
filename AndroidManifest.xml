@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="10"
-        android:targetSdkVersion="20" />
+        android:targetSdkVersion="23" />
 
     <!-- GPS and network-location service -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
