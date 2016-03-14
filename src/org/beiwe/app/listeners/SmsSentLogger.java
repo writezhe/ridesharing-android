@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
 import android.provider.Telephony.TextBasedSmsColumns;
+import android.util.Log;
 
 /**
  * Records outgoing SMS messages when they're sent
@@ -44,35 +45,48 @@ public class SmsSentLogger extends ContentObserver {
 	@Override
 	public void onChange(boolean selfChange) {
 		super.onChange(selfChange);		
-		Cursor cursor = appContext.getContentResolver().query( Uri.parse("content://sms"), null, null, null, null );
-		cursor.moveToNext();
+		try {
+			Cursor cursor = appContext.getContentResolver().query( Uri.parse("content://sms"), null, null, null, null );
+			cursor.moveToNext();
+					
+			String address = cursor.getString(cursor.getColumnIndex("address"));
+			String body = cursor.getString(cursor.getColumnIndex("body"));
+			String timestamp = cursor.getString(cursor.getColumnIndex("date"));
+			int msgType = cursor.getInt(cursor.getColumnIndex("type"));
+			
+			/* Improvement idea: we could log all message types; TextBasedSmsColumns has 6 types of messages: 
+			 * https://developer.android.com/reference/android/provider/Telephony.TextBasedSmsColumns.html
+			 * That would provide more data on draft messages, messages not sent immediately, etc.
+			 * We could also use this class to log incoming messages as well as outgoing messages. */
+			if (msgType == TextBasedSmsColumns.MESSAGE_TYPE_SENT) {
 				
-		String address = cursor.getString(cursor.getColumnIndex("address"));
-		String body = cursor.getString(cursor.getColumnIndex("body"));
-		String timestamp = cursor.getString(cursor.getColumnIndex("date"));
-		int msgType = cursor.getInt(cursor.getColumnIndex("type"));
-		
-		/* Improvement idea: we could log all message types; TextBasedSmsColumns has 6 types of messages: 
-		 * https://developer.android.com/reference/android/provider/Telephony.TextBasedSmsColumns.html
-		 * That would provide more data on draft messages, messages not sent immediately, etc.
-		 * We could also use this class to log incoming messages as well as outgoing messages. */
-		if (msgType == TextBasedSmsColumns.MESSAGE_TYPE_SENT) {
-			
-//			"timestamp,hashed phone number,sent vs received,message length,time sent";
-			String data = "" + timestamp + TextFileManager.DELIMITER;
-			data += EncryptionEngine.hashPhoneNumber(address) + TextFileManager.DELIMITER;
-			data += "sent SMS" + TextFileManager.DELIMITER;
-			data += body.length();
-			
-			smsLogFile.writeEncrypted(data);
-			
-			/* Note: Android often records a text message multiple times. This
-			 * may happen as a message is moved among the outbox, sent, and
-			 * other folders. The good news is that when a duplicate text
-			 * message is recorded, we get several identical lines (same
-			 * message length, same hashed phone number, and same timestamp),
-			 * so it should be easy to identify duplicate entries. */
+	//			"timestamp,hashed phone number,sent vs received,message length,time sent";
+				String data = "" + timestamp + TextFileManager.DELIMITER;
+				data += EncryptionEngine.hashPhoneNumber(address) + TextFileManager.DELIMITER;
+				data += "sent SMS" + TextFileManager.DELIMITER;
+				data += body.length();
+				
+				smsLogFile.writeEncrypted(data);
+				
+				/* Note: Android often records a text message multiple times. This
+				 * may happen as a message is moved among the outbox, sent, and
+				 * other folders. The good news is that when a duplicate text
+				 * message is recorded, we get several identical lines (same
+				 * message length, same hashed phone number, and same timestamp),
+				 * so it should be easy to identify duplicate entries. */
+			}
 		}
+		catch (Exception e) {
+			String stackString = "";
+			for (StackTraceElement element : e.getStackTrace()) {
+				Log.e ("MMSSentLogger Error", element.toString() );
+		        stackString += element.toString();
+		        stackString += ";";
+		    }
+			String msg = System.currentTimeMillis() + " SMS (send) logging encountered an issue, the following is diagnostic data for use in debugging Beiwe: " + stackString;
+			TextFileManager.getDebugLogFile().writeEncrypted(msg);
+		}
+		
 	}	
 }
 
