@@ -55,6 +55,7 @@ public class BackgroundService extends Service {
 	/** onCreate is essentially the constructor for the service, initialize variables here.*/
 	public void onCreate() {
 		appContext = this.getApplicationContext();
+		Thread.setDefaultUncaughtExceptionHandler(new CrashHandler(appContext));
 		
 		DeviceInfo.initialize( getApplicationContext() );
 		PersistentData.initialize( getApplicationContext() );

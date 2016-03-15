@@ -132,7 +132,7 @@ public class DebugInterfaceActivity extends SessionActivity {
 	
 	//crash operations (No, really, we actually need this.)
 	public void crashUi(View view) { throw new NullPointerException("oops, you bwoke it."); }
-	public void crashBackground(View view) { backgroundService.crashBackgroundService(); }
+	public void crashBackground(View view) { BackgroundService.timer.setupExactSingleAlarm((long) 0, new Intent("crashBeiwe")); }
 	public void crashBackgroundInFive(View view) { BackgroundService.timer.setupExactSingleAlarm((long) 5000, new Intent("crashBeiwe")); }
 	public void stopBackgroundService(View view) { backgroundService.stop(); }
 }

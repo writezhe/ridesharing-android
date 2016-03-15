@@ -1,5 +1,6 @@
 package org.beiwe.app.listeners;
 
+import org.beiwe.app.CrashHandler;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.TextFileManager;
 
@@ -8,6 +9,7 @@ import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
+import android.util.Log;
 
 /**MMSSentLogger listens for outgoing MMSes.
  * In order to catch outgoing MMSes we need to monitor the texts database using a ContentObserver
@@ -32,38 +34,41 @@ public class MMSSentLogger extends ContentObserver{
 	public void onChange(boolean selfChange){
 		super.onChange(selfChange);
 
-//		Cursor cursor = appContext.getContentResolver().query( Uri.parse("content://mms"), null, "msg_box = 4", null, "_id"); //this does not appear to work.
-		Cursor mmsCursor = appContext.getContentResolver().query( Uri.parse("content://mms/"), null, null, null, "date DESC");
-		Cursor smsCursor = appContext.getContentResolver().query( Uri.parse("content://mms-sms/conversations?simple=true"), null, null, null, "date");
-		
-		//test the MMS and SMS cursors for basic validity, move them into position.  If anything is invalid, exit.
-		if ( !checkAndPositionCursor(mmsCursor) || !checkAndPositionCursor(smsCursor) ){ return; }
-		//test that the data in these cursors are useful, if not, exit.
-		if ( !checkValidData(mmsCursor) || !checkValidData(smsCursor) ) { return; }
-		
-		//we only care about MMSes in this code, so if we received an SMS change, we exit here.
-		if ( !smsCursor.getString(smsCursor.getColumnIndex( "transport_type" )).equals("mms") ) { return; }
-		
-		long timestamp = mmsCursor.getInt( mmsCursor.getColumnIndex("date") ) * 1000L;
-		String recipient = smsCursor.getString( smsCursor.getColumnIndex("recipient_address") );
-		
-		String[] recipients = recipient.split(";");
-		for (String number : recipients) {
-			String ident = EncryptionEngine.hashPhoneNumber(number);
-			String write_to_file = timestamp + TextFileManager.DELIMITER + ident + TextFileManager.DELIMITER + "sent MMS" + TextFileManager.DELIMITER + "MMS";
-//			Log.i("mms", write_to_file);
-			TextFileManager.getTextsLogFile().writeEncrypted(write_to_file);
+		try {
+	//		Cursor cursor = appContext.getContentResolver().query( Uri.parse("content://mms"), null, "msg_box = 4", null, "_id"); //this does not appear to work.
+			Cursor mmsCursor = appContext.getContentResolver().query( Uri.parse("content://mms/"), null, null, null, "date DESC");
+			Cursor smsCursor = appContext.getContentResolver().query( Uri.parse("content://mms-sms/conversations?simple=true"), null, null, null, "date");
+			
+			//test the MMS and SMS cursors for basic validity, move them into position.  If anything is invalid, exit.
+			if ( !checkAndPositionCursor(mmsCursor) || !checkAndPositionCursor(smsCursor) ){ return; }
+			//test that the data in these cursors are useful, if not, exit.
+			if ( !checkValidData(mmsCursor) || !checkValidData(smsCursor) ) { return; }
+			
+			//we only care about MMSes in this code, so if we received an SMS change, we exit here.
+			if ( !smsCursor.getString(smsCursor.getColumnIndex( "transport_type" )).equals("mms") ) { return; }
+			
+			long timestamp = mmsCursor.getInt( mmsCursor.getColumnIndex("date") ) * 1000L;
+			String recipient = smsCursor.getString( smsCursor.getColumnIndex("recipient_address") );
+			
+			String[] recipients = recipient.split(";");
+			for (String number : recipients) {
+				String ident = EncryptionEngine.hashPhoneNumber(number);
+				String write_to_file = timestamp + TextFileManager.DELIMITER + ident + TextFileManager.DELIMITER + "sent MMS" + TextFileManager.DELIMITER + "MMS";
+	//			Log.i("mms", write_to_file);
+				TextFileManager.getTextsLogFile().writeEncrypted(write_to_file);
+			}
+			
+			//verbose logging code
+	//		String message = getMmsText( "" + mmsCursor.getInt( mmsCursor.getColumnIndex("_id")) );
+	//		Log.e("MMS message", "message length = " + message.length() );
+	//		Log.e("MMS message", "message = " + message);
+	//		
+	//		Log.e("MMS stuff", "MMS:");
+	//		print_things_from_valid_sources(mmsCursor);
+	//		Log.e("MMS stuff", "SMS:");
+	//		print_things_from_valid_sources(smsCursor);
 		}
-		
-		//verbose logging code
-//		String message = getMmsText( "" + mmsCursor.getInt( mmsCursor.getColumnIndex("_id")) );
-//		Log.e("MMS message", "message length = " + message.length() );
-//		Log.e("MMS message", "message = " + message);
-//		
-//		Log.e("MMS stuff", "MMS:");
-//		print_things_from_valid_sources(mmsCursor);
-//		Log.e("MMS stuff", "SMS:");
-//		print_things_from_valid_sources(smsCursor);
+		catch (Exception e) { CrashHandler.writeCrashlog(e, appContext); }
 	}
 	
 	/**Checks for basic validity of our database cursors, moves database cursor to correct location. 

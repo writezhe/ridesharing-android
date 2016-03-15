@@ -20,8 +20,10 @@ public class DeviceInfo {
 	/* TODO:  Ensure this number is updated whenever a version of the app is pushed to the website for any reason.
 	 * Don't forget to update the version in the android manifest, only the version string is visible to the user.
 	 * Version history:
-	 * 1: add additional device data during the registration process, including this version number. */
-	private static Integer beiweVersion = 1; 
+	 * 1: add additional device data during the registration process, including this version number.
+	 * 2: added sms debugging */
+	
+	private static Integer beiweVersion = 2; 
 	
 	private static String androidID;
 	private static String bluetoothMAC;
