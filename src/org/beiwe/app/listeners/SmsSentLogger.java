@@ -1,5 +1,6 @@
 package org.beiwe.app.listeners;
 
+import org.beiwe.app.CrashHandler;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.TextFileManager;
 
@@ -76,16 +77,7 @@ public class SmsSentLogger extends ContentObserver {
 				 * so it should be easy to identify duplicate entries. */
 			}
 		}
-		catch (Exception e) {
-			String stackString = "";
-			for (StackTraceElement element : e.getStackTrace()) {
-				Log.e ("MMSSentLogger Error", element.toString() );
-		        stackString += element.toString();
-		        stackString += ";";
-		    }
-			String msg = System.currentTimeMillis() + " SMS (send) logging encountered an issue, the following is diagnostic data for use in debugging Beiwe: " + stackString;
-			TextFileManager.getDebugLogFile().writeEncrypted(msg);
-		}
+		catch (Exception e) { CrashHandler.writeCrashlog(e, appContext); }
 		
 	}	
 }
