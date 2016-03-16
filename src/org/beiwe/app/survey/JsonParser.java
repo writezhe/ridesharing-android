@@ -2,7 +2,6 @@ package org.beiwe.app.survey;
 
 import org.beiwe.app.JSONUtils;
 import org.beiwe.app.R;
-import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.ui.TextFieldType;
 import org.beiwe.app.ui.TextFieldType.Type;
 import org.json.JSONArray;
