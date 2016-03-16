@@ -38,7 +38,6 @@ import android.util.Log;
 
 public class BackgroundService extends Service {
 	private Context appContext;
-	// TODO: postproduction. Make these private after killing DebugInterfaceActivity
 	public GPSListener gpsListener;
 	public AccelerometerListener accelerometerListener;
 	public BluetoothListener bluetoothListener;
