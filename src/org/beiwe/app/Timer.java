@@ -1,7 +1,6 @@
 package org.beiwe.app;
 
 import java.util.Calendar;
-import java.util.Random;
 
 import org.beiwe.app.storage.PersistentData;
 
@@ -11,7 +10,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.SystemClock;
 import android.util.Log;
 
 /** The Timer class provides a meeans of setting various timers.  These are used by the BackgroundService
