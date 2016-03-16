@@ -61,7 +61,7 @@ public class PersistentData {
 	private static final String VOICE_RECORDING_MAX_TIME_LENGTH_SECONDS = "voice_recording_max_time_length_seconds";
 	private static final String WIFI_LOG_FREQUENCY_SECONDS = "wifi_log_frequency_seconds";
 	private static final String SURVEY_IDS = "survey_ids";
-	private static final String SURVEY_QUESTION_IDS = "question_ids";
+//	private static final String SURVEY_QUESTION_IDS = "question_ids";
 
 	/*#####################################################################################
 	################################### Initializing ######################################
@@ -319,12 +319,10 @@ public class PersistentData {
 		editor.commit(); }
 
 	public static String getPasswordResetNumber() { return pref.getString(PASSWORD_RESET_NUMBER_KEY, ""); }
-	
 	public static void setPasswordResetNumber( String phoneNumber ){
 		editor.putString(PASSWORD_RESET_NUMBER_KEY, phoneNumber );
 		editor.commit(); }
 
-	
 	/*###########################################################################################
 	###################################### Survey Info ##########################################
 	###########################################################################################*/
@@ -396,7 +394,7 @@ public class PersistentData {
 			editor.putString(SURVEY_IDS, new JSONArray(list).toString() );
 			editor.commit();
 		}
-		else { throw new NullPointerException("duplicate survey id added: " + surveyId); } //TODO: Eli/Josh.  I am unaware of how this code could ever possible run because we ensure uniqueness in the downloader.  thoughts?
+		else { throw new NullPointerException("duplicate survey id added: " + surveyId); } //we ensure uniqueness in the downloader, this should be unreachable.
 	}
 	
 	private static void removeSurveyId(String surveyId) {
@@ -406,7 +404,7 @@ public class PersistentData {
 			editor.putString(SURVEY_IDS, new JSONArray(list).toString() );
 			editor.commit();
 		}
-		else { throw new NullPointerException("survey id does not exist: " + surveyId); } //TODO: Eli/Josh.  like in addSurveyId, I am unaware of how this code could ever possible run because we ensure uniqueness in the downloader.  thoughts?
+		else { throw new NullPointerException("survey id does not exist: " + surveyId); } //we ensure uniqueness in the downloader, this should be unreachable.
 	}
 	
 
@@ -425,7 +423,7 @@ public class PersistentData {
 			editor.putString(surveyId + "-questionIds", new JSONArray(list).toString() );
 			editor.commit();
 		}
-		else { throw new NullPointerException("duplicate question id added: " + questionId); } //TODO: Eli/Josh.  I am unaware of how this code could ever possible run because we ensure uniqueness in the downloader.  thoughts?
+		else { throw new NullPointerException("duplicate question id added: " + questionId); } //we ensure uniqueness in the downloader, this should be unreachable.
 	}
 	
 	public static void clearSurveyQuestionMemory(String surveyId) {
