@@ -4,9 +4,7 @@ import org.beiwe.app.R;
 import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.storage.PersistentData;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 
 /**The main menu activity of the app. Currently displays 4 buttons - Audio Recording, Graph, Call Clinician, and Sign out.
