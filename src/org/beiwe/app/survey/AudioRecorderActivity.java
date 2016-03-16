@@ -139,7 +139,7 @@ public class AudioRecorderActivity extends SessionActivity {
 			recordingButton.setClickable(true);
 		}
 		
-		//TODO: Josh, look into popping a Toast message saying "Your recording was saved and submitted!" or "Something went wrong, and it wasn't saved!" That should probably go here, but I haven't looked at it too deeply.
+		//TODO: make this pop the same toast as a regular survey.
     }
     
 
