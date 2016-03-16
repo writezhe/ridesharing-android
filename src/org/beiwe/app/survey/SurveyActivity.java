@@ -1,6 +1,5 @@
 package org.beiwe.app.survey;
 
-import org.beiwe.app.JSONUtils;
 import org.beiwe.app.R;
 import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.storage.PersistentData;
