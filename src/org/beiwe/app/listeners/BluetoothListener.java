@@ -138,6 +138,7 @@ public class BluetoothListener extends BroadcastReceiver {
 	 * Sets the scanActive variable to false, and stops any running Bluetooth LE scan,
 	 * then disable Bluetooth (intelligently).
 	 * Note: we cannot actually guarantee the scan has stopped, that function returns void. */
+	@SuppressWarnings("deprecation")  //Yeah. This is totally safe.
 	@SuppressLint("NewApi")
 	public void disableBLEScan() {
 		if (!bluetoothExists) { return; }
@@ -150,6 +151,7 @@ public class BluetoothListener extends BroadcastReceiver {
 	
 	/** Intelligently ACTUALLY STARTS a Bluetooth LE scan.
 	 *  If Bluetooth is available, start scanning.  Makes verbose logging statements */
+	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
 	private void tryScanning() {
 		Log.d("bluetooth", "starting a scan: " + scanActive );
@@ -158,7 +160,7 @@ public class BluetoothListener extends BroadcastReceiver {
 				Log.d("bluetooth", "bluetooth LE scan started successfully."); }
 			else { Log.w("bluetooth", "bluetooth LE scan NOT started successfully."); } }
 		else { Log.w("bluetooth", "bluetooth was not enabled."); } }
-
+	
 	
 	/** LeScanCallback is code that is run when a Bluetooth LE scan returns some data.
 	*   We take the returned data and log it. */
@@ -169,7 +171,7 @@ public class BluetoothListener extends BroadcastReceiver {
 			TextFileManager.getBluetoothLogFile().writeEncrypted( System.currentTimeMillis() + "," + EncryptionEngine.safeHash( device.toString() ) + "," + rssi );
 //			Log.i("Bluetooth",  System.currentTimeMillis() + "," + device.toString() + ", " + rssi );
 		} }; 
-
+	
 		
 /*####################################################################################
 ################# the onReceive Stack for Bluetooth state messages ###################
