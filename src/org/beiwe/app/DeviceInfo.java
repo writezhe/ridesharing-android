@@ -21,9 +21,13 @@ public class DeviceInfo {
 	 * Don't forget to update the version in the android manifest, only the version string is visible to the user.
 	 * Version history:
 	 * 1: add additional device data during the registration process, including this version number.
-	 * 2: added sms debugging */
+	 * 2: added sms debugging
+	 * 3: added universal crash log to the app
+	 * 
+	 * 
+	 * DO NOT FORGET TO UPDATE THE MANIFEST VERSION NUMBERS AS WELL.*/
 	
-	private static Integer beiweVersion = 2; 
+	private static Integer beiweVersion = 3; 
 	
 	private static String androidID;
 	private static String bluetoothMAC;
