@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.spec.InvalidKeySpecException;
 
+import org.beiwe.app.CrashHandler;
 import org.beiwe.app.R;
 import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.storage.EncryptionEngine;
@@ -101,6 +102,7 @@ public class AudioRecorderActivity extends SessionActivity {
 		} catch (JSONException e) {
 			Log.e("Audio Survey", "audio survey received either no or invalid prompt text.");
 			e.printStackTrace();
+			CrashHandler.writeCrashlog(e, getApplicationContext());
 			//TODO: Low Priority. Eli/Josh.  update the default prompt string to be... not a question?
 			return getApplicationContext().getString(R.string.record_activity_default_message);
 		}
@@ -192,7 +194,9 @@ public class AudioRecorderActivity extends SessionActivity {
 				public void onCompletion(MediaPlayer mediaPlayer) { stopPlaying(); }
 			} );
         }
-        catch (IOException e) { Log.e(LOG_TAG, "prepare() failed"); }
+        catch (IOException e) {
+        	CrashHandler.writeCrashlog(e, getApplicationContext());
+        	Log.e(LOG_TAG, "prepare() failed"); }
     }
     
     /** Stops playing back the recording, and reset the button to "play" */
@@ -225,7 +229,9 @@ public class AudioRecorderActivity extends SessionActivity {
         mRecorder.setAudioEncodingBitRate(64000);
         
         try { mRecorder.prepare(); }
-        catch (IOException e) { Log.e(LOG_TAG, "prepare() failed"); }
+        catch (IOException e) {
+        	CrashHandler.writeCrashlog(e, getApplicationContext());
+        	Log.e(LOG_TAG, "prepare() failed"); }
 
         startRecordingTimeout();
         mRecorder.start();
@@ -317,9 +323,11 @@ public class AudioRecorderActivity extends SessionActivity {
 				encryptedAudio = EncryptionEngine.encryptAES( readInAudioFile(), aesKey ); }
 			catch (InvalidKeySpecException e) {
 				Log.e("AudioFileManager", "encrypted write operation to the audio file without a keyFile.");
+				CrashHandler.writeCrashlog(e, getApplicationContext());
 				throw new NullPointerException( e.getMessage() ); }
 	        catch (InvalidKeyException e) {
 	        	Log.e("AudioFileManager", "encrypted write operation to the audio file without an aes key? how is that even...");
+	        	CrashHandler.writeCrashlog(e, getApplicationContext());
 				throw new NullPointerException( e.getMessage() ); }
 			writePlaintext( encryptedRSA , fileName );
 			writePlaintext( encryptedAudio, fileName );
@@ -338,10 +346,12 @@ public class AudioRecorderActivity extends SessionActivity {
 			outStream.close(); }
 		catch (FileNotFoundException e) {
 			Log.e("AudioRecording", "could not find file to write to, " + outputFileName);
-			e.printStackTrace(); }
+			e.printStackTrace(); 
+			CrashHandler.writeCrashlog(e, getApplicationContext()); }
 		catch (IOException e) {
 			Log.e("AudioRecording", "error in the write operation: " + e.getMessage() );
-			e.printStackTrace(); }
+			e.printStackTrace();
+			CrashHandler.writeCrashlog(e, getApplicationContext()); }
 	}
     
 	
@@ -356,14 +366,17 @@ public class AudioRecorderActivity extends SessionActivity {
 			data = new byte[ (int) file.length() ];
 			try{ dataInputStream.readFully(data); }
 			catch (IOException e) { Log.i("DataFileManager", "error reading " + unencryptedTempAudioFilePath);
-				e.printStackTrace(); }
+				e.printStackTrace();
+				CrashHandler.writeCrashlog(e, getApplicationContext()); }
 			dataInputStream.close(); }
 		catch (FileNotFoundException e) {
 			Log.i("AudioRecording", "file " + unencryptedTempAudioFilePath + " does not exist");
-			e.printStackTrace(); }
+			e.printStackTrace();
+			CrashHandler.writeCrashlog(e, getApplicationContext()); }
 		catch (IOException e) {
 			Log.i("AudioRecording", "could not close " + unencryptedTempAudioFilePath);
-			e.printStackTrace(); }
+			e.printStackTrace();
+			CrashHandler.writeCrashlog(e, getApplicationContext()); }
 		return data;
 	}
 }
