@@ -1,5 +1,6 @@
 package org.beiwe.app.survey;
 
+import org.beiwe.app.CrashHandler;
 import org.beiwe.app.JSONUtils;
 import org.beiwe.app.R;
 import org.beiwe.app.session.SessionActivity;
@@ -42,6 +43,7 @@ public class SurveyActivity extends SessionActivity {
 		catch (JSONException e) {
 			Log.e("Survey Activity", "There was an error parsing survey settings");
 			e.printStackTrace();
+			CrashHandler.writeCrashlog(e, appContext);
 			surveySettings = new JSONObject();
 		}
 		
