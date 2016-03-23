@@ -119,10 +119,12 @@ public class EncryptionEngine {
 			throw new NullPointerException("device is too stupid to live");}
 		
 		try { rsaCipher.init(Cipher.ENCRYPT_MODE, RSAkey);	}
-		catch (InvalidKeyException e) { Log.e("Encryption Engine", "The key is not a valid public RSA key."); }
+		catch (InvalidKeyException e) {
+			Log.e("Encryption Engine", "The key is not a valid public RSA key.");
+			throw new NullPointerException("the RSA key was not valid");
+		} //will crash soon
 		
-		try {  encryptedText = rsaCipher.doFinal( data ); }
-		
+		try { encryptedText = rsaCipher.doFinal( data ); }
 		catch (IllegalBlockSizeException e1) { Log.e("Encryption Engine", "The key is malformed.");
 			// NOTE FOR FUTURE UPGRADES TO THIS SOFTWARE.
 			// The only solution to this error is to uninstall and reregister the device,
@@ -131,7 +133,7 @@ public class EncryptionEngine {
 			throw new NullPointerException("RSA Key is invalid, the user needs to reregister their device."); } 
 		catch (BadPaddingException e2) { 
 			Log.e("Encryption Engine", "Device does not reconize padding format.  this is interesting because there ISN'T ONE (instance 2)");
-			throw new NullPointerException("device is too stupid to live");}
+			throw new NullPointerException("device is too stupid to live"); }
 		
 		return toBase64String(encryptedText);
 	}
@@ -155,7 +157,7 @@ public class EncryptionEngine {
 		//initialize an AES encryption cipher, we are using CBC mode.
 		SecretKeySpec secretKeySpec = new SecretKeySpec( aesKey, "AES" );
 		Cipher cipher = null;
-		try { cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");}
+		try { cipher = Cipher.getInstance("AES/CBC/PKCS5Padding"); }
 		catch (NoSuchAlgorithmException e) { // seems unlikely and should fail at the previous AES
 			Log.e("Encryption Engine", "device does not know what AES is, instance 2" );
 			e.printStackTrace();
@@ -215,7 +217,8 @@ public class EncryptionEngine {
 		try { aesKeyGen = KeyGenerator.getInstance("AES"); }
 		catch (NoSuchAlgorithmException e) { //seems unlikely
 			Log.e("Encryption Engine", "device does not know what AES is... instance 1" );
-			e.printStackTrace(); }
+			e.printStackTrace();
+			throw new NullPointerException("device does not know what AES is... instance 1"); }
 
 		aesKeyGen.init( 128, random );
 		//from key generator, generate a key!  yay...
