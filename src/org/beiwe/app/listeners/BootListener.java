@@ -1,6 +1,7 @@
 package org.beiwe.app.listeners;
 
 import org.beiwe.app.BackgroundService;
+import org.beiwe.app.CrashHandler;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -30,6 +31,7 @@ public class BootListener extends BroadcastReceiver {
 			return (appInfo.flags & ApplicationInfo.FLAG_EXTERNAL_STORAGE) == ApplicationInfo.FLAG_EXTERNAL_STORAGE; }
 		catch (NameNotFoundException e) {
 			Log.i("PowerStateListener", "something is broken in the check for installation on an SD card.");
+			CrashHandler.writeCrashlog(e, externalContext);
 			throw e; }
 	}
 	
@@ -58,7 +60,10 @@ public class BootListener extends BroadcastReceiver {
 			/** Almost identical to the boot_completed code, but invert the logic. */
 			//If app is installed on the SD card, start the background service.
 			try { if ( !checkForSDCardInstall(externalContext) ) { return; } }
-			catch (NameNotFoundException e) { e.printStackTrace(); }
+			catch (NameNotFoundException e) {
+				CrashHandler.writeCrashlog(e, externalContext);
+				e.printStackTrace();
+			}
 			startBackgroundService(externalContext); }
 	}
 }
