@@ -16,6 +16,7 @@ import java.util.concurrent.Executors;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import org.beiwe.app.CrashHandler;
 import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.R;
 import org.beiwe.app.storage.PersistentData;
@@ -182,11 +183,8 @@ public class PostRequest {
 				String key = responseJSON.getString("client_public_key");
 				writeKey(key, response);
 				JSONObject deviceSettings = responseJSON.getJSONObject("device_settings");
-				SetDeviceSettings.writeDeviceSettings(deviceSettings);
-			} catch (JSONException e) {
-				// TODO: Eli.  Improve handling for this error.
-				e.printStackTrace();
-			}
+				SetDeviceSettings.writeDeviceSettings(deviceSettings);}
+			catch (JSONException e) { e.printStackTrace(); }
 		}
 		connection.disconnect();
 		return response;
