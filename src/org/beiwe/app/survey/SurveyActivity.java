@@ -43,7 +43,7 @@ public class SurveyActivity extends SessionActivity {
 		catch (JSONException e) {
 			Log.e("Survey Activity", "There was an error parsing survey settings");
 			e.printStackTrace();
-			CrashHandler.writeCrashlog(e, appContext);
+			CrashHandler.writeCrashlog(e, getApplicationContext());
 			surveySettings = new JSONObject();
 		}
 		
