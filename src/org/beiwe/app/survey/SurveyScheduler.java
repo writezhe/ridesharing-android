@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.beiwe.app.BackgroundService;
+import org.beiwe.app.CrashHandler;
 import org.beiwe.app.JSONUtils;
 import org.beiwe.app.R;
 import org.beiwe.app.storage.PersistentData;
@@ -26,6 +27,7 @@ public class SurveyScheduler {
 		catch (JSONException e) {
 			Log.e("SurveyScheduler", "There was an error parsing survey settings");
 			e.printStackTrace();
+			CrashHandler.writeCrashlog(e, appContext);
 			surveySettings = new JSONObject();
 		}
 		Log.i("SurveyScheduler", "id: " + surveyId + ", survey settings: " + surveySettings );
