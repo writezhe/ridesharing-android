@@ -6,6 +6,11 @@
     <!-- General Strings -->
     <string name="app_name">Beiwe</string>
     <string name="action_settings">Settings</string>
+	
+    <!-- Permissions Strings -->
+    <string name="permission_registration_read_sms_alert"> In order to register for a study Beiwe requires access to this device\'s phone number, so please press \"Allow\" when you see a menu requesting permissions to access SMS. Depending on the study you may disable this permission by going to Settings > Beiwe App Settings > Permissions after registration is complete.</string>
+
+    <string name="permission_registration_actually_need_sms_alert"> Beiwe needs SMS permissions in order to register for a study, but you appear to have denied access. We are going to bump you to the beiwe app settings so you can manually enable SMS access. </string>
 
     <!-- API URLs -->
     <string name="data_upload_url">https://studies.beiwe.org/upload</string>

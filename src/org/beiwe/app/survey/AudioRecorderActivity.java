@@ -63,6 +63,7 @@ public class AudioRecorderActivity extends SessionActivity {
     private final Handler recordingTimeoutHandler = new Handler();
     private String surveyId;
     
+    @Override public Boolean isAudioRecorderActivity() { return true; }
     
     /*#########################################################
     ################## Activity Overrides ##################### 

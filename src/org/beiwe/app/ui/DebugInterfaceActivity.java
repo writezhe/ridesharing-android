@@ -4,6 +4,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.List;
 
 import org.beiwe.app.BackgroundService;
+import org.beiwe.app.PermissionHandler;
 import org.beiwe.app.R;
 import org.beiwe.app.Timer;
 import org.beiwe.app.networking.PostRequest;
@@ -90,13 +91,35 @@ public class DebugInterfaceActivity extends SessionActivity {
 	}
 	
 	public void getEnabledFeatures(View view) {
-		Log.i("feature...", ""+PersistentData.getAccelerometerEnabled() );
-		Log.i("feature...", ""+PersistentData.getGpsEnabled() );
-		Log.i("feature...", ""+PersistentData.getCallsEnabled() );
-		Log.i("feature...", ""+PersistentData.getTextsEnabled() );
-		Log.i("feature...", ""+PersistentData.getWifiEnabled() );
-		Log.i("feature...", ""+PersistentData.getBluetoothEnabled() );
-		Log.i("feature...", ""+PersistentData.getPowerStateEnabled() );
+		if ( PersistentData.getAccelerometerEnabled() ) { Log.i("features", "Accelerometer Enabled." ); } else { Log.e("features", "Accelerometer Disabled."); }
+		if ( PersistentData.getGpsEnabled() ) { Log.i("features", "Gps Enabled." ); } else { Log.e("features", "Gps Disabled."); }
+		if ( PersistentData.getCallsEnabled() ) { Log.i("features", "Calls Enabled." ); } else { Log.e("features", "Calls Disabled."); }
+		if ( PersistentData.getTextsEnabled() ) { Log.i("features", "Texts Enabled." ); } else { Log.e("features", "Texts Disabled."); }
+		if ( PersistentData.getWifiEnabled() ) { Log.i("features", "Wifi Enabled." ); } else { Log.e("features", "Wifi Disabled."); }
+		if ( PersistentData.getBluetoothEnabled() ) { Log.i("features", "Bluetooth Enabled." ); } else { Log.e("features", "Bluetooth Disabled."); }
+		if ( PersistentData.getPowerStateEnabled() ) { Log.i("features", "PowerState Enabled." ); } else { Log.e("features", "PowerState Disabled."); }
+	}
+	
+	public void getPermissableFeatures(View view) {
+		if (PermissionHandler.checkAccessFineLocation(getApplicationContext())) { Log.i("permissions", "AccessFineLocation enabled."); } else { Log.e("permissions", "AccessFineLocation disabled."); }
+		if (PermissionHandler.checkAccessNetworkState(getApplicationContext())) { Log.i("permissions", "AccessNetworkState enabled."); } else { Log.e("permissions", "AccessNetworkState disabled."); }
+		if (PermissionHandler.checkAccessWifiState(getApplicationContext())) { Log.i("permissions", "AccessWifiState enabled."); } else { Log.e("permissions", "AccessWifiState disabled."); }
+//		if (PermissionHandler.checkBatteryStats(getApplicationContext())) { Log.i("permissions", "BatteryStats enabled."); } else { Log.e("permissions", "BatteryStats disabled."); }
+		if (PermissionHandler.checkBluetooth(getApplicationContext())) { Log.i("permissions", "Bluetooth enabled."); } else { Log.e("permissions", "Bluetooth disabled."); }
+		if (PermissionHandler.checkBluetoothAdmin(getApplicationContext())) { Log.i("permissions", "BluetoothAdmin enabled."); } else { Log.e("permissions", "BluetoothAdmin disabled."); }
+//		if (PermissionHandler.checkBluetoothPrivileged(getApplicationContext())) { Log.i("permissions", "BluetoothPrivileged enabled."); } else { Log.e("permissions", "BluetoothPrivileged disabled."); }
+		if (PermissionHandler.checkCallPhone(getApplicationContext())) { Log.i("permissions", "CallPhone enabled."); } else { Log.e("permissions", "CallPhone disabled."); }
+		if (PermissionHandler.checkInternet(getApplicationContext())) { Log.i("permissions", "Internet enabled."); } else { Log.e("permissions", "Internet disabled."); }
+		if (PermissionHandler.checkReadCallLog(getApplicationContext())) { Log.i("permissions", "ReadCallLog enabled."); } else { Log.e("permissions", "ReadCallLog disabled."); }
+		if (PermissionHandler.checkReadContacts(getApplicationContext())) { Log.i("permissions", "ReadContacts enabled."); } else { Log.e("permissions", "ReadContacts disabled."); }
+		if (PermissionHandler.checkReadPhoneState(getApplicationContext())) { Log.i("permissions", "ReadPhoneState enabled."); } else { Log.e("permissions", "ReadPhoneState disabled."); }
+		if (PermissionHandler.checkReadSms(getApplicationContext())) { Log.i("permissions", "ReadSms enabled."); } else { Log.e("permissions", "ReadSms disabled."); }
+		if (PermissionHandler.checkReceiveBootCompleted(getApplicationContext())) { Log.i("permissions", "ReceiveBootCompleted enabled."); } else { Log.e("permissions", "ReceiveBootCompleted disabled."); }
+		if (PermissionHandler.checkReceiveMms(getApplicationContext())) { Log.i("permissions", "ReceiveMms enabled."); } else { Log.e("permissions", "ReceiveMms disabled."); }
+		if (PermissionHandler.checkReceiveSms(getApplicationContext())) { Log.i("permissions", "ReceiveSms enabled."); } else { Log.e("permissions", "ReceiveSms disabled."); }
+//		if (PermissionHandler.checkWriteExternalStorage(getApplicationContext())) { Log.i("permissions", "WriteExternalStorage enabled."); } else { Log.e("permissions", "WriteExternalStorage disabled."); }
+//		if (PermissionHandler.checkWriteCallLog(getApplicationContext())) { Log.i("permissions", "WriteCallLog enabled."); } else { Log.e("permissions", "WriteCallLog disabled."); }
+		if (PermissionHandler.checkRecordAudio(getApplicationContext())) { Log.i("permissions", "RecordAudio enabled."); } else { Log.e("permissions", "RecordAudio disabled."); }
 	}
 	
 	public void clearInternalLog(View view) { TextFileManager.getDebugLogFile().deleteSafely(); }

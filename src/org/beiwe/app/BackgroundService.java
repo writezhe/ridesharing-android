@@ -51,29 +51,52 @@ public class BackgroundService extends Service {
 	private static BackgroundService localHandle;
 	
 	@Override
-	/** onCreate is essentially the constructor for the service, initialize variables here.*/
+	/** onCreate is essentially the constructor for the service, initialize variables here. */
 	public void onCreate() {
 		appContext = this.getApplicationContext();
-		Thread.setDefaultUncaughtExceptionHandler(new CrashHandler(appContext));
-		
-		DeviceInfo.initialize( getApplicationContext() );
-		PersistentData.initialize( getApplicationContext() );
-		TextFileManager.initialize( getApplicationContext() );
-		PostRequest.initialize( getApplicationContext() );
-		WifiListener.initialize( getApplicationContext() );
-		
-		gpsListener = new GPSListener(appContext);
-		accelerometerListener = new AccelerometerListener( appContext );
-		startBluetooth();
-		startSmsSentLogger();
-		startMmsSentLogger();
-		startCallLogger();
-		startPowerStateListener();
-		localHandle = this;  //yes yes I know.
+		//		Thread.setDefaultUncaughtExceptionHandler(new CrashHandler(appContext));
+		PersistentData.initialize( appContext );
+		TextFileManager.initialize( appContext );
+		PostRequest.initialize( appContext );
+		localHandle = this;  //yes yes, hacky, I know.
 		registerTimers(appContext);
-		DeviceInfo.getPhoneNumber();
-		//If this device is registered, start timers!
-		if (PersistentData.isRegistered()) { startTimers(); }
+		
+		doSetup();
+	}
+
+	public void doSetup() {
+		if ( PersistentData.getAccelerometerEnabled() ) { accelerometerListener = new AccelerometerListener( appContext ); }
+		if ( PermissionHandler.confirmBluetooth(appContext)) { startBluetooth(); }
+//		if ( PermissionHandler.confirmPowerState(appContext) ) { startPowerStateListener(); }
+		startPowerStateListener();
+		if ( PermissionHandler.confirmWifi(appContext) ) { WifiListener.initialize( appContext ); }
+		if ( PermissionHandler.confirmGps(appContext)) { gpsListener = new GPSListener(appContext); }
+		
+		if ( PersistentData.isRegistered() ) {
+			//		if ( android.os.Build.VERSION.SDK_INT >= 23) {
+			//			Log.i("ANDROID 6 CODE PATH", "CHECKING THINGS");
+			//			if (PermissionHandler.checkReadSms(appContext) ) {
+			//				Log.i("ANDROID 6", "MORE STUFF");
+			//				DeviceInfo.initialize( getApplicationContext() );
+			//			}
+			//		} else {
+			//			Log.i("ANDROID NOT-6 CODE PATH", "NOT CHECKING THINGS");
+			//			//TODO: device info is required for registration, this means it needs to be ensured on the registration screen.
+			//			DeviceInfo.initialize( getApplicationContext() );
+			//		}
+			
+			DeviceInfo.initialize( appContext );
+			
+			if ( PermissionHandler.confirmTexts(appContext) ) {
+				startSmsSentLogger();
+				startMmsSentLogger();
+			}
+			
+			if ( PermissionHandler.confirmCalls(appContext) ) { startCallLogger(); }
+			
+			//If this device is registered, start timers!
+			startTimers();
+		}
 	}
 	
 	/** Stops the BackgroundService instance. */
@@ -92,7 +115,7 @@ public class BackgroundService extends Service {
 		if ( appContext.getPackageManager().hasSystemFeature( PackageManager.FEATURE_BLUETOOTH_LE ) && PersistentData.getBluetoothEnabled() ) {
 			this.bluetoothListener = new BluetoothListener();
 			if ( this.bluetoothListener.isBluetoothEnabled() ) {
-				Log.i("Background Service", "success, actually doing bluetooth things.");
+//				Log.i("Background Service", "success, actually doing bluetooth things.");
 				registerReceiver(this.bluetoothListener, new IntentFilter("android.bluetooth.adapter.action.STATE_CHANGED") ); }
 			else {
 				//TODO: Low priority. Eli. Track down why this error log pops up, cleanup.  -- the above check should be for the (new) doesBluetoothCapabilityExist function instead of isBluetoothEnabled
@@ -172,19 +195,19 @@ public class BackgroundService extends Service {
 			//note: when there is no accelerometer-off timer that means we are in-between scans.  This state is fine, so we don't check for it.
 		}
 		
-		if (PersistentData.getGpsEnabled() && (  //identical logic to accelerometer-start logic
+		if ( PermissionHandler.confirmGps(appContext) && (  //identical logic to accelerometer-start logic
 				PersistentData.getMostRecentAlarmTime( getString( R.string.turn_gps_on )) < now ||
 				!timer.alarmIsSet(Timer.gpsOnIntent) ) ) {
 			sendBroadcast( Timer.gpsOnIntent ); }
 		
-		if (PersistentData.getWifiEnabled() && ( //identical logic to accelerometer start logic, except we don't have an off-timer to not care about. 
+		if ( PermissionHandler.confirmWifi(appContext) && ( //identical logic to accelerometer start logic, except we don't have an off-timer to not care about. 
 				PersistentData.getMostRecentAlarmTime( getString(R.string.run_wifi_log)) < now || //the most recent wifi log time is in the past or
 				!timer.alarmIsSet(Timer.wifiLogIntent) ) ) {
 			sendBroadcast( Timer.wifiLogIntent ); }
 		
 		//if Bluetooth recording is enabled and there is no scheduled next-bluetooth-enable event, set up the next Bluetooth-on alarm.
 		//(Bluetooth needs to run at absolute points in time, it should not be started if a scheduled event is missed.)
-		if (PersistentData.getBluetoothEnabled() && !timer.alarmIsSet(Timer.bluetoothOnIntent)) {
+		if ( PermissionHandler.confirmBluetooth(appContext) && !timer.alarmIsSet(Timer.bluetoothOnIntent)) {
 			timer.setupExactSingleAbsoluteTimeAlarm(PersistentData.getBluetoothTotalDurationMilliseconds(), PersistentData.getBluetoothGlobalOffsetMilliseconds(), Timer.bluetoothOnIntent); }
 		
 		// Functionality timers. We don't need aggressive checking for if these timers have been missed, as long as they run eventually it is fine.

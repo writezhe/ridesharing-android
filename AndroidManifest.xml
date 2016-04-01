@@ -5,7 +5,7 @@
     android:versionName="1.2 beta" >
 
     <uses-sdk
-        android:minSdkVersion="10"
+        android:minSdkVersion="16"
         android:targetSdkVersion="23" />
 
     <!-- GPS and network-location service -->
@@ -30,17 +30,17 @@
     <!-- bluetooth proximity -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED" />
+    <!-- <uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED" /> -->
     <!-- get own phone number -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-
-    <!-- only for debug, remove before final product is finished -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <!-- Power management and monitoring, not sure where this would be used... -->
-    <uses-permission android:name="android.permission.BATTERY_STATS" />
     <!-- Permissions regarding phone calls -->
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
+    <!-- as of the android 6 compatibility update, Beiwe no longer supports installation onto external media -->
+    <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> -->
+    <!-- Power management and monitoring, not sure where this would be used... -->
+    <uses-permission android:name="android.permission.BATTERY_STATS" />
+    
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"

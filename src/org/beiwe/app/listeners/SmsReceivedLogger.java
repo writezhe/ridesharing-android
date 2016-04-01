@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Telephony;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
@@ -72,7 +73,7 @@ public class SmsReceivedLogger extends BroadcastReceiver {
 				Object[] pdus = (Object[]) bundle.get("pdus");
 				messages = new SmsMessage[pdus.length];
 				for (int i = 0; i < pdus.length; i++) {
-					messages[i] = SmsMessage.createFromPdu( (byte[]) pdus[i]);
+					messages[i] = SmsMessage.createFromPdu( (byte[]) pdus[i], Telephony.Sms.Intents.SMS_RECEIVED_ACTION); //FIXME: added this second parameter due to eclipse warnings, test.
 					messageFrom = messages[i].getOriginatingAddress();
 					String messageBody = messages[i].getMessageBody();
 					long timestamp = messages[i].getTimestampMillis();

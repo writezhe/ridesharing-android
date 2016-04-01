@@ -203,8 +203,14 @@
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:onClick="getEnabledFeatures"
-		    android:text="(dev) Log Enbled Features" />
+		    android:text="(dev) Log Enabled Features" />
 		
+		<Button
+		    android:id="@+id/buttonFeaturesPermissable"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:onClick="getPermissableFeatures"
+		    android:text="(dev) Log Permissions" />
 		
 		<Button
 		    android:id="@+id/buttonCrashUi"
