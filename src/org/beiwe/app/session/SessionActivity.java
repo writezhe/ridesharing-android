@@ -1,28 +1,21 @@
 package org.beiwe.app.session;
 
-import java.util.Iterator;
-import java.util.Map;
-
 import org.beiwe.app.BackgroundService;
-import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.PermissionHandler;
 import org.beiwe.app.R;
 import org.beiwe.app.RunningBackgroundServiceActivity;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.storage.TextFileManager;
-import org.beiwe.app.ui.registration.RegisterActivity;
 import org.beiwe.app.ui.registration.ResetPasswordActivity;
 import org.beiwe.app.ui.user.AboutActivityLoggedIn;
 import org.beiwe.app.ui.user.GraphActivity;
 import org.beiwe.app.ui.user.LoginActivity;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;

@@ -5,11 +5,6 @@ import org.beiwe.app.BackgroundService;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.util.Log;
 
 /**The BootListener is never actually instantiated elsewhere in the app.  It's job is to sit
  * and wait for either the boot broadcast or the SD (external) applications available.
