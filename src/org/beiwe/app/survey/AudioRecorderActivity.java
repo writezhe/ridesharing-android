@@ -1,26 +1,18 @@
 package org.beiwe.app.survey;
 
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.spec.InvalidKeySpecException;
 
 import org.beiwe.app.R;
 import org.beiwe.app.session.SessionActivity;
-import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.ui.user.MainMenuActivity;
 import org.beiwe.app.ui.utils.SurveyNotifications;
+import org.beiwe.app.storage.AudioFileManager;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.media.MediaPlayer;
@@ -44,24 +36,24 @@ import android.widget.Toast;
  * @author Josh Zagorsky, Eli Jones */
 
 public class AudioRecorderActivity extends SessionActivity {
-    private static final String LOG_TAG = "AudioRecorderActivity";
-    private static boolean displayPlaybackButton = false;
+	protected static final String LOG_TAG = "AudioRecorderActivity";
+	protected static boolean displayPlaybackButton = false;
 
     public static final String unencryptedTempAudioFileName = "unencryptedTempAudioFile.mp4";
-    private String unencryptedTempAudioFilePath;
-    private Boolean finishedEncrypting = true; // Effectively a lock on deleting the temp file
+    protected String unencryptedTempAudioFilePath;
+    protected Boolean finishedEncrypting = true; // Effectively a lock on deleting the temp file
     
-    private MediaRecorder mRecorder = null;
-    private MediaPlayer mediaPlayer = null;
+    protected MediaRecorder mRecorder = null;
+    protected MediaPlayer mediaPlayer = null;
     
-    private boolean currentlyRecording = false;
-    private boolean currentlyPlaying = false;
+    protected boolean currentlyRecording = false;
+    protected boolean currentlyPlaying = false;
     
-    private Button playButton;
-    private Button recordingButton;
+    protected Button playButton;
+    protected Button recordingButton;
     
-    private final Handler recordingTimeoutHandler = new Handler();
-    private String surveyId;
+    protected final Handler recordingTimeoutHandler = new Handler();
+    protected String surveyId;
     
     @Override public Boolean isAudioRecorderActivity() { return true; }
     
@@ -129,7 +121,7 @@ public class AudioRecorderActivity extends SessionActivity {
     	protected void onPreExecute() { recordingButton.setClickable(false); }
 		@Override
 		protected Void doInBackground(Void... params) {
-			encryptAudioFile();
+			AudioFileManager.encryptAudioFile(unencryptedTempAudioFilePath, getApplicationContext() );
 			return null;
 		}
 		@Override
@@ -139,7 +131,6 @@ public class AudioRecorderActivity extends SessionActivity {
 			if (isFinishing()) { TextFileManager.delete(unencryptedTempAudioFileName); }
 			recordingButton.setClickable(true);
 		}
-		
 		//TODO: make this pop the same toast as a regular survey.
     }
     
@@ -288,83 +279,8 @@ public class AudioRecorderActivity extends SessionActivity {
      * don't need to do anything other than kill the activity.  */
     public void buttonDonePressed(View v) {
     	PersistentData.setSurveyNotificationState(surveyId, false);
-    	//todo: eli. add a surveyId, we can read it from the json?
 		SurveyNotifications.dismissNotification( getApplicationContext(), surveyId );
     	startActivity(new Intent(getApplicationContext(), MainMenuActivity.class));
     	finish();
     }
-    
-    /* #############################################################
-     * ######################### File io ###########################
-     * ###########################################################*/
-    
-    /**Generates new file name variables. The name consists of the time the recording takes place. */
-    private String generateNewEncryptedAudioFileName() {
-		String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
-		return PersistentData.getPatientID() + "_voiceRecording" + "_" + timecode + ".mp4";
-    }
-    
-    /** Reads in the existing temporary audio file and encrypts it. Generates AES keys as needed.
-     * Behavior is to spend as little time writing the file as possible, at the expense of memory.*/
-	private void encryptAudioFile() {
-		if (unencryptedTempAudioFilePath != null) {
-			// If the audio file has been written to, encrypt the audio file
-			String fileName = generateNewEncryptedAudioFileName();
-			byte[] aesKey = EncryptionEngine.newAESKey();
-			String encryptedRSA = null;
-			String encryptedAudio = null;
-			try{
-				encryptedRSA = EncryptionEngine.encryptRSA( aesKey ); 
-				encryptedAudio = EncryptionEngine.encryptAES( readInAudioFile(), aesKey ); }
-			catch (InvalidKeySpecException e) {
-				Log.e("AudioFileManager", "encrypted write operation to the audio file without a keyFile.");
-				throw new NullPointerException( e.getMessage() ); }
-	        catch (InvalidKeyException e) {
-	        	Log.e("AudioFileManager", "encrypted write operation to the audio file without an aes key? how is that even...");
-				throw new NullPointerException( e.getMessage() ); }
-			writePlaintext( encryptedRSA , fileName );
-			writePlaintext( encryptedAudio, fileName );
-		}
-	}
-
-	
-    /** Writes string data to a the audio file. */
-	private synchronized void writePlaintext(String data, String outputFileName){
-		FileOutputStream outStream;
-		try {  //We use MODE_APPEND because... we know it works.
-			outStream = getApplicationContext().openFileOutput(outputFileName, Context.MODE_APPEND);
-			outStream.write( ( data ).getBytes() );
-			outStream.write( "\n".getBytes() );
-			outStream.flush();
-			outStream.close(); }
-		catch (FileNotFoundException e) {
-			Log.e("AudioRecording", "could not find file to write to, " + outputFileName);
-			e.printStackTrace(); }
-		catch (IOException e) {
-			Log.e("AudioRecording", "error in the write operation: " + e.getMessage() );
-			e.printStackTrace(); }
-	}
-    
-	
-	/** Reads a byte array of the current temp audio file's contents.
-	 * @return byte array of file contents. */
-	private synchronized byte[] readInAudioFile() {
-		DataInputStream dataInputStream;
-		byte[] data = null;
-		try {  //Read the (data) input stream, into a bytearray.  Catch exceptions.
-			File file = new File(unencryptedTempAudioFilePath);
-			dataInputStream = new DataInputStream( new FileInputStream( file ) );	
-			data = new byte[ (int) file.length() ];
-			try{ dataInputStream.readFully(data); }
-			catch (IOException e) { Log.i("DataFileManager", "error reading " + unencryptedTempAudioFilePath);
-				e.printStackTrace(); }
-			dataInputStream.close(); }
-		catch (FileNotFoundException e) {
-			Log.i("AudioRecording", "file " + unencryptedTempAudioFilePath + " does not exist");
-			e.printStackTrace(); }
-		catch (IOException e) {
-			Log.i("AudioRecording", "could not close " + unencryptedTempAudioFilePath);
-			e.printStackTrace(); }
-		return data;
-	}
 }
