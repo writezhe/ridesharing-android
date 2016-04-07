@@ -39,7 +39,9 @@ public class CrashHandler implements java.lang.Thread.UncaughtExceptionHandler{
 	 * @param exception A Throwable (probably your error).
 	 * @param context An android Context */
 	public static void writeCrashlog(Throwable exception, Context context) {
-		String exceptionInfo = "BeiweVersion:" + DeviceInfo.getBeiweVersion()
+		//TODO: add optional message parameter
+		String exceptionInfo =  System.currentTimeMillis() + "\n"
+				                + "BeiweVersion:" + DeviceInfo.getBeiweVersion()
 								+ ", AndroidVersion:" + DeviceInfo.getAndroidVersion()
 								+ ", Product:" + DeviceInfo.getProduct()
 								+ ", Brand:" + DeviceInfo.getBrand()
