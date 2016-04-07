@@ -1,5 +1,6 @@
 package org.beiwe.app.survey;
 
+import org.beiwe.app.CrashHandler;
 import org.beiwe.app.JSONUtils;
 import org.beiwe.app.R;
 import org.beiwe.app.ui.TextFieldType;
@@ -9,7 +10,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -47,8 +47,8 @@ public class JsonParser {
 		}
 		catch (JSONException e) {
 			// If rendering or parsing failed, display the error widget instead
-			Log.i("JsonParser", "Failed to parse JSON survey properly");
-			e.printStackTrace();
+			// Log.i("JsonParser", "Failed to parse JSON survey properly");
+			CrashHandler.writeCrashlog(e, appContext);
 			surveyLayout.removeAllViews();
 			surveyLayout.addView(errorWidget);
 		}

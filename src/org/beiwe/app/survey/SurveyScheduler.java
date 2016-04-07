@@ -28,7 +28,7 @@ public class SurveyScheduler {
 			e.printStackTrace();
 			surveySettings = new JSONObject();
 		}
-		Log.i("SurveyScheduler", "id: " + surveyId + ", survey settings: " + surveySettings );
+		// Log.i("SurveyScheduler", "id: " + surveyId + ", survey settings: " + surveySettings );
 		if (surveySettings.optBoolean(appContext.getString(R.string.triggeredSurvey), false) ) {
 //			Log.i("SurveyScheduler", "it's triggered! yaaay!");
 			appContext.sendBroadcast(new Intent(surveyId));
@@ -68,7 +68,7 @@ public class SurveyScheduler {
 			timesList.add( dayInts );
 		}
 //		Log.d("Scheduler", "day list before sorting: " + reorderedDays);
-		Log.d("Scheduler", "day list after sorting:  " + timesList);
+		// Log.d("Scheduler", "day list after sorting:  " + timesList);
 		
 //		we now have a double nested list of lists.  element 0 is today, element 1 is tomorrow
 		// the inner list contains the times of day at which the survey should trigger, these times are values between 0 and 86,400
@@ -77,7 +77,7 @@ public class SurveyScheduler {
 		// we iterate through the nested list to come to the next time that is after right now.
 		Calendar newAlarmTime = findNextAlarmTime(timesList);
 		if (newAlarmTime == null) {
-			Log.w("SurveyScheduler", "there were no times at all in the provided timings list.");
+//			Log.w("SurveyScheduler", "there were no times at all in the provided timings list.");
 			return; }
 		BackgroundService.setSurveyAlarm(surveyId, newAlarmTime);
 	}
@@ -100,7 +100,7 @@ public class SurveyScheduler {
 				}
 				possibleAlarmTime.add(Calendar.DATE, days); //add to this time the appropriate number of days
 				if ( possibleAlarmTime.after( now ) ) { //If the time is in the future, return that time.
-					Log.d("Scheduler", "checked, yup: " + possibleAlarmTime );
+					// Log.d("Scheduler", "checked, yup: " + possibleAlarmTime );
 					return possibleAlarmTime;
 				}
 //				Log.d("Scheduler", "checked, nope: " + possibleAlarmTime);
