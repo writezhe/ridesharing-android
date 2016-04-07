@@ -19,7 +19,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -135,7 +134,7 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 	private static Boolean activityNotVisible = false;
 
 	private void goToSettings() {
-		Log.i("reg", "goToSettings");
+		// Log.i("reg", "goToSettings");
         Intent myAppSettings = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + getPackageName()));
         myAppSettings.addCategory(Intent.CATEGORY_DEFAULT);
         myAppSettings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -146,7 +145,7 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 	@Override
 	protected void onResume() {
 		//TODO: someone leaves and comes back, but alerts were open.
-		Log.i("reg", "onResume");
+		// Log.i("reg", "onResume");
 		super.onResume();
 		activityNotVisible = false;
 		if (aboutToResetFalseActivityReturn) {
@@ -171,13 +170,13 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 	
 	@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.i("reg", "onActivityResult. requestCode: " + requestCode + ", resultCode: " + resultCode );
+		// Log.i("reg", "onActivityResult. requestCode: " + requestCode + ", resultCode: " + resultCode );
 		aboutToResetFalseActivityReturn = true;
     }
 
 	@Override
 	public void onRequestPermissionsResult (int requestCode, String[] permissions, int[] grantResults) {
-		Log.i("reg", "onRequestPermissionResult");
+		// Log.i("reg", "onRequestPermissionResult");
 		if (activityNotVisible) return; //this is identical logical progression to the way it works in SessionActivity.
 		for (int i = 0; i < grantResults.length; i++) {
 			if ( permissions[i].equals( Manifest.permission.READ_SMS ) ) {
@@ -192,7 +191,7 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 	/* Message Popping */
 	
 	public static void showPrePermissionAlert(final Activity activity) {
-		Log.i("reg", "showPreAlert");
+		// Log.i("reg", "showPreAlert");
 		if (prePromptActive) { return; }
 		prePromptActive = true;
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
@@ -207,7 +206,7 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 	}
 	
 	public static void showPostPermissionAlert(final RegisterActivity activity) {
-		Log.i("reg", "showPostAlert");
+		// Log.i("reg", "showPostAlert");
 		if (postPromptActive) { return; }
 		postPromptActive = true;
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);

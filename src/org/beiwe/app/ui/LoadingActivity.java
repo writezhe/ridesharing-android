@@ -42,7 +42,7 @@ public class LoadingActivity extends RunningBackgroundServiceActivity {
 	protected ServiceConnection backgroundServiceConnection = new ServiceConnection() {
 	    @Override
 	    public void onServiceConnected(ComponentName name, IBinder binder) {
-	        Log.d("loading ServiceConnection", "Background Service Connected");
+	        // Log.d("loading ServiceConnection", "Background Service Connected");
 	        BackgroundServiceBinder some_binder = (BackgroundServiceBinder) binder;
 	        backgroundService = some_binder.getService();
 	        isBound = true;
@@ -51,7 +51,7 @@ public class LoadingActivity extends RunningBackgroundServiceActivity {
 
 	    @Override
 	    public void onServiceDisconnected(ComponentName name) {
-	        Log.d("loading ServiceConnection", "Background Service Disconnected");
+	        // Log.d("loading ServiceConnection", "Background Service Disconnected");
 	        backgroundService = null;
 	        isBound = false;
 	    }

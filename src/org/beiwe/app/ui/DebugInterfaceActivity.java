@@ -47,7 +47,7 @@ public class DebugInterfaceActivity extends SessionActivity {
 	
 	//raw debugging info
 	public void printInternalLog(View view) {
-		Log.i("print log button pressed", "press.");
+		// Log.i("print log button pressed", "press.");
 		String log = TextFileManager.getDebugLogFile().read();
 		for( String line : log.split("\n") ) {
 			Log.i( "log file...", line ); }
