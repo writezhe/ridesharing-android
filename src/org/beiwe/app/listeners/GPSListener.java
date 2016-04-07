@@ -1,5 +1,6 @@
 package org.beiwe.app.listeners;
 
+import org.beiwe.app.CrashHandler;
 import org.beiwe.app.storage.TextFileManager;
 
 import android.content.Context;
@@ -56,14 +57,14 @@ public class GPSListener implements LocationListener {
 		try { locationManager = (LocationManager) this.appContext.getSystemService(Context.LOCATION_SERVICE); }
 		catch (SecurityException e) {
 			Log.i("the LocationManager failed to initiate, SecurityException, see stack trace.", "");
-			e.printStackTrace(); }
+			CrashHandler.writeCrashlog(e, appContext); }
 	}
 	
 	/** Turns on GPS providers, provided they are accessible. */
 	public synchronized void turn_on(){
 		//if both DNE, return false.
 		if ( !trueGPS & !networkGPS ) {
-			Log.i("GPS", "GPS was told to turn on, but it is not available.");
+			Log.w("GPS", "GPS was told to turn on, but it is not available.");
 			return; }
 		// if already enabled return true.
 		if ( enabled ) {

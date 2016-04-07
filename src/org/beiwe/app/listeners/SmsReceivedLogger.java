@@ -56,7 +56,7 @@ public class SmsReceivedLogger extends BroadcastReceiver {
                      data += EncryptionEngine.hashPhoneNumber(incomingNumber) + TextFileManager.DELIMITER;
                      data += "received MMS" + TextFileManager.DELIMITER;
 //                     TODO: Low priority. feature. determine if we can get the length of the text, if it has an attachment.
-//                     Log.i("SMSReceivedLogger", "data = " + data);
+                    Log.i("SMSReceivedLogger(SMS)", "data = " + data);
                      TextFileManager.getTextsLogFile().writeEncrypted(data);
                  }
              }
@@ -73,7 +73,7 @@ public class SmsReceivedLogger extends BroadcastReceiver {
 				Object[] pdus = (Object[]) bundle.get("pdus");
 				messages = new SmsMessage[pdus.length];
 				for (int i = 0; i < pdus.length; i++) {
-					messages[i] = SmsMessage.createFromPdu( (byte[]) pdus[i], Telephony.Sms.Intents.SMS_RECEIVED_ACTION); //FIXME: added this second parameter due to eclipse warnings, test.
+					messages[i] = SmsMessage.createFromPdu( (byte[]) pdus[i], Telephony.Sms.Intents.SMS_RECEIVED_ACTION); //FIXME: added this second parameter due to eclipse warnings, test...
 					messageFrom = messages[i].getOriginatingAddress();
 					String messageBody = messages[i].getMessageBody();
 					long timestamp = messages[i].getTimestampMillis();
@@ -84,13 +84,12 @@ public class SmsReceivedLogger extends BroadcastReceiver {
 					data += messageBody.length() + TextFileManager.DELIMITER;
 					data += timestamp;
 
-					Log.i("SMSReceivedLogger", "data = " + data);
+					Log.i("SMSReceivedLogger (MMS)", "data = " + data);
 					TextFileManager.getTextsLogFile().writeEncrypted(data);
 				}
 			}
-			catch (Exception e) {
-				Log.i("SMSReceivedLogger", "SMS_RECEIVED Caught exception: " + e.getMessage());
-			}
+			catch (Exception e) { Log.e("SMSReceivedLogger", "SMS_RECEIVED Caught exception: " + e.getCause() + ", " + e.getMessage()); }
+			//TODO: "did not crash" message to crash handler message
 		}
 	}
 }
