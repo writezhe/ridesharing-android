@@ -381,7 +381,7 @@ public class PersistentData {
 	//array style storage and removal for surveyIds and questionIds	
 	private static JSONArray getSurveyIdsJsonArray() {
 		String jsonString = pref.getString(SURVEY_IDS, "0");
-		Log.d("persistant data", "getting ids: " + jsonString);
+		// Log.d("persistant data", "getting ids: " + jsonString);
 		if (jsonString == "0") { return new JSONArray(); } //return empty if the list is empty
 		try { return new JSONArray(jsonString); }
 		catch (JSONException e) { throw new NullPointerException("getSurveyIds failed, json string was: " + jsonString ); }
@@ -417,7 +417,7 @@ public class PersistentData {
 		
 	public static void addSurveyQuestionMemory(String surveyId, String questionId) {
 		List<String> list = getSurveyQuestionMemory(surveyId);
-		Log.d("persistent data", "adding questionId: " + questionId);
+		// Log.d("persistent data", "adding questionId: " + questionId);
 		if ( !list.contains(questionId) ) {
 			list.add(questionId);
 			editor.putString(surveyId + "-questionIds", new JSONArray(list).toString() );
