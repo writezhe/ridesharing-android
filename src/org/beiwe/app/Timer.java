@@ -114,7 +114,7 @@ public class Timer {
 	
 	public void startSurveyAlarm(String surveyId, Calendar alarmTime){
 		Intent intentToBeBroadcast = new Intent(surveyId);
-		Log.d("timer", "action: " + intentToBeBroadcast.getAction() );
+		// Log.d("timer", "action: " + intentToBeBroadcast.getAction() );
 		setupSurveyAlarm(surveyId, intentToBeBroadcast, alarmTime);
 	}
 	
@@ -125,7 +125,7 @@ public class Timer {
 		long nextTriggerTime = alarmTime.getTimeInMillis();
 //		triggerAtMillis = System.currentTimeMillis() + 15000; //hax, debug code.
 		long timeTillFire = nextTriggerTime - System.currentTimeMillis();
-		Log.i("Timer.java", "next alarm triggers in = " + timeTillFire / 1000 + " seconds.");
+		// Log.i("Timer.java", "next alarm triggers in = " + timeTillFire / 1000 + " seconds.");
 		setExactAlarm(AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingIntent);
 		PersistentData.setMostRecentSurveyAlarmTime(surveyId, nextTriggerTime);
 	}
