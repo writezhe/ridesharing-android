@@ -63,6 +63,12 @@
             android:label="@string/title_activity_audio_recorder"
             android:screenOrientation="portrait">
         </activity>
+        
+        <activity
+            android:name="org.beiwe.app.survey.AudioRecorderEnhancedActivity"
+            android:label="@string/title_activity_audio_recorder" 
+            android:screenOrientation="portrait">
+        </activity>
 
         <activity
             android:name="org.beiwe.app.survey.SurveyActivity"
