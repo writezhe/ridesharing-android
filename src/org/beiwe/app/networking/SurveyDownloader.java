@@ -19,7 +19,7 @@ import android.util.Log;
 public class SurveyDownloader {
 	
 	public static void downloadSurveys( Context appContext ) {
-		Log.d("QuestionsDownloader", "downloadJSONQuestions() called");
+		// Log.d("QuestionsDownloader", "downloadJSONQuestions() called");
 		doDownload( appContext.getResources().getString(R.string.download_surveys_url), appContext );		
 	}
 
@@ -83,7 +83,7 @@ public class SurveyDownloader {
 //			Log.d("debugging survey update", "settings: " + jsonSettingsString);
 			
 			if ( oldSurveyIds.contains(surveyId) ) { //if surveyId already exists, check for changes, add to list of new survey ids.
-				Log.d("debugging survey update", "checking for changes");
+				// Log.d("debugging survey update", "checking for changes");
 				PersistentData.setSurveyContent(surveyId, jsonQuestionsString);
 				PersistentData.setSurveyType(surveyId, surveyType);
 				PersistentData.setSurveySettings(surveyId, jsonSettingsString);
@@ -97,7 +97,7 @@ public class SurveyDownloader {
 				newSurveyIds.add(surveyId);
 			}
 			else { //if survey is new, create new survey entry.
-				Log.d("debugging survey update", "CREATE A SURVEY");
+				// Log.d("debugging survey update", "CREATE A SURVEY");
 				PersistentData.addSurveyId(surveyId);
 				PersistentData.createSurveyData(surveyId, jsonQuestionsString, jsonTimingsString, surveyType, jsonSettingsString);
 				BackgroundService.registerTimers(appContext);
@@ -108,7 +108,7 @@ public class SurveyDownloader {
 		
 		for (String oldSurveyId : oldSurveyIds){ //for each old survey id
 			if ( !newSurveyIds.contains( oldSurveyId ) ) { //check if it is still a valid survey (it the list of new survey ids.)
-				Log.d("survey downloader", "deleting survey " + oldSurveyId);
+				// Log.d("survey downloader", "deleting survey " + oldSurveyId);
 				PersistentData.deleteSurvey(oldSurveyId);
 				//It is almost definitely not worth the effort to cancel any ongoing alarms for a survey. They are one-time, and there is de minimus value to actually cancelling it.
 				// also, that requires accessing the background service, which means using ugly hacks like we do with the survey scheduler (though it would be okay because this code can only actually run if the background service is already instantiated.
