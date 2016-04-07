@@ -56,7 +56,7 @@ public class SessionActivity extends RunningBackgroundServiceActivity {
 	@Override
 	/** Sets the logout timer, should trigger whenever onResume is called. */
 	protected void doBackgroundDependantTasks() { 
-		Log.i("SessionActivity", "printed from SessionActivity");
+		// Log.i("SessionActivity", "printed from SessionActivity");
 		authenticateAndLoginIfNecessary();
 	}
 	
@@ -124,7 +124,7 @@ public class SessionActivity extends RunningBackgroundServiceActivity {
 	public Boolean isAudioRecorderActivity() { return false; }
 	
 	private void goToSettings(Integer permissionIdentifier) {
-		Log.i("sessionActivity", "goToSettings");
+		// Log.i("sessionActivity", "goToSettings");
         Intent myAppSettings = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + getPackageName()));
         myAppSettings.addCategory(Intent.CATEGORY_DEFAULT);
         myAppSettings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -133,13 +133,13 @@ public class SessionActivity extends RunningBackgroundServiceActivity {
 	
 	@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Log.i("sessionActivity", "onActivityResult. requestCode: " + requestCode + ", resultCode: " + resultCode );
+		// Log.i("sessionActivity", "onActivityResult. requestCode: " + requestCode + ", resultCode: " + resultCode );
 		aboutToResetFalseActivityReturn = true;
     }
 	
 	@Override
 	public void onRequestPermissionsResult (int requestCode, String[] permissions, int[] grantResults) {
-		Log.i("sessionActivity", "onRequestPermissionResult");
+		// Log.i("sessionActivity", "onRequestPermissionResult");
 		if (!activityNotVisible) checkPermissionsLogic();
 	}
 	
@@ -147,12 +147,11 @@ public class SessionActivity extends RunningBackgroundServiceActivity {
 		//gets called as part of onResume
 		//TODO: someone leaves and comes back, but alerts were open.
 		activityNotVisible = false;
-		Log.i("sessionactivity", "checkPermissionsLogic");
-
-		Log.i("sessionActivity", "prePromptActive: " + prePromptActive);
-		Log.i("sessionActivity", "postPromptActive: " + postPromptActive);
-		Log.i("sessionActivity", "thisResumeCausedByFalseActivityReturn: " + thisResumeCausedByFalseActivityReturn);
-		Log.i("sessionActivity", "aboutToResetFalseActivityReturn: " + aboutToResetFalseActivityReturn);
+		// Log.i("sessionactivity", "checkPermissionsLogic");
+		// Log.i("sessionActivity", "prePromptActive: " + prePromptActive);
+		// Log.i("sessionActivity", "postPromptActive: " + postPromptActive);
+		// Log.i("sessionActivity", "thisResumeCausedByFalseActivityReturn: " + thisResumeCausedByFalseActivityReturn);
+		// Log.i("sessionActivity", "aboutToResetFalseActivityReturn: " + aboutToResetFalseActivityReturn);
 		
 		if (aboutToResetFalseActivityReturn) {
 			aboutToResetFalseActivityReturn = false;
@@ -163,7 +162,7 @@ public class SessionActivity extends RunningBackgroundServiceActivity {
 		if ( !thisResumeCausedByFalseActivityReturn ) {
 			String permission = PermissionHandler.getNextPermission( getApplicationContext(), this.isAudioRecorderActivity() );
 			if (permission == null) { return; }
-			Log.d("sessionActivity", "shouldShowRequestPermissionRationale "+ permission +": " + shouldShowRequestPermissionRationale( permission ) );
+			// Log.d("sessionActivity", "shouldShowRequestPermissionRationale "+ permission +": " + shouldShowRequestPermissionRationale( permission ) );
 			if (shouldShowRequestPermissionRationale( permission ) ) {
 				if (!prePromptActive && !postPromptActive ) { showBumpingPermissionAlert(this, PermissionHandler.getBumpingPermissionMessage(permission),
 																							permission, PermissionHandler.permissionMap.get(permission) ); } 
@@ -176,7 +175,7 @@ public class SessionActivity extends RunningBackgroundServiceActivity {
 	/* Message Popping */
 	
 	public static void showRegularPermissionAlert(final Activity activity, final String message, final String permission, final Integer permissionCallback) {
-		Log.i("sessionActivity", "showPreAlert");
+		// Log.i("sessionActivity", "showPreAlert");
 		if (prePromptActive) { return; }
 		prePromptActive = true;
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
@@ -191,7 +190,7 @@ public class SessionActivity extends RunningBackgroundServiceActivity {
 	}
 	
 	public static void showBumpingPermissionAlert(final SessionActivity activity, final String message, final String permission, final Integer permissionCallback) {
-		Log.i("sessionActivity", "showPostAlert");
+		// Log.i("sessionActivity", "showPostAlert");
 		if (postPromptActive) { return; }
 		postPromptActive = true;
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
