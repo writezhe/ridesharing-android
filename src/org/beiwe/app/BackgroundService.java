@@ -126,7 +126,7 @@ public class BackgroundService extends Service {
 			if (PersistentData.getBluetoothEnabled()) {
 				TextFileManager.getDebugLogFile().writeEncrypted("Device does not support bluetooth LE, bluetooth features disabled.");
 				Log.w("BackgroundService bluetooth init", "Device does not support bluetooth LE, bluetooth features disabled."); }
-			else { Log.d("BackgroundService bluetooth init", "Bluetooth not enabled for study."); }
+			// else { Log.d("BackgroundService bluetooth init", "Bluetooth not enabled for study."); }
 			this.bluetoothListener = null; }
 	}
 	
@@ -187,14 +187,13 @@ public class BackgroundService extends Service {
 	
 	public void startTimers() {
 		Long now = System.currentTimeMillis();
-		Log.d("BackgroundService", "running start timer logic.");
+		Log.i("BackgroundService", "running startTimer logic.");
 		if (PersistentData.getAccelerometerEnabled() && ( //if accelerometer data recording is enabled and 
 				PersistentData.getMostRecentAlarmTime( getString(R.string.turn_accelerometer_on )) < now || //the most recent accelerometer alarm time is in the past, or
 				!timer.alarmIsSet(Timer.accelerometerOnIntent) ) ) { //there is no scheduled accelerometer-on timer 
 			sendBroadcast( Timer.accelerometerOnIntent ); // start accelerometer timers (immediately runs accelerometer recording session).
 			//note: when there is no accelerometer-off timer that means we are in-between scans.  This state is fine, so we don't check for it.
 		}
-		
 		if ( PermissionHandler.confirmGps(appContext) && (  //identical logic to accelerometer-start logic
 				PersistentData.getMostRecentAlarmTime( getString( R.string.turn_gps_on )) < now ||
 				!timer.alarmIsSet(Timer.gpsOnIntent) ) ) {
@@ -325,7 +324,7 @@ public class BackgroundService extends Service {
 			
 			//checks if the action is the id of a survey (expensive), if so pop up the notification for that survey, schedule the next alarm
 			if ( PersistentData.getSurveyIds().contains( broadcastAction ) ) {
-				Log.w("BACKGROUND SERVICE", "trying to start notification: " + broadcastAction);
+//				Log.i("BACKGROUND SERVICE", "new notification: " + broadcastAction);
 				SurveyNotifications.displaySurveyNotification(appContext, broadcastAction);
 				SurveyScheduler.scheduleSurvey(broadcastAction);
 				return; }
