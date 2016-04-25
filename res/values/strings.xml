@@ -14,6 +14,7 @@
 
     <string name="permission_registration_read_sms_alert"> In order to register for a study Beiwe requires access to some this device\'s telephone services. Pleas press \"Allow\" when you see a menu requesting permissions to access SMS. Depending on the details of the study you be allowed to disable this permission in the Beiwe app\'s preferences after registration is complete.</string>
 
+    <string name="power_management_exception_alert"> This permission prompt you are about to see is required to allow Beiwe to execute in the background, it is required.</string>
 
 
     <!-- API URLs -->

@@ -11,11 +11,13 @@ import org.beiwe.app.ui.user.AboutActivityLoggedIn;
 import org.beiwe.app.ui.user.GraphActivity;
 import org.beiwe.app.ui.user.LoginActivity;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
@@ -118,6 +120,7 @@ public class SessionActivity extends RunningBackgroundServiceActivity {
 	
 	private static Boolean prePromptActive = false;
 	private static Boolean postPromptActive = false;
+	private static Boolean powerPromptActive = false; 
 	private static Boolean thisResumeCausedByFalseActivityReturn = false;
 	private static Boolean aboutToResetFalseActivityReturn = false;
 	private static Boolean activityNotVisible = false;
@@ -129,6 +132,15 @@ public class SessionActivity extends RunningBackgroundServiceActivity {
         myAppSettings.addCategory(Intent.CATEGORY_DEFAULT);
         myAppSettings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivityForResult(myAppSettings, permissionIdentifier);
+    }
+	
+	@TargetApi(23)
+	private void goToPowerSettings(Integer powerCallbackIdentifier) {
+		// Log.i("sessionActivity", "goToSettings");
+        Intent powerSettings = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:" + getPackageName()));
+        powerSettings.addCategory(Intent.CATEGORY_DEFAULT);
+        powerSettings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivityForResult(powerSettings, powerCallbackIdentifier);
     }
 	
 	@Override
@@ -144,7 +156,7 @@ public class SessionActivity extends RunningBackgroundServiceActivity {
 	}
 	
 	protected void checkPermissionsLogic() {
-		//gets called as part of onResume
+		//gets called as part of onResume,
 		//TODO: someone leaves and comes back, but alerts were open.
 		activityNotVisible = false;
 		// Log.i("sessionactivity", "checkPermissionsLogic");
@@ -162,13 +174,20 @@ public class SessionActivity extends RunningBackgroundServiceActivity {
 		if ( !thisResumeCausedByFalseActivityReturn ) {
 			String permission = PermissionHandler.getNextPermission( getApplicationContext(), this.isAudioRecorderActivity() );
 			if (permission == null) { return; }
-			// Log.d("sessionActivity", "shouldShowRequestPermissionRationale "+ permission +": " + shouldShowRequestPermissionRationale( permission ) );
-			if (shouldShowRequestPermissionRationale( permission ) ) {
-				if (!prePromptActive && !postPromptActive ) { showBumpingPermissionAlert(this, PermissionHandler.getBumpingPermissionMessage(permission),
-																							permission, PermissionHandler.permissionMap.get(permission) ); } 
+			
+			if (!prePromptActive && !postPromptActive && !powerPromptActive) {
+				if (permission == PermissionHandler.POWER_EXCEPTION_PERMISSION ) {
+					showPowerManagementAlert(this, getString(R.string.power_management_exception_alert), 1000); 
+					return;
+				}
+				// Log.d("sessionActivity", "shouldShowRequestPermissionRationale "+ permission +": " + shouldShowRequestPermissionRationale( permission ) );
+				if (shouldShowRequestPermissionRationale( permission ) ) {
+					if (!prePromptActive && !postPromptActive ) { showBumpingPermissionAlert(this, PermissionHandler.getBumpingPermissionMessage(permission),
+																								   PermissionHandler.permissionMap.get(permission) ); } 
+				}
+				else if (!prePromptActive && !postPromptActive ) { showRegularPermissionAlert(this, PermissionHandler.getNormalPermissionMessage(permission),
+																						  permission, PermissionHandler.permissionMap.get(permission)); }
 			}
-			else if (!prePromptActive && !postPromptActive ) { showRegularPermissionAlert(this, PermissionHandler.getNormalPermissionMessage(permission),
-																							permission, PermissionHandler.permissionMap.get(permission)); }
 		}
 	}
 	
@@ -189,7 +208,7 @@ public class SessionActivity extends RunningBackgroundServiceActivity {
 		builder.create().show();
 	}
 	
-	public static void showBumpingPermissionAlert(final SessionActivity activity, final String message, final String permission, final Integer permissionCallback) {
+	public static void showBumpingPermissionAlert(final SessionActivity activity, final String message, final Integer permissionCallback) {
 		// Log.i("sessionActivity", "showPostAlert");
 		if (postPromptActive) { return; }
 		postPromptActive = true;
@@ -200,6 +219,23 @@ public class SessionActivity extends RunningBackgroundServiceActivity {
 			thisResumeCausedByFalseActivityReturn = true;
 			activity.goToSettings(permissionCallback);
 			postPromptActive = false;
+		} } );
+		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() { @Override public void onClick(DialogInterface arg0, int arg1) {  } } ); //Okay button
+		builder.create().show();
+	}
+	
+	public static void showPowerManagementAlert(final SessionActivity activity, final String message, final Integer powerCallbackIdentifier) {
+		Log.i("sessionActivity", "power alert");
+		if (powerPromptActive) { return; }
+		powerPromptActive = true;
+		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+		builder.setTitle("Permissions Requirement:");
+		builder.setMessage(message);
+		builder.setOnDismissListener( new DialogInterface.OnDismissListener() { @Override public void onDismiss(DialogInterface dialog) {
+			Log.d("power management alert", "bumping");
+			thisResumeCausedByFalseActivityReturn = true;
+			activity.goToPowerSettings(powerCallbackIdentifier);
+			powerPromptActive = false;
 		} } );
 		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() { @Override public void onClick(DialogInterface arg0, int arg1) {  } } ); //Okay button
 		builder.create().show();

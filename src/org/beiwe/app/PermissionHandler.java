@@ -9,10 +9,13 @@ import org.beiwe.app.storage.PersistentData;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.PowerManager;
+import android.util.Log;
 
 public class PermissionHandler {
 	public static final int PERMISSION_GRANTED = PackageManager.PERMISSION_GRANTED;
 	public static int PERMISSION_DENIED = PackageManager.PERMISSION_DENIED;
+	public static String POWER_EXCEPTION_PERMISSION = "POWER_EXCEPTION_PERMISSION";
 	
 	public static Map <String, Integer> permissionMap = new HashMap <String, Integer> ();	  
 	static {permissionMap.put( Manifest.permission.ACCESS_FINE_LOCATION, 1 );
@@ -123,6 +126,13 @@ public class PermissionHandler {
 			if ( !checkReceiveSms(context)) return Manifest.permission.RECEIVE_SMS; }
 		if (includeRecording) {
 			if ( !checkRecordAudio(context)) { return Manifest.permission.RECORD_AUDIO; } }
+		
+		if ( android.os.Build.VERSION.SDK_INT >= 23 ) {
+			PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+			if (! pm.isIgnoringBatteryOptimizations(context.getPackageName()) ) {
+				return POWER_EXCEPTION_PERMISSION;
+			}
+		}
 		return null;
 	}
 }
