@@ -250,11 +250,12 @@ public class BackgroundService extends Service {
 	 * Note: every condition has a return statement at the end; this is because the trigger survey notification
 	 * action requires a fairly expensive dive into PersistantData JSON unpacking.*/ 
 	private BroadcastReceiver timerReceiver = new BroadcastReceiver() {
-		@Override public void onReceive(Context appContext, Intent intent) {
+//		@Override public synchronized void onReceive(Context appContext, Intent intent) {
+		@Override public void onReceive(Context appContext, Intent intent) { //TODO: investigate utility of syncronized on onReceive 
 			Log.d("BackgroundService - timers", "Received broadcast: " + intent.toString() );
 			TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis() + " Received Broadcast: " + intent.toString() );
 			String broadcastAction = intent.getAction();
-			
+
 			/** Disable active sensor */
 			if (broadcastAction.equals( appContext.getString(R.string.turn_accelerometer_off) ) ) {
 				accelerometerListener.turn_off();
@@ -265,18 +266,18 @@ public class BackgroundService extends Service {
 			
 			/** Enable active sensors, reset timers. */
 			if (broadcastAction.equals( appContext.getString(R.string.turn_accelerometer_on) ) ) { //accelerometer
-				if ( !PersistentData.getAccelerometerEnabled() ) { Log.e("BackgroundService Listener", "invalid Accelerometer on received"); return; }
+				if ( !PersistentData.getAccelerometerEnabled() ) { Log.e( "BackgroundService Listener", "invalid Accelerometer on received"); return; }
 				accelerometerListener.turn_on();
 				//start both the sensor-off-action timer, and the next sensor-on-timer.
-				timer.setupExactSingleAlarm(PersistentData.getAccelerometerOnDurationMilliseconds(), Timer.accelerometerOffIntent);
+				timer.setOffAlarm(PersistentData.getAccelerometerOnDurationMilliseconds(), Timer.accelerometerOffIntent);
 				long alarmTime = timer.setupExactSingleAlarm(PersistentData.getAccelerometerOffDurationMilliseconds() + PersistentData.getAccelerometerOnDurationMilliseconds(), Timer.accelerometerOnIntent);
-				//record the system time that the next alarm is supposed to go off at, so that we can recover in the event of a reboot or crash. 
+				//record the system time that the next alarm is supposed to go off at, so that we can recover in the event of a reboot or crash.
 				PersistentData.setMostRecentAlarmTime(getString(R.string.turn_accelerometer_on), alarmTime );
 				return; }
 			if (broadcastAction.equals( appContext.getString(R.string.turn_gps_on) ) ) { //GPS (identical logic to accelerometer above)
 				if ( !PersistentData.getGpsEnabled() ) { Log.e("BackgroundService Listener", "invalid GPS on received"); return; }
 				gpsListener.turn_on();
-				timer.setupExactSingleAlarm(PersistentData.getGpsOnDurationMilliseconds(), Timer.gpsOffIntent);
+				timer.setOffAlarm(PersistentData.getGpsOnDurationMilliseconds(), Timer.gpsOffIntent);
 				long alarmTime = timer.setupExactSingleAlarm(PersistentData.getGpsOnDurationMilliseconds() + PersistentData.getGpsOffDurationMilliseconds(), Timer.gpsOnIntent);
 				PersistentData.setMostRecentAlarmTime(getString(R.string.turn_gps_on), alarmTime );
 				return; }
@@ -297,7 +298,7 @@ public class BackgroundService extends Service {
 			if (broadcastAction.equals( appContext.getString(R.string.turn_bluetooth_off) ) ) {
 				if ( bluetoothListener != null) bluetoothListener.disableBLEScan();
 				timer.setupExactSingleAbsoluteTimeAlarm(PersistentData.getBluetoothTotalDurationMilliseconds(), PersistentData.getBluetoothGlobalOffsetMilliseconds(), Timer.bluetoothOnIntent);
-				return; }			
+				return; }
 			
 			//starts a data upload attempt.
 			if (broadcastAction.equals( appContext.getString(R.string.upload_data_files_intent) ) ) {

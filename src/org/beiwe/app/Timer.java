@@ -90,12 +90,36 @@ public class Timer {
 	 * ############################ The Various Types of Alarms Creation #############################
 	 * #############################################################################################*/
 	
+	/** Use this function to call any stop/off timer events.
+	 * In Android 6 we need to guarantee the devices turn off even if the device enters Doze (sleep) mode during a
+	 * data stream scan or record session.
+	 * @return a long of the system time in milliseconds that the alarm was set for.*/
+	public Long setOffAlarm(Long milliseconds, Intent intentToBeBroadcast) {
+		if ( android.os.Build.VERSION.SDK_INT >= 23 ) {
+			Log.d("timers", "android 6 alarm");
+			return setAndroid6WakingAlarm(milliseconds, intentToBeBroadcast); }
+		else {
+			Log.d("timers", "android not 6 alarm");
+			return setupExactSingleAlarm(milliseconds, intentToBeBroadcast); }
+	}
+	
 	/** Single exact alarm for an event that happens once.
 	 * @return a long of the system time in milliseconds that the alarm was set for. */
 	public Long setupExactSingleAlarm(Long milliseconds, Intent intentToBeBroadcast) {
 		Long triggerTime = System.currentTimeMillis() + milliseconds;
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
-		setExactAlarm(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
+		setExactAlarm(triggerTime, pendingIntent);
+		return triggerTime;
+	}
+	
+	/** Identical to setupExactSingleAlarm, only for use under Android 6.
+	 * Android 6 has a new alarm type, and other alarm types will NO LONGER WAKE UP THE DEVICE IF IT IS ASLEEP.
+	 * @return a long of the system time in milliseconds that the alarm was set for. */
+	private Long setAndroid6WakingAlarm(Long milliseconds, Intent intentToBeBroadcast){
+		Log.i("timer", "doing an android 6 alarm.");
+		Long triggerTime = System.currentTimeMillis() + milliseconds;
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
+		alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, triggerTime, pendingIntent);
 		return triggerTime;
 	}
 	
@@ -108,8 +132,10 @@ public class Timer {
 		// current unix time (mod) 3,600,000 milliseconds = the next hour-boundry, to which we add the EXACT_REPEAT_TIMER_OFFSET.
 		Long nextTriggerTime = currentTime - ( currentTime % period ) + startTimeInPeriod;
 		if (nextTriggerTime < currentTime) { nextTriggerTime += period; }
-		PendingIntent pendingTimerIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
-		setExactAlarm(AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingTimerIntent);
+		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
+		if ( android.os.Build.VERSION.SDK_INT >= 23 ){ //"absolute" alarms should go off exactly when we want them to go off, for Android 6+ this means use the new type of alarm.
+			alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingIntent); }
+		else { setExactAlarm(nextTriggerTime, pendingIntent); }
 	}
 	
 	public void startSurveyAlarm(String surveyId, Calendar alarmTime){
@@ -124,36 +150,24 @@ public class Timer {
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
 		long nextTriggerTime = alarmTime.getTimeInMillis();
 //		triggerAtMillis = System.currentTimeMillis() + 15000; //hax, debug code.
-		long timeTillFire = nextTriggerTime - System.currentTimeMillis();
+//		long timeTillFire = nextTriggerTime - System.currentTimeMillis();
 		// Log.i("Timer.java", "next alarm triggers in = " + timeTillFire / 1000 + " seconds.");
-		setExactAlarm(AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingIntent);
+		setExactAlarm(nextTriggerTime, pendingIntent);
 		PersistentData.setMostRecentSurveyAlarmTime(surveyId, nextTriggerTime);
 	}
-	
 	
 	/* ##################################################################################
 	 * ############################ Other Utility Functions #############################
 	 * ################################################################################*/	
 	
-	/** In API 19 and above, alarms are inexact (to save power).  In API 18 and
-	 *  below, alarms are exact.
-	 *  This function checks the phone's operating system's API version and
-	 *  returns TRUE if alarms are exact in this version (i.e., if it's API 18
-	 *  or below), and returns FALSE if alarms are inexact.  */
-	public static Boolean alarmsAreExactInThisApiVersion() {
-		int currentApiVersion = android.os.Build.VERSION.SDK_INT;
-		if (currentApiVersion < android.os.Build.VERSION_CODES.KITKAT) {
-			return true; }
-		else { return false; }
-	}
-	
 	/** Calls AlarmManager.set() for API < 19, and AlarmManager.setExact() for API 19+
 	 * For an exact alarm, it seems you need to use .set() for API 18 and below, and
 	 * .setExact() for API 19 (KitKat) and above. */
-	private void setExactAlarm(int type, long triggerAtMillis, PendingIntent operation) {
-		if (alarmsAreExactInThisApiVersion()) {			
-			alarmManager.set(type, triggerAtMillis, operation); }
-		else { alarmManager.setExact(type, triggerAtMillis, operation); }
+	private void setExactAlarm(long triggerAtMillis, PendingIntent operation) {
+		if ( android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.KITKAT ) {			
+			alarmManager.set(AlarmManager.RTC_WAKEUP, triggerAtMillis, operation); }
+		else { alarmManager.setExact(AlarmManager.RTC_WAKEUP, triggerAtMillis, operation); }
+		//TODO: for Android 7 (Android N, sdk version 24 [probably? this has gotten weird.]) check for and do exact while idle alarms.
 	}
 	
 	/**Cancels an alarm, does not return any info about whether the alarm existed.
