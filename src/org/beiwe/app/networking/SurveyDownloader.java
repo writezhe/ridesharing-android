@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.beiwe.app.BackgroundService;
+import org.beiwe.app.CrashHandler;
 import org.beiwe.app.JSONUtils;
 import org.beiwe.app.R;
 import org.beiwe.app.storage.PersistentData;
@@ -28,7 +29,7 @@ public class SurveyDownloader {
 		protected Void doInBackground(Void... arg0) {
 			String parameters = "";
 			try { responseString = PostRequest.httpRequestString( parameters, url); }
-			catch (NullPointerException e) {  }
+			catch (NullPointerException e) {  }  //We do not care.
 			return null; //hate
 		}
 		@Override
@@ -46,7 +47,9 @@ public class SurveyDownloader {
 		
 		List<String> surveys;
 		try { surveys = JSONUtils.jsonArrayToStringList( new JSONArray(jsonString) );}
-		catch (JSONException e) { Log.e("Survey Downloader", "JSON PARSING FAIL FAIL FAIL"); return -1; }
+		catch (JSONException e) {
+			CrashHandler.writeCrashlog(e, appContext);
+			Log.e("Survey Downloader", "JSON PARSING FAIL FAIL FAIL"); return -1; }
 		
 		JSONObject surveyJSON;
 		List<String> oldSurveyIds = PersistentData.getSurveyIds();
@@ -59,27 +62,39 @@ public class SurveyDownloader {
 		
 		for (String surveyString : surveys){
 			try { surveyJSON = new JSONObject(surveyString); }
-			catch (JSONException e) { Log.e("Survey Downloader", "JSON fail 1"); return -1; }
+			catch (JSONException e) { 
+				CrashHandler.writeCrashlog(e, appContext);
+				Log.e("Survey Downloader", "JSON fail 1"); return -1; }
 //			Log.d("debugging survey update", "whole thing: " + surveyJSON.toString());
 			
 			try { surveyId = surveyJSON.getString("_id"); }
-			catch (JSONException e) { Log.e("Survey Downloader", "JSON fail 2"); return -1; }
+			catch (JSONException e) {
+				CrashHandler.writeCrashlog(e, appContext);
+				Log.e("Survey Downloader", "JSON fail 2"); return -1; }
 //			Log.d("debugging survey update", "id: " + surveyId.toString());
 			
 			try { surveyType = surveyJSON.getString("survey_type"); }
-			catch (JSONException e) { Log.e("Survey Downloader", "JSON fail 2.5"); return -1; }
+			catch (JSONException e) {
+				CrashHandler.writeCrashlog(e, appContext);
+				Log.e("Survey Downloader", "JSON fail 2.5"); return -1; }
 //			Log.d("debugging survey update", "type: " + surveyType.toString());
 			
 			try { jsonQuestionsString = surveyJSON.getString("content"); }
-			catch (JSONException e) { Log.e("Survey Downloader", "JSON fail 3"); return -1; }
+			catch (JSONException e) {
+				CrashHandler.writeCrashlog(e, appContext);
+				Log.e("Survey Downloader", "JSON fail 3"); return -1; }
 //			Log.d("debugging survey update", "questions: " + jsonQuestionsString);
 			
 			try { jsonTimingsString = surveyJSON.getString("timings"); }
-			catch (JSONException e) { Log.e("Survey Downloader", "JSON fail 4"); return -1; }
+			catch (JSONException e) { 
+				CrashHandler.writeCrashlog(e, appContext);
+				Log.e("Survey Downloader", "JSON fail 4"); return -1; }
 //			Log.d("debugging survey update", "timings: " + jsonTimingsString);
 			
 			try { jsonSettingsString = surveyJSON.getString("settings"); }
-			catch (JSONException e) { Log.e("Survey Downloader", "JSON settings not present"); return -1; }
+			catch (JSONException e) {
+				CrashHandler.writeCrashlog(e, appContext);
+				Log.e("Survey Downloader", "JSON settings not present"); return -1; }
 //			Log.d("debugging survey update", "settings: " + jsonSettingsString);
 			
 			if ( oldSurveyIds.contains(surveyId) ) { //if surveyId already exists, check for changes, add to list of new survey ids.
