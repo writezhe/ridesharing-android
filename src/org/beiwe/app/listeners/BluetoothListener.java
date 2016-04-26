@@ -92,7 +92,7 @@ public class BluetoothListener extends BroadcastReceiver {
 		if (!bluetoothExists) { return false; }
 		// Log.d("BluetoothListener", "disable bluetooth.");
 		internalBluetoothState = false;
-		//TODO: Eli. this check was incorrect for 13 months, however bonded devices are not the same as connected devices.
+		//this check was incorrect for 13 months, however bonded devices are not the same as connected devices.
 		//This check was never relevent before (nobody ever noticed), so now we are just removing the check entirely.
 		//If we want to implement more bluetooth safety checks, see http://stackoverflow.com/questions/3932228/list-connected-bluetooth-devices 
 //		if ( bluetoothAdapter.getBondedDevices().isEmpty() ) {

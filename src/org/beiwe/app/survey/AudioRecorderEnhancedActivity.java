@@ -83,7 +83,7 @@ public class AudioRecorderEnhancedActivity extends AudioRecorderCommon{
 			@Override public void run() { writeAudioDataToFile(); }
 		}, "AudioRecorder Thread");
 		recordingThread.start();
-		startRecordingTimeout();  //TODO: test recording timeout with enhanced recording...
+		startRecordingTimeout();  //FIXME: test recording timeout with enhanced recording...
     }
     
     /** Stop recording, and reset the button to "record" */
@@ -97,7 +97,7 @@ public class AudioRecorderEnhancedActivity extends AudioRecorderCommon{
     		recorder = null;
     		recordingThread = null;
     	}
-    	//TODO: is it too much of a hassle to stick these on a separate thread?
+    	//TODO: consider this - is it too much of a hassle to stick these on a separate thread?  These files will get big if they are wav recordings, causing bad UE.
     	//We need to do this because the the RAW file is not formatted correctly for playback
     	AudioFileManager.copyToWaveFile( unencryptedRawAudioFilePath, unencryptedTempAudioFilePath,                     
                      					 SAMPLE_RATE, BIT_DEPTH, BUFFER_SIZE );

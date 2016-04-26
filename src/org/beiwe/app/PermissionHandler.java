@@ -95,14 +95,12 @@ public class PermissionHandler {
 	public static boolean checkGpsPermissions( Context context ) { return ( checkAccessFineLocation(context) ); }
 	public static boolean checkCallsPermissions( Context context ) { return ( checkReadPhoneState(context) && checkCallPhone(context) && checkReadCallLog(context) ); }
 	public static boolean checkTextsPermissions( Context context ) { return ( checkReadContacts(context) && checkReadSms(context) && checkReceiveMms(context) && checkReceiveSms(context) ); }
-	 //TODO: confirm these are both needed for wifi...
 	public static boolean checkWifiPermissions( Context context ) { return ( checkAccessWifiState(context) && checkAccessNetworkState(context) ); }
 	public static boolean checkBluetoothPermissions( Context context ) { return ( checkBluetooth(context) && checkBluetoothAdmin(context)); }
 
 	public static boolean confirmGps( Context context ) { return ( PersistentData.getGpsEnabled() && checkGpsPermissions(context) ); }
 	public static boolean confirmCalls( Context context ) { return ( PersistentData.getCallsEnabled() && checkCallsPermissions(context) ); }
 	public static boolean confirmTexts( Context context ) { return ( PersistentData.getTextsEnabled() && checkTextsPermissions(context) ); }
-	 //TODO: confirm these are both needed for wifi...
 	public static boolean confirmWifi( Context context ) { return ( PersistentData.getWifiEnabled() && checkWifiPermissions(context) ); }
 	public static boolean confirmBluetooth( Context context ) { return ( PersistentData.getBluetoothEnabled() && checkBluetoothPermissions(context)); }
 	

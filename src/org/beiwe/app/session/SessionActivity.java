@@ -157,7 +157,6 @@ public class SessionActivity extends RunningBackgroundServiceActivity {
 	
 	protected void checkPermissionsLogic() {
 		//gets called as part of onResume,
-		//TODO: someone leaves and comes back, but alerts were open.
 		activityNotVisible = false;
 		// Log.i("sessionactivity", "checkPermissionsLogic");
 		// Log.i("sessionActivity", "prePromptActive: " + prePromptActive);

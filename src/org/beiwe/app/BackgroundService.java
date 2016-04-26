@@ -67,34 +67,15 @@ public class BackgroundService extends Service {
 	public void doSetup() {
 		if ( PersistentData.getAccelerometerEnabled() ) { accelerometerListener = new AccelerometerListener( appContext ); }
 		if ( PermissionHandler.confirmBluetooth(appContext)) { startBluetooth(); }
-//		if ( PermissionHandler.confirmPowerState(appContext) ) { startPowerStateListener(); }
 		startPowerStateListener();
 		if ( PermissionHandler.confirmWifi(appContext) ) { WifiListener.initialize( appContext ); }
 		if ( PermissionHandler.confirmGps(appContext)) { gpsListener = new GPSListener(appContext); }
-		
+		//Only do the following if the device is registered
 		if ( PersistentData.isRegistered() ) {
-			//		if ( android.os.Build.VERSION.SDK_INT >= 23) {
-			//			Log.i("ANDROID 6 CODE PATH", "CHECKING THINGS");
-			//			if (PermissionHandler.checkReadSms(appContext) ) {
-			//				Log.i("ANDROID 6", "MORE STUFF");
-			//				DeviceInfo.initialize( getApplicationContext() );
-			//			}
-			//		} else {
-			//			Log.i("ANDROID NOT-6 CODE PATH", "NOT CHECKING THINGS");
-			//			//TODO: device info is required for registration, this means it needs to be ensured on the registration screen.
-			//			DeviceInfo.initialize( getApplicationContext() );
-			//		}
-			
 			DeviceInfo.initialize( appContext );
-			
-			if ( PermissionHandler.confirmTexts(appContext) ) {
-				startSmsSentLogger();
-				startMmsSentLogger();
-			}
-			
+			if ( PermissionHandler.confirmTexts(appContext) ) { startSmsSentLogger(); startMmsSentLogger(); }
 			if ( PermissionHandler.confirmCalls(appContext) ) { startCallLogger(); }
-			
-			//If this device is registered, start timers!
+			//and finally...
 			startTimers();
 		}
 	}
@@ -380,7 +361,6 @@ public class BackgroundService extends Service {
 		//how does this even...  Whatever, 10 seconds later the background service will start.
 		Intent restartServiceIntent = new Intent( getApplicationContext(), this.getClass() );
 	    restartServiceIntent.setPackage( getPackageName() );
-	    // TODO: Research. Eli/Josh. We may want to change PendingIntent.FLAG_ONE_SHOT to FLAG_CANCEL_CURRENT, research the benefits, this might be a pain to test...
 	    PendingIntent restartServicePendingIntent = PendingIntent.getService( getApplicationContext(), 1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT );
 	    AlarmManager alarmService = (AlarmManager) getApplicationContext().getSystemService( Context.ALARM_SERVICE );
 	    alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 500, restartServicePendingIntent);

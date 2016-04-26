@@ -30,7 +30,7 @@ public class SurveyNotifications {
 		notificationBuilder.setContentTitle( appContext.getString(R.string.app_name) );
 		if ( PersistentData.getSurveyType(surveyId).equals("tracking_survey" ) ) {
 			activityIntent = new Intent(appContext, SurveyActivity.class);
-			activityIntent.setAction("org.beiwe.app.start_android_survey"); //TODO: put in strings
+			activityIntent.setAction("org.beiwe.app.start_android_survey"); //TODO: stick in strings
 			notificationBuilder.setTicker( appContext.getResources().getString(R.string.new_android_survey_notification_ticker) );
 			notificationBuilder.setContentText( appContext.getResources().getString(R.string.new_android_survey_notification_details) );
 			notificationBuilder.setSmallIcon(R.drawable.survey_icon);
@@ -38,16 +38,15 @@ public class SurveyNotifications {
 		}
 		else if ( PersistentData.getSurveyType(surveyId).equals("audio_survey" ) ) {
 			activityIntent = new Intent( appContext, AudioRecorderActivity.class);
-//			activityIntent = new Intent( appContext, AudioRecorderEnhancedActivity.class);
-			activityIntent.setAction("org.beiwe.app.start_audio_survey");  //TODO: put in strings
+			activityIntent.setAction("org.beiwe.app.start_audio_survey");  //TODO: stick in strings
 			notificationBuilder.setTicker( appContext.getResources().getString(R.string.new_audio_survey_notification_ticker) );
 			notificationBuilder.setContentText( appContext.getResources().getString(R.string.new_audio_survey_notification_details) );
 			notificationBuilder.setSmallIcon( R.drawable.voice_recording_icon );
 			notificationBuilder.setLargeIcon( BitmapFactory.decodeResource(appContext.getResources(), R.drawable.voice_recording_icon) );
 		}
-		else if ( PersistentData.getSurveyType(surveyId).equals("enhanced_audio_survey" ) ) {
+		else if ( PersistentData.getSurveyType(surveyId).equals("enhanced_audio_survey" ) ) { //TODO: actually finish enhanced audio.
 			activityIntent = new Intent( appContext, AudioRecorderEnhancedActivity.class);
-			activityIntent.setAction("org.beiwe.app.start_audio_survey");  //TODO: put in strings
+			activityIntent.setAction("org.beiwe.app.start_audio_survey");  //TODO: stick in strings
 			notificationBuilder.setTicker( appContext.getResources().getString(R.string.new_audio_survey_notification_ticker) );
 			notificationBuilder.setContentText( appContext.getResources().getString(R.string.new_audio_survey_notification_details) );
 			notificationBuilder.setSmallIcon( R.drawable.voice_recording_icon );

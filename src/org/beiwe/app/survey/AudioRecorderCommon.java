@@ -97,6 +97,8 @@ public class AudioRecorderCommon extends SessionActivity {
 			/* Delete the temporary, unencrypted audio file so that nobody can play it back after
 	         * the user leaves this screen */
 			if (finishedEncrypting) { AudioFileManager.delete(unencryptedTempAudioFileName); }
+			String toastMsg = PersistentData.getSurveySubmitSuccessToastText();
+			Toast.makeText(getApplicationContext(), toastMsg, Toast.LENGTH_LONG).show();
 		}
 	// case !isfinishing: The activity is probably just getting restarted because the screen rotated
 	}
@@ -129,7 +131,6 @@ public class AudioRecorderCommon extends SessionActivity {
 			if (isFinishing()) { TextFileManager.delete(unencryptedTempAudioFileName); }
 			recordingButton.setClickable(true);
 		}
-		//TODO: make this pop the same toast as a regular survey.
     }	
     
     /*#########################################################
@@ -179,7 +180,7 @@ public class AudioRecorderCommon extends SessionActivity {
     	else { stopRecording(); }
     }
     
-    //FIXME: ensure you override and run super
+    //Ensure you override, need subclass's private variables, Java references the parent class if the function is not overridden would have to use an interface(?) for ensuring functionality.
     protected void startRecording() {
     	currentlyRecording = true;
     	finishedEncrypting = false;
@@ -187,7 +188,8 @@ public class AudioRecorderCommon extends SessionActivity {
     	recordingButton.setText( getApplicationContext().getString(R.string.record_button_stop_text) );
     	recordingButton.setCompoundDrawablesWithIntrinsicBounds( 0, R.drawable.stop_recording_button, 0, 0 );
     }
-    //FIXME: ensure you override and run super
+    
+    //Ensure you override, need subclass's private variables, Java references the parent class if the function is not overridden would have to use an interface(?) for ensuring functionality.
     public void stopRecording(){
     	displayPlaybackButton = true;
     	setPlayButtonVisibility();
@@ -203,7 +205,7 @@ public class AudioRecorderCommon extends SessionActivity {
     	else { stopPlaying(); }  	
     }
     
-    //FIXME: Ensure you override
+    //Ensure you override, need subclass's private variables, Java references the parent class if the function is not overridden would have to use an interface(?) for ensuring functionality.
     /** Stops playing back the recording, and reset the button to "play" */
     protected void stopPlaying() {
     	currentlyPlaying = false;
@@ -216,7 +218,7 @@ public class AudioRecorderCommon extends SessionActivity {
     	mediaPlayer = null;
     }
     
-    //FIXME: Ensure you override, need subclass's 
+    //Ensure you override, need subclass's private variables, Java references the parent class if the function is not overridden would have to use an interface(?) for ensuring functionality. 
     /** Starts playing back the recording */
     protected void startPlaying() {
     	currentlyPlaying = true;
