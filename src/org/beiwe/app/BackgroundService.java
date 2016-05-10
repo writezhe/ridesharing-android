@@ -69,7 +69,7 @@ public class BackgroundService extends Service {
 		if ( PermissionHandler.confirmBluetooth(appContext)) { startBluetooth(); }
 		startPowerStateListener();
 		if ( PermissionHandler.confirmWifi(appContext) ) { WifiListener.initialize( appContext ); }
-		if ( PermissionHandler.confirmGps(appContext)) { gpsListener = new GPSListener(appContext); }
+		if ( PermissionHandler.confirmGps(appContext)) { gpsListener = new GPSListener(appContext); } //FIXME: investigate behavior if GPS is not enabled in time to start at time of consent button...
 		//Only do the following if the device is registered
 		if ( PersistentData.isRegistered() ) {
 			DeviceInfo.initialize( appContext );
