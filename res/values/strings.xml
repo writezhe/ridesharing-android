@@ -128,6 +128,10 @@
     <string name="new_audio_survey_notification_ticker">New voice recording</string>
     <string name="new_audio_survey_notification_details">Please make a voice recording.</string>
 
+    <!-- Notification Action Pointers -->
+    <string name="start_tracking_survey"> org.beiwe.app.start_android_survey </string>
+    <string name="start_audio_survey"> org.beiwe.app.start_audio_survey </string>
+
     <!-- Timer Action Strings -->
     <string name="turn_accelerometer_off">Accelerometer OFF</string>
     <string name="turn_accelerometer_on">Accelerometer On</string>
@@ -152,7 +156,6 @@
     <!-- About Page -->
     <string name="title_activity_about">About Beiwe</string>
     <string name="default_about_page_text">Beiwe is an application that runs on your cell phone and helps researchers collect information about your health and behaviors. It asks you to fill out short surveys, and to make a recording of your voice, once a day. Beiwe continuously collects information about your location (using your phone\'s GPS) and how much you move around (using your phone\'s accelerometer). It also monitors how much you use your phone for calling and texting, and it keeps track of the different people you communicate with. Importantly, Beiwe does not record the names or phone numbers of anyone you communicate with. While it can tell if you call the same person more than once, it does not know who that person is. Beiwe does not record the content of your text messages or phone calls. It also keeps track of the different Wi-Fi networks in your area, but the names of those networks are replaced with random codes. Finally, Beiwe can tell if you are near another phone that is also running this application.\n\nAlthough Beiwe collects a large amount of data, all of this data is processed to protect your privacy. This means that the application does not know your name, your phone number, or anything else that could identify you. Beiwe only knows you by an identification number. Because Beiwe does not know who you are, it cannot communicate with your clinician if you are ill or in danger. Researchers will not review the data Beiwe collects until the end of the study. To make it easier for you to connect with your clinician, the \"Call my Clinician\" button appears at the top of every page. In order for the button to work, you must enter your clinician\'s phone number into Beiwe. You can change it as often as needed.\n\nBeiwe was conceived and designed by Dr. Jukka-Pekka \"JP\" Onnela at the Harvard School of Public Health. The research study in which you are enrolled is run by Dr. Roy Perlis at Massachusetts General Hospital. The software was built by Zagaran, Inc., in Cambridge, Massachusetts.</string>
-    <string name="send_recording_notification">Send Recording Notification</string>
 
     <!-- Phone Numbers -->
     <string name="phone_number_length_error"> "Phone numbers must be exactly %d digits long." </string>
