@@ -10,7 +10,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.PowerManager;
-import android.util.Log;
 
 public class PermissionHandler {
 	public static final int PERMISSION_GRANTED = PackageManager.PERMISSION_GRANTED;
@@ -79,24 +78,22 @@ public class PermissionHandler {
 	public static Boolean checkAccessFineLocation(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PERMISSION_GRANTED; } else { return true; } }
 	public static Boolean checkAccessNetworkState(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.ACCESS_NETWORK_STATE) == PERMISSION_GRANTED; } else { return true; } }
 	public static Boolean checkAccessWifiState(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.ACCESS_WIFI_STATE) == PERMISSION_GRANTED; } else { return true; } }
-	public static Boolean checkBluetooth(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.BLUETOOTH) == PERMISSION_GRANTED; } else { return true; } }
-	public static Boolean checkBluetoothAdmin(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.BLUETOOTH_ADMIN) == PERMISSION_GRANTED; } else { return true; } }
-	public static Boolean checkCallPhone(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.CALL_PHONE) == PERMISSION_GRANTED; } else { return true; } }
-	public static Boolean checkInternet(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.INTERNET) == PERMISSION_GRANTED; } else { return true; } }
-	public static Boolean checkReadCallLog(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.READ_CALL_LOG) == PERMISSION_GRANTED; } else { return true; } }
-	public static Boolean checkReadContacts(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.READ_CONTACTS) == PERMISSION_GRANTED; } else { return true; } }
-	public static Boolean checkReadPhoneState(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PERMISSION_GRANTED; } else { return true; } }
-	public static Boolean checkReadSms(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.READ_SMS) == PERMISSION_GRANTED; } else { return true; } }
-	public static Boolean checkReceiveBootCompleted(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.RECEIVE_BOOT_COMPLETED) == PERMISSION_GRANTED; } else { return true; } }
-	public static Boolean checkReceiveMms(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.RECEIVE_MMS) == PERMISSION_GRANTED; } else { return true; } }
-	public static Boolean checkReceiveSms(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PERMISSION_GRANTED; } else { return true; } }
-	public static Boolean checkRecordAudio(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PERMISSION_GRANTED;} else { return true; } }
+	public static Boolean checkAccessBluetooth(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.BLUETOOTH) == PERMISSION_GRANTED; } else { return true; } }
+	public static Boolean checkAccessBluetoothAdmin(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.BLUETOOTH_ADMIN) == PERMISSION_GRANTED; } else { return true; } }
+	public static Boolean checkAccessCallPhone(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.CALL_PHONE) == PERMISSION_GRANTED; } else { return true; } }
+	public static Boolean checkAccessReadCallLog(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.READ_CALL_LOG) == PERMISSION_GRANTED; } else { return true; } }
+	public static Boolean checkAccessReadContacts(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.READ_CONTACTS) == PERMISSION_GRANTED; } else { return true; } }
+	public static Boolean checkAccessReadPhoneState(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PERMISSION_GRANTED; } else { return true; } }
+	public static Boolean checkAccessReadSms(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.READ_SMS) == PERMISSION_GRANTED; } else { return true; } }
+	public static Boolean checkAccessReceiveMms(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.RECEIVE_MMS) == PERMISSION_GRANTED; } else { return true; } }
+	public static Boolean checkAccessReceiveSms(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.RECEIVE_SMS) == PERMISSION_GRANTED; } else { return true; } }
+	public static Boolean checkAccessRecordAudio(Context context) { if ( android.os.Build.VERSION.SDK_INT >= 23) { return context.checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PERMISSION_GRANTED;} else { return true; } }
 	
 	public static boolean checkGpsPermissions( Context context ) { return ( checkAccessFineLocation(context) ); }
-	public static boolean checkCallsPermissions( Context context ) { return ( checkReadPhoneState(context) && checkCallPhone(context) && checkReadCallLog(context) ); }
-	public static boolean checkTextsPermissions( Context context ) { return ( checkReadContacts(context) && checkReadSms(context) && checkReceiveMms(context) && checkReceiveSms(context) ); }
+	public static boolean checkCallsPermissions( Context context ) { return ( checkAccessReadPhoneState(context) && checkAccessCallPhone(context) && checkAccessReadCallLog(context) ); }
+	public static boolean checkTextsPermissions( Context context ) { return ( checkAccessReadContacts(context) && checkAccessReadSms(context) && checkAccessReceiveMms(context) && checkAccessReceiveSms(context) ); }
 	public static boolean checkWifiPermissions( Context context ) { return ( checkAccessWifiState(context) && checkAccessNetworkState(context) ); }
-	public static boolean checkBluetoothPermissions( Context context ) { return ( checkBluetooth(context) && checkBluetoothAdmin(context)); }
+	public static boolean checkBluetoothPermissions( Context context ) { return ( checkAccessBluetooth(context) && checkAccessBluetoothAdmin(context)); }
 
 	public static boolean confirmGps( Context context ) { return ( PersistentData.getGpsEnabled() && checkGpsPermissions(context) ); }
 	public static boolean confirmCalls( Context context ) { return ( PersistentData.getCallsEnabled() && checkCallsPermissions(context) ); }
@@ -111,19 +108,19 @@ public class PermissionHandler {
 			if ( !checkAccessWifiState(context)) return Manifest.permission.ACCESS_WIFI_STATE;
 			if ( !checkAccessNetworkState(context)) return Manifest.permission.ACCESS_NETWORK_STATE;}
 		if (PersistentData.getBluetoothEnabled()) {
-			if ( !checkBluetooth(context)) return Manifest.permission.BLUETOOTH;
-			if ( !checkBluetoothAdmin(context)) return Manifest.permission.BLUETOOTH_ADMIN; }
+			if ( !checkAccessBluetooth(context)) return Manifest.permission.BLUETOOTH;
+			if ( !checkAccessBluetoothAdmin(context)) return Manifest.permission.BLUETOOTH_ADMIN; }
 		if (PersistentData.getCallsEnabled() ) {
-			if ( !checkReadPhoneState(context)) return Manifest.permission.READ_PHONE_STATE;  
-			if ( !checkCallPhone(context)) return Manifest.permission.CALL_PHONE;
-			if ( !checkReadCallLog(context)) return Manifest.permission.READ_CALL_LOG; }
+			if ( !checkAccessReadPhoneState(context)) return Manifest.permission.READ_PHONE_STATE;  
+			if ( !checkAccessCallPhone(context)) return Manifest.permission.CALL_PHONE;
+			if ( !checkAccessReadCallLog(context)) return Manifest.permission.READ_CALL_LOG; }
 		if (PersistentData.getTextsEnabled()) {
-			if ( !checkReadContacts(context)) return Manifest.permission.READ_CONTACTS;  
-			if ( !checkReadSms(context)) return Manifest.permission.READ_SMS;
-			if ( !checkReceiveMms(context)) return Manifest.permission.RECEIVE_MMS;
-			if ( !checkReceiveSms(context)) return Manifest.permission.RECEIVE_SMS; }
+			if ( !checkAccessReadContacts(context)) return Manifest.permission.READ_CONTACTS;  
+			if ( !checkAccessReadSms(context)) return Manifest.permission.READ_SMS;
+			if ( !checkAccessReceiveMms(context)) return Manifest.permission.RECEIVE_MMS;
+			if ( !checkAccessReceiveSms(context)) return Manifest.permission.RECEIVE_SMS; }
 		if (includeRecording) {
-			if ( !checkRecordAudio(context)) { return Manifest.permission.RECORD_AUDIO; } }
+			if ( !checkAccessRecordAudio(context)) { return Manifest.permission.RECORD_AUDIO; } }
 		
 		if ( android.os.Build.VERSION.SDK_INT >= 23 ) {
 			PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);

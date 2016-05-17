@@ -1,6 +1,8 @@
 package org.beiwe.app.ui;
 
 import java.security.spec.InvalidKeySpecException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.beiwe.app.BackgroundService;
@@ -104,22 +106,16 @@ public class DebugInterfaceActivity extends SessionActivity {
 		if (PermissionHandler.checkAccessFineLocation(getApplicationContext())) { Log.i("permissions", "AccessFineLocation enabled."); } else { Log.e("permissions", "AccessFineLocation disabled."); }
 		if (PermissionHandler.checkAccessNetworkState(getApplicationContext())) { Log.i("permissions", "AccessNetworkState enabled."); } else { Log.e("permissions", "AccessNetworkState disabled."); }
 		if (PermissionHandler.checkAccessWifiState(getApplicationContext())) { Log.i("permissions", "AccessWifiState enabled."); } else { Log.e("permissions", "AccessWifiState disabled."); }
-//		if (PermissionHandler.checkBatteryStats(getApplicationContext())) { Log.i("permissions", "BatteryStats enabled."); } else { Log.e("permissions", "BatteryStats disabled."); }
-		if (PermissionHandler.checkBluetooth(getApplicationContext())) { Log.i("permissions", "Bluetooth enabled."); } else { Log.e("permissions", "Bluetooth disabled."); }
-		if (PermissionHandler.checkBluetoothAdmin(getApplicationContext())) { Log.i("permissions", "BluetoothAdmin enabled."); } else { Log.e("permissions", "BluetoothAdmin disabled."); }
-//		if (PermissionHandler.checkBluetoothPrivileged(getApplicationContext())) { Log.i("permissions", "BluetoothPrivileged enabled."); } else { Log.e("permissions", "BluetoothPrivileged disabled."); }
-		if (PermissionHandler.checkCallPhone(getApplicationContext())) { Log.i("permissions", "CallPhone enabled."); } else { Log.e("permissions", "CallPhone disabled."); }
-		if (PermissionHandler.checkInternet(getApplicationContext())) { Log.i("permissions", "Internet enabled."); } else { Log.e("permissions", "Internet disabled."); }
-		if (PermissionHandler.checkReadCallLog(getApplicationContext())) { Log.i("permissions", "ReadCallLog enabled."); } else { Log.e("permissions", "ReadCallLog disabled."); }
-		if (PermissionHandler.checkReadContacts(getApplicationContext())) { Log.i("permissions", "ReadContacts enabled."); } else { Log.e("permissions", "ReadContacts disabled."); }
-		if (PermissionHandler.checkReadPhoneState(getApplicationContext())) { Log.i("permissions", "ReadPhoneState enabled."); } else { Log.e("permissions", "ReadPhoneState disabled."); }
-		if (PermissionHandler.checkReadSms(getApplicationContext())) { Log.i("permissions", "ReadSms enabled."); } else { Log.e("permissions", "ReadSms disabled."); }
-		if (PermissionHandler.checkReceiveBootCompleted(getApplicationContext())) { Log.i("permissions", "ReceiveBootCompleted enabled."); } else { Log.e("permissions", "ReceiveBootCompleted disabled."); }
-		if (PermissionHandler.checkReceiveMms(getApplicationContext())) { Log.i("permissions", "ReceiveMms enabled."); } else { Log.e("permissions", "ReceiveMms disabled."); }
-		if (PermissionHandler.checkReceiveSms(getApplicationContext())) { Log.i("permissions", "ReceiveSms enabled."); } else { Log.e("permissions", "ReceiveSms disabled."); }
-//		if (PermissionHandler.checkWriteExternalStorage(getApplicationContext())) { Log.i("permissions", "WriteExternalStorage enabled."); } else { Log.e("permissions", "WriteExternalStorage disabled."); }
-//		if (PermissionHandler.checkWriteCallLog(getApplicationContext())) { Log.i("permissions", "WriteCallLog enabled."); } else { Log.e("permissions", "WriteCallLog disabled."); }
-		if (PermissionHandler.checkRecordAudio(getApplicationContext())) { Log.i("permissions", "RecordAudio enabled."); } else { Log.e("permissions", "RecordAudio disabled."); }
+		if (PermissionHandler.checkAccessBluetooth(getApplicationContext())) { Log.i("permissions", "Bluetooth enabled."); } else { Log.e("permissions", "Bluetooth disabled."); }
+		if (PermissionHandler.checkAccessBluetoothAdmin(getApplicationContext())) { Log.i("permissions", "BluetoothAdmin enabled."); } else { Log.e("permissions", "BluetoothAdmin disabled."); }
+		if (PermissionHandler.checkAccessCallPhone(getApplicationContext())) { Log.i("permissions", "CallPhone enabled."); } else { Log.e("permissions", "CallPhone disabled."); }
+		if (PermissionHandler.checkAccessReadCallLog(getApplicationContext())) { Log.i("permissions", "ReadCallLog enabled."); } else { Log.e("permissions", "ReadCallLog disabled."); }
+		if (PermissionHandler.checkAccessReadContacts(getApplicationContext())) { Log.i("permissions", "ReadContacts enabled."); } else { Log.e("permissions", "ReadContacts disabled."); }
+		if (PermissionHandler.checkAccessReadPhoneState(getApplicationContext())) { Log.i("permissions", "ReadPhoneState enabled."); } else { Log.e("permissions", "ReadPhoneState disabled."); }
+		if (PermissionHandler.checkAccessReadSms(getApplicationContext())) { Log.i("permissions", "ReadSms enabled."); } else { Log.e("permissions", "ReadSms disabled."); }
+		if (PermissionHandler.checkAccessReceiveMms(getApplicationContext())) { Log.i("permissions", "ReceiveMms enabled."); } else { Log.e("permissions", "ReceiveMms disabled."); }
+		if (PermissionHandler.checkAccessReceiveSms(getApplicationContext())) { Log.i("permissions", "ReceiveSms enabled."); } else { Log.e("permissions", "ReceiveSms disabled."); }
+		if (PermissionHandler.checkAccessRecordAudio(getApplicationContext())) { Log.i("permissions", "RecordAudio enabled."); } else { Log.e("permissions", "RecordAudio disabled."); }
 	}
 	
 	public void clearInternalLog(View view) { TextFileManager.getDebugLogFile().deleteSafely(); }
@@ -136,12 +132,14 @@ public class DebugInterfaceActivity extends SessionActivity {
 	public void makeNewFiles(View view) { TextFileManager.makeNewFilesForEverything(); }
 	public void deleteEverything(View view) {
 		Log.i("Delete Everything button pressed", "poke.");
-		for( String file : TextFileManager.getAllFiles() ) {
-			Log.i( "files...", file); }
+		String[] files = TextFileManager.getAllFiles();
+		Arrays.sort(files);
+		for( String file : files ) { Log.i( "files...", file); }
 		TextFileManager.deleteEverything(); }
 	public void listFiles(View view){
-		for( String file : TextFileManager.getAllFiles() ) {
-			Log.i( "files...", file); }
+		String[] files = TextFileManager.getAllFiles();
+		Arrays.sort(files);
+		for( String file : files ) { Log.i( "files...", file); }
 	}
 
 	//ui operations

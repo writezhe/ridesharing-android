@@ -6,6 +6,7 @@ import org.beiwe.app.R;
 import org.beiwe.app.RunningBackgroundServiceActivity;
 import org.beiwe.app.networking.HTTPUIAsync;
 import org.beiwe.app.networking.PostRequest;
+import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.survey.TextFieldKeyboard;
 import org.beiwe.app.ui.utils.AlertsManager;
@@ -14,11 +15,13 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.EditText;
 
@@ -94,7 +97,7 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 		protected Void doInBackground(Void... arg0) {
 			parameters= PostRequest.makeParameter("bluetooth_id", DeviceInfo.getBlootoothMAC() ) +
 						PostRequest.makeParameter("new_password", newPassword) +
-						PostRequest.makeParameter("phone_number", DeviceInfo.getPhoneNumber() ) + 
+						PostRequest.makeParameter("phone_number", ((RegisterActivity) activity).getPhoneNumber() ) + 
 						PostRequest.makeParameter("device_id", DeviceInfo.getAndroidID() ) +
 						PostRequest.makeParameter("device_os", "Android") +
 						PostRequest.makeParameter("os_version", DeviceInfo.getAndroidVersion() ) +
@@ -122,6 +125,16 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 				   super.onPostExecute(arg); }
 		}
 	};}
+	
+	/**This is the fuction that requires SMS permissions.  We need to supply a (unique) identifier for phone numbers to the registration arguments.
+	 * @return */
+	private String getPhoneNumber() {
+		TelephonyManager phoneManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+		String phoneNumber = phoneManager.getLine1Number();
+		if (phoneNumber == null) { return EncryptionEngine.hashPhoneNumber(""); }
+		return EncryptionEngine.hashPhoneNumber(phoneNumber);
+	}
+	
 	
 	/*####################################################################
 	###################### Permission Prompting ##########################
@@ -153,7 +166,7 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 			thisResumeCausedByFalseActivityReturn = false;
 			return;
 		}
-		if ( !PermissionHandler.checkReadSms(getApplicationContext()) && !thisResumeCausedByFalseActivityReturn) {
+		if ( !PermissionHandler.checkAccessReadSms(getApplicationContext()) && !thisResumeCausedByFalseActivityReturn) {
 			if (shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS) ) {
 				if (!prePromptActive && !postPromptActive ) { showPostPermissionAlert(this); } 
 			}
