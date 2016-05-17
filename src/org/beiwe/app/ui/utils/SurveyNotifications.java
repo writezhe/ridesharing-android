@@ -3,7 +3,6 @@ package org.beiwe.app.ui.utils;
 import org.beiwe.app.R;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.survey.AudioRecorderActivity;
-import org.beiwe.app.survey.AudioRecorderCommon;
 import org.beiwe.app.survey.AudioRecorderEnhancedActivity;
 import org.beiwe.app.survey.SurveyActivity;
 import org.json.JSONException;

@@ -3,6 +3,7 @@ package org.beiwe.app.listeners;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.TextFileManager;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -64,6 +65,7 @@ public class SmsReceivedLogger extends BroadcastReceiver {
 	}
 	
 	/** pulls out source phone number and length from an SMS, writes info to texts log. */
+	@SuppressLint("InlinedApi") @SuppressWarnings("deprecation") //these yell at you in the old/new code paths.
 	private void handleIncomingSMS(Intent intent) {
 		Bundle bundle = intent.getExtras();
 		SmsMessage[] messages = null;

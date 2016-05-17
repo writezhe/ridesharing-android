@@ -2,7 +2,6 @@ package org.beiwe.app.ui;
 
 import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.beiwe.app.BackgroundService;

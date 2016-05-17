@@ -6,7 +6,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 
 
 /**This is a class that NEEDS to be instantiated in the background service. In order to get the Android ID, the class needs

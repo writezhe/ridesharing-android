@@ -51,14 +51,12 @@ public class ConsentFormActivity extends RunningBackgroundServiceActivity {
 		// Download the survey questions and schedule the surveys
 		SurveyDownloader.downloadSurveys(getApplicationContext());
 
-		//This is important.  we need to start timers 
-//		backgroundService.startTimers();
 		
-
 		// Create new data files, these will now have a patientID prepended to those files
 		TextFileManager.initialize(getApplicationContext());
 		TextFileManager.makeNewFilesForEverything();
 		
+		//This is important.  we need to start timers...
 		backgroundService.doSetup();
 		
 		// Start the Main Screen Activity, destroy this activity
