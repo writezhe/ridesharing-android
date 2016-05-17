@@ -156,8 +156,7 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 
 	
 	@Override
-	protected void onResume() {
-		//TODO: someone leaves and comes back, but alerts were open.
+	protected void onResume() {  
 		// Log.i("reg", "onResume");
 		super.onResume();
 		activityNotVisible = false;

@@ -32,7 +32,6 @@ public class AudioRecorderActivity extends AudioRecorderCommon {
     
     @Override
 	public void onCreate( Bundle savedInstanceState ) {
-    	Log.e("Regular audio recording", "Regular audio recording");
 		super.onCreate( savedInstanceState );
 		//extract bit rate from survey parameters.  If this fails default to the default value (64000).
 		try { JSONObject surveySettings = new JSONObject( PersistentData.getSurveySettings(surveyId) );

@@ -21,7 +21,7 @@ import android.util.Log;
 public class AudioRecorderEnhancedActivity extends AudioRecorderCommon{
 	//WAV stuff
 	private static final int BIT_DEPTH = 16;
-	private int SAMPLE_RATE = 44100; //TODO: set to per survey value.
+	private int SAMPLE_RATE = 44100;
 	
 	private int BUFFER_SIZE = 0; //constant set in onCreate
 	
@@ -35,17 +35,13 @@ public class AudioRecorderEnhancedActivity extends AudioRecorderCommon{
 	@Override
     protected String getFileExtension() { return ".wav"; }
 
-	private AudioRecord recorder = null;	
+	private AudioRecord recorder = null;
 	private Thread recordingThread = null;
-//	private Thread copyAndEncryptThread = null;
 
 	@Override
 	public void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
-		Log.e("Enhanced audio recording", "Enhanced audio recording");
-		Log.i("Enhanced audio recording", PersistentData.getSurveySettings(surveyId));
 		unencryptedRawAudioFilePath = getApplicationContext().getFilesDir().getAbsolutePath() + "/" + unencryptedRawAudioFileName;
-		
 		//extract sample rate from survey parameters.  If this fails default to the default value (44100).
 		try { JSONObject surveySettings = new JSONObject( PersistentData.getSurveySettings(surveyId) );
 			  SAMPLE_RATE = surveySettings.getInt("sample_rate"); }
@@ -92,7 +88,7 @@ public class AudioRecorderEnhancedActivity extends AudioRecorderCommon{
 			@Override public void run() { writeAudioDataToFile(); }
 		}, "AudioRecorder Thread");
 		recordingThread.start();
-		startRecordingTimeout();  //FIXME: test recording timeout with enhanced recording...
+		startRecordingTimeout();  //TODO: test recording timeout with enhanced recording...
     }
     
     /** Stop recording, and reset the button to "record" */
@@ -103,16 +99,17 @@ public class AudioRecorderEnhancedActivity extends AudioRecorderCommon{
     		currentlyRecording = false;
     		if ( recorder.getState() == IS_INITIALIZED ) { recorder.stop(); }
     		recorder.release();
-    		recorder = null;
+    		recorder = null; //release memory...
     		recordingThread = null;
     	}
-    	//TODO: consider this - is it too much of a hassle to stick these on a separate thread?  These files will get big if they are wav recordings, causing bad UE.
+    	//TODO: consider. is it too much of a hassle to stick these on a separate thread?  These files will get big if they are wav recordings, causing bad UE.
     	//We need to do this because the the RAW file is not formatted correctly for playback
-    	AudioFileManager.copyToWaveFile( unencryptedRawAudioFilePath, unencryptedTempAudioFilePath,                     
+    	AudioFileManager.copyToWaveFile( unencryptedRawAudioFilePath, unencryptedTempAudioFilePath,
                      					 SAMPLE_RATE, BIT_DEPTH, BUFFER_SIZE );
     	AudioFileManager.delete(unencryptedRawAudioFileName);
         // Encrypt the audio file as soon as recording is finished
         new EncryptAudioFileTask().execute();
+        //FIXME: in cases where long audio recordings are taken the with uncompressed files there is the possibility of an out-of-memory error.
     }
     
     /**Writes data from the AudioRecord to a file.

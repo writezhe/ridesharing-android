@@ -68,9 +68,8 @@ public class AudioRecorderCommon extends SessionActivity {
 	public void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
 		setContentView( R.layout.activity_audio_recorder );
-		
         surveyId = getIntent().getStringExtra("surveyId");
-    	
+        
     	// grab the layout element objects that we will add questions to:
 		TextView textbox = (TextView) findViewById(R.id.record_activity_textview );
 		textbox.setText( getPromptText(surveyId, getApplicationContext() ) );
@@ -131,7 +130,7 @@ public class AudioRecorderCommon extends SessionActivity {
 			if (isFinishing()) { TextFileManager.delete(unencryptedTempAudioFileName); }
 			recordingButton.setClickable(true);
 		}
-    }	
+    }
     
     /*#########################################################
     #################### Recording Timeout #################### 
@@ -170,6 +169,7 @@ public class AudioRecorderCommon extends SessionActivity {
      * the button will be visible. 
      *@param fullFileName */
     protected void setPlayButtonVisibility() {
+    	Log.e("audio thing...", "play button event");
     	if (!displayPlaybackButton) { playButton.setVisibility(Button.INVISIBLE); }
     	else { playButton.setVisibility(Button.VISIBLE) ; }
 	}
@@ -244,7 +244,8 @@ public class AudioRecorderCommon extends SessionActivity {
      * back to the last one; the audio file should already be saved, so we
      * don't need to do anything other than kill the activity.  */
     //TODO: confirm the above
-    public void buttonDonePressed(View v) {
+    public void buttonDonePressed(View v) { //I love the name of this function...
+    	if (currentlyRecording) { stopRecording(); }
     	PersistentData.setSurveyNotificationState(surveyId, false);
 		SurveyNotifications.dismissNotification( getApplicationContext(), surveyId );
     	startActivity(new Intent(getApplicationContext(), MainMenuActivity.class));
