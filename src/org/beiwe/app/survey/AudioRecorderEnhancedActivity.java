@@ -6,6 +6,9 @@ import java.io.IOException;
 
 import org.beiwe.app.CrashHandler;
 import org.beiwe.app.storage.AudioFileManager;
+import org.beiwe.app.storage.PersistentData;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -18,7 +21,7 @@ import android.util.Log;
 public class AudioRecorderEnhancedActivity extends AudioRecorderCommon{
 	//WAV stuff
 	private static final int BIT_DEPTH = 16;
-	private static final int SAMPLE_RATE = 44100; //TODO: set to per survey value.
+	private int SAMPLE_RATE = 44100; //TODO: set to per survey value.
 	
 	private int BUFFER_SIZE = 0; //constant set in onCreate
 	
@@ -39,11 +42,17 @@ public class AudioRecorderEnhancedActivity extends AudioRecorderCommon{
 	@Override
 	public void onCreate( Bundle savedInstanceState ) {
 		super.onCreate( savedInstanceState );
+		Log.e("Enhanced audio recording", "Enhanced audio recording");
+		Log.i("Enhanced audio recording", PersistentData.getSurveySettings(surveyId));
 		unencryptedRawAudioFilePath = getApplicationContext().getFilesDir().getAbsolutePath() + "/" + unencryptedRawAudioFileName;
 		
-		//TODO: implement extracting sample rate from survey parameters
-//		SAMPLE_RATE = 
-		
+		//extract sample rate from survey parameters.  If this fails default to the default value (44100).
+		try { JSONObject surveySettings = new JSONObject( PersistentData.getSurveySettings(surveyId) );
+			  SAMPLE_RATE = surveySettings.getInt("sample_rate"); }
+		catch (JSONException e) { e.printStackTrace(); 
+			Log.e("Enhanced audio recording", "WUH-OH, no sample rate found, using default (44100).");
+		}
+ 
 		BUFFER_SIZE = AudioRecord.getMinBufferSize(SAMPLE_RATE,
 				AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT );
 	}

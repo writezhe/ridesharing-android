@@ -2,12 +2,20 @@ package org.beiwe.app.survey;
 
 import java.io.IOException;
 
+import org.beiwe.app.storage.PersistentData;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.media.MediaRecorder;
+import android.os.Bundle;
 import android.util.Log;
 
 
 public class AudioRecorderActivity extends AudioRecorderCommon {    
-    @Override
+    
+	private int BIT_RATE = 64000;
+	
+	@Override
 	protected String getFileExtension() { return ".mp4"; }
         
     /*#########################################################
@@ -21,6 +29,19 @@ public class AudioRecorderActivity extends AudioRecorderCommon {
 	        if (mRecorder != null) { stopRecording(); }
 		}
 	}
+    
+    @Override
+	public void onCreate( Bundle savedInstanceState ) {
+    	Log.e("Regular audio recording", "Regular audio recording");
+		super.onCreate( savedInstanceState );
+		//extract bit rate from survey parameters.  If this fails default to the default value (64000).
+		try { JSONObject surveySettings = new JSONObject( PersistentData.getSurveySettings(surveyId) );
+			Log.i("regular audio", PersistentData.getSurveySettings(surveyId));
+			  BIT_RATE = surveySettings.getInt("bit_rate"); }
+		catch (JSONException e) { e.printStackTrace();
+			Log.e("Regular audio recording", "WUH-OH, no bit_rate found, using default (64000).");
+		}
+    }
     
     /*#########################################################
     ################# Recording and Playing ################### 
@@ -39,11 +60,10 @@ public class AudioRecorderActivity extends AudioRecorderCommon {
         mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         mRecorder.setAudioChannels(1);
         mRecorder.setAudioSamplingRate(44100);
-        mRecorder.setAudioEncodingBitRate(64000);
+        mRecorder.setAudioEncodingBitRate(BIT_RATE);
         
         try { mRecorder.prepare(); }
         catch (IOException e) { Log.e(LOG_TAG, "prepare() failed"); }
-        
         startRecordingTimeout();
         mRecorder.start();
     }

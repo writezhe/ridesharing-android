@@ -3,8 +3,11 @@ package org.beiwe.app.ui.utils;
 import org.beiwe.app.R;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.survey.AudioRecorderActivity;
+import org.beiwe.app.survey.AudioRecorderCommon;
 import org.beiwe.app.survey.AudioRecorderEnhancedActivity;
 import org.beiwe.app.survey.SurveyActivity;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -13,6 +16,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 /**The purpose of this class is to deal with all that has to do with Survey Notifications.
  * This is a STATIC method, and is called from the background service.
@@ -36,22 +40,13 @@ public class SurveyNotifications {
 			notificationBuilder.setLargeIcon( BitmapFactory.decodeResource(appContext.getResources(), R.drawable.survey_icon ) );
 		}
 		else if ( PersistentData.getSurveyType(surveyId).equals("audio_survey" ) ) {
-			activityIntent = new Intent( appContext, AudioRecorderActivity.class);
+			activityIntent = new Intent( appContext, getAudioSurveyClass(surveyId) );
 			activityIntent.setAction( appContext.getString(R.string.start_audio_survey) );
 			notificationBuilder.setTicker( appContext.getResources().getString(R.string.new_audio_survey_notification_ticker) );
 			notificationBuilder.setContentText( appContext.getResources().getString(R.string.new_audio_survey_notification_details) );
 			notificationBuilder.setSmallIcon( R.drawable.voice_recording_icon );
 			notificationBuilder.setLargeIcon( BitmapFactory.decodeResource(appContext.getResources(), R.drawable.voice_recording_icon) );
 		}
-		else if ( PersistentData.getSurveyType(surveyId).equals("enhanced_audio_survey" ) ) { //TODO: actually finish enhanced audio.
-			activityIntent = new Intent( appContext, AudioRecorderEnhancedActivity.class);
-			activityIntent.setAction( appContext.getString(R.string.start_audio_survey) );
-			notificationBuilder.setTicker( appContext.getResources().getString(R.string.new_audio_survey_notification_ticker) );
-			notificationBuilder.setContentText( appContext.getResources().getString(R.string.new_audio_survey_notification_details) );
-			notificationBuilder.setSmallIcon( R.drawable.voice_recording_icon );
-			notificationBuilder.setLargeIcon( BitmapFactory.decodeResource(appContext.getResources(), R.drawable.voice_recording_icon) );
-		}
-		
 		else { throw new NullPointerException("survey type did not parse correctly: " + PersistentData.getSurveyType(surveyId)); }
 
         activityIntent.putExtra( "surveyId", surveyId );
@@ -78,9 +73,8 @@ public class SurveyNotifications {
 
 		NotificationManager notificationManager = (NotificationManager) appContext.getSystemService(Context.NOTIFICATION_SERVICE);
 		notificationManager.cancel(surveyIdHash); //cancel any current notification with this id hash
-		notificationManager.notify(
-				surveyIdHash, // If another notification with the same ID pops up, this notification will be updated/cancelled.
-				surveyNotification);
+		notificationManager.notify(surveyIdHash, // If another notification with the same ID pops up, this notification will be updated/cancelled.
+				                   surveyNotification);
 		
 		//And, finally, set the notification state for zombie alarms.
 		PersistentData.setSurveyNotificationState(surveyId, true);
@@ -93,5 +87,21 @@ public class SurveyNotifications {
 	public static void dismissNotification(Context appContext, String surveyId) {
  		NotificationManager notificationManager = (NotificationManager) appContext.getSystemService(Context.NOTIFICATION_SERVICE);
 		notificationManager.cancel(surveyId.hashCode());
+	}
+	
+	
+	/**Tries to determine the type of audio survey.  If it is an Enhanced audio survey AudioRecorderEnhancedActivity.class is returned,
+	 * any other outcome (including an inability to determine type) returns AudioRecorderActivity.class instead. */
+	@SuppressWarnings("rawtypes")
+	private static Class getAudioSurveyClass(String surveyId) {
+		try { JSONObject surveySettings = new JSONObject( PersistentData.getSurveySettings(surveyId) );
+		
+		Log.e("audio survey notification", surveySettings.getString("audio_survey_type") );
+			if ( surveySettings.getString("audio_survey_type").equals("raw") ) {
+				Log.e("audio survey notification", "this will be an enhanced audio survey." );
+				return AudioRecorderEnhancedActivity.class; } }
+		catch (JSONException e) { e.printStackTrace(); }
+		Log.e("audio survey notification", "this will be a normal audio survey." );
+		return AudioRecorderActivity.class;
 	}
 }
