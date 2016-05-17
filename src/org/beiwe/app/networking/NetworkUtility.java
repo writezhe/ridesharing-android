@@ -21,7 +21,6 @@ public class NetworkUtility {
 			networkInfo = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 			return networkInfo.isConnected() && networkInfo.isAvailable();
 		} else { //do android >= 6
-			//FIXME: test.
 			Network[] networks = connManager.getAllNetworks();
 			if (networks == null) { return false; } //No network connectivity at all.
 			for (Network network : connManager.getAllNetworks() ) {
