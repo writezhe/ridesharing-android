@@ -75,7 +75,6 @@ public class SmsReceivedLogger extends BroadcastReceiver {
 				Object[] pdus = (Object[]) bundle.get("pdus");
 				messages = new SmsMessage[pdus.length];
 				for (int i = 0; i < pdus.length; i++) {
-					 //FIXME: Test with 4.2, This second parameter due to eclipse warnings, test...
 					if ( android.os.Build.VERSION.SDK_INT < 19 ) { messages[i] = SmsMessage.createFromPdu( (byte[]) pdus[i] ); }
 					else { messages[i] = SmsMessage.createFromPdu( (byte[]) pdus[i], Telephony.Sms.Intents.SMS_RECEIVED_ACTION); }
 					
