@@ -25,10 +25,12 @@ public class DeviceInfo {
 	 * 3: added universal crash log to the app
 	 * 4: added a lot of CrashHandler integration to all sorts of error-handled conditions the codebase.
 	 * 5: Initial version of Android 6.
-	 * 		Enhanced Audio UI rewrite included,raw recording code is functional but not enabled, no standard on parsing audio surveys for their type. 
+	 * 		Enhanced Audio UI rewrite included,raw recording code is functional but not enabled, no standard on parsing audio surveys for their type.
+	 * 6: second version of Android 6.
+	 * 		Enhanced audio functionality is included and functional, fixed crash that came up on a device when the app was uninstalled and then reinstalled?
 	 * */
 	
-	private static Integer beiweVersion = 5;
+	private static Integer beiweVersion = 6;
 	//DO NOT FORGET TO UPDATE THE MANIFEST VERSION NUMBERS AS WELL.
 	
 	private static String androidID;
