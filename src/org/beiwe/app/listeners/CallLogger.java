@@ -45,15 +45,23 @@ public class CallLogger extends ContentObserver {
 	};
 
 
-
-	/** ContentObservers require a Handler object, we require a context for future logic.
-	 * */
+	/** ContentObservers require a Handler object, we require a context for future logic. */
 	public CallLogger(Handler handler, Context context) {
 		super(handler);
 		appContext = context;
 
 		// Pull database info, set lastKnownSize
 		textsDBQuery = appContext.getContentResolver().query(allCalls, null, null, null, android.provider.CallLog.Calls.DEFAULT_SORT_ORDER);
+		if (textsDBQuery == null) { //noticed this error for the first time on Wednesday May 11 2016.
+			//according to this stack overflow this occurs when we don't have authority (post is from before andrid 6 permissions, unclear what authority means)
+			// or when... something goes wrong with the database.  But Actually.
+			//So, we simply try again, if it fails again... unknown.
+			//http://stackoverflow.com/questions/13080540/what-causes-androids-contentresolver-query-to-return-null
+			textsDBQuery = appContext.getContentResolver().query(allCalls, null, null, null, android.provider.CallLog.Calls.DEFAULT_SORT_ORDER);
+			if (textsDBQuery == null) {
+				TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis() + " restarting Beiwe due to bug in Android's phone call database API.");
+				throw new NullPointerException("the user's call logging database was broken, did not succeed in connecting on the second try."); }
+		}
 		textsDBQuery.moveToFirst();
 		lastKnownSize = textsDBQuery.getCount();
 //		Log.i("CallLogger", "" + lastKnownSize);
