@@ -60,10 +60,11 @@ public class HTTPAsync extends AsyncTask<Void, Void, Void> {
 	 * @return String to be displayed on the Alert in case of a problem	 */
 	public static String responseCodeAlert(int responseCode) {
 		if (responseCode == 200) {return "OK";}
-		else if (responseCode == 403) { return "The patient ID or password did not match the patient ID or password on the server";}
-		else if (responseCode == 405) { return "Phone is not registered to this user. Please contact research staff";}
+		else if (responseCode == 400) {return "This device could not be registered under the provided patient ID, please contact research staff." ;}
+		else if (responseCode == 403) { return "The patient ID or password did not match the patient ID or password on the server.";}
+		else if (responseCode == 405) { return "Phone is not registered to this user. Please contact research staff.";}
 		else if (responseCode == 502) { return "Please connect to the internet and try again";}
-		else if (responseCode == 1) { return "Someone misconfigured the server, please contact staff";}
+		else if (responseCode == 1) { return "Someone misconfigured the server, please contact research staff.";}
 		else { Log.e("HTTPAsync", "unknown response code: " + responseCode); 
 			return "An unknown error occured."; }
 	}
