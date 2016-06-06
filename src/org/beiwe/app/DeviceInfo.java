@@ -28,6 +28,7 @@ public class DeviceInfo {
 	 * 		Enhanced Audio UI rewrite included,raw recording code is functional but not enabled, no standard on parsing audio surveys for their type.
 	 * 6: second version of Android 6.
 	 * 		Enhanced audio functionality is included and functional, fixed crash that came up on a device when the app was uninstalled and then reinstalled?
+	 * 		A functionally identical 6 was later released, it contains a new error message for a new type of iOS-related registration error.
 	 * */
 	
 	private static Integer beiweVersion = 6;
