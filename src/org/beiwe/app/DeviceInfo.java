@@ -14,7 +14,7 @@ import android.telephony.TelephonyManager;
  * 
  * The class is used to grab unique ID data, and pass it to the server. The data is used while authenticating users
  * 
- * @author Dor Samet, Eli Jones */  
+ * @author Dor Samet, Eli Jones */	
 
 public class DeviceInfo {
 	/* TODO:  Ensure this number is updated whenever a version of the app is pushed to the website for any reason.
@@ -23,9 +23,10 @@ public class DeviceInfo {
 	 * 1: add additional device data during the registration process, including this version number.
 	 * 2: added sms debugging
 	 * 3: added universal crash log to the app
-	 * 4: added a lot of CrashHandler integration to all sorts of error-handled conditions the codebase. */
-	
-	private static Integer beiweVersion = 4;
+	 * 4: added a lot of CrashHandler integration to all sorts of error-handled conditions the codebase.
+	 * 4.1: added survey IDs to the uploaded audio file names. (this is a reimplementation of the same bug fix on the non-legacy code base.) */
+			
+	private static String beiweVersion = "4.1";
 	//DO NOT FORGET TO UPDATE THE MANIFEST VERSION NUMBERS AS WELL.
 	
 	private static String androidID;

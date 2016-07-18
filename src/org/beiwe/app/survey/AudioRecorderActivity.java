@@ -306,7 +306,7 @@ public class AudioRecorderActivity extends SessionActivity {
     /**Generates new file name variables. The name consists of the time the recording takes place. */
     private String generateNewEncryptedAudioFileName() {
 		String timecode = ((Long)(System.currentTimeMillis() / 1000L)).toString();
-		return PersistentData.getPatientID() + "_voiceRecording" + "_" + timecode + ".mp4";
+		return PersistentData.getPatientID() + "_voiceRecording_" + surveyId + "_" + timecode + ".mp4";
     }
     
     /** Reads in the existing temporary audio file and encrypts it. Generates AES keys as needed.
