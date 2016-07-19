@@ -120,7 +120,7 @@ public class AudioRecorderCommon extends SessionActivity {
     	protected void onPreExecute() { recordingButton.setClickable(false); }
 		@Override
 		protected Void doInBackground(Void... params) {
-			AudioFileManager.encryptAudioFile(unencryptedTempAudioFilePath, getFileExtension(), getApplicationContext() );
+			AudioFileManager.encryptAudioFile(unencryptedTempAudioFilePath, getFileExtension(), surveyId, getApplicationContext() );
 			return null;
 		}
 		@Override
@@ -133,7 +133,7 @@ public class AudioRecorderCommon extends SessionActivity {
     }
     
     /*#########################################################
-    #################### Recording Timeout #################### 
+    #################### Recording Timeout ####################
     #########################################################*/
     
     /** Automatically stop recording if the recording runs longer than n seconds. */
