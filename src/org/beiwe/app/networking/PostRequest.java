@@ -243,8 +243,19 @@ public class PostRequest {
 
 	/** Uploads all available files on a separate thread. */
 	public static void uploadAllFiles() {
-		// Only upload data files over WiFi; if not connected to WiFi, return here
-		if ( !NetworkUtility.getWifiState(appContext) ) { return; }
+		if (PersistentData.getAllowUploadOverCellularData()) {
+			// If you're allowed to upload over WiFi or cellular data:
+			if (!NetworkUtility.connectedToWifiOrCellularData(appContext)) {
+				// If neither WiFi nor cellular data is connected, abort.
+				return;
+			}
+		} else {
+			// If you're only allowed to upload over WiFi:
+			if (!NetworkUtility.connectedToWifi(appContext)) {
+				// If WiFi isn't connected, abort.
+				return;
+			}
+		}
 		// Run the HTTP POST on a separate thread
 		ExecutorService executor = Executors.newFixedThreadPool(1);
 		Callable <HttpsURLConnection> thread = new Callable<HttpsURLConnection>() {

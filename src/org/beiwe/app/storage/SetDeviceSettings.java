@@ -21,6 +21,8 @@ public class SetDeviceSettings {
 		PersistentData.setBluetoothEnabled(bluetoothEnabled);
 		Boolean powerStateEnabled = deviceSettings.getBoolean("power_state");
 		PersistentData.setPowerStateEnabled(powerStateEnabled);
+		Boolean allowUploadOverCellularData = deviceSettings.getBoolean("allow_upload_over_cellular_data");
+		PersistentData.setAllowUploadOverCellularData(allowUploadOverCellularData);
 		
 		// Write timer settings
 		int accelerometerOffDuration = deviceSettings.getInt("accelerometer_off_duration_seconds");

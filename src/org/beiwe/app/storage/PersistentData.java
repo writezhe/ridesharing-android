@@ -46,6 +46,7 @@ public class PersistentData {
 	private static final String WIFI = "wifi";
 	private static final String BLUETOOTH = "bluetooth";
 	private static final String POWER_STATE = "power_state";
+	private static final String ALLOW_UPLOAD_OVER_CELLULAR_DATA = "allow_upload_over_cellular_data";
 
 	private static final String ACCELEROMETER_OFF_DURATION_SECONDS = "accelerometer_off_duration_seconds";
 	private static final String ACCELEROMETER_ON_DURATION_SECONDS = "accelerometer_on_duration_seconds";
@@ -157,6 +158,7 @@ public class PersistentData {
 	public static boolean getWifiEnabled(){ return pref.getBoolean(WIFI, false); }
 	public static boolean getBluetoothEnabled(){ return pref.getBoolean(BLUETOOTH, false); }
 	public static boolean getPowerStateEnabled(){ return pref.getBoolean(POWER_STATE, false); }
+	public static boolean getAllowUploadOverCellularData(){ return pref.getBoolean(ALLOW_UPLOAD_OVER_CELLULAR_DATA, false); }
 	
 	public static void setAccelerometerEnabled(boolean enabled) {
 		editor.putBoolean(ACCELEROMETER, enabled);
@@ -178,6 +180,9 @@ public class PersistentData {
 		editor.commit(); }
 	public static void setPowerStateEnabled(boolean enabled) {
 		editor.putBoolean(POWER_STATE, enabled);
+		editor.commit(); }
+	public static void setAllowUploadOverCellularData(boolean enabled) {
+		editor.putBoolean(ALLOW_UPLOAD_OVER_CELLULAR_DATA, enabled);
 		editor.commit(); }
 	
 	/*#####################################################################################
