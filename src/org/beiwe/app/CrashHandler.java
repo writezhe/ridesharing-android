@@ -20,8 +20,14 @@ public class CrashHandler implements java.lang.Thread.UncaughtExceptionHandler{
 	 * will dump its errors.  We roll it up, stick it in a file, and try to restart the app after exiting it.
 	 * (using a new alarm like we do in the BackgroundService). */
 	public void uncaughtException(Thread thread, Throwable exception){
+		
+		Log.w("CrashHandler Raw","start original stacktrace");
+		exception.printStackTrace();
+		Log.w("CrashHandler Raw","end original stacktrace");
+		
 		//Write that log file
 		writeCrashlog(exception, errorHandlerContext);
+//		Log.i("inside crashlog", "does this line happen");  //keep this line for debugging crashes in the crash handler (yup.)
 		//setup to restart service
 		Intent restartServiceIntent = new Intent( errorHandlerContext, thread.getClass() );
 		restartServiceIntent.setPackage( errorHandlerContext.getPackageName() );
