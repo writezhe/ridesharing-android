@@ -29,9 +29,10 @@ public class DeviceInfo {
 	 * 6: second version of Android 6.
 	 * 		Enhanced audio functionality is included and functional, fixed crash that came up on a device when the app was uninstalled and then reinstalled?
 	 * 		A functionally identical 6 was later released, it contains a new error message for a new type of iOS-related registration error.
-	 * 7: audio survey files now contain the surveyid for the correct audio survey. */
+	 * 7: audio survey files now contain the surveyid for the correct audio survey.
+	 * 8: Now support a flag for data upload over cellular, fixed bug in wifi scanning. */
 	
-	private static String beiweVersion = "7";
+	private static String beiweVersion = "8";
 	//DO NOT FORGET TO UPDATE THE MANIFEST VERSION NUMBERS AS WELL.
 	
 	private static String androidID;
