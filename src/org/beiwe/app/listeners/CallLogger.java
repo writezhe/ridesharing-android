@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Handler;
 import android.provider.CallLog;
-import android.util.Log;
 
 /** The CallLogger logs data from voice call, sent or received.
  *  @author Dor Samet */
@@ -45,15 +44,23 @@ public class CallLogger extends ContentObserver {
 	};
 
 
-
-	/** ContentObservers require a Handler object, we require a context for future logic.
-	 * */
+	/** ContentObservers require a Handler object, we require a context for future logic. */
 	public CallLogger(Handler handler, Context context) {
 		super(handler);
 		appContext = context;
 
 		// Pull database info, set lastKnownSize
 		textsDBQuery = appContext.getContentResolver().query(allCalls, null, null, null, android.provider.CallLog.Calls.DEFAULT_SORT_ORDER);
+		if (textsDBQuery == null) { //noticed this error for the first time on Wednesday May 11 2016.
+			//according to this stack overflow this occurs when we don't have authority (post is from before andrid 6 permissions, unclear what authority means)
+			// or when... something goes wrong with the database.  But Actually.
+			//So, we simply try again, if it fails again... unknown.
+			//http://stackoverflow.com/questions/13080540/what-causes-androids-contentresolver-query-to-return-null
+			textsDBQuery = appContext.getContentResolver().query(allCalls, null, null, null, android.provider.CallLog.Calls.DEFAULT_SORT_ORDER);
+			if (textsDBQuery == null) {
+				TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis() + " restarting Beiwe due to bug in Android's phone call database API.");
+				throw new NullPointerException("the user's call logging database was broken, did not succeed in connecting on the second try."); }
+		}
 		textsDBQuery.moveToFirst();
 		lastKnownSize = textsDBQuery.getCount();
 //		Log.i("CallLogger", "" + lastKnownSize);
@@ -89,25 +96,23 @@ public class CallLogger extends ContentObserver {
 		int currentID = textsDBQuery.getInt(textsDBQuery.getColumnIndex(id));
 //		Log.i("Call Log", "" + "Current Size is " + currentID);
 //		Log.i("Call Log", "Last Known ID is " + lastRecordedID)
-		;
+		
 		// A call was deleted
-		if (currentSize < lastKnownSize) {
-			Log.i("Call Logger", "Last Call deleted, Last Call deleted, Last Call deleted, Last Call deleted"); }
-		else if ( currentSize == lastKnownSize && currentID == lastRecordedID ) {
-			Log.i("CallLogger", "Something broke - this doesn't make sense..."); }
+		if (currentSize < lastKnownSize) { /*Log.i("Call Logger", "Last Call deleted, Last Call deleted, Last Call deleted, Last Call deleted");*/ }
+		else if ( currentSize == lastKnownSize && currentID == lastRecordedID ) { /*Log.i("CallLogger", "Something broke - this doesn't make sense...");*/ }
 		else {
-			Log.i("CallLogger", "Last recorded ID " + lastRecordedID);
+			// Log.i("CallLogger", "Last recorded ID " + lastRecordedID);
 		
 			// 	Descend until reaching the idOfLastCall row
 			while (currentID != lastRecordedID) {
 				textsDBQuery.moveToNext();
-				Log.i("CallLogger", "Current ID is " + currentID);
+				// Log.i("CallLogger", "Current ID is " + currentID);
 				currentID = textsDBQuery.getInt(textsDBQuery.getColumnIndex(id));
 			}
 
 			// While there exists a next row
 			while(!textsDBQuery.isBeforeFirst()) {
-				Log.i("Call Logger", "" + (textsDBQuery.getInt(textsDBQuery.getColumnIndex(id))));
+				// Log.i("Call Logger", "" + (textsDBQuery.getInt(textsDBQuery.getColumnIndex(id))));
 				if (currentID <= lastRecordedID) {
 					textsDBQuery.moveToPrevious();
 					currentID = textsDBQuery.getInt(textsDBQuery.getColumnIndex(id));
@@ -132,7 +137,7 @@ public class CallLogger extends ContentObserver {
 				// Add duration
 				callLoggerLine.append(textsDBQuery.getInt(textsDBQuery.getColumnIndex(duration)));
 
-				Log.i("Call Log", callLoggerLine.toString());
+				// Log.i("Call Log", callLoggerLine.toString());
 				TextFileManager.getCallLogFile().writeEncrypted(callLoggerLine.toString());
 				textsDBQuery.moveToPrevious();
 			}

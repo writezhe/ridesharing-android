@@ -1,6 +1,7 @@
 package org.beiwe.app.session;
 
 import org.beiwe.app.BackgroundService;
+import org.beiwe.app.PermissionHandler;
 import org.beiwe.app.R;
 import org.beiwe.app.RunningBackgroundServiceActivity;
 import org.beiwe.app.storage.PersistentData;
@@ -10,19 +11,22 @@ import org.beiwe.app.ui.user.AboutActivityLoggedIn;
 import org.beiwe.app.ui.user.GraphActivity;
 import org.beiwe.app.ui.user.LoginActivity;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-/**
- * All Activities in the app WHICH REQUIRE THE USER TO BE LOGGED IN extend this Activity.
+/**All Activities in the app WHICH REQUIRE THE USER TO BE LOGGED IN extend this Activity.
  * If the user is not logged in, he/she is bumped to a login screen.
  * This Activity also extends RunningBackgroundServiceActivity, which makes the app's key
  * services run before the interface is allowed to interact with it.
- * 
- * @author Eli Jones, Josh Zagorsky
- */
+ * @author Eli Jones, Josh Zagorsky */
 public class SessionActivity extends RunningBackgroundServiceActivity {
 	
 	/*####################################################################
@@ -35,12 +39,14 @@ public class SessionActivity extends RunningBackgroundServiceActivity {
 	protected void onResume() {
 		super.onResume();
 		PersistentData.initialize(getApplicationContext()); // this function has been rewritten to efficiently handle getting called too much.  Don't worry about it.
+		checkPermissionsLogic();
 	}
 	
 	/** When onPause is called we need to set the timeout. */
 	@Override
 	protected void onPause() {
 		super.onPause();
+		activityNotVisible = true;
 		if (backgroundService == null) {
 			Log.w("sessionactivity", "background service is null, you have a race condition with instantiating the background service.");
 			TextFileManager.getDebugLogFile().writeEncrypted("a sessionactivity tried to clear the automatic logout countdown timer, but the background service did not exist.");
@@ -51,7 +57,7 @@ public class SessionActivity extends RunningBackgroundServiceActivity {
 	@Override
 	/** Sets the logout timer, should trigger whenever onResume is called. */
 	protected void doBackgroundDependantTasks() { 
-		Log.i("SessionActivity", "printed from SessionActivity");
+		// Log.i("SessionActivity", "printed from SessionActivity");
 		authenticateAndLoginIfNecessary();
 	}
 	
@@ -62,7 +68,6 @@ public class SessionActivity extends RunningBackgroundServiceActivity {
 		else {
 			startActivity(new Intent(this, LoginActivity.class) ); }
 	}
-
 
 	/** Display the LoginActivity, and invalidate the login in SharedPreferences */
 	protected void logoutUser() {
@@ -105,5 +110,132 @@ public class SessionActivity extends RunningBackgroundServiceActivity {
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	
+	/*####################################################################
+	###################### Permission Prompting ##########################
+	####################################################################*/
+	
+	private static Boolean prePromptActive = false;
+	private static Boolean postPromptActive = false;
+	private static Boolean powerPromptActive = false; 
+	private static Boolean thisResumeCausedByFalseActivityReturn = false;
+	private static Boolean aboutToResetFalseActivityReturn = false;
+	private static Boolean activityNotVisible = false;
+	public Boolean isAudioRecorderActivity() { return false; }
+	
+	private void goToSettings(Integer permissionIdentifier) {
+		// Log.i("sessionActivity", "goToSettings");
+        Intent myAppSettings = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + getPackageName()));
+        myAppSettings.addCategory(Intent.CATEGORY_DEFAULT);
+        myAppSettings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivityForResult(myAppSettings, permissionIdentifier);
+    }
+	
+	@TargetApi(23)
+	private void goToPowerSettings(Integer powerCallbackIdentifier) {
+		// Log.i("sessionActivity", "goToSettings");
+        Intent powerSettings = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:" + getPackageName()));
+        powerSettings.addCategory(Intent.CATEGORY_DEFAULT);
+        powerSettings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivityForResult(powerSettings, powerCallbackIdentifier);
+    }
+	
+	@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// Log.i("sessionActivity", "onActivityResult. requestCode: " + requestCode + ", resultCode: " + resultCode );
+		aboutToResetFalseActivityReturn = true;
+    }
+	
+	@Override
+	public void onRequestPermissionsResult (int requestCode, String[] permissions, int[] grantResults) {
+		// Log.i("sessionActivity", "onRequestPermissionResult");
+		if (!activityNotVisible) checkPermissionsLogic();
+	}
+	
+	protected void checkPermissionsLogic() {
+		//gets called as part of onResume,
+		activityNotVisible = false;
+		// Log.i("sessionactivity", "checkPermissionsLogic");
+		// Log.i("sessionActivity", "prePromptActive: " + prePromptActive);
+		// Log.i("sessionActivity", "postPromptActive: " + postPromptActive);
+		// Log.i("sessionActivity", "thisResumeCausedByFalseActivityReturn: " + thisResumeCausedByFalseActivityReturn);
+		// Log.i("sessionActivity", "aboutToResetFalseActivityReturn: " + aboutToResetFalseActivityReturn);
+		
+		if (aboutToResetFalseActivityReturn) {
+			aboutToResetFalseActivityReturn = false;
+			thisResumeCausedByFalseActivityReturn = false;
+			return;
+		}
+		
+		if ( !thisResumeCausedByFalseActivityReturn ) {
+			String permission = PermissionHandler.getNextPermission( getApplicationContext(), this.isAudioRecorderActivity() );
+			if (permission == null) { return; }
+			
+			if (!prePromptActive && !postPromptActive && !powerPromptActive) {
+				if (permission == PermissionHandler.POWER_EXCEPTION_PERMISSION ) {
+					showPowerManagementAlert(this, getString(R.string.power_management_exception_alert), 1000); 
+					return;
+				}
+				// Log.d("sessionActivity", "shouldShowRequestPermissionRationale "+ permission +": " + shouldShowRequestPermissionRationale( permission ) );
+				if (shouldShowRequestPermissionRationale( permission ) ) {
+					if (!prePromptActive && !postPromptActive ) { showBumpingPermissionAlert(this, PermissionHandler.getBumpingPermissionMessage(permission),
+																								   PermissionHandler.permissionMap.get(permission) ); } 
+				}
+				else if (!prePromptActive && !postPromptActive ) { showRegularPermissionAlert(this, PermissionHandler.getNormalPermissionMessage(permission),
+																						  permission, PermissionHandler.permissionMap.get(permission)); }
+			}
+		}
+	}
+	
+	/* Message Popping */
+	
+	public static void showRegularPermissionAlert(final Activity activity, final String message, final String permission, final Integer permissionCallback) {
+		// Log.i("sessionActivity", "showPreAlert");
+		if (prePromptActive) { return; }
+		prePromptActive = true;
+		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+		builder.setTitle("Permissions Requirement:");
+		builder.setMessage(message);
+		builder.setOnDismissListener( new DialogInterface.OnDismissListener() { @Override public void onDismiss(DialogInterface dialog) {
+			activity.requestPermissions(new String[]{ permission }, permissionCallback );
+			prePromptActive = false;
+		} } );
+		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() { @Override public void onClick(DialogInterface arg0, int arg1) { } } ); //Okay button
+		builder.create().show();
+	}
+	
+	public static void showBumpingPermissionAlert(final SessionActivity activity, final String message, final Integer permissionCallback) {
+		// Log.i("sessionActivity", "showPostAlert");
+		if (postPromptActive) { return; }
+		postPromptActive = true;
+		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+		builder.setTitle("Permissions Requirement:");
+		builder.setMessage(message);
+		builder.setOnDismissListener( new DialogInterface.OnDismissListener() { @Override public void onDismiss(DialogInterface dialog) {
+			thisResumeCausedByFalseActivityReturn = true;
+			activity.goToSettings(permissionCallback);
+			postPromptActive = false;
+		} } );
+		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() { @Override public void onClick(DialogInterface arg0, int arg1) {  } } ); //Okay button
+		builder.create().show();
+	}
+	
+	public static void showPowerManagementAlert(final SessionActivity activity, final String message, final Integer powerCallbackIdentifier) {
+		Log.i("sessionActivity", "power alert");
+		if (powerPromptActive) { return; }
+		powerPromptActive = true;
+		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+		builder.setTitle("Permissions Requirement:");
+		builder.setMessage(message);
+		builder.setOnDismissListener( new DialogInterface.OnDismissListener() { @Override public void onDismiss(DialogInterface dialog) {
+			Log.d("power management alert", "bumping");
+			thisResumeCausedByFalseActivityReturn = true;
+			activity.goToPowerSettings(powerCallbackIdentifier);
+			powerPromptActive = false;
+		} } );
+		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() { @Override public void onClick(DialogInterface arg0, int arg1) {  } } ); //Okay button
+		builder.create().show();
 	}
 }

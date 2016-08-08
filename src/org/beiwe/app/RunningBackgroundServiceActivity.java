@@ -44,7 +44,7 @@ public class RunningBackgroundServiceActivity extends Activity {
 	protected ServiceConnection backgroundServiceConnection = new ServiceConnection() {
 	    @Override
 	    public void onServiceConnected(ComponentName name, IBinder binder) {
-	        Log.d("ServiceConnection", "Background Service Connected");
+	        // Log.d("ServiceConnection", "Background Service Connected");
 	        BackgroundServiceBinder some_binder = (BackgroundServiceBinder) binder;
 	        backgroundService = some_binder.getService();
 	        doBackgroundDependantTasks();
@@ -53,7 +53,7 @@ public class RunningBackgroundServiceActivity extends Activity {
 	    
 	    @Override
 	    public void onServiceDisconnected(ComponentName name) {
-	        Log.d("ServiceConnection", "Background Service Disconnected");
+	        Log.w("ServiceConnection", "Background Service Disconnected");
 	        backgroundService = null;
 //	        isBound = false;
 	    }
@@ -67,7 +67,7 @@ public class RunningBackgroundServiceActivity extends Activity {
 	}
 	
 	/** Override this function to do tasks on creation, but only after the background Service has been initialized. */
-	protected void doBackgroundDependantTasks() { Log.d("RunningBackgroundServiceActivity", "doBackgroundDependantTasks ran as default (do nothing)"); }
+	protected void doBackgroundDependantTasks() { /*Log.d("RunningBackgroundServiceActivity", "doBackgroundDependantTasks ran as default (do nothing)");*/ }
 	
 	@Override
 	/**On creation of RunningBackgroundServiceActivity we guarantee that the BackgroundService is

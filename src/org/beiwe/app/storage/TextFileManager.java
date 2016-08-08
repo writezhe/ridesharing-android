@@ -19,14 +19,14 @@ import org.beiwe.app.listeners.PowerStateListener;
 import org.beiwe.app.listeners.SmsSentLogger;
 import org.beiwe.app.listeners.WifiListener;
 import org.beiwe.app.survey.AudioRecorderActivity;
+import org.beiwe.app.survey.AudioRecorderEnhancedActivity;
 import org.beiwe.app.survey.SurveyAnswersRecorder;
 import org.beiwe.app.survey.SurveyTimingsRecorder;
 
 import android.content.Context;
 import android.util.Log;
 
-/**
- * The (Text)FileManager.
+/**The (Text)FileManager.
  * The FileManager is implemented as a Singleton.  More accurately the static object contains several
  * singletons, static instances of FileManager Objects.  Before using the FileManager the app must
  * provide it with a Context and call the Start() function.  Failure to do so causes the app to crash.
@@ -225,7 +225,7 @@ public class TextFileManager {
 //			throw new NullPointerException("encrypted write operation without an AES key: " + this.fileName );
 		}
 		catch (InvalidKeySpecException e) { //this occurs when an encrypted write operation occurs without an RSA key file, we eat this error because it only happens during registration/initial config.
-			Log.d("TextFileManager", "EncryptionEngine.AES_TOO_EARLY_ERROR: " + this.name + ", " + data);
+			Log.e("TextFileManager", "EncryptionEngine.AES_TOO_EARLY_ERROR: " + this.name + ", " + data);
 			e.printStackTrace(); }
 	}
 	
@@ -316,6 +316,8 @@ public class TextFileManager {
 		// These files should never be uploaded
 		files.remove(TextFileManager.getKeyFile().fileName);
 		files.remove(AudioRecorderActivity.unencryptedTempAudioFileName);
+		files.remove(AudioRecorderEnhancedActivity.unencryptedRawAudioFileName);
+		files.remove(AudioRecorderEnhancedActivity.unencryptedTempAudioFileName); //should be identical to regular audiorecording file, but keep in case it changes.
 		
 		// These files are currently being written to, so they shouldn't be uploaded now
 		files.remove(TextFileManager.getGPSFile().fileName);

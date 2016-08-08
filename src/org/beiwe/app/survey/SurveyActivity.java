@@ -4,6 +4,7 @@ import org.beiwe.app.CrashHandler;
 import org.beiwe.app.R;
 import org.beiwe.app.session.SessionActivity;
 import org.beiwe.app.storage.PersistentData;
+import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.ui.user.MainMenuActivity;
 import org.beiwe.app.ui.utils.SurveyNotifications;
 import org.json.JSONException;
@@ -49,7 +50,8 @@ public class SurveyActivity extends SessionActivity {
 		if (savedInstanceState == null) {
 			Bundle extras = getIntent().getExtras();
 			if (extras != null) {
-				Log.d("Survey renderer", "surveyId: " + surveyId);
+				// Log.d("Survey renderer", "surveyId: " + surveyId);
+				TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis() + " opened survey " + surveyId + ".");
 				renderSurvey( PersistentData.getSurveyContent(surveyId) );
 			}
 		}

@@ -3,10 +3,12 @@ package org.beiwe.app.listeners;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.TextFileManager;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Telephony;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
@@ -55,7 +57,7 @@ public class SmsReceivedLogger extends BroadcastReceiver {
                      data += EncryptionEngine.hashPhoneNumber(incomingNumber) + TextFileManager.DELIMITER;
                      data += "received MMS" + TextFileManager.DELIMITER;
 //                     TODO: Low priority. feature. determine if we can get the length of the text, if it has an attachment.
-//                     Log.i("SMSReceivedLogger", "data = " + data);
+                    Log.i("SMSReceivedLogger(SMS)", "data = " + data);
                      TextFileManager.getTextsLogFile().writeEncrypted(data);
                  }
              }
@@ -63,6 +65,7 @@ public class SmsReceivedLogger extends BroadcastReceiver {
 	}
 	
 	/** pulls out source phone number and length from an SMS, writes info to texts log. */
+	@SuppressLint("InlinedApi") @SuppressWarnings("deprecation") //these yell at you in the old/new code paths.
 	private void handleIncomingSMS(Intent intent) {
 		Bundle bundle = intent.getExtras();
 		SmsMessage[] messages = null;
@@ -72,7 +75,9 @@ public class SmsReceivedLogger extends BroadcastReceiver {
 				Object[] pdus = (Object[]) bundle.get("pdus");
 				messages = new SmsMessage[pdus.length];
 				for (int i = 0; i < pdus.length; i++) {
-					messages[i] = SmsMessage.createFromPdu( (byte[]) pdus[i]);
+					if ( android.os.Build.VERSION.SDK_INT < 19 ) { messages[i] = SmsMessage.createFromPdu( (byte[]) pdus[i] ); }
+					else { messages[i] = SmsMessage.createFromPdu( (byte[]) pdus[i], Telephony.Sms.Intents.SMS_RECEIVED_ACTION); }
+					
 					messageFrom = messages[i].getOriginatingAddress();
 					String messageBody = messages[i].getMessageBody();
 					long timestamp = messages[i].getTimestampMillis();
@@ -83,13 +88,12 @@ public class SmsReceivedLogger extends BroadcastReceiver {
 					data += messageBody.length() + TextFileManager.DELIMITER;
 					data += timestamp;
 
-					Log.i("SMSReceivedLogger", "data = " + data);
+					Log.i("SMSReceivedLogger (MMS)", "data = " + data);
 					TextFileManager.getTextsLogFile().writeEncrypted(data);
 				}
 			}
-			catch (Exception e) {
-				Log.i("SMSReceivedLogger", "SMS_RECEIVED Caught exception: " + e.getMessage());
-			}
+			catch (Exception e) { Log.e("SMSReceivedLogger", "SMS_RECEIVED Caught exception: " + e.getCause() + ", " + e.getMessage()); }
+			//TODO: "did not crash" message to crash handler message
 		}
 	}
 }

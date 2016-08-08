@@ -10,12 +10,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
-
-//most of the errors in here should be caught by a sufficiently vigilant researcher, so will not be crashhandled
 
 public class JsonParser {
 
@@ -50,8 +47,7 @@ public class JsonParser {
 		}
 		catch (JSONException e) {
 			// If rendering or parsing failed, display the error widget instead
-			Log.i("JsonParser", "Failed to parse JSON survey properly");
-			e.printStackTrace();
+			// Log.i("JsonParser", "Failed to parse JSON survey properly");
 			CrashHandler.writeCrashlog(e, appContext);
 			surveyLayout.removeAllViews();
 			surveyLayout.addView(errorWidget);

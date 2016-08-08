@@ -10,7 +10,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.util.Log;
 
 /** The Timer class provides a meeans of setting various timers.  These are used by the BackgroundService
  * for devices that must be turned on/off, and timing the user to automatically logout after a period of time.
@@ -114,7 +113,7 @@ public class Timer {
 	
 	public void startSurveyAlarm(String surveyId, Calendar alarmTime){
 		Intent intentToBeBroadcast = new Intent(surveyId);
-		Log.d("timer", "action: " + intentToBeBroadcast.getAction() );
+		// Log.d("timer", "action: " + intentToBeBroadcast.getAction() );
 		setupSurveyAlarm(surveyId, intentToBeBroadcast, alarmTime);
 	}
 	
@@ -124,8 +123,8 @@ public class Timer {
 		PendingIntent pendingIntent = PendingIntent.getBroadcast(appContext, 0, intentToBeBroadcast, 0);
 		long nextTriggerTime = alarmTime.getTimeInMillis();
 //		triggerAtMillis = System.currentTimeMillis() + 15000; //hax, debug code.
-		long timeTillFire = nextTriggerTime - System.currentTimeMillis();
-		Log.i("Timer.java", "next alarm triggers in = " + timeTillFire / 1000 + " seconds.");
+//		long timeTillFire = nextTriggerTime - System.currentTimeMillis();
+		// Log.i("Timer.java", "next alarm triggers in = " + timeTillFire / 1000 + " seconds.");
 		setExactAlarm(AlarmManager.RTC_WAKEUP, nextTriggerTime, pendingIntent);
 		PersistentData.setMostRecentSurveyAlarmTime(surveyId, nextTriggerTime);
 	}

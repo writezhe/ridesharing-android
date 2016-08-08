@@ -195,7 +195,7 @@ public class PostRequest {
 		if ( !key.startsWith("MIIBI") ) {
 			Log.e("PostRequest - register", " Received an invalid encryption key from server: " + key );
 			return 2; }
-		Log.d( "PostRequest", "Received a key: " + key );
+		// Log.d( "PostRequest", "Received a key: " + key );
 		TextFileManager.getKeyFile().deleteSafely();
 		TextFileManager.getKeyFile().writePlaintext( key );
 		return httpResponse;
@@ -229,7 +229,7 @@ public class PostRequest {
 		request.close();
 
 		// Get HTTP Response
-		Log.i("PostRequest.java", "File: " + file.getName() + " Response: " + connection.getResponseMessage());
+		// Log.d("PostRequest.java", "File: " + file.getName() + " Response: " + connection.getResponseMessage());
 		int response = connection.getResponseCode();
 		connection.disconnect();
 		return response;
@@ -261,7 +261,7 @@ public class PostRequest {
 		Callable <HttpsURLConnection> thread = new Callable<HttpsURLConnection>() {
 			@Override
 			public synchronized HttpsURLConnection call() {
-				Log.i("PostRequest.java", "Uploading files");
+				// Log.i("PostRequest.java", "Uploading files");
 				doTryUploadDelete();
 				return null; //(indentation was stupid, made a function.)
 			}
@@ -277,10 +277,10 @@ public class PostRequest {
 			try {
 				if ( tryToUploadFile(fileName) ) { TextFileManager.delete(fileName); } }
 			catch (IOException e) {
-				Log.w( "PostRequest.java", "Failed to upload file " + fileName + ". Raised exception " + e.getCause() );
+				Log.w( "PostRequest.java", "Failed to upload file " + fileName + ". Raised exception: " + e.getCause() );
 			}
 		}
-		Log.i("PostRequest.java", "Finished upload loop.");
+		// Log.i("PostRequest.java", "Finished upload loop.");
 	}
 
 

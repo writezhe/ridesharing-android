@@ -67,7 +67,7 @@ public class BluetoothListener extends BroadcastReceiver {
 	 * so we check for that and we check that ANY Bluetooth device exists. */
 	public BluetoothListener() {
 		this.bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-		Log.i("bluetooth", "required: " + Build.VERSION_CODES.JELLY_BEAN_MR2  + ", SDK INT: " + Build.VERSION.SDK_INT);
+		// Log.i("bluetooth", "required: " + Build.VERSION_CODES.JELLY_BEAN_MR2  + ", SDK INT: " + Build.VERSION.SDK_INT);
 		//We have to check if the BluetoothAdaptor is null, or if the device is not running api 18+  
 		if ( bluetoothAdapter == null || Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
 			/* It would be nice to insert the following check, but constructors for BroadcastReceivers must have 0 arguments,
@@ -90,9 +90,9 @@ public class BluetoothListener extends BroadcastReceiver {
 	 * @return True if bluetooth exists, false if bluetooth does not exist */
 	private Boolean disableBluetooth() {
 		if (!bluetoothExists) { return false; }
-		Log.d("BluetoothListener", "disable bluetooth.");
+		// Log.d("BluetoothListener", "disable bluetooth.");
 		internalBluetoothState = false;
-		//TODO: Eli. this check was incorrect for 13 months, however bonded devices are not the same as connected devices.
+		//this check was incorrect for 13 months, however bonded devices are not the same as connected devices.
 		//This check was never relevent before (nobody ever noticed), so now we are just removing the check entirely.
 		//If we want to implement more bluetooth safety checks, see http://stackoverflow.com/questions/3932228/list-connected-bluetooth-devices 
 //		if ( bluetoothAdapter.getBondedDevices().isEmpty() ) {
@@ -110,7 +110,7 @@ public class BluetoothListener extends BroadcastReceiver {
 	 * @return True if bluetooth exists, false if bluetooth does not exist. */
 	private Boolean enableBluetooth() {
 		if (!bluetoothExists) { return false; }
-		Log.d("BluetoothListener", "enable bluetooth.");
+		// Log.d("BluetoothListener", "enable bluetooth.");
 		internalBluetoothState = true;
 		if ( !externalBluetoothState ){  //if we want it on and the external world wants it off, turn it on. (we retain state) 
 			this.bluetoothAdapter.enable();
@@ -138,10 +138,11 @@ public class BluetoothListener extends BroadcastReceiver {
 	 * Sets the scanActive variable to false, and stops any running Bluetooth LE scan,
 	 * then disable Bluetooth (intelligently).
 	 * Note: we cannot actually guarantee the scan has stopped, that function returns void. */
+	@SuppressWarnings("deprecation")  //Yeah. This is totally safe.
 	@SuppressLint("NewApi")
 	public void disableBLEScan() {
 		if (!bluetoothExists) { return; }
-		Log.d("BluetoothListener", "disable BLE scan.");
+		Log.i("BluetoothListener", "disable BLE scan.");
 		scanActive = false;
 		bluetoothAdapter.stopLeScan(bluetoothCallback);
 		this.disableBluetooth(); 
@@ -150,15 +151,15 @@ public class BluetoothListener extends BroadcastReceiver {
 	
 	/** Intelligently ACTUALLY STARTS a Bluetooth LE scan.
 	 *  If Bluetooth is available, start scanning.  Makes verbose logging statements */
+	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
 	private void tryScanning() {
-		Log.d("bluetooth", "starting a scan: " + scanActive );
+		Log.i("bluetooth", "starting a scan: " + scanActive );
 		if ( isBluetoothEnabled() ) {
-			if ( bluetoothAdapter.startLeScan(bluetoothCallback) ) {
-				Log.d("bluetooth", "bluetooth LE scan started successfully."); }
+			if ( bluetoothAdapter.startLeScan(bluetoothCallback) ) { /*Log.d("bluetooth", "bluetooth LE scan started successfully.");*/ }
 			else { Log.w("bluetooth", "bluetooth LE scan NOT started successfully."); } }
-		else { Log.w("bluetooth", "bluetooth was not enabled."); } }
-
+		else { Log.w("bluetooth", "bluetooth could not be enabled?"); } }
+	
 	
 	/** LeScanCallback is code that is run when a Bluetooth LE scan returns some data.
 	*   We take the returned data and log it. */
@@ -169,7 +170,7 @@ public class BluetoothListener extends BroadcastReceiver {
 			TextFileManager.getBluetoothLogFile().writeEncrypted( System.currentTimeMillis() + "," + EncryptionEngine.safeHash( device.toString() ) + "," + rssi );
 //			Log.i("Bluetooth",  System.currentTimeMillis() + "," + device.toString() + ", " + rssi );
 		} }; 
-
+	
 		
 /*####################################################################################
 ################# the onReceive Stack for Bluetooth state messages ###################

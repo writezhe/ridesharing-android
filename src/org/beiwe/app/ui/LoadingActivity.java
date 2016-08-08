@@ -18,7 +18,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 
 /**The LoadingActivity is a temporary RunningBackgroundServiceActivity (Not a SessionActivity,
  * check out those classes if you are confused) that pops up when the user opens the app.
@@ -42,7 +41,7 @@ public class LoadingActivity extends RunningBackgroundServiceActivity {
 	protected ServiceConnection backgroundServiceConnection = new ServiceConnection() {
 	    @Override
 	    public void onServiceConnected(ComponentName name, IBinder binder) {
-	        Log.d("loading ServiceConnection", "Background Service Connected");
+	        // Log.d("loading ServiceConnection", "Background Service Connected");
 	        BackgroundServiceBinder some_binder = (BackgroundServiceBinder) binder;
 	        backgroundService = some_binder.getService();
 	        isBound = true;
@@ -51,7 +50,7 @@ public class LoadingActivity extends RunningBackgroundServiceActivity {
 
 	    @Override
 	    public void onServiceDisconnected(ComponentName name) {
-	        Log.d("loading ServiceConnection", "Background Service Disconnected");
+	        // Log.d("loading ServiceConnection", "Background Service Disconnected");
 	        backgroundService = null;
 	        isBound = false;
 	    }

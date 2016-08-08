@@ -51,29 +51,34 @@ public class BackgroundService extends Service {
 	private static BackgroundService localHandle;
 	
 	@Override
-	/** onCreate is essentially the constructor for the service, initialize variables here.*/
+	/** onCreate is essentially the constructor for the service, initialize variables here. */
 	public void onCreate() {
 		appContext = this.getApplicationContext();
-		Thread.setDefaultUncaughtExceptionHandler(new CrashHandler(appContext));
-		
-		DeviceInfo.initialize( getApplicationContext() );
-		PersistentData.initialize( getApplicationContext() );
-		TextFileManager.initialize( getApplicationContext() );
-		PostRequest.initialize( getApplicationContext() );
-		WifiListener.initialize( getApplicationContext() );
-		
-		gpsListener = new GPSListener(appContext);
-		accelerometerListener = new AccelerometerListener( appContext );
-		startBluetooth();
-		startSmsSentLogger();
-		startMmsSentLogger();
-		startCallLogger();
-		startPowerStateListener();
-		localHandle = this;  //yes yes I know.
+		//		Thread.setDefaultUncaughtExceptionHandler(new CrashHandler(appContext));
+		PersistentData.initialize( appContext );
+		TextFileManager.initialize( appContext );
+		PostRequest.initialize( appContext );
+		localHandle = this;  //yes yes, hacky, I know.
 		registerTimers(appContext);
-		DeviceInfo.getPhoneNumber();
-		//If this device is registered, start timers!
-		if (PersistentData.isRegistered()) { startTimers(); }
+		
+		doSetup();
+	}
+
+	public void doSetup() {
+		//Accelerometer and power state don't need permissons
+		startPowerStateListener();
+		if ( PersistentData.getAccelerometerEnabled() ) { accelerometerListener = new AccelerometerListener( appContext ); }
+		//Bluetooth, wifi, gps, calls, and texts need permissions
+		if ( PermissionHandler.confirmBluetooth(appContext)) { startBluetooth(); }
+		if ( PermissionHandler.confirmWifi(appContext) ) { WifiListener.initialize( appContext ); }
+		if ( PermissionHandler.confirmGps(appContext)) { gpsListener = new GPSListener(appContext); } //FIXME: investigate behavior if GPS is not enabled in time to start at time of consent button...
+		if ( PermissionHandler.confirmTexts(appContext) ) { startSmsSentLogger(); startMmsSentLogger(); }
+		if ( PermissionHandler.confirmCalls(appContext) ) { startCallLogger(); }
+		//Only do the following if the device is registered
+		if ( PersistentData.isRegistered() ) {
+			DeviceInfo.initialize( appContext ); //if at registration this has already been initialized. (we don't care.)			
+			startTimers();
+		}
 	}
 	
 	/** Stops the BackgroundService instance. */
@@ -92,7 +97,7 @@ public class BackgroundService extends Service {
 		if ( appContext.getPackageManager().hasSystemFeature( PackageManager.FEATURE_BLUETOOTH_LE ) && PersistentData.getBluetoothEnabled() ) {
 			this.bluetoothListener = new BluetoothListener();
 			if ( this.bluetoothListener.isBluetoothEnabled() ) {
-				Log.i("Background Service", "success, actually doing bluetooth things.");
+//				Log.i("Background Service", "success, actually doing bluetooth things.");
 				registerReceiver(this.bluetoothListener, new IntentFilter("android.bluetooth.adapter.action.STATE_CHANGED") ); }
 			else {
 				//TODO: Low priority. Eli. Track down why this error log pops up, cleanup.  -- the above check should be for the (new) doesBluetoothCapabilityExist function instead of isBluetoothEnabled
@@ -103,7 +108,7 @@ public class BackgroundService extends Service {
 			if (PersistentData.getBluetoothEnabled()) {
 				TextFileManager.getDebugLogFile().writeEncrypted("Device does not support bluetooth LE, bluetooth features disabled.");
 				Log.w("BackgroundService bluetooth init", "Device does not support bluetooth LE, bluetooth features disabled."); }
-			else { Log.d("BackgroundService bluetooth init", "Bluetooth not enabled for study."); }
+			// else { Log.d("BackgroundService bluetooth init", "Bluetooth not enabled for study."); }
 			this.bluetoothListener = null; }
 	}
 	
@@ -164,27 +169,27 @@ public class BackgroundService extends Service {
 	
 	public void startTimers() {
 		Long now = System.currentTimeMillis();
-		Log.d("BackgroundService", "running start timer logic.");
-		if (PersistentData.getAccelerometerEnabled() && ( //if accelerometer data recording is enabled and 
-				PersistentData.getMostRecentAlarmTime( getString(R.string.turn_accelerometer_on )) < now || //the most recent accelerometer alarm time is in the past, or
-				!timer.alarmIsSet(Timer.accelerometerOnIntent) ) ) { //there is no scheduled accelerometer-on timer 
+		Log.i("BackgroundService", "running startTimer logic.");
+		if (PersistentData.getAccelerometerEnabled() && ( //if accelerometer data recording is enabled and...
+				PersistentData.getMostRecentAlarmTime( getString(R.string.turn_accelerometer_on )) < now || //the most recent accelerometer alarm time is in the past, or...
+				!timer.alarmIsSet(Timer.accelerometerOnIntent) ) ) { //there is no scheduled accelerometer-on timer. 
 			sendBroadcast( Timer.accelerometerOnIntent ); // start accelerometer timers (immediately runs accelerometer recording session).
 			//note: when there is no accelerometer-off timer that means we are in-between scans.  This state is fine, so we don't check for it.
 		}
-		
-		if (PersistentData.getGpsEnabled() && (  //identical logic to accelerometer-start logic
+		if ( PermissionHandler.confirmGps(appContext) && (  //identical logic to accelerometer-start logic, but we also check for permissions
+				//FIXME: that other fixme about gps alarms, make the alarm trigger but the blowup if lacking the permission ... not.
 				PersistentData.getMostRecentAlarmTime( getString( R.string.turn_gps_on )) < now ||
 				!timer.alarmIsSet(Timer.gpsOnIntent) ) ) {
 			sendBroadcast( Timer.gpsOnIntent ); }
 		
-		if (PersistentData.getWifiEnabled() && ( //identical logic to accelerometer start logic, except we don't have an off-timer to not care about. 
+		if ( PermissionHandler.confirmWifi(appContext) && ( //identical logic to accelerometer start logic, except we don't have an off-timer to not care about. 
 				PersistentData.getMostRecentAlarmTime( getString(R.string.run_wifi_log)) < now || //the most recent wifi log time is in the past or
 				!timer.alarmIsSet(Timer.wifiLogIntent) ) ) {
 			sendBroadcast( Timer.wifiLogIntent ); }
 		
 		//if Bluetooth recording is enabled and there is no scheduled next-bluetooth-enable event, set up the next Bluetooth-on alarm.
 		//(Bluetooth needs to run at absolute points in time, it should not be started if a scheduled event is missed.)
-		if (PersistentData.getBluetoothEnabled() && !timer.alarmIsSet(Timer.bluetoothOnIntent)) {
+		if ( PermissionHandler.confirmBluetooth(appContext) && !timer.alarmIsSet(Timer.bluetoothOnIntent)) {
 			timer.setupExactSingleAbsoluteTimeAlarm(PersistentData.getBluetoothTotalDurationMilliseconds(), PersistentData.getBluetoothGlobalOffsetMilliseconds(), Timer.bluetoothOnIntent); }
 		
 		// Functionality timers. We don't need aggressive checking for if these timers have been missed, as long as they run eventually it is fine.
@@ -238,11 +243,12 @@ public class BackgroundService extends Service {
 				accelerometerListener.turn_off();
 				return; }
 			if (broadcastAction.equals( appContext.getString(R.string.turn_gps_off) ) ) {
-				gpsListener.turn_off();
+				if ( PermissionHandler.checkGpsPermissions(appContext) ) { gpsListener.turn_off(); }
 				return; }
 			
 			/** Enable active sensors, reset timers. */
-			if (broadcastAction.equals( appContext.getString(R.string.turn_accelerometer_on) ) ) { //accelerometer
+			//Accelerometer. We automatically have permissions required for accelerometer.
+			if (broadcastAction.equals( appContext.getString(R.string.turn_accelerometer_on) ) ) {
 				if ( !PersistentData.getAccelerometerEnabled() ) { Log.e("BackgroundService Listener", "invalid Accelerometer on received"); return; }
 				accelerometerListener.turn_on();
 				//start both the sensor-off-action timer, and the next sensor-on-timer.
@@ -251,16 +257,20 @@ public class BackgroundService extends Service {
 				//record the system time that the next alarm is supposed to go off at, so that we can recover in the event of a reboot or crash. 
 				PersistentData.setMostRecentAlarmTime(getString(R.string.turn_accelerometer_on), alarmTime );
 				return; }
-			if (broadcastAction.equals( appContext.getString(R.string.turn_gps_on) ) ) { //GPS (identical logic to accelerometer above)
+			//GPS. Almost identical logic to accelerometer above, but adds checkGPS to handle any permissions issues.
+			if (broadcastAction.equals( appContext.getString(R.string.turn_gps_on) ) ) {
 				if ( !PersistentData.getGpsEnabled() ) { Log.e("BackgroundService Listener", "invalid GPS on received"); return; }
-				gpsListener.turn_on();
+				if ( PermissionHandler.checkGpsPermissions(appContext) ) { gpsListener.turn_on(); }
+				else { TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis() + " user has not provided permission for GPS."); } 
 				timer.setupExactSingleAlarm(PersistentData.getGpsOnDurationMilliseconds(), Timer.gpsOffIntent);
 				long alarmTime = timer.setupExactSingleAlarm(PersistentData.getGpsOnDurationMilliseconds() + PersistentData.getGpsOffDurationMilliseconds(), Timer.gpsOnIntent);
 				PersistentData.setMostRecentAlarmTime(getString(R.string.turn_gps_on), alarmTime );
 				return; }
-			if (broadcastAction.equals( appContext.getString(R.string.run_wifi_log) ) ) { //run a wifi scan.  Very similar to accelerometer/GPS, but there is no off-timer.
+			//run a wifi scan.  Most similar to GPS, but without an off-timer.
+			if (broadcastAction.equals( appContext.getString(R.string.run_wifi_log) ) ) {
 				if ( !PersistentData.getWifiEnabled() ) { Log.e("BackgroundService Listener", "invalid WiFi scan received"); return; }
-				WifiListener.scanWifi();
+				if ( PermissionHandler.checkWifiPermissions(appContext) ) { WifiListener.scanWifi(); }
+				else { TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis() + " user has not provided permission for Wifi."); }
 				long alarmTime = timer.setupExactSingleAlarm(PersistentData.getWifiLogFrequencyMilliseconds(), Timer.wifiLogIntent);
 				PersistentData.setMostRecentAlarmTime( getString(R.string.run_wifi_log), alarmTime );
 				return; }
@@ -269,11 +279,14 @@ public class BackgroundService extends Service {
 			 * The Bluetooth-on action sets the corresponding Bluetooth-off timer, the Bluetooth-off action sets the next Bluetooth-on timer.*/
 			if (broadcastAction.equals( appContext.getString(R.string.turn_bluetooth_on) ) ) {
 				if ( !PersistentData.getBluetoothEnabled() ) { Log.e("BackgroundService Listener", "invalid Bluetooth on received"); return; }
-				if (bluetoothListener != null) bluetoothListener.enableBLEScan();
+				if ( PermissionHandler.checkBluetoothPermissions(appContext) ) {
+					if (bluetoothListener != null) bluetoothListener.enableBLEScan(); }
+				else { TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis() + " user has not provided permission for Bluetooth."); }
 				timer.setupExactSingleAlarm(PersistentData.getBluetoothOnDurationMilliseconds(), Timer.bluetoothOffIntent);
 				return; }
 			if (broadcastAction.equals( appContext.getString(R.string.turn_bluetooth_off) ) ) {
-				if ( bluetoothListener != null) bluetoothListener.disableBLEScan();
+				if ( PermissionHandler.checkBluetoothPermissions(appContext) ) {
+					if ( bluetoothListener != null) bluetoothListener.disableBLEScan(); }
 				timer.setupExactSingleAbsoluteTimeAlarm(PersistentData.getBluetoothTotalDurationMilliseconds(), PersistentData.getBluetoothGlobalOffsetMilliseconds(), Timer.bluetoothOnIntent);
 				return; }			
 			
@@ -302,7 +315,7 @@ public class BackgroundService extends Service {
 			
 			//checks if the action is the id of a survey (expensive), if so pop up the notification for that survey, schedule the next alarm
 			if ( PersistentData.getSurveyIds().contains( broadcastAction ) ) {
-				Log.w("BACKGROUND SERVICE", "trying to start notification: " + broadcastAction);
+//				Log.i("BACKGROUND SERVICE", "new notification: " + broadcastAction);
 				SurveyNotifications.displaySurveyNotification(appContext, broadcastAction);
 				SurveyScheduler.scheduleSurvey(broadcastAction);
 				return; }
@@ -358,7 +371,6 @@ public class BackgroundService extends Service {
 		//how does this even...  Whatever, 10 seconds later the background service will start.
 		Intent restartServiceIntent = new Intent( getApplicationContext(), this.getClass() );
 	    restartServiceIntent.setPackage( getPackageName() );
-	    // TODO: Research. Eli/Josh. We may want to change PendingIntent.FLAG_ONE_SHOT to FLAG_CANCEL_CURRENT, research the benefits, this might be a pain to test...
 	    PendingIntent restartServicePendingIntent = PendingIntent.getService( getApplicationContext(), 1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT );
 	    AlarmManager alarmService = (AlarmManager) getApplicationContext().getSystemService( Context.ALARM_SERVICE );
 	    alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 500, restartServicePendingIntent);
