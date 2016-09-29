@@ -30,9 +30,10 @@ public class DeviceInfo {
 	 * 		Enhanced audio functionality is included and functional, fixed crash that came up on a device when the app was uninstalled and then reinstalled?
 	 * 		A functionally identical 6 was later released, it contains a new error message for a new type of iOS-related registration error.
 	 * 7: audio survey files now contain the surveyid for the correct audio survey.
-	 * 8: Now support a flag for data upload over cellular, fixed bug in wifi scanning. */
+	 * 8: Now support a flag for data upload over cellular, fixed bug in wifi scanning.
+	 * 9: Moves Record/Play buttons outside the scroll window on voice recording screen */
 	
-	private static String beiweVersion = "8";
+	private static String beiweVersion = "9";
 	//DO NOT FORGET TO UPDATE THE MANIFEST VERSION NUMBERS AS WELL.
 	
 	private static String androidID;
