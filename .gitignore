@@ -5,9 +5,6 @@
 # files for the dex VM
 *.dex
 
-# Exclude libs for the project because we don't need it
-libs/
-
 # Java class files
 *.class
 
