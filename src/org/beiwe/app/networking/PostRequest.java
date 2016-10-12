@@ -254,6 +254,7 @@ public class PostRequest {
 			public synchronized HttpsURLConnection call() {
 				// Log.i("PostRequest.java", "Uploading files");
 				doTryUploadDelete();
+				Log.i("DOING UPLOAD STUFF", "DONE DOING UPLOAD STUFF");
 				return null; //(indentation was stupid, made a function.)
 			}
 		};
