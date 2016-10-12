@@ -116,7 +116,7 @@
     <string name="play_button_stop_text">Stop</string>
     <string name="record_button_text">Record</string>
     <string name="record_button_stop_text">Stop</string>
-    <string name="done_button_text">Done</string>
+    <string name="done_button_text">Save</string>
     <string name="timeout_msg_1st_half">"The voice recording can't be longer than "</string>
     <string name="timeout_msg_2nd_half">" minutes, so your recording was automatically stopped and saved"</string>
 
