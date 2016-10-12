@@ -21,6 +21,7 @@ import org.beiwe.app.ui.LoadingActivity;
 import org.beiwe.app.ui.user.LoginActivity;
 import org.beiwe.app.ui.utils.SurveyNotifications;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -33,6 +34,7 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -128,14 +130,19 @@ public class BackgroundService extends Service {
 		this.getContentResolver().registerContentObserver(Uri.parse("content://call_log/calls/"), true, callLogger); }
 	
 	/** Initializes the PowerStateListener. 
-	 * The PowerStateListener required the ACTION_SCREEN_OFF and ACTION_SCREEN_ON intents
-	 * be registered programmatically.  They do not work if registered in the app's manifest. */
+	 * The PowerStateListener requires the ACTION_SCREEN_OFF and ACTION_SCREEN_ON intents
+	 * be registered programatically. They do not work if registered in the app's manifest.
+	 * Same for the ACTION_POWER_SAVE_MODE_CHANGED and ACTION_DEVICE_IDLE_MODE_CHANGED filters,
+	 * though they are for monitoring deeper power state changes in 5.0 and 6.0, respectively. */
+	@SuppressLint("InlinedApi")
 	private void startPowerStateListener() {
 		IntentFilter filter = new IntentFilter(); 
 		filter.addAction(Intent.ACTION_SCREEN_ON);
 		filter.addAction(Intent.ACTION_SCREEN_OFF);
+		if (android.os.Build.VERSION.SDK_INT >= 21) { filter.addAction(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED); }
+		if (android.os.Build.VERSION.SDK_INT >= 23) { filter.addAction(PowerManager.ACTION_DEVICE_IDLE_MODE_CHANGED); }  
 		registerReceiver( (BroadcastReceiver) new PowerStateListener(), filter);
-		PowerStateListener.start();
+		PowerStateListener.start(appContext);
 	}
 	
 	

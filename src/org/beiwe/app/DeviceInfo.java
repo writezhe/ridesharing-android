@@ -31,9 +31,10 @@ public class DeviceInfo {
 	 * 		A functionally identical 6 was later released, it contains a new error message for a new type of iOS-related registration error.
 	 * 7: audio survey files now contain the surveyid for the correct audio survey.
 	 * 8: Now support a flag for data upload over cellular, fixed bug in wifi scanning.
-	 * 9: Moves Record/Play buttons outside the scroll window on voice recording screen */
+	 * 9: Moves Record/Play buttons outside the scroll window on voice recording screen.
+	 * 10: Change to TextFileManager to potentially improve uninitialized errors, added device idle and low power mode change to power state listener.*/
 	
-	private static String beiweVersion = "9";
+	private static String beiweVersion = "10";
 	//DO NOT FORGET TO UPDATE THE MANIFEST VERSION NUMBERS AS WELL.
 	
 	private static String androidID;
