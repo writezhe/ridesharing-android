@@ -4,6 +4,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import org.beiwe.app.ui.DebugInterfaceActivity;
+import org.beiwe.app.ui.LoadingActivity;
+import org.beiwe.app.ui.user.MainMenuActivity;
+
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -46,6 +50,12 @@ public class CrashHandler implements java.lang.Thread.UncaughtExceptionHandler{
 	 * @param context An android Context */
 	public static void writeCrashlog(Throwable exception, Context context) {
 		//TODO: low priority. Add optional message parameter
+		String appVariant = "unknown";
+//		public static Class loadThisActivity = DebugInterfaceActivity.class;
+//		public static Class loadThisActivity = MainMenuActivity.class;
+		if( LoadingActivity.loadThisActivity == MainMenuActivity.class ) { appVariant = "clinical variant"; }
+		if( LoadingActivity.loadThisActivity == DebugInterfaceActivity.class ) { appVariant = "debug variant"; }
+		
 		String exceptionInfo =  System.currentTimeMillis() + "\n"
 				                + "BeiweVersion:" + DeviceInfo.getBeiweVersion()
 								+ ", AndroidVersion:" + DeviceInfo.getAndroidVersion()
@@ -53,8 +63,11 @@ public class CrashHandler implements java.lang.Thread.UncaughtExceptionHandler{
 								+ ", Brand:" + DeviceInfo.getBrand()
 								+ ", HardwareId:" + DeviceInfo.getHardwareId()
 								+ ", Manufacturer:" + DeviceInfo.getManufacturer()
-								+ ", Model:" + DeviceInfo.getModel() + "\n";
+								+ ", Model:" + DeviceInfo.getModel()
+								+ ", App Variant:" + appVariant + "\n";
 
+		
+		
 		exceptionInfo += "Error message: " + exception.getMessage() + "\n";
 		exceptionInfo += "Error type: " + exception.getClass() + "\n";
 
