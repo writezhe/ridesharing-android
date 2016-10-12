@@ -61,23 +61,56 @@ public class TextFileManager {
 	
 	//"global" static variables
 	private static Context appContext;
-	private static String getter_error = "You tried to access a file before calling TextFileManager.start().";
-	private static void throwGetterError() { throw new NullPointerException( getter_error ); }
+	private static int GETTER_TIMEOUT = 75; //value is in milliseconds
+	private static String getter_error = "Tried to access %s before calling TextFileManager.start().";
+	private static String broken_getter_error = "Tried to access %s before calling TextFileManager.start(), but the timeout failed.";
+	private static void throwGetterError(String sourceName) { throw new NullPointerException( String.format(getter_error, sourceName) ); }
+	private static void throwTimeoutBrokeGetterError(String sourceName) { throw new NullPointerException( String.format(broken_getter_error, sourceName) ); }
 	
 	//public static getters.
-	// These are all simple and nearly identical, so they are squished into one-liners. 
-	public static TextFileManager getAccelFile(){ if ( accelFile == null ) throwGetterError(); return accelFile; }
-	public static TextFileManager getGPSFile(){ if ( GPSFile == null ) throwGetterError(); return GPSFile; }
-	public static TextFileManager getPowerStateFile(){ if ( powerStateLog == null ) throwGetterError(); return powerStateLog; }
-	public static TextFileManager getCallLogFile(){ if ( callLog == null ) throwGetterError(); return callLog; }
-	public static TextFileManager getTextsLogFile(){ if ( textsLog == null ) throwGetterError(); return textsLog; }
-	public static TextFileManager getBluetoothLogFile(){ if ( bluetoothLog == null ) throwGetterError(); return bluetoothLog; }
-	public static TextFileManager getWifiLogFile(){ if ( wifiLog == null ) throwGetterError(); return wifiLog; }
-	public static TextFileManager getSurveyTimingsFile(){ if ( surveyTimings == null ) throwGetterError(); return surveyTimings; }
-	public static TextFileManager getSurveyAnswersFile(){ if ( surveyAnswers == null ) throwGetterError(); return surveyAnswers; }
-	//the persistent files
-	public static TextFileManager getDebugLogFile(){ if ( debugLogFile == null ) throwGetterError(); return debugLogFile; }
-	public static TextFileManager getKeyFile() { if ( keyFile == null ) throwGetterError(); return keyFile; }
+	// These are all simple and nearly identical, so they are squished into one-liners.
+	// checkAvailableWithTimeout throws an error and the app restarts if the TextFile is unavailable.
+	public static TextFileManager getAccelFile() { checkAvailableWithTimeout("accelFile"); return accelFile; }
+	public static TextFileManager getGPSFile() { checkAvailableWithTimeout("GPSFile"); return GPSFile; }
+	public static TextFileManager getPowerStateFile() { checkAvailableWithTimeout("powerStateLog"); return powerStateLog; }
+	public static TextFileManager getCallLogFile() { checkAvailableWithTimeout("callLog"); return callLog; }
+	public static TextFileManager getTextsLogFile() { checkAvailableWithTimeout("textsLog"); return textsLog; }
+	public static TextFileManager getBluetoothLogFile() { checkAvailableWithTimeout("bluetoothLog"); return bluetoothLog; }
+	public static TextFileManager getWifiLogFile() { checkAvailableWithTimeout("wifiLog"); return wifiLog; }
+	public static TextFileManager getSurveyTimingsFile() { checkAvailableWithTimeout("surveyTimings"); return surveyTimings; }
+	public static TextFileManager getSurveyAnswersFile() { checkAvailableWithTimeout("surveyAnswers"); return surveyAnswers; }
+	//(the persistent files)
+	public static TextFileManager getDebugLogFile() { checkAvailableWithTimeout("debugLogFile"); return debugLogFile; }
+	public static TextFileManager getKeyFile() { checkAvailableWithTimeout("keyFile"); return keyFile; }
+	
+	/** Checks the availability of a given TextFile, returns true if available, false otherwise. */
+	private static Boolean checkTextFileAvailable(String thing) {
+		//the check for availability is whether the appropriate variable is allocated
+		if (thing == "accelFile") { return (accelFile != null); }										
+		if (thing == "GPSFile") { return (GPSFile != null); }
+		if (thing == "powerStateLog") { return (powerStateLog != null); }
+		if (thing == "callLog") { return (callLog != null); }
+		if (thing == "textsLog") { return (textsLog != null); }
+		if (thing == "bluetoothLog") { return (bluetoothLog != null); }
+		if (thing == "wifiLog") { return (wifiLog != null); }
+		if (thing == "surveyTimings") { return (surveyTimings != null); }
+		if (thing == "surveyAnswers") { return (surveyAnswers != null); }
+		if (thing == "debugLogFile") { return (debugLogFile != null); }
+		if (thing == "keyFile") { return (keyFile != null); }
+		throw new NullPointerException(String.format("invalid key %s provided for checking available text file.", thing));
+	}
+	
+	/** We check for the availability of the given TextFile, if it fails to exist we wait GETTER_TIMEOUT milliseconds and then try again. 
+	 * On a regular case error we throw the getter error, if the sleep operation breaks we throw the broken timeout error. */
+	private static void checkAvailableWithTimeout(String textFile) {
+		if ( !checkTextFileAvailable(textFile) ) {
+			try {
+				Thread.sleep(GETTER_TIMEOUT);
+				if ( !checkTextFileAvailable(textFile) ) { throwGetterError(textFile); }
+			}
+			catch (InterruptedException e) { throwTimeoutBrokeGetterError(textFile); }
+		}
+	}
 	
 	//and (finally) the non-static object instance variables
 	public String name = null;
