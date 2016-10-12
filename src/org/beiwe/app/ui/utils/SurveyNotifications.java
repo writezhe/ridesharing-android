@@ -94,13 +94,9 @@ public class SurveyNotifications {
 	@SuppressWarnings("rawtypes")
 	private static Class getAudioSurveyClass(String surveyId) {
 		try { JSONObject surveySettings = new JSONObject( PersistentData.getSurveySettings(surveyId) );
-		
-		Log.e("audio survey notification", surveySettings.getString("audio_survey_type") );
 			if ( surveySettings.getString("audio_survey_type").equals("raw") ) {
-				Log.e("audio survey notification", "this will be an enhanced audio survey." );
 				return AudioRecorderEnhancedActivity.class; } }
 		catch (JSONException e) { e.printStackTrace(); }
-		Log.e("audio survey notification", "this will be a normal audio survey." );
 		return AudioRecorderActivity.class;
 	}
 }
