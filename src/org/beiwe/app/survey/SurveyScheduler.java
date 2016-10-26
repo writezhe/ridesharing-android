@@ -19,6 +19,12 @@ import android.content.Intent;
 import android.util.Log;
   
 //TODO: Low priority. Eli. document.
+/**I am ... 85% certain time zones work like this:
+When a survey trigger is scheduled, that event is in terms of relative time, i.e. "in 3 hours do a thing."
+That relative-time event is (pretty sure) calculated using a time-zone aware entity.
+The result is that any currently-waiting event triggers will not be changed by a time zone transition, but any new survey trigger calculations will be in the current (new) timezone.
+*/
+
 public class SurveyScheduler {
 	
 	public static void checkImmediateTriggerSurvey(Context appContext, String surveyId) {
