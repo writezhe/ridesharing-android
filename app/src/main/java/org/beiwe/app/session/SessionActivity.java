@@ -11,6 +11,7 @@ import org.beiwe.app.ui.user.AboutActivityLoggedIn;
 import org.beiwe.app.ui.user.GraphActivity;
 import org.beiwe.app.ui.user.LoginActivity;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -136,7 +137,7 @@ public class SessionActivity extends RunningBackgroundServiceActivity {
 	@TargetApi(23)
 	private void goToPowerSettings(Integer powerCallbackIdentifier) {
 		// Log.i("sessionActivity", "goToSettings");
-        Intent powerSettings = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:" + getPackageName()));
+        @SuppressLint("BatteryLife") Intent powerSettings = new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:" + getPackageName()));
         powerSettings.addCategory(Intent.CATEGORY_DEFAULT);
         powerSettings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivityForResult(powerSettings, powerCallbackIdentifier);

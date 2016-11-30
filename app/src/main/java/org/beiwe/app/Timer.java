@@ -39,6 +39,7 @@ public class Timer {
 	public static Intent checkForNewSurveysIntent;
 	
 	// Intent filters
+	//TODO: Eli. These are never used? investigate.
 	public IntentFilter getAccelerometerOnIntentFilter() { return new IntentFilter( accelerometerOnIntent.getAction() ); }
 	public IntentFilter getAccelerometerOffIntentFilter() { return new IntentFilter( accelerometerOffIntent.getAction() ); }
 	public IntentFilter getBluetoothOffIntentFilter() { return new IntentFilter( bluetoothOffIntent.getAction() ); }

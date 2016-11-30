@@ -32,7 +32,7 @@ public class SmsSentLogger extends ContentObserver {
 
 	private TextFileManager smsLogFile = null;
 	private Handler handler = null;
-	Context appContext = null;
+	private Context appContext = null;
 	
 	public SmsSentLogger(Handler theHandler, Context context) {
 		super(theHandler);
@@ -46,9 +46,10 @@ public class SmsSentLogger extends ContentObserver {
 	public void onChange(boolean selfChange) {
 		super.onChange(selfChange);		
 		try {
+			//FIXME: test closing the query, cursor.close();
 			Cursor cursor = appContext.getContentResolver().query( Uri.parse("content://sms"), null, null, null, null );
-			cursor.moveToNext();
-					
+			cursor.moveToNext(); //TODO: low priority. Android studio is indicating a this can blow up.
+
 			String address = cursor.getString(cursor.getColumnIndex("address"));
 			String body = cursor.getString(cursor.getColumnIndex("body"));
 			String timestamp = cursor.getString(cursor.getColumnIndex("date"));
@@ -59,7 +60,6 @@ public class SmsSentLogger extends ContentObserver {
 			 * That would provide more data on draft messages, messages not sent immediately, etc.
 			 * We could also use this class to log incoming messages as well as outgoing messages. */
 			if (msgType == TextBasedSmsColumns.MESSAGE_TYPE_SENT) {
-				
 	//			"timestamp,hashed phone number,sent vs received,message length,time sent";
 				String data = "" + timestamp + TextFileManager.DELIMITER;
 				data += EncryptionEngine.hashPhoneNumber(address) + TextFileManager.DELIMITER;
@@ -77,7 +77,6 @@ public class SmsSentLogger extends ContentObserver {
 			}
 		}
 		catch (Exception e) { CrashHandler.writeCrashlog(e, appContext); }
-		
 	}	
 }
 

@@ -12,6 +12,7 @@ import android.util.Log;
 /** Contains a single function to check whether wifi is active and functional.
  * @author Eli Jones, Joshua Zagorsky */
 
+//TODO: investigate the class local option that android studio is prompting for
 public class NetworkUtility {
 	
 	/**Return TRUE if WiFi is connected; FALSE otherwise.

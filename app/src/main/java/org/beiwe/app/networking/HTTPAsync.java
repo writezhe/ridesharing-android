@@ -56,7 +56,7 @@ public class HTTPAsync extends AsyncTask<Void, Void, Void> {
 	
 	//TODO: Low priority. Eli/Josh.  move these error messages to strings.xml
 	/**Checks a given response code sent from the server, and then returns a string corresponding to that code's meaning.
-	 * @param responseCode
+	 * @param responseCode HTTP response code
 	 * @return String to be displayed on the Alert in case of a problem	 */
 	public static String responseCodeAlert(int responseCode) {
 		if (responseCode == 200) {return "OK";}

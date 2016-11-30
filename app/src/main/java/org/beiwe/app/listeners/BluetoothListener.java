@@ -51,11 +51,10 @@ public class BluetoothListener extends BroadcastReceiver {
 	private Boolean internalBluetoothState;
 	private Boolean externalBluetoothState;
 	
-	/** returns whether device version is capable of using Bluetooth LE */
+	/** Returns whether device version is capable of using Bluetooth LE */
 	public boolean doesBluetoothCapabilityExist() { return bluetoothExists; }
 	
-	/**Checks that bluetooth exists and is enabled
-	 * @return */
+	/** Checks that bluetooth exists and is enabled. */
 	public Boolean isBluetoothEnabled() {
 		if ( bluetoothExists ) { return bluetoothAdapter.isEnabled(); }
 		else { return false; }

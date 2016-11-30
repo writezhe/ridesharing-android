@@ -44,7 +44,7 @@ public class GPSListener implements LocationListener {
 	 * GPS provider, both if possible.  It is NOT activated upon instantiation.  Requires an 
 	 * application Context object be passed in in order to interface with location services.
 	 * When activated using the turn_on() function it will log any location updates to the GPS log.
-	 * @param applicationContext A Context provided an Activity or Service. */
+	 * @param appContext A Context provided an Activity or Service. */
 	public GPSListener (Context appContext){
 		this.appContext = appContext;
 		pkgManager = this.appContext.getPackageManager();
@@ -61,6 +61,7 @@ public class GPSListener implements LocationListener {
 	}
 	
 	/** Turns on GPS providers, provided they are accessible. */
+	@SuppressWarnings("MissingPermission")
 	public synchronized void turn_on(){
 		//if both DNE, return false.
 		if ( !trueGPS & !networkGPS ) {
@@ -80,6 +81,7 @@ public class GPSListener implements LocationListener {
 	}
 
 	/** Disable all location updates */
+	@SuppressWarnings("MissingPermission")
 	public synchronized void turn_off(){
 		// pretty confident this cannot fail.
 		locationManager.removeUpdates(this);

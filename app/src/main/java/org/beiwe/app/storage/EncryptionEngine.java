@@ -73,7 +73,7 @@ public class EncryptionEngine {
 	 * Grabbing the last 10 numerical characters is much simpler than using something like this:
 	 * https://github.com/googlei18n/libphonenumber
 	 * 
-	 * @param phoneNumber
+	 * @param phoneNumber a string representing a phone number
 	 * @return a hexadecimal string, or an error message string */
 	public static String hashPhoneNumber(String phoneNumber) {
 

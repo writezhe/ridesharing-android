@@ -34,11 +34,10 @@ import android.util.Log;
 
 //TODO: Low priority. Eli. clean this up and update docs. It does not adequately state that it puts into any request automatic security parameters, and it is not obvious why some of the functions exist (minimal http thing)
 public class PostRequest {
-
+	//TODO: is there a way to do this without a static context.
 	private static Context appContext;	
 
-	/**Uploads must be initialized with an appContext before they can access the wifi state or upload a _file_.
-	 * @param some applicationContext */
+	/**Uploads must be initialized with an appContext before they can access the wifi state or upload a _file_. */
 	private PostRequest( Context applicationContext ) { appContext = applicationContext; }
 
 	/** Simply runs the constructor, using the applcationContext to grab variables.  Idempotent. */
@@ -52,7 +51,7 @@ public class PostRequest {
 
 	/**For use with Async tasks.
 	 * This opens a connection with the server, sends the HTTP parameters, then receives a response code, and returns it.
-	 * @param parameters
+	 * @param parameters HTTP parameters
 	 * @return serverResponseCode */
 	public static int httpRegister( String parameters, String url ) {
 		try {
@@ -70,7 +69,7 @@ public class PostRequest {
 
 	/**For use with Async tasks.
 	 * Makes an HTTP post request with the provided URL and parameters, returns the server's response code from that request
-	 * @param parameters
+	 * @param parameters HTTP parameters
 	 * @return an int of the server's response code from the HTTP request */
 	public static int httpRequestcode( String parameters, String url, String newPassword ) {
 		try {
@@ -86,8 +85,10 @@ public class PostRequest {
 
 	/**For use with Async tasks.
 	 * Makes an HTTP post request with the provided URL and parameters, returns a string of the server's entire response. 
-	 * @param urlString
+	 * @param parameters HTTP parameters
+	 * @param urlString a string containing a url
 	 * @return a string of the contents of the return from an HTML request.*/
+	//TODO: investigate the android studio warning about making this a package local function
 	public static String httpRequestString(String parameters, String urlString)  {
 		try { return doPostRequestGetResponseString( parameters, urlString ); }
 		catch (IOException e) {

@@ -86,17 +86,17 @@ public class TextFileManager {
 	/** Checks the availability of a given TextFile, returns true if available, false otherwise. */
 	private static Boolean checkTextFileAvailable(String thing) {
 		//the check for availability is whether the appropriate variable is allocated
-		if (thing == "accelFile") { return (accelFile != null); }										
-		if (thing == "GPSFile") { return (GPSFile != null); }
-		if (thing == "powerStateLog") { return (powerStateLog != null); }
-		if (thing == "callLog") { return (callLog != null); }
-		if (thing == "textsLog") { return (textsLog != null); }
-		if (thing == "bluetoothLog") { return (bluetoothLog != null); }
-		if (thing == "wifiLog") { return (wifiLog != null); }
-		if (thing == "surveyTimings") { return (surveyTimings != null); }
-		if (thing == "surveyAnswers") { return (surveyAnswers != null); }
-		if (thing == "debugLogFile") { return (debugLogFile != null); }
-		if (thing == "keyFile") { return (keyFile != null); }
+		if (thing.equals("accelFile") ) { return (accelFile != null); }
+		if (thing.equals("GPSFile") ) { return (GPSFile != null); }
+		if (thing.equals("powerStateLog") ) { return (powerStateLog != null); }
+		if (thing.equals("callLog") ) { return (callLog != null); }
+		if (thing.equals("textsLog") ) { return (textsLog != null); }
+		if (thing.equals("bluetoothLog") ) { return (bluetoothLog != null); }
+		if (thing.equals("wifiLog") ) { return (wifiLog != null); }
+		if (thing.equals("surveyTimings") ) { return (surveyTimings != null); }
+		if (thing.equals("surveyAnswers") ) { return (surveyAnswers != null); }
+		if (thing.equals("debugLogFile") ) { return (debugLogFile != null); }
+		if (thing.equals("keyFile") ) { return (keyFile != null); }
 		throw new NullPointerException(String.format("invalid key %s provided for checking available text file.", thing));
 	}
 	

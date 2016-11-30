@@ -66,8 +66,6 @@ public class CrashHandler implements java.lang.Thread.UncaughtExceptionHandler{
 								+ ", Model:" + DeviceInfo.getModel()
 								+ ", App Variant:" + appVariant + "\n";
 
-		
-		
 		exceptionInfo += "Error message: " + exception.getMessage() + "\n";
 		exceptionInfo += "Error type: " + exception.getClass() + "\n";
 

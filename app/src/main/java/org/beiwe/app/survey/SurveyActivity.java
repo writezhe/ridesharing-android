@@ -21,17 +21,14 @@ import android.widget.Toast;
 
 /**The SurveyActivity displays to the user the survey that has been pushed to the device.
  * Layout in this activity is rendered, not static.
- * @author Josh Zagorsky, Eli Jones
- */
+ * @author Josh Zagorsky, Eli Jones */
 
 public class SurveyActivity extends SessionActivity {
 	
 	private SurveyAnswersRecorder answersRecorder;
 	private String surveyId;
 	private JSONObject surveySettings;
-	
-	
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -51,6 +48,7 @@ public class SurveyActivity extends SessionActivity {
 			Bundle extras = getIntent().getExtras();
 			if (extras != null) {
 				// Log.d("Survey renderer", "surveyId: " + surveyId);
+				//FIXME: stick this in a less crash-prone part of survey activity, not inside of of onCreate.
 				TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis() + " opened survey " + surveyId + ".");
 				renderSurvey( PersistentData.getSurveyContent(surveyId) );
 			}

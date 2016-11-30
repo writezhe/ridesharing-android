@@ -66,8 +66,7 @@ public class HTTPUIAsync extends HTTPAsync {
 	
 	/**Pops up an alert with the interpreted message from the server, according to the 
 	 * response code received.  These response codes and messages are specific to the app,
-	 * and may not have identical meaning to the (strict) HTTP spec.
-	 * @param the response HTTP code from the PostRequest */
+	 * and may not have identical meaning to the (strict) HTTP spec. */
 	protected void alertUser() {   activity.runOnUiThread(new Runnable() {
 		public void run() {
 			if (responseCode == -1 && responseString == null) { Log.e("HTTPUIAsync", "WARNING: the responseCode and responseString variables were never set, HTTPAsync is unable to handle user notification."); }

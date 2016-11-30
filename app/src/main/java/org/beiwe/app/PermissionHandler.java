@@ -31,7 +31,7 @@ public class PermissionHandler {
 			permissionMap.put( Manifest.permission.RECORD_AUDIO, 14 );
 			permissionMap = Collections.unmodifiableMap(permissionMap); }
 	
-	public static Map <String, String> permissionMessages = new HashMap <String, String> ();	  
+	private static Map <String, String> permissionMessages = new HashMap <String, String> ();
 	static {permissionMessages.put( Manifest.permission.ACCESS_FINE_LOCATION, "use Location Services." );
 			permissionMessages.put( Manifest.permission.ACCESS_NETWORK_STATE, "view your Network State." );
 			permissionMessages.put( Manifest.permission.ACCESS_WIFI_STATE, "view your Wifi State." );

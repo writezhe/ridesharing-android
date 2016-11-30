@@ -34,7 +34,7 @@ public class CallLogger extends ContentObserver {
 	private Cursor textsDBQuery;
 
 	// Context
-	Context appContext = null;
+	private Context appContext = null;
 
 	// Columns that interest us - phone number, type of call, date, duration of call
 	String[] fields = {android.provider.CallLog.Calls.NUMBER, 
@@ -80,6 +80,7 @@ public class CallLogger extends ContentObserver {
 		
 		// Database information
 		textsDBQuery = appContext.getContentResolver().query(allCalls, null, null, null, android.provider.CallLog.Calls.DEFAULT_SORT_ORDER);
+		//TODO: low priority. Android Studio indicates that moveToFirst can blow up, investigate if we care.
 		textsDBQuery.moveToFirst();
 		
 		int currentSize = textsDBQuery.getCount();

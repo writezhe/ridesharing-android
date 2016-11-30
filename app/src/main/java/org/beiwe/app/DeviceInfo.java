@@ -2,11 +2,11 @@ package org.beiwe.app;
 
 import org.beiwe.app.storage.EncryptionEngine;
 
+import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
-
 
 /**This is a class that NEEDS to be instantiated in the background service. In order to get the Android ID, the class needs
  * Context. Once instantiated, the class assigns two variables for AndroidID and BluetoothMAC. Once they are instantiated,
@@ -33,15 +33,17 @@ public class DeviceInfo {
 	 * 8: Now support a flag for data upload over cellular, fixed bug in wifi scanning.
 	 * 9: Moves Record/Play buttons outside the scroll window on voice recording screen.
 	 * 10: Change to TextFileManager to potentially improve uninitialized errors, added device idle and low power mode change to power state listener.*/
-	
+
 	private static String beiweVersion = "10";
 	//DO NOT FORGET TO UPDATE THE MANIFEST VERSION NUMBERS AS WELL.
 	
 	private static String androidID;
 	private static String bluetoothMAC;
+	//FIXME: phoneNumbeer is not used anywhere...
 	private static String phoneNumber;
-		
+
 	/** grab the Android ID and the Bluetooth's MAC address */
+	@SuppressLint("HardwareIds")
 	public static void initialize(Context appContext) {
 		androidID = Settings.Secure.getString( appContext.getContentResolver(), Settings.Secure.ANDROID_ID );
 		
@@ -60,7 +62,7 @@ public class DeviceInfo {
 		if (phoneNumber == null) phoneNumber = "";
 	}
 	
-	public static String getBeiweVersion() { return beiweVersion.toString(); }
+	public static String getBeiweVersion() { return beiweVersion; }
 	public static String getAndroidVersion() { return android.os.Build.VERSION.RELEASE; }
 	public static String getProduct() { return android.os.Build.PRODUCT; }
 	public static String getBrand() { return android.os.Build.BRAND; }

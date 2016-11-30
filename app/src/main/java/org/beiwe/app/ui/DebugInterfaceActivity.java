@@ -35,7 +35,6 @@ public class DebugInterfaceActivity extends SessionActivity {
 		appContext = this.getApplicationContext();
 	}
 	
-	
 	//Intent triggers caught in BackgroundService
 	public void accelerometerOn (View view) { appContext.sendBroadcast( Timer.accelerometerOnIntent ); }
 	public void accelerometerOff (View view) { appContext.sendBroadcast( Timer.accelerometerOffIntent ); }	
@@ -44,7 +43,6 @@ public class DebugInterfaceActivity extends SessionActivity {
 	public void scanWifi (View view) { appContext.sendBroadcast( Timer.wifiLogIntent ); }
 	public void bluetoothButtonStart (View view) { appContext.sendBroadcast(Timer.bluetoothOnIntent); }
 	public void bluetoothButtonStop (View view) { appContext.sendBroadcast(Timer.bluetoothOffIntent); }
-	
 	
 	//raw debugging info
 	public void printInternalLog(View view) {
