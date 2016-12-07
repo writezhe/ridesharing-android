@@ -134,15 +134,22 @@
 		    android:layout_width="wrap_content"
 		    android:layout_height="wrap_content"
 		    android:text="Everything below this point is intended for the developers of Beiwe, and really aren't all that interesting. (Well, maybe the crash buttons.)" />
-	    	      
-	    <Button
+
+		<Button
+			android:id="@+id/button"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:onClick="testJsonLogicParser"
+			android:text="(dev) Test Json Logic Parser"/>
+
+		<Button
 	        android:id="@+id/buttonPrintInternalLog"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:onClick="printInternalLog"
 	        android:text="(dev) Log Internal Log" />
 
-	    <Button
+		<Button
 	        android:id="@+id/buttonClearInternalLog"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
