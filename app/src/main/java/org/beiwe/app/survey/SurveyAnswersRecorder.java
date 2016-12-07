@@ -1,147 +1,97 @@
 package org.beiwe.app.survey;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.beiwe.app.R;
-import org.beiwe.app.storage.TextFileManager;
-
-import android.content.Context;
+import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+
+import org.beiwe.app.R;
+import org.beiwe.app.storage.TextFileManager;
+
+import java.util.List;
 
 public class SurveyAnswersRecorder {
 	public static String header = "question id,question type,question text,question answer options,answer";
 	private static String noAnswer = "NO_ANSWER_SELECTED";
 	private static String errorCode = "ERROR_QUESTION_NOT_RECORDED";
 	
-	private ArrayList<String> fileLines;
-	private List<Integer> unansweredQuestionNumbers;
 
-	
-	/**Get all the answers from the Survey Layout
-	 * @param surveyLayout
-	 * @param appContext
-	 * @return a String that's a list of unanswered questions */
-	public String gatherAllAnswers(LinearLayout surveyLayout, Context appContext) {
-		LinearLayout questionsLayout = (LinearLayout) surveyLayout.findViewById(R.id.surveyQuestionsLayout);
-		fileLines = new ArrayList<String>();
-		unansweredQuestionNumbers = new ArrayList<Integer>();
-		int questionNumber = 1;
-
-		for (int i = 0; i < questionsLayout.getChildCount(); i++) {
-			View childView = questionsLayout.getChildAt(i);
-			String questionType = childView.getTag().toString();
-			if (questionType.equals("infoTextbox")) {} // Do nothing
-			else if (questionType.equals("sliderQuestion")) { fileLines.add(answerFromSliderQuestion(childView, questionNumber++) ); }
-			else if (questionType.equals("radioButtonQuestion")) { fileLines.add(answerFromRadioButtonQuestion(childView, questionNumber++) ); }
-			else if (questionType.equals("checkboxQuestion")) { fileLines.add(answerFromCheckboxQuestion(childView, questionNumber++) ); }
-			else if (questionType.equals("openResponseQuestion")) { fileLines.add(answerFromOpenResponseQuestion(childView, questionNumber++) ); }
+	public static String getAnswerString(View questionLayout, QuestionType.Type questionType) {
+		if (questionType == QuestionType.Type.SLIDER) {
+			return SurveyAnswersRecorder.getAnswerFromSliderQuestion(questionLayout);
+		} else if (questionType == QuestionType.Type.RADIO_BUTTON) {
+			return SurveyAnswersRecorder.getAnswerFromRadioButtonQuestion(questionLayout);
+		} else if (questionType == QuestionType.Type.CHECKBOX) {
+			return SurveyAnswersRecorder.getAnswerFromCheckboxQuestion(questionLayout);
+		} else if (questionType == QuestionType.Type.FREE_RESPONSE) {
+			return SurveyAnswersRecorder.getAnswerFromOpenResponseQuestion(questionLayout);
+		} else {
+			return null;
 		}
-		
-		String unansweredQuestions = unansweredQuestionNumbers.toString();
-		unansweredQuestions = unansweredQuestions.replaceAll("\\[", "");
-		unansweredQuestions = unansweredQuestions.replaceAll("\\]", "");
-		return unansweredQuestions;
 	}
-	
-	
+
+
 	/**Get the answer from a Slider Question
-	 * @param childView
-	 * @param questionNumber
 	 * @return the answer as a String */
-	private String answerFromSliderQuestion(View childView, int questionNumber) {
-		try {
-			QuestionLinearLayout wholeQuestion = (QuestionLinearLayout) childView;
-			SeekBarEditableThumb slider = (SeekBarEditableThumb) wholeQuestion.getChildAt(2);
-			/* We can't use findViewById() to get the slider, because the slider's ID got reset so
-			 * that every slider would have a unique ID. That's why it's called using getChildAt().
-			 * The downside of this is that it makes the layout file brittle; if
-			 * survey_slider_question.xml is changed and the slider is no longer the third element,
-			 * then we need to change the index fed as the argument to getChildAt(). */
-			
-			if (slider.getHasBeenTouched()) {
-				int answer = slider.getProgress() + slider.getMin();
-				return answerFileLine(wholeQuestion.getQuestionDescription(), "" + answer);
-			}
-			else {
-				unansweredQuestionNumbers.add(questionNumber);
-				return answerFileLine(wholeQuestion.getQuestionDescription(), noAnswer);
-			}
+	public static String getAnswerFromSliderQuestion(View questionLayout) {
+		SeekBarEditableThumb slider = (SeekBarEditableThumb) questionLayout.findViewById(R.id.slider);
+		if (slider.getHasBeenTouched()) {
+			int answer = slider.getProgress() + slider.getMin();
+			return "" + answer;
 		}
-		catch (Exception e) { return errorCode; }
+		return null;
 	}
-	
-	
+
+
 	/**Get the answer from a Radio Button Question
-	 * @param childView
-	 * @param questionNumber
 	 * @return the answer as a String */
-	private String answerFromRadioButtonQuestion(View childView, int questionNumber) {
-		try {
-			QuestionLinearLayout wholeQuestion = (QuestionLinearLayout) childView;
-			RadioGroup radioGroup = (RadioGroup) wholeQuestion.findViewById(R.id.radioGroup);
-			int selectedId = radioGroup.getCheckedRadioButtonId();
-			RadioButton selectedButton = (RadioButton) radioGroup.findViewById(selectedId);
-			if (selectedButton != null) {
-				String selectedAnswer = (String) selectedButton.getText();
-				return answerFileLine(wholeQuestion.getQuestionDescription(), selectedAnswer);						
-			}
-			else {
-				unansweredQuestionNumbers.add(questionNumber);
-				return answerFileLine(wholeQuestion.getQuestionDescription(), noAnswer);
-			}
+	public static String getAnswerFromRadioButtonQuestion(View questionLayout) {
+		RadioGroup radioGroup = (RadioGroup) questionLayout.findViewById(R.id.radioGroup);
+		int selectedId = radioGroup.getCheckedRadioButtonId();
+		RadioButton selectedButton = (RadioButton) radioGroup.findViewById(selectedId);
+		if (selectedButton != null) {
+			int answerInt = selectedId;  //TODO: does this give the answer ordinal, or some random ID?
+			String answerString = (String) selectedButton.getText();
+			return answerString;
 		}
-		catch (Exception e) { return errorCode; }
+		return null;
 	}
-	
-	
+
+
 	/**Get the answer from a Checkbox Question
-	 * @param childView
-	 * @param questionNumber
 	 * @return the answer as a String */
-	private String answerFromCheckboxQuestion(View childView, int questionNumber) {
-		try {
-			QuestionLinearLayout wholeQuestion = (QuestionLinearLayout) childView;
-			LinearLayout checkboxesList = (LinearLayout) wholeQuestion.findViewById(R.id.checkboxesList);
-			String selectedAnswers = InputListener.getSelectedCheckboxes(checkboxesList);
-			if (selectedAnswers.equals("[]")) {
-				unansweredQuestionNumbers.add(questionNumber);
-				selectedAnswers = noAnswer;
-			}
-			return answerFileLine(wholeQuestion.getQuestionDescription(), selectedAnswers); }
-		catch (Exception e) { return errorCode; }
+	public static String getAnswerFromCheckboxQuestion(View questionLayout) {
+		LinearLayout checkboxesList = (LinearLayout) questionLayout.findViewById(R.id.checkboxesList);
+		String selectedAnswers = getSelectedCheckboxes(checkboxesList);
+		if (selectedAnswers.equals("[]")) {
+			return noAnswer;
+		} else {
+			return selectedAnswers;
+		}
 	}
-	
-	
+
+
 	/**Get the answer from an Open Response question
-	 * @param childView
-	 * @param questionNumber
 	 * @return the answer as a String */
-	private String answerFromOpenResponseQuestion(View childView, int questionNumber) {
-		try {
-			QuestionLinearLayout wholeQuestion = (QuestionLinearLayout) childView;
-			LinearLayout textFieldContainer = (LinearLayout) wholeQuestion.findViewById(R.id.textFieldContainer);
-			EditText textField = (EditText) textFieldContainer.getChildAt(0);
-			String answer = textField.getText().toString();
-			if (answer == null || answer.equals("")) {
-				unansweredQuestionNumbers.add(questionNumber);
-				answer = noAnswer;
-			}
-			return answerFileLine(wholeQuestion.getQuestionDescription(), answer); }
-		catch (Exception e) { return errorCode; }
+	public static String getAnswerFromOpenResponseQuestion(View questionLayout) {
+		LinearLayout textFieldContainer = (LinearLayout) questionLayout.findViewById(R.id.textFieldContainer);
+		EditText textField = (EditText) textFieldContainer.getChildAt(0);
+		String answer = textField.getText().toString();
+		if (answer == null || answer.equals("")) {
+			return null;
+		}
+		return answer;
 	}
 	
 	
 	/**Create a line (that will get written to a CSV file) that includes
 	 * question metadata and the user's answer
 	 * @param questionDescription metadata on the question
-	 * @param answer the user's answer
 	 * @return a String that can be written as a line to a file */
-	private String answerFileLine(QuestionDescription questionDescription, String answer) {
+	private String answerFileLine(QuestionData questionDescription) {
 		String line = "";
 		line += SurveyTimingsRecorder.sanitizeString(questionDescription.getId());
 		line += TextFileManager.DELIMITER;
@@ -151,19 +101,64 @@ public class SurveyAnswersRecorder {
 		line += TextFileManager.DELIMITER;
 		line += SurveyTimingsRecorder.sanitizeString(questionDescription.getOptions());
 		line += TextFileManager.DELIMITER;
-		line += SurveyTimingsRecorder.sanitizeString(answer);
+		if (questionDescription.getAnswerString() == null) {
+			line += noAnswer;
+		} else {
+			line += SurveyTimingsRecorder.sanitizeString(questionDescription.getAnswerString());
+		}
 		return line;
 	}
 
 	
 	/** Create a new SurveyAnswers file, and write all of the answers to it
 	 * @return TRUE if wrote successfully; FALSE if caught an exception */
-	public Boolean writeLinesToFile(String surveyId) {		
+	public Boolean writeLinesToFile(String surveyId, List<QuestionData> answers) {
 		try {
 			TextFileManager.getSurveyAnswersFile().newFile(surveyId);
-			for (String line : fileLines) { TextFileManager.getSurveyAnswersFile().writeEncrypted(line); }
+			for (int i = 0; i < answers.size(); i++) {
+				String line = answerFileLine(answers.get(i));
+				Log.i("SurveyAnswersRecorder", line);
+				TextFileManager.getSurveyAnswersFile().writeEncrypted(line);
+			}
 			TextFileManager.getSurveyAnswersFile().closeFile();
-			return true; }
-		catch (Exception e) { return false; }
+			return true;
+		}
+		catch (Exception e) {
+			return false;
+		}
+	}
+
+
+	/**
+	 * Return a list of the selected checkboxes in a list of checkboxes
+	 * @param checkboxesList a LinearLayout, presumably containing only checkboxes
+	 * @return a String formatted like a String[] printed to a single String
+	 */
+	public static String getSelectedCheckboxes(LinearLayout checkboxesList) {
+
+		// Make a list of the checked answers that reads like a printed array of strings
+		String answersList = "[";
+
+		// Iterate over the whole list of CheckBoxes in this LinearLayout
+		for (int i = 0; i < checkboxesList.getChildCount(); i++) {
+
+			View childView = checkboxesList.getChildAt(i);
+			if (childView instanceof CheckBox) {
+				CheckBox checkBox = (CheckBox) childView;
+
+				// If this CheckBox is selected, add it to the list of selected answers
+				if (checkBox.isChecked()) {
+					answersList += checkBox.getText() + ", ";
+				}
+			}
+		}
+
+		// Trim the last comma off the list so that it's formatted like a String[] printed to a String
+		if (answersList.length() > 3) {
+			answersList = answersList.substring(0, answersList.length() - 2);
+		}
+		answersList += "]";
+
+		return answersList;
 	}
 }

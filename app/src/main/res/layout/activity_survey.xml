@@ -7,52 +7,22 @@
     style="@style/MainTextStyle"
     android:orientation="vertical" >
 
-    <ScrollView
-        android:id="@+id/surveyScrollView"
+    <LinearLayout
+        android:id="@+id/wrapperLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:ignore="UselessParent" >
+        android:orientation="vertical" >
+
+        <FrameLayout android:id="@+id/questionFragmentGoesHere"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
         <LinearLayout
-            android:id="@+id/wrapperLayout"
+            android:id="@+id/surveyQuestionsLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
-
-            <LinearLayout
-                android:id="@+id/surveyQuestionsLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" >
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/submitButtonLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingBottom="50dp"
-                android:paddingTop="10dp" >
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1" />
-
-                <Button
-                    android:id="@+id/buttonSubmit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:onClick="submitButtonPressed"
-                    android:background="@android:drawable/btn_default"
-                    android:text="@string/survey_submit_button" />
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1" />
-            </LinearLayout>
         </LinearLayout>
-    </ScrollView>
 
+    </LinearLayout>
 </LinearLayout>

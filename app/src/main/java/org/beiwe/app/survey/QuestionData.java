@@ -9,13 +9,15 @@ package org.beiwe.app.survey;
  * you get last night' and had a numeric input field, with options..."
  */
 
-public class QuestionDescription {
+public class QuestionData {
 	private String id = null;
 	private String type = null;
 	private String text = null;
 	private String options = null;
+	private String answerString = null;
+	//TODO: int answerValue?
 
-	public QuestionDescription(String id, String type, String text, String options) {
+	public QuestionData(String id, String type, String text, String options) {
 		this.setId(id);
 		this.setType(type);
 		this.setText(text);
@@ -50,4 +52,6 @@ public class QuestionDescription {
 		this.options = options;
 	}
 
+	public String getAnswerString() { return answerString; }
+	public void setAnswerString(String answerString) { this.answerString = answerString; }
 }

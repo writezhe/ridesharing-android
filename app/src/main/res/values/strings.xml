@@ -37,6 +37,7 @@
     <string name="invalid_encryption_key">Received an invalid encryption key, please contact the a Beiwe administrator.</string>
 
     <!-- Survey Activity Strings -->
+    <string name="survey_next_button_text">Next</string>
     <string name="survey_submit_button">Submit Answers</string>
     <string name="default_survey_submit_success_message">Thank you for completing the survey.  A clinician will not see your answers immediately, so if you need help or are thinking about harming yourself, please contact your clinician.  You can also press the \"Call My Clinician\" button. </string>
     <string name="survey_submit_error_message">There has been an error; your answers may not have been recorded and saved</string>

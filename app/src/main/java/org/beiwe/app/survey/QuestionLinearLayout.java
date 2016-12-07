@@ -13,7 +13,7 @@ import android.widget.LinearLayout;
 public class QuestionLinearLayout extends LinearLayout {
 
 	// Two custom attributes: questionDescription, and questionID
-	private QuestionDescription questionDescription;
+	private QuestionData questionDescription;
 	
 	
 	// Standard constructors
@@ -31,11 +31,11 @@ public class QuestionLinearLayout extends LinearLayout {
 	
 	
 	// Getter and setter for questionDescription attribute 
-	public void setQuestionDescription(QuestionDescription questionDescription) {
+	public void setQuestionDescription(QuestionData questionDescription) {
 		this.questionDescription = questionDescription;  
 	}
 	
-	public QuestionDescription getQuestionDescription() {
+	public QuestionData getQuestionDescription() {
 		return this.questionDescription;
 	}
 	
