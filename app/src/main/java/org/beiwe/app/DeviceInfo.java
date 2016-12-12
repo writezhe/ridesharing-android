@@ -1,12 +1,12 @@
 package org.beiwe.app;
 
-import org.beiwe.app.storage.EncryptionEngine;
-
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
+
+import org.beiwe.app.storage.EncryptionEngine;
 
 /**This is a class that NEEDS to be instantiated in the background service. In order to get the Android ID, the class needs
  * Context. Once instantiated, the class assigns two variables for AndroidID and BluetoothMAC. Once they are instantiated,
@@ -34,7 +34,7 @@ public class DeviceInfo {
 	 * 9: Moves Record/Play buttons outside the scroll window on voice recording screen.
 	 * 10: Change to TextFileManager to potentially improve uninitialized errors, added device idle and low power mode change to power state listener.*/
 
-	private static String beiweVersion = "10";
+	private static String beiweVersion = "11";
 	//DO NOT FORGET TO UPDATE THE MANIFEST VERSION NUMBERS AS WELL.
 	
 	private static String androidID;
