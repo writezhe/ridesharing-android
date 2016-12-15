@@ -31,6 +31,7 @@ public class SurveyActivity extends SessionActivity implements
     private JSONArray jsonQuestions;
 	private List<QuestionData> answers;
     private int currentQuestionIndex;
+	private JsonSkipLogic surveySkipLogic;
 
     //FIXME: Save fragment state so that when someone hits back, their answers are preserved
     //FIXME: If the SubmitButtonFragment has too many unanswered questions, they fill the whole screen and block the Submit button.  Figure out how to get the list to scroll.
@@ -119,12 +120,14 @@ public class SurveyActivity extends SessionActivity implements
             answers.set(answersIndex, questionData);
         }
     }
+
+
     /**If a question with the same questionId is already in the answers ArrayList, return that
      * questionId. Otherwise, return -1. */
     private int getAnswersIndexForQuestionId(String questionId) {
         for (int i = 0; i < answers.size(); i++) {
             QuestionData question = answers.get(i);
-            if (question.getId() == questionId) {
+            if (question.getId().equals(questionId)) {
                 return i;
             }
         }
@@ -198,6 +201,9 @@ public class SurveyActivity extends SessionActivity implements
 			// If randomizing the question order, reshuffle the questions in the JSONArray
 			if (randomize && !randomizeWithMemory) { jsonQuestions = JSONUtils.shuffleJSONArray(jsonQuestions, numberQuestions); }
 			if (randomize && randomizeWithMemory) { jsonQuestions = JSONUtils.shuffleJSONArrayWithMemory(jsonQuestions, numberQuestions, surveyId); }
+			//construct the survey's skip logic.
+			//(param 2: If randomization is enabled do not run the skip logic for the survey.)
+			surveySkipLogic = new JsonSkipLogic(jsonQuestions, !randomize, getApplicationContext());
 		} catch (JSONException e) { e.printStackTrace(); }
 
 		return jsonQuestions;

@@ -54,6 +54,7 @@ public class JsonSkipLogic {
 		int max_size = jsonQuestions.length();
 		String questionId;
 		JSONObject question;
+		JSONObject display_logic;
 
 		//construct the various question id collections
 		QuestionAnswer = new HashMap<String, String> (max_size);
@@ -66,8 +67,11 @@ public class JsonSkipLogic {
 
 			QuestionOrder.add(questionId); //get question order
 			if ( question.has("display_if") ) {
-//				Log.i("json display_if", ": " + question.getString("display_if"));
-				QuestionSkipLogic.put(questionId, question.getJSONObject("display_if"));
+				Log.v("debugging json content", " " + question.toString() );
+				display_logic = question.optJSONObject("display_if");
+				if (display_logic != null) {
+					QuestionSkipLogic.put(questionId, display_logic);
+				}
 			}
 		}
 		this.runDisplayLogic = runDisplayLogic;
@@ -211,10 +215,10 @@ public class JsonSkipLogic {
 		Double userAnswer = Double.valueOf( QuestionAnswer.get(targetQuestionId) ); //TODO: insert here no answer logic
 		Double surveyValue = parameters.getDouble(1);
 		//Fixme: this logic here could be backwards, need to think this through and document it.
-		if ( comparator.equals("<") ) { return surveyValue < userAnswer; }
-		if ( comparator.equals(">") ) { return surveyValue > userAnswer; }
-  		if ( comparator.equals("<=") ) { return surveyValue <= userAnswer; }
-		if ( comparator.equals(">=") ) { return surveyValue >= userAnswer; }
+		if ( comparator.equals("<") ) { return userAnswer < surveyValue; }
+		if ( comparator.equals(">") ) { return userAnswer > surveyValue; }
+  		if ( comparator.equals("<=") ) { return userAnswer <= surveyValue; }
+		if ( comparator.equals(">=") ) { return userAnswer >= surveyValue; }
 		throw new NullPointerException("numeric logic fail");
 	}
 
