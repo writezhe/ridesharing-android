@@ -25,6 +25,7 @@ import org.beiwe.app.R;
 
 import java.util.Arrays;
 
+import static org.beiwe.app.survey.SurveyAnswersRecorder.getAnswerIntegerValue;
 import static org.beiwe.app.survey.SurveyAnswersRecorder.getAnswerString;
 import static org.beiwe.app.survey.SurveyAnswersRecorder.getSelectedCheckboxes;
 
@@ -80,9 +81,9 @@ public class QuestionFragment extends Fragment {
 
     private QuestionData getAnswer(View questionLayout, QuestionType.Type questionType) {
         String answerString = getAnswerString(questionLayout, questionType);
-        if (answerString != null) {
-            questionData.setAnswerString(answerString);
-        }
+        if (answerString != null) { questionData.setAnswerString(answerString); }
+        Integer answerIntegerValue = getAnswerIntegerValue(questionLayout, questionType);
+        if (answerIntegerValue != null) { questionData.setAnswerIntegerValue(answerIntegerValue); }
         return questionData;
     }
 

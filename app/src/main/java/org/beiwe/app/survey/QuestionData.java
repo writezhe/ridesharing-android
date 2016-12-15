@@ -15,43 +15,30 @@ public class QuestionData {
 	private String text = null;
 	private String options = null;
 	private String answerString = null;
-	//TODO: int answerValue?
+	private Integer answerIntegerValue = null;
 
 	public QuestionData(String id, String type, String text, String options) {
 		this.setId(id);
 		this.setType(type);
 		this.setText(text);
-		this.setOptions(options);
+		this.setOptions(options); //this is formatting for the csv
 	}
 	
-	public String getId() {
-		return id;
-	}
-	public void setId(String id) {
-		this.id = id;
-	}
+	public String getId() { return id; }
+	public void setId(String id) { this.id = id; }
 	
-	public String getType() {
-		return type;
-	}
-	public void setType(String type) {
-		this.type = type;
-	}
+	public String getType() { return type; }
+	public void setType(String type) { this.type = type; }
 	
-	public String getText() {
-		return text;
-	}
-	public void setText(String text) {
-		this.text = text;
-	}
+	public String getText() { return text; }
+	public void setText(String text) { this.text = text; }
 	
-	public String getOptions() {
-		return options;
-	}
-	public void setOptions(String options) {
-		this.options = options;
-	}
+	public String getOptions() { return options; }
+	public void setOptions(String options) { this.options = options; }
 
 	public String getAnswerString() { return answerString; }
 	public void setAnswerString(String answerString) { this.answerString = answerString; }
+
+	public Integer getAnswerIntegerValue() { return answerIntegerValue; }
+	public void setAnswerIntegerValue(Integer answerIntegerValue) { this.answerIntegerValue = answerIntegerValue; }
 }

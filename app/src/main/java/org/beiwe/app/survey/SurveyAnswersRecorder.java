@@ -17,11 +17,14 @@ public class SurveyAnswersRecorder {
 	public static String header = "question id,question type,question text,question answer options,answer";
 	private static String noAnswer = "NO_ANSWER_SELECTED";
 	private static String errorCode = "ERROR_QUESTION_NOT_RECORDED";
-	
 
+
+	/** Return a String representation of the answer to a question. If the question is not answered,
+	 *  return null. */
 	public static String getAnswerString(View questionLayout, QuestionType.Type questionType) {
+		//TODO: Eli. confirm these are all correctly ... coercing data types
 		if (questionType == QuestionType.Type.SLIDER) {
-			return SurveyAnswersRecorder.getAnswerFromSliderQuestion(questionLayout);
+			return SurveyAnswersRecorder.getStringAnswerFromSliderQuestion(questionLayout);
 		} else if (questionType == QuestionType.Type.RADIO_BUTTON) {
 			return SurveyAnswersRecorder.getAnswerFromRadioButtonQuestion(questionLayout);
 		} else if (questionType == QuestionType.Type.CHECKBOX) {
@@ -34,13 +37,30 @@ public class SurveyAnswersRecorder {
 	}
 
 
+	/** If the question is a radio button or slider question, return the answer as a nullable Java
+	 *  Integer. If it's any other type of question, or if it wasn't answered, return null. */
+	public static Integer getAnswerIntegerValue(View questionLayout, QuestionType.Type questionType) {
+		if (questionType == QuestionType.Type.SLIDER) {
+			return getNullableIntAnswerFromSliderQuestion(questionLayout);
+			//TODO: Josh. Check if a slider in beiwe can be a floating point value.
+		} else if (questionType == QuestionType.Type.RADIO_BUTTON) {
+            return getIndexOfSelectedRadioButton(questionLayout);
+		} else {
+            return null;
+        }
+	}
+
+
 	/**Get the answer from a Slider Question
 	 * @return the answer as a String */
-	public static String getAnswerFromSliderQuestion(View questionLayout) {
+	public static String getStringAnswerFromSliderQuestion(View questionLayout) {
+		return "" + getNullableIntAnswerFromSliderQuestion(questionLayout);
+	}
+
+	public static Integer getNullableIntAnswerFromSliderQuestion(View questionLayout) {
 		SeekBarEditableThumb slider = (SeekBarEditableThumb) questionLayout.findViewById(R.id.slider);
 		if (slider.getHasBeenTouched()) {
-			int answer = slider.getProgress() + slider.getMin();
-			return "" + answer;
+			return slider.getProgress() + slider.getMin();
 		}
 		return null;
 	}
@@ -49,15 +69,25 @@ public class SurveyAnswersRecorder {
 	/**Get the answer from a Radio Button Question
 	 * @return the answer as a String */
 	public static String getAnswerFromRadioButtonQuestion(View questionLayout) {
-		RadioGroup radioGroup = (RadioGroup) questionLayout.findViewById(R.id.radioGroup);
-		int selectedId = radioGroup.getCheckedRadioButtonId();
-		RadioButton selectedButton = (RadioButton) radioGroup.findViewById(selectedId);
-		if (selectedButton != null) {
-			int answerInt = selectedId;  //TODO: does this give the answer ordinal, or some random ID?
-			String answerString = (String) selectedButton.getText();
-			return answerString;
-		}
+        Integer selectedRadioButtonIndex = getIndexOfSelectedRadioButton(questionLayout);
+        Log.i("SurveyAnswersRecorder", "selected answer index: " + selectedRadioButtonIndex);
+        if (selectedRadioButtonIndex != null) {
+            RadioGroup radioGroup = (RadioGroup) questionLayout.findViewById(R.id.radioGroup);
+            RadioButton selectedButton = (RadioButton) radioGroup.getChildAt(selectedRadioButtonIndex);
+            return (String) selectedButton.getText();
+        }
 		return null;
+	}
+
+	private static Integer getIndexOfSelectedRadioButton(View questionLayout) {
+		RadioGroup radioGroup = (RadioGroup) questionLayout.findViewById(R.id.radioGroup);
+		int numberOfChoices = radioGroup.getChildCount();
+		for (int i=0; i < numberOfChoices; i++) {
+            if (((RadioButton) radioGroup.getChildAt(i)).isChecked()) {
+                return i;
+            }
+		}
+        return null;
 	}
 
 

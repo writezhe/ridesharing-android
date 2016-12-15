@@ -61,6 +61,12 @@ public class SurveyActivity extends SessionActivity implements
     @Override
     public void goToNextQuestion(QuestionData dataFromOldQuestion) {
         // If it's not the first question, the question index is the same as the backstack
+
+	    //TODO: stick answer in skip logic
+	    // we need some if logic on the question type, and the answer needs to go into the jsonskiplogic blob
+	    // the output of the "here are all the answers" blob needs to contain:
+	    //
+
         if (currentQuestionIndex >= 0) {
             currentQuestionIndex = getFragmentManager().getBackStackEntryCount();
         }

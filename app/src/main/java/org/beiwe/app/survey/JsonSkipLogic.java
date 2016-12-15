@@ -229,4 +229,8 @@ public class JsonSkipLogic {
 	public void setQuestionAnswer(String questionId, Integer answer){ setQuestionAnswer(questionId, String.format(NUMERICAL_STRING_REPRESENTATION, Double.valueOf(answer))); }
 	@SuppressLint("DefaultLocale")
 	public void setQuestionAnswer(String questionId, Double answer){ setQuestionAnswer(questionId, String.format(NUMERICAL_STRING_REPRESENTATION, answer)); }
+
+	public void setAnswer(String questionId, QuestionData questiondata) {
+		//TODO: implement
+	}
 }
