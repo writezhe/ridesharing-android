@@ -17,6 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -48,7 +49,7 @@ public class QuestionFragment extends Fragment {
         //getContext().setTheme(R.style.AppTheme);  // TODO: do we still need this? It's from the old code
 
         // Render the question and inflate the layout for this fragment
-        LinearLayout fragmentQuestionLayout = (LinearLayout) inflater.inflate(R.layout.fragment_question, null);
+        ScrollView fragmentQuestionLayout = (ScrollView) inflater.inflate(R.layout.fragment_question, null);
         FrameLayout questionContainer = (FrameLayout) fragmentQuestionLayout.findViewById(R.id.questionContainer);
         final View questionLayout = createQuestion(inflater, getArguments());
         questionContainer.addView(questionLayout);

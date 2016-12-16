@@ -35,7 +35,6 @@ public class SurveyActivity extends SessionActivity implements
 
     //FIXME: Save fragment state so that when someone hits back, their answers are preserved
     //FIXME: If the SubmitButtonFragment has too many unanswered questions, they fill the whole screen and block the Submit button.  Figure out how to get the list to scroll.
-    //FIXME: Add a ScrollView around the question layout in the fragment
     //FIXME: Check if Checkbox question no answer is the same as before
     //TODO: Give open response questions autofocus
 
