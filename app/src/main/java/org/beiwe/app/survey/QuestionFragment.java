@@ -175,7 +175,7 @@ public class QuestionFragment extends Fragment {
 
         // Create text strings that represent the question and its answer choices
         String options = "min = " + min + "; max = " + max;
-        questionData = new QuestionData(questionID, "Slider Question", questionText, options);
+        questionData = new QuestionData(questionID, QuestionType.Type.SLIDER, questionText, options);
 
         // Set the slider to listen for and record user input
         slider.setOnSeekBarChangeListener(new SliderListener(questionData));
@@ -221,7 +221,7 @@ public class QuestionFragment extends Fragment {
         }
 
         // Create text strings that represent the question and its answer choices
-        questionData = new QuestionData(questionID, "Radio Button Question", questionText, Arrays.toString(answers));
+        questionData = new QuestionData(questionID, QuestionType.Type.RADIO_BUTTON, questionText, Arrays.toString(answers));
 
         // Set the group of radio buttons to listen for and record user input
         radioGroup.setOnCheckedChangeListener(new RadioButtonListener(questionData));
@@ -247,7 +247,7 @@ public class QuestionFragment extends Fragment {
         if (questionText != null) { questionTextView.setText(questionText); }
 
         // Create text strings that represent the question and its answer choices
-        questionData = new QuestionData(questionID, "Checkbox Question", questionText, Arrays.toString(options));
+        questionData = new QuestionData(questionID, QuestionType.Type.CHECKBOX, questionText, Arrays.toString(options));
 
         // Loop through the options strings, and make each one a checkbox option
         if (options != null) {
@@ -319,7 +319,7 @@ public class QuestionFragment extends Fragment {
 
         // Create text strings that represent the question and its answer choices
         String options = "Text-field input type = " + inputTextType.toString();
-        questionData = new QuestionData(questionID, "Open Response Question", questionText, options);
+        questionData = new QuestionData(questionID, QuestionType.Type.FREE_RESPONSE, questionText, options);
 
         // Set the text field to listen for and record user input
         editText.setOnFocusChangeListener(new OpenResponseListener(questionData));
