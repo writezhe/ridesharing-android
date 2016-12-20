@@ -125,7 +125,7 @@ public class SurveyAnswersRecorder {
 		String line = "";
 		line += SurveyTimingsRecorder.sanitizeString(questionDescription.getId());
 		line += TextFileManager.DELIMITER;
-		line += SurveyTimingsRecorder.sanitizeString(questionDescription.getType());
+		line += SurveyTimingsRecorder.sanitizeString(questionDescription.getType().toString());
 		line += TextFileManager.DELIMITER;
 		line += SurveyTimingsRecorder.sanitizeString(questionDescription.getText());
 		line += TextFileManager.DELIMITER;

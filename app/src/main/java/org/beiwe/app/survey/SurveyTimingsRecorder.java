@@ -36,7 +36,7 @@ public class SurveyTimingsRecorder {
 	public static void recordAnswer(String answer, QuestionData questionDescription) {
 		String message = "";
 		message += sanitizeString(questionDescription.getId()) + TextFileManager.DELIMITER;
-		message += sanitizeString(questionDescription.getType()) + TextFileManager.DELIMITER;
+		message += sanitizeString(questionDescription.getType().toString()) + TextFileManager.DELIMITER;
 		message += sanitizeString(questionDescription.getText()) + TextFileManager.DELIMITER;
 		message += sanitizeString(questionDescription.getOptions()) + TextFileManager.DELIMITER;
 		message += sanitizeString(answer);
