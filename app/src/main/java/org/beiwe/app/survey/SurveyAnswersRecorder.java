@@ -36,7 +36,7 @@ public class SurveyAnswersRecorder {
 		}
 	}
 
-
+	//TODO: for the radio button will need to convert to double in here... somewhere
 	/** If the question is a radio button or slider question, return the answer as a nullable Java
 	 *  Integer. If it's any other type of question, or if it wasn't answered, return null. */
 	public static Integer getAnswerIntegerValue(View questionLayout, QuestionType.Type questionType) {
