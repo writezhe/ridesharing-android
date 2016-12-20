@@ -65,7 +65,6 @@ public class SurveyActivity extends SessionActivity implements
 	    //TODO: stick answer in skip logic
 	    // we need some if logic on the question type, and the answer needs to go into the jsonskiplogic blob
 	    // the output of the "here are all the answers" blob needs to contain:
-	    //
 
         if (currentQuestionIndex >= 0) {
             currentQuestionIndex = getFragmentManager().getBackStackEntryCount();
