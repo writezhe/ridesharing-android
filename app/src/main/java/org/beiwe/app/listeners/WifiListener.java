@@ -39,7 +39,7 @@ public class WifiListener {
 		if (WifiManager.WIFI_MODE_FULL == state ||
 			WifiManager.WIFI_MODE_FULL_HIGH_PERF == state ||
 			WifiManager.WIFI_MODE_SCAN_ONLY == state ||
-			//TODO: Low priority. Android studio indicates that WifiManager.WIFI_STATE_ENABLED == state can only evaluate as false, investigate
+			//TODO: Eli. Low priority. Android studio indicates that WifiManager.WIFI_STATE_ENABLED == state can only evaluate as false, investigate
 			WifiManager.WIFI_STATE_ENABLED == state) {
 			return true; }
 		return false;

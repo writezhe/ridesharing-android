@@ -44,7 +44,7 @@ public class MMSSentLogger extends ContentObserver{
 			if ( !checkValidData(mmsCursor) || !checkValidData(smsCursor) ) { return; }
 			
 			//we only care about MMSes in this code, so if we received an SMS change, we exit here.
-			//TODO: low priority. Android Studio indicates that getColumnIndex can blow up, investigate if we care.
+			//TODO: Eli. low priority. Android Studio indicates that getColumnIndex can blow up, investigate if we care.
 			if ( !smsCursor.getString(smsCursor.getColumnIndex( "transport_type" )).equals("mms") ) { return; }
 			
 			long timestamp = mmsCursor.getInt( mmsCursor.getColumnIndex("date") ) * 1000L;

@@ -1,6 +1,6 @@
 package org.beiwe.app.survey;
 
-// TODO: is it OK to not use support.v4?
+// TODO: Low priority. Josh. is it OK to not use support.v4?
 
 import android.annotation.SuppressLint;
 import android.app.Fragment;
@@ -47,7 +47,6 @@ public class QuestionFragment extends Fragment {
 		 * style (set in the Manifest.XML), but for some reason, XML views
 		 * inflated by this class don't render with the app's default style,
 		 * unless we set it manually: */
-        //getContext().setTheme(R.style.AppTheme);  // TODO: do we still need this? It's from the old code
 
         // Render the question and inflate the layout for this fragment
         ScrollView fragmentQuestionLayout = (ScrollView) inflater.inflate(R.layout.fragment_question, null);
@@ -130,7 +129,7 @@ public class QuestionFragment extends Fragment {
 
         // Clean inputs
         if (infoText == null) {
-            Context appContext = getContext();  // TODO: does this work in API < 23?
+            Context appContext = getContext();  // TODO: Josh. does this work in API < 23?
             infoText = appContext.getResources().getString(R.string.question_error_text);
         }
 
@@ -204,7 +203,7 @@ public class QuestionFragment extends Fragment {
 
         // If the array of answers is null or too short, replace it with an error message
         if ((answers == null) || (answers.length < 2)) {
-            Context appContext = getContext();  // TODO: does this work in API < 23?
+            Context appContext = getContext();  // TODO: Josh. does this work in API < 23?
             String replacementAnswer = appContext.getResources().getString(R.string.question_error_text);
             String[] replacementAnswers = {replacementAnswer, replacementAnswer};
             answers = replacementAnswers;
@@ -503,7 +502,7 @@ public class QuestionFragment extends Fragment {
             this.questionDescription = questionDescription;
         }
 
-        // TODO: replace this with a listener on the Next button; that'd probably make more sense
+        // TODO: Josh. replace this with a listener on the Next button; that'd probably make more sense
         @Override
         public void onFocusChange(View v, boolean hasFocus) {
             if (hasFocus) {
@@ -515,7 +514,7 @@ public class QuestionFragment extends Fragment {
 
                 // Set the EditText so that if the user taps outside, the keyboard disappears
                 if (v instanceof EditText) {
-                    TextFieldKeyboard keyboard = new TextFieldKeyboard(getContext());  // TODO: does this work in API < 23?
+                    TextFieldKeyboard keyboard = new TextFieldKeyboard(getContext());  // TODO: Josh. does this work in API < 23?
                     keyboard.makeKeyboardBehave((EditText) v);
                 }
             }
@@ -531,7 +530,7 @@ public class QuestionFragment extends Fragment {
     }
 
 
-// TODO: I think we no longer need this
+// TODO: Josh. I think we no longer need this
 //    private int viewID;
 //    /**
 //     * Set the view's ID so that its data are automatically saved when the screen rotates

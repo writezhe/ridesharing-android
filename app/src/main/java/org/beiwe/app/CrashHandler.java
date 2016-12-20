@@ -49,7 +49,7 @@ public class CrashHandler implements java.lang.Thread.UncaughtExceptionHandler{
 	 * @param exception A Throwable (probably your error).
 	 * @param context An android Context */
 	public static void writeCrashlog(Throwable exception, Context context) {
-		//TODO: low priority. Add optional message parameter
+		//TODO: Eli. low priority. Add optional message parameter
 		String appVariant = "unknown";
 //		public static Class loadThisActivity = DebugInterfaceActivity.class;
 //		public static Class loadThisActivity = MainMenuActivity.class;

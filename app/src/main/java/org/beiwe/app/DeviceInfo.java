@@ -39,7 +39,7 @@ public class DeviceInfo {
 	
 	private static String androidID;
 	private static String bluetoothMAC;
-	//FIXME: phoneNumbeer is not used anywhere...
+	//TDOO: Eli. phoneNumbeer is not used anywhere...
 	private static String phoneNumber;
 
 	/** grab the Android ID and the Bluetooth's MAC address */
@@ -70,5 +70,5 @@ public class DeviceInfo {
 	public static String getManufacturer() { return android.os.Build.MANUFACTURER; }
 	public static String getModel() { return android.os.Build.MODEL; }
 	public static String getAndroidID() { return EncryptionEngine.safeHash(androidID); }
-	public static String getBlootoothMAC() { return EncryptionEngine.safeHash(bluetoothMAC); } //FIXME: wow, typo.
+	public static String getBlootoothMAC() { return EncryptionEngine.safeHash(bluetoothMAC); } //FIXME: Eli. wow, typo.
 }

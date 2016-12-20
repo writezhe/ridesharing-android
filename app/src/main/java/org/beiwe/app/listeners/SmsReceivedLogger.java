@@ -56,7 +56,7 @@ public class SmsReceivedLogger extends BroadcastReceiver {
                      String data = "" + System.currentTimeMillis() + TextFileManager.DELIMITER;
                      data += EncryptionEngine.hashPhoneNumber(incomingNumber) + TextFileManager.DELIMITER;
                      data += "received MMS" + TextFileManager.DELIMITER;
-//                     TODO: Low priority. feature. determine if we can get the length of the text, if it has an attachment.
+//                     TODO: Josh. Low priority. feature. determine if we can get the length of the text, if it has an attachment.
                     Log.i("SMSReceivedLogger(SMS)", "data = " + data);
                      TextFileManager.getTextsLogFile().writeEncrypted(data);
                  }
@@ -93,7 +93,7 @@ public class SmsReceivedLogger extends BroadcastReceiver {
 				}
 			}
 			catch (Exception e) { Log.e("SMSReceivedLogger", "SMS_RECEIVED Caught exception: " + e.getCause() + ", " + e.getMessage()); }
-			//TODO: "did not crash" message to crash handler message
+			//TODO:Eli. Low priority. if we have implemented a message parameter add "did not crash" message here
 		}
 	}
 }

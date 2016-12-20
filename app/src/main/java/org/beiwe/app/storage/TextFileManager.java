@@ -337,7 +337,6 @@ public class TextFileManager {
 	/** Very simple function, exists to make any function that needs to grab all extant files thread-safe.
 	 * DO NOT USE THIS FUNCTION, USE getAllFilesSafely() INSTEAD.
 	 * @return a string array of all files in the app's file directory. */
-	//TODO: postproduction.  change this to private or comment out entirely
 	public static synchronized String[] getAllFiles() { return appContext.getFilesDir().list(); }
 		
 	/** Returns all data that are not currently in use

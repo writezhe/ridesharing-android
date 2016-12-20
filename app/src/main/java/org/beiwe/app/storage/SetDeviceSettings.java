@@ -4,7 +4,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class SetDeviceSettings {
-	//TODO: low priority.  This should probably have case by case handling. Ew. (see allowUploadOverCellularData for example)
 	public static void writeDeviceSettings(JSONObject deviceSettings) throws JSONException {
 		// Write data stream booleans
 		Boolean accelerometerEnabled = deviceSettings.getBoolean("accelerometer");

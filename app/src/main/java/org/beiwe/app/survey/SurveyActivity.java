@@ -33,10 +33,10 @@ public class SurveyActivity extends SessionActivity implements
     private int currentQuestionIndex;
 	private JsonSkipLogic surveySkipLogic;
 
-    //FIXME: Save fragment state so that when someone hits back, their answers are preserved
-    //FIXME: If the SubmitButtonFragment has too many unanswered questions, they fill the whole screen and block the Submit button.  Figure out how to get the list to scroll.
-    //FIXME: Check if Checkbox question no answer is the same as before
-    //TODO: Give open response questions autofocus
+    //FIXME: Josh. Save fragment state so that when someone hits back, their answers are preserved
+    //FIXME: Josh. If the SubmitButtonFragment has too many unanswered questions, they fill the whole screen and block the Submit button.  Figure out how to get the list to scroll.
+    //FIXME: Josh. Check if Checkbox question no answer is the same as before
+    //TODO: Josh. Give open response questions autofocus
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +50,7 @@ public class SurveyActivity extends SessionActivity implements
 			if (extras != null) {
 				answers = new ArrayList<>();
 
-				//FIXME: stick this in a less crash-prone part of survey activity, not inside of of onCreate.
+				//FIXME: Eli. stick this in a less crash-prone part of survey activity, not inside of of onCreate.
 				TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis() + " opened survey " + surveyId + ".");
 				displaySurvey(surveyId);
 			}
@@ -62,7 +62,7 @@ public class SurveyActivity extends SessionActivity implements
     public void goToNextQuestion(QuestionData dataFromOldQuestion) {
         // If it's not the first question, the question index is the same as the backstack
 
-	    //TODO: stick answer in skip logic
+	    //TODO: Josh. stick answer in skip logic
 	    // we need some if logic on the question type, and the answer needs to go into the jsonskiplogic blob
 	    // the output of the "here are all the answers" blob needs to contain:
 
@@ -108,7 +108,7 @@ public class SurveyActivity extends SessionActivity implements
         goToNextQuestion(null);
 
         // Record the time that the survey was first visible to the user
-        //FIXME: stick this in a less crash-prone part of survey activity, not inside of of onCreate.
+        //FIXME: Eli. stick this in a less crash-prone part of survey activity, not inside of of onCreate.
         SurveyTimingsRecorder.recordSurveyFirstDisplayed(surveyId);
     }
 

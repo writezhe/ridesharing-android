@@ -132,7 +132,6 @@ public class RunningBackgroundServiceActivity extends Activity {
 		Intent callIntent = new Intent(Intent.ACTION_CALL);
 		String phoneNum = PersistentData.getPrimaryCareNumber();
 	    callIntent.setData(Uri.parse("tel:" + phoneNum));
-		//FIXME: Eli. Need to test this permission.
 	    startActivity(callIntent);
 	}
 	

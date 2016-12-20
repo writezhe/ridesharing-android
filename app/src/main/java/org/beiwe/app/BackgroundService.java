@@ -73,7 +73,7 @@ public class BackgroundService extends Service {
 		//Bluetooth, wifi, gps, calls, and texts need permissions
 		if ( PermissionHandler.confirmBluetooth(appContext)) { startBluetooth(); }
 		if ( PermissionHandler.confirmWifi(appContext) ) { WifiListener.initialize( appContext ); }
-		if ( PermissionHandler.confirmGps(appContext)) { gpsListener = new GPSListener(appContext); } //FIXME: investigate behavior if GPS is not enabled in time to start at time of consent button...
+		if ( PermissionHandler.confirmGps(appContext)) { gpsListener = new GPSListener(appContext); }
 		if ( PermissionHandler.confirmTexts(appContext) ) { startSmsSentLogger(); startMmsSentLogger(); }
 		if ( PermissionHandler.confirmCalls(appContext) ) { startCallLogger(); }
 		//Only do the following if the device is registered
@@ -184,7 +184,7 @@ public class BackgroundService extends Service {
 			//note: when there is no accelerometer-off timer that means we are in-between scans.  This state is fine, so we don't check for it.
 		}
 		if ( PermissionHandler.confirmGps(appContext) && (  //identical logic to accelerometer-start logic, but we also check for permissions
-				//FIXME: that other fixme about gps alarms, make the alarm trigger but the blowup if lacking the permission ... not.
+				//FIXME: Eli. that other fixme about gps alarms, make the alarm trigger but the blowup if lacking the permission ... not.
 				PersistentData.getMostRecentAlarmTime( getString( R.string.turn_gps_on )) < now ||
 				!timer.alarmIsSet(Timer.gpsOnIntent) ) ) {
 			sendBroadcast( Timer.gpsOnIntent ); }
