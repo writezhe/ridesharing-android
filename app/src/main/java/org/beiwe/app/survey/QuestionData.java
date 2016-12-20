@@ -16,6 +16,7 @@ public class QuestionData {
 	private String options = null;
 	private String answerString = null;
 	private Integer answerIntegerValue = null;
+	private Double answerDoubleValue = null;
 
 	public QuestionData(String id, QuestionType.Type type, String text, String options) {
 		this.setId(id);
@@ -41,4 +42,7 @@ public class QuestionData {
 
 	public Integer getAnswerIntegerValue() { return answerIntegerValue; }
 	public void setAnswerIntegerValue(Integer answerIntegerValue) { this.answerIntegerValue = answerIntegerValue; }
+
+	public Double getAnswerDoubleValue() { return answerDoubleValue ; }
+	public void setAnswerDoubleValue(Double answerDoubleValue) { this.answerDoubleValue  = answerDoubleValue; }
 }
