@@ -21,7 +21,6 @@ public class SurveyDownloader {
 	
 	public static void downloadSurveys( Context appContext ) {
 		// Log.d("QuestionsDownloader", "downloadJSONQuestions() called");
-		//FIXME: make this a strings file variable.
 		doDownload( appContext.getResources().getString(R.string.download_surveys_url), appContext );		
 	}
 
