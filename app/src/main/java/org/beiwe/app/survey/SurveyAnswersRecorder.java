@@ -145,8 +145,8 @@ public class SurveyAnswersRecorder {
 	public Boolean writeLinesToFile(String surveyId, List<QuestionData> answers) {
 		try {
 			TextFileManager.getSurveyAnswersFile().newFile(surveyId);
-			for (int i = 0; i < answers.size(); i++) {
-				String line = answerFileLine(answers.get(i));
+			for (QuestionData answer : answers) {
+				String line = answerFileLine(answer);
 				Log.i("SurveyAnswersRecorder", line);
 				TextFileManager.getSurveyAnswersFile().writeEncrypted(line);
 			}
