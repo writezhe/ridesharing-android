@@ -10,12 +10,9 @@ public class SurveyTimingsRecorder {
 	public static String header = "timestamp,question id,question type,question text,question answer options,answer";
 		
 	
-	/**
-	 * Create a new Survey Response file, and record the timestamp of when 
-	 * the survey first displayed to the user
-	 */
+	/**Create a new Survey Response file, and record the timestamp of when
+	 * the survey first displayed to the user */
 	public static void recordSurveyFirstDisplayed(String surveyId) {
-		// Create a new data file to record answers for only this survey
 		TextFileManager.getSurveyTimingsFile().newFile(surveyId);
 		/* In the unlikely event that the user starts one survey, doesn't finish it, and starts a
 		 * second survey, a new surveyTimingsFile should be created when the second survey is
@@ -41,7 +38,7 @@ public class SurveyTimingsRecorder {
 		message += sanitizeString(questionDescription.getOptions()) + TextFileManager.DELIMITER;
 		message += sanitizeString(answer);
 
-		Log.i("SURVEYTIMINGSRECORDER**", message);
+//		Log.i("SURVEYTIMINGSRECORDER**", message);
 		appendLineToLogFile(message);
 	}
 
