@@ -21,56 +21,81 @@ import java.util.Set;
 //TODO: implement a serialization and/or iterable output blob.  need to see what survey anwsers actually look like to determine all the values it needs
 
 public class JsonSkipLogic {
+
+	/*############################# Assets ###################################*/
+
 	//Comparator sets
-	private static Set<String> NUMERIC_COMPARATORS = new HashSet<String>(4);
-	private static Set<String> EQUALITY_COMPARATORS = new HashSet<String>(6);
+	private static Set<String> COMPARATORS = new HashSet<String>(4);
 	private static Set<String> BOOLEAN_OPERATORS = new HashSet<String>(2);
 	static {
-		NUMERIC_COMPARATORS.add("<"); //Setup numerics
-		NUMERIC_COMPARATORS.add(">");
-		NUMERIC_COMPARATORS.add("<=");
-		NUMERIC_COMPARATORS.add(">=");
-		EQUALITY_COMPARATORS.add("=="); //Setup == / !=
-		EQUALITY_COMPARATORS.add("!=");
+		COMPARATORS.add("<"); //Setup numerics
+		COMPARATORS.add(">");
+		COMPARATORS.add("<=");
+		COMPARATORS.add(">=");
+		COMPARATORS.add("=="); //Setup == / !=
+		COMPARATORS.add("!=");
 		BOOLEAN_OPERATORS.add("and"); //Setup boolean operators
 		BOOLEAN_OPERATORS.add("or");
 		BOOLEAN_OPERATORS = Collections.unmodifiableSet(BOOLEAN_OPERATORS); //Block modification of all the sets.
-		NUMERIC_COMPARATORS = Collections.unmodifiableSet(NUMERIC_COMPARATORS);
-		EQUALITY_COMPARATORS = Collections.unmodifiableSet(EQUALITY_COMPARATORS);
+		COMPARATORS = Collections.unmodifiableSet(COMPARATORS);
 	}
 
-	//is the string formatter
-	private static final String NUMERICAL_STRING_REPRESENTATION = "%.1f";
+	//TODO: Eli. WHen we know whether sliders can have floating point values define a string representation.
+	private static final String SLIDER_STRING_FORMAT = "%.2f";
+	private static final String NUMERIC_OPEN_RESPONSE_FORMAT = "%.2f";
 
-	private HashMap<String, String> QuestionAnswer;
+	// For checking equality between Doubles.
+	// http://stackoverflow.com/questions/25160375/comparing-double-values-for-equality-in-java
+	private static final Double delta = 0.00001;
+
+	private static boolean isEqual(double d1, double d2) {
+		return d1 == d2 || isRelativelyEqual(d1,d2); //this short circuit just makes it faster
+	}
+
+	/** checks if the numbers are separated by a predefined absolute difference.*/
+	private static boolean isRelativelyEqual(double d1, double d2) {
+		return delta > Math.abs(d1 - d2) / Math.max(Math.abs(d1), Math.abs(d2));
+	}
+
+
+	private HashMap<String, QuestionData> QuestionAnswer;
 	private HashMap<String, JSONObject> QuestionSkipLogic;
+	private HashMap<String, JSONObject> Questions;
 	private ArrayList<String> QuestionOrder;
 	private Integer currentQuestion;
 	private Boolean runDisplayLogic;
 	private Context appContext;
 
+	/**@param jsonQuestions The content of the "content" key in a survey
+	 * @param runDisplayLogic A boolean value for whether skip Logic should be run on this survey.
+	 * @param applicationContext An application context is required in order to extend exception handling.
+	 * @throws JSONException thrown if there are any questions without question ids. */
 	public JsonSkipLogic(JSONArray jsonQuestions, Boolean runDisplayLogic, Context applicationContext) throws JSONException {
 		appContext = applicationContext;
-		int max_size = jsonQuestions.length();
+		final int MAX_SIZE = jsonQuestions.length();
 		String questionId;
 		JSONObject question;
-		JSONObject display_logic;
-
+		JSONObject displayLogic;
+		String questionType;
 		//construct the various question id collections
-		QuestionAnswer = new HashMap<String, String> (max_size);
-		QuestionSkipLogic = new HashMap<String, JSONObject> (max_size);
-		QuestionOrder = new ArrayList<String> (max_size);
+		QuestionAnswer = new HashMap<String, QuestionData> (MAX_SIZE);
+		QuestionSkipLogic = new HashMap<String, JSONObject> (MAX_SIZE);
+		Questions = new HashMap<String, JSONObject> (MAX_SIZE);
+		QuestionOrder = new ArrayList<String> (MAX_SIZE);
 
-		for (int i = 0; i < max_size; i++) {
-			question = jsonQuestions.optJSONObject(i); //line can throw JSONException
+		for (int i = 0; i < MAX_SIZE; i++) { //uhg, you can't iterate over a JSONArray.
+			question = jsonQuestions.optJSONObject(i);
 			questionId = question.getString("question_id");
 
-			QuestionOrder.add(questionId); //get question order
-			if ( question.has("display_if") ) {
+			Questions.put(questionId, question); //store questions by id
+			QuestionOrder.add(questionId); //setup question order
+
+			//setup question logic
+			if ( question.has("display_if") ) { //skip item if it has no display_if item
 				Log.v("debugging json content", " " + question.toString() );
-				display_logic = question.optJSONObject("display_if");
-				if (display_logic != null) {
-					QuestionSkipLogic.put(questionId, display_logic);
+				displayLogic = question.optJSONObject("display_if");
+				if (displayLogic != null) { //skip if display logic exists but is null
+					QuestionSkipLogic.put(questionId, displayLogic);
 				}
 			}
 		}
@@ -78,10 +103,16 @@ public class JsonSkipLogic {
 		currentQuestion = -1; //set the current question to -1, makes getNextQuestionID less annoying.
 	}
 
+
+	/**@param questionId Takes a question id
+	 * @return returns a QuestionData if it has been answered, otherwise null. */
+	public QuestionData getQuestionAnswer(String questionId) { return QuestionAnswer.get(questionId); }
+
+
 	/** Determines question should be displayed next.
 	 * @return a question id string, null if there is no next item. */
 	@SuppressWarnings("TailRecursion")
-	public String getNextQuestionID() {
+	public JSONObject getNextQuestion() {
 		currentQuestion++;
 		//if we would overflow the list (>= size) we are done, return null.
 		if (currentQuestion >= QuestionOrder.size()) {
@@ -90,25 +121,30 @@ public class JsonSkipLogic {
 		//if display logic has been disabled we skip logic processing and return the next question
 		if (!runDisplayLogic) {
 			Log.d("json logic", "runDisplayLogic set to true! doing all questions!");
-			return QuestionOrder.get(currentQuestion); }
+			return Questions.get(QuestionOrder.get(currentQuestion)); }
 
 		String questionId = QuestionOrder.get(currentQuestion);
 		Log.v("json logic", "starting question " + QuestionOrder.indexOf(questionId) + " (" + questionId + "))");
 		// if questionId does not have skip logic we display it.
-		//TODO: handle skip logic empty as identical to not existing
+		//TODO: handle skip logic is empty to have same behavior as not existing
 		if ( !QuestionSkipLogic.containsKey(questionId) ) {
 			Log.d("json logic", "Question " + QuestionOrder.indexOf(questionId) + " (" + questionId + ") has no skip logic, done.");
-			return questionId;
+			return Questions.get(questionId);
 		}
 		if ( shouldQuestionDisplay(questionId) ) {
 			Log.d("json logic", "Question " + QuestionOrder.indexOf(questionId) + " (" + questionId + ") evaluated as true, done.");
-			return questionId;
+			return Questions.get(questionId);
 		}
 		else {
 			Log.d("json logic", "Question " + QuestionOrder.indexOf(questionId) + " (" + questionId + ") did not evaluate as true, proceeding to next question...");
-			return getNextQuestionID();
+			return getNextQuestion();
 		}
 	}
+
+
+	/** @return whether the current logic is on question 1 */
+	public Boolean onFirstQuestion(){ return currentQuestion < 1; }
+
 
 	/** This function wraps the logic processing code.  If the logic processing encounters an error
 	 * due to json parsing the behavior is to invariably return true.
@@ -116,7 +152,10 @@ public class JsonSkipLogic {
 	 * @return Boolean result of the logic */
 	private Boolean shouldQuestionDisplay(String questionId){
 		try {
-			return parseLogicTree(questionId, QuestionSkipLogic.get(questionId));
+			JSONObject question = QuestionSkipLogic.get(questionId);
+			//If the survey display logic object is null or is empty, display
+			if (question == null || question.length() == 0) { return true; }
+			return parseLogicTree(questionId, question);
 		} catch (JSONException e) {
 			Log.w("json exception while doing a logic parse", "=============================================================================================================================================");
 			e.printStackTrace();
@@ -134,39 +173,32 @@ public class JsonSkipLogic {
 		// rather than optimized code length or performance.
 
 		//We'll get the NOT out of the way first.
-		//todo: test not, it may not be in the reference.
+		//todo: Eli. test not, it may not be in the reference.
 		if ( comparator.equals("not") ) {
 			//we need to pass in the Json _Object_ of the next layer in
 			Log.d("json logic", "evaluating as not (invert)");
-			JSONObject innerObject = logic.getJSONObject(comparator);
-			return !parseLogicTree(questionId, innerObject);
+			return !parseLogicTree(questionId, logic.getJSONObject(comparator) );
 		}
 
-		if ( NUMERIC_COMPARATORS.contains(comparator) ) {
+		if ( COMPARATORS.contains(comparator) ) {
 			// in this case logic.getString(comparator) contains a json list/array with the first
 			// element being the referencing question ID, and the second being a value to compare to.
-			Log.d("json logic", "evaluating as numeric");
-			JSONArray parameters = logic.getJSONArray(comparator);
-			return runNumericLogic(comparator, parameters);
-		}
-
-		if ( EQUALITY_COMPARATORS.contains(comparator) ) {
-			//identical to numeric comparators but we need to call the runEqualityLogic in order
-			// to avoid floating point direct equality checks.
-			Log.d("json logic", "evaluating as equality");
-			JSONArray parameters = logic.getJSONArray(comparator);
-			return runEqualityLogic(comparator, parameters);
+			return runNumericLogic(comparator, logic.getJSONArray(comparator) );
 		}
 
 		if ( BOOLEAN_OPERATORS.contains(comparator) ) {
-			//get array, iterate over array, get the booleans into a list
+			//get array of logic operations
 			JSONArray manyLogics = logic.getJSONArray(comparator);
-			Log.v("json logic", "evaluating as boolean, " + manyLogics.length() + " things to process...");
 			List<Boolean> results = new ArrayList<Boolean>(manyLogics.length());
+			Log.v("json logic", "evaluating as boolean, " + manyLogics.length() + " things to process...");
+
+			//iterate over array, get the booleans into a list
 			for (int i = 0; i < manyLogics.length(); i++) { //jsonArrays are not iterable...
 				results.add( parseLogicTree(questionId, manyLogics.getJSONObject(i) ) );
 			} //results now contains the boolean evaluation of all nested logics.
-			Log.v("json logic", "returning inside of " + QuestionOrder.indexOf(questionId) + " (" + questionId + ") after processing logic for boolean.");
+
+//			Log.v("json logic", "returning inside of " + QuestionOrder.indexOf(questionId) + " (" + questionId + ") after processing logic for boolean.");
+
 			//And. if anything is false, return false. If those all pass, return true.
 			if ( comparator.equals("and") ) {
 				for (Boolean bool : results) { if ( !bool ) { return false; } }
@@ -181,30 +213,10 @@ public class JsonSkipLogic {
 		throw new NullPointerException("received invalid comparator: " + comparator);
 	}
 
-	/** Processes the logical operation implemented of a comparator, only for use with equality tests.
-	 * If there has been no answer for the question a logic operation references this function returns false.
-	 * @param comparator a string that is in the EQUALITY_COMPARATORS constant.
-	 * @param parameters json array 2 elements in length.  The first element is a target question ID to pull an answer from, the second is the survey's value to compare to.
-	 * @return Boolean result of the operation, or false if the referenced question has no answer.
-	 * @throws JSONException */
-	@SuppressLint("DefaultLocale")
-	private Boolean runEqualityLogic(String comparator, JSONArray parameters ) throws JSONException {
-		Log.d("json logic", "inside equality logic: " + comparator + ", " + parameters.toString());
-		String targetQuestionId = parameters.getString(0);
-		if ( !QuestionAnswer.containsKey(targetQuestionId) ) { return false; } //False if DNE
-		String userAnswer = QuestionAnswer.get(targetQuestionId); //TODO: insert here no answer logic
-		String surveyValue = String.format(NUMERICAL_STRING_REPRESENTATION, parameters.getDouble(1) );
-		//we do equality comparison as a string comparison in order to avoid Double equality evaluation
-		boolean ret = surveyValue.equals(userAnswer);
-		if ( comparator.equals("==")) { return ret; }
-		if ( comparator.equals("!=")) { return !ret; }
-		throw new NullPointerException("non numeric logic fail");
-	}
 
-	/** Processes the logical operation implemented of a comparator, only for use with numerical
-	 * comparisons (greater than, less than, plus the = varieties).
+	/** Processes the logical operation implemented of a comparator.
 	 * If there has been no answer for the question a logic operation references this function returns false.
-	 * @param comparator a string that is in the NUMERIC_COMPARATORS constant.
+	 * @param comparator a string that is in the COMPARATORS constant.
 	 * @param parameters json array 2 elements in length.  The first element is a target question ID to pull an answer from, the second is the survey's value to compare to.
 	 * @return Boolean result of the operation, or false if the referenced question has no answer.
 	 * @throws JSONException */
@@ -212,25 +224,92 @@ public class JsonSkipLogic {
 		Log.d("json logic", "inside numeric logic: " + comparator + ", " + parameters.toString());
 		String targetQuestionId = parameters.getString(0);
 		if ( !QuestionAnswer.containsKey(targetQuestionId) ) { return false; } // false if DNE
-		Double userAnswer = Double.valueOf( QuestionAnswer.get(targetQuestionId) ); //TODO: insert here no answer logic
+		Double userAnswer = QuestionAnswer.get(targetQuestionId).getAnswerDouble();
 		Double surveyValue = parameters.getDouble(1);
-		//Fixme: this logic here could be backwards, need to think this through and document it.
-		if ( comparator.equals("<") ) { return userAnswer < surveyValue; }
-		if ( comparator.equals(">") ) { return userAnswer > surveyValue; }
-  		if ( comparator.equals("<=") ) { return userAnswer <= surveyValue; }
-		if ( comparator.equals(">=") ) { return userAnswer >= surveyValue; }
+
+		//If we encounter an unanswered question, that evaluates as false. (defined in the spec.)
+		if ( userAnswer == null ) { return false; }
+
+		if ( comparator.equals("<") ) {
+//			Log.d("logic...", "evaluating useranswer " + userAnswer + " < survey value" + surveyValue);
+			return userAnswer < surveyValue && !isEqual(userAnswer, surveyValue);  }
+		if ( comparator.equals(">") ) {
+//			Log.d("logic...", "evaluating useranswer " + userAnswer + " > survey value" + surveyValue);
+			return userAnswer > surveyValue && !isEqual(userAnswer, surveyValue); }
+  		if ( comparator.equals("<=") ) {
+//		    Log.d("logic...", "evaluating useranswer " + userAnswer + " <= survey value" + surveyValue);
+		    return userAnswer <= surveyValue || isEqual(userAnswer, surveyValue); } //the <= is slightly redundant, its fine.
+		if ( comparator.equals(">=") ) {
+//			Log.d("logic...", "evaluating useranswer " + userAnswer + " >= survey value" + surveyValue);
+			return userAnswer >= surveyValue || isEqual(userAnswer, surveyValue); } //the >= is slightly redundant, its fine.
+		if ( comparator.equals("==") ) {
+//			Log.d("logic...", "evaluating useranswer " + userAnswer + " == survey value" + surveyValue);
+			return !isEqual(userAnswer, surveyValue); }
+		if ( comparator.equals("!=") ) {
+//			Log.d("logic...", "evaluating useranswer " + userAnswer + " != survey value" + surveyValue);
+			return isEqual(userAnswer, surveyValue); }
 		throw new NullPointerException("numeric logic fail");
 	}
 
-	public void setQuestionAnswer(String questionId, String answer){ QuestionAnswer.put(questionId, answer); }
+	//TODO: Eli. make a get question answer for josh from uuid (he may not use it)
 
-	//TODO: These need testing...
 	@SuppressLint("DefaultLocale")
-	public void setQuestionAnswer(String questionId, Integer answer){ setQuestionAnswer(questionId, String.format(NUMERICAL_STRING_REPRESENTATION, Double.valueOf(answer))); }
-	@SuppressLint("DefaultLocale")
-	public void setQuestionAnswer(String questionId, Double answer){ setQuestionAnswer(questionId, String.format(NUMERICAL_STRING_REPRESENTATION, answer)); }
+	public void setAnswer(QuestionData questionData) {
+		QuestionType.Type questionType = questionData.getType();
+//		if ( questionType.equals(QuestionType.Type.CHECKBOX)) // Do nothing, we don't need to support this.
 
-	public void setAnswer(String questionId, QuestionData questiondata) {
-		//TODO: implement
+		if ( questionType.equals(QuestionType.Type.FREE_RESPONSE) ) {//comes in as a string, coerce to float (don't bother coercing to integer
+			if (questionData.getAnswerInteger() != null) {
+				questionData.setAnswerDoubleValue(Double.valueOf(questionData.getAnswerInteger())); }
+			if (questionData.getAnswerDouble() != null) {
+				questionData.setAnswerString(String.format(NUMERIC_OPEN_RESPONSE_FORMAT, questionData.getAnswerDouble())); }
+		}
+		if ( questionType.equals(QuestionType.Type.SLIDER) ) { //comes in as an integer, coerce to float, coerce to string
+			if (questionData.getAnswerInteger() != null) {
+				questionData.setAnswerDoubleValue( Double.valueOf(questionData.getAnswerInteger()) ); }
+			if (questionData.getAnswerDouble() != null) {
+				questionData.setAnswerString("" + questionData.getAnswerInteger()); }
+		}
+		if ( questionType.equals(QuestionType.Type.RADIO_BUTTON) ) {//comes in as an integer, coerce to float, coerce to string
+			if (questionData.getAnswerInteger() != null) {
+				questionData.setAnswerDoubleValue( Double.valueOf(questionData.getAnswerInteger()) ); }
+			if (questionData.getAnswerDouble() != null) {
+				questionData.setAnswerString("" + questionData.getAnswerInteger()); }
+		}
+		QuestionAnswer.put(questionData.getId(), questionData);
+	}
+
+
+	/** @return a list of QuestionData objects for serialization to the answers file. */
+	@SuppressWarnings("ObjectAllocationInLoop")
+	public List<QuestionData> getQuestionsForSerialization() {
+		List<QuestionData> answers = new ArrayList<QuestionData>(QuestionOrder.size());
+		for (String questionId : QuestionOrder)
+			if ( QuestionAnswer.containsKey(questionId) )
+				answers.add(QuestionAnswer.get(questionId));
+		return answers;
+	}
+
+	/**@return a list of question JSONObjects that would display but are not answered. */
+	public ArrayList<String> getUnansweredQuestions() {
+		ArrayList<String> unanswered = new ArrayList<> (QuestionOrder.size());
+		String questionType;
+		JSONObject question;
+		int i = 1;
+		for (String questionId : QuestionOrder) {
+			//cases: check for an answer, check for string not existing, check that question should have displayed.
+			if ( !QuestionAnswer.containsKey(questionId) ) {
+				question = Questions.get(questionId);
+				questionType = question.optString("question_type");
+				Boolean shouldDisplay = shouldQuestionDisplay(questionId);
+
+				if (shouldDisplay) { i++; }
+
+				if ( questionType != null && !questionType.equals("info_text_box") && shouldQuestionDisplay(questionId) ) {
+					unanswered.add( "Question " + i + ": " + question.optString("question_text") );
+				}
+			}
+		}
+		return unanswered;
 	}
 }

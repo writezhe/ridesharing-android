@@ -18,7 +18,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**The SurveyActivity displays to the user the survey that has been pushed to the device.
  * Layout in this activity is rendered, not static.
@@ -28,115 +27,70 @@ public class SurveyActivity extends SessionActivity implements
         QuestionFragment.OnGoToNextQuestionListener,
         SubmitButtonFragment.OnSubmitButtonClickedListener {
 	private String surveyId;
-    private JSONArray jsonQuestions;
-	private List<QuestionData> answers;
-    private int currentQuestionIndex;
 	private JsonSkipLogic surveySkipLogic;
+	private long initialViewMoment;
 
-    //FIXME: Josh. Save fragment state so that when someone hits back, their answers are preserved
+	//FIXME: Josh. Save fragment state so that when someone hits back, their answers are preserved  <-- use getQuestionAnswer in JsonSkipLogic
     //FIXME: Josh. If the SubmitButtonFragment has too many unanswered questions, they fill the whole screen and block the Submit button.  Figure out how to get the list to scroll.
     //FIXME: Josh. Check if Checkbox question no answer is the same as before
     //TODO: Josh. Give open response questions autofocus
 
+	//Fixme: Eli. I appear to have broken question display at the end, fix that.
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		initialViewMoment = System.currentTimeMillis();
 		setContentView(R.layout.activity_survey);
 		Intent triggerIntent = getIntent();
 		surveyId = triggerIntent.getStringExtra("surveyId");
-
-		if (savedInstanceState == null) {
-			Bundle extras = getIntent().getExtras();
-			if (extras != null) {
-				answers = new ArrayList<>();
-
-				//FIXME: Eli. stick this in a less crash-prone part of survey activity, not inside of of onCreate.
-				TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis() + " opened survey " + surveyId + ".");
-				displaySurvey(surveyId);
-			}
-		}
+		//FIXME: Eli. talk with josh about whether we need to handle storing questions for a user to come back, if so I need to do something with survey logic
+//		if (savedInstanceState == null) {
+//			Bundle extras = getIntent().getExtras();
+//			if (extras != null) {
+//				answers = new ArrayList<>();
+//			}
+//		}
 	}
 
+	@Override
+	protected void doBackgroundDependantTasks() {
+		super.doBackgroundDependantTasks();
+		// Onnela lab requested this line in the debug log
+		TextFileManager.getDebugLogFile().writeEncrypted(initialViewMoment + " opened survey " + surveyId + ".");
+		setupQuestions(surveyId);
+		//run the logic as if we had just pressed next without answering a hypothetical questior -1
+		goToNextQuestion(null);
+		// Record the time that the survey was first visible to the user
+		SurveyTimingsRecorder.recordSurveyFirstDisplayed(surveyId);
+	}
 
-    @Override
+	@Override
     public void goToNextQuestion(QuestionData dataFromOldQuestion) {
-        // If it's not the first question, the question index is the same as the backstack
-
-	    //TODO: Josh. stick answer in skip logic
-	    // we need some if logic on the question type, and the answer needs to go into the jsonskiplogic blob
-	    // the output of the "here are all the answers" blob needs to contain:
-
-        if (currentQuestionIndex >= 0) {
-            currentQuestionIndex = getFragmentManager().getBackStackEntryCount();
-        }
-        currentQuestionIndex += 1;
-
-		// Log the data from the current question
+		// store the answer from the previous question
 		if (dataFromOldQuestion != null) {
-            recordDataFromQuestion(dataFromOldQuestion);
+			surveySkipLogic.setAnswer(dataFromOldQuestion);
 		}
 
+	    JSONObject nextQuestion = surveySkipLogic.getNextQuestion();
         // If you've run out of questions, display the Submit button
-        if (currentQuestionIndex >= jsonQuestions.length()) {
-            displaySubmitButtonFragment();
-        } else {
-            // If you haven't run out of questions, display the next question
-            try {
-                JSONObject question1 = jsonQuestions.getJSONObject(currentQuestionIndex);
-                Boolean isFirstQuestion = (currentQuestionIndex == 0);
-                displaySurveyQuestionFragment(question1, isFirstQuestion);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
+        if (nextQuestion == null) { displaySubmitButtonFragment(); }
+        else { displaySurveyQuestionFragment(nextQuestion, surveySkipLogic.onFirstQuestion()); }
     }
 
 
-    /**Called when the user presses "Submit" at the end of the survey,
-     * saves the answers, and takes the user back to the main page. */
-    @Override
-    public void submitButtonClicked() {
-        Log.i("SURVEYTIMINGSRECORDER**", "SUBMIT button clicked");
-        SurveyTimingsRecorder.recordSubmit(getApplicationContext());
-        recordAnswersAndClose();
-    }
-
-
-    private void displaySurvey(String surveyId) {
-        jsonQuestions = getQuestionsArray(surveyId);
-        currentQuestionIndex = -1;  // Start questionIndex at -1 so you can increase it by 1
-        goToNextQuestion(null);
-
-        // Record the time that the survey was first visible to the user
-        //FIXME: Eli. stick this in a less crash-prone part of survey activity, not inside of of onCreate.
-        SurveyTimingsRecorder.recordSurveyFirstDisplayed(surveyId);
-    }
-
-
-    private void recordDataFromQuestion(QuestionData questionData) {
-        String questionId = questionData.getId();
-        int answersIndex = getAnswersIndexForQuestionId(questionId);
-        if (answersIndex == -1) {
-            // If the question isn't in answers yet, append it to the end of answers
-            answers.add(questionData);
-        } else {
-            // If the question is already in answers, replace the previous entry for this question
-            answers.set(answersIndex, questionData);
-        }
-    }
-
-
-    /**If a question with the same questionId is already in the answers ArrayList, return that
-     * questionId. Otherwise, return -1. */
-    private int getAnswersIndexForQuestionId(String questionId) {
-        for (int i = 0; i < answers.size(); i++) {
-            QuestionData question = answers.get(i);
-            if (question.getId().equals(questionId)) {
-                return i;
-            }
-        }
-        return -1;
-    }
+//    /**If a question with the same questionId is already in the answers ArrayList, return that
+//     * questionId. Otherwise, return -1. */
+//    private int getAnswersIndexForQuestionId(String questionId) {
+//        for (int i = 0; i < answers.size(); i++) {
+//            QuestionData question = answers.get(i);
+//            if (question.getId().equals(questionId)) {
+//                return i;
+//            }
+//        }
+//        return -1;
+//    }
 
 
     private void displaySurveyQuestionFragment(JSONObject jsonQuestion, Boolean isFirstQuestion) {
@@ -157,7 +111,8 @@ public class SurveyActivity extends SessionActivity implements
 
 
     private void displaySubmitButtonFragment() {
-		ArrayList<String> unansweredQuestions = getUnansweredQuestionsList();
+//		ArrayList<String> unansweredQuestions = getUnansweredQuestionsList();
+		ArrayList<String> unansweredQuestions = surveySkipLogic.getUnansweredQuestions();
 		Bundle args = new Bundle();
 		args.putStringArrayList("unansweredQuestions", unansweredQuestions);
 
@@ -170,20 +125,20 @@ public class SurveyActivity extends SessionActivity implements
         fragmentTransaction.commit();
     }
 
+//	//FIXME: Eli. overwrite.
+//	private ArrayList<String> getUnansweredQuestionsList() {
+//		ArrayList<String> unansweredQuestions = new ArrayList<>();
+//		for (int i = 0; i < answers.size(); i++) {
+//			QuestionData questionData = answers.get(i);
+//			if (questionData.getAnswerString() == null) {
+//				unansweredQuestions.add("Question " + (i + 1) + ": " + questionData.getText());
+//			}
+//		}
+//		return unansweredQuestions;
+//	}
 
-	private ArrayList<String> getUnansweredQuestionsList() {
-		ArrayList<String> unansweredQuestions = new ArrayList<>();
-		for (int i = 0; i < answers.size(); i++) {
-			QuestionData questionData = answers.get(i);
-			if (questionData.getAnswerString() == null) {
-				unansweredQuestions.add("Question " + (i + 1) + ": " + questionData.getText());
-			}
-		}
-		return unansweredQuestions;
-	}
 
-
-	private JSONArray getQuestionsArray(String surveyId) {
+	private void setupQuestions(String surveyId) {
 		// Get survey settings
 		Boolean randomizeWithMemory = false;
 		Boolean randomize = false;
@@ -209,18 +164,26 @@ public class SurveyActivity extends SessionActivity implements
 			//(param 2: If randomization is enabled do not run the skip logic for the survey.)
 			surveySkipLogic = new JsonSkipLogic(jsonQuestions, !randomize, getApplicationContext());
 		} catch (JSONException e) { e.printStackTrace(); }
-
-		return jsonQuestions;
 	}
 
-	
+
+	/**Called when the user presses "Submit" at the end of the survey,
+	 * saves the answers, and takes the user back to the main page. */
+	@Override
+	public void submitButtonClicked() {
+		Log.i("SURVEYTIMINGSRECORDER**", "SUBMIT button clicked");
+		SurveyTimingsRecorder.recordSubmit(getApplicationContext());
+		recordAnswersAndClose();
+	}
+
+
 	/**Write the Survey answers to a new SurveyAnswers.csv file, and show a Toast reporting either success or failure*/
 	private void recordAnswersAndClose() {
 		// Write the data to a SurveyAnswers file
         SurveyAnswersRecorder answersRecorder = new SurveyAnswersRecorder();
 		// Show a Toast telling the user either "Thanks, success!" or "Oops, there was an error"
 		String toastMsg = null;
-		if (answersRecorder.writeLinesToFile(surveyId, answers)) {
+		if (answersRecorder.writeLinesToFile(surveyId, surveySkipLogic.getQuestionsForSerialization())) {
 			toastMsg = PersistentData.getSurveySubmitSuccessToastText();
 		} else {
 			toastMsg = getApplicationContext().getResources().getString(R.string.survey_submit_error_message);

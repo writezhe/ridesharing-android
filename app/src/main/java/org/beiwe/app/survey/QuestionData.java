@@ -1,5 +1,8 @@
 package org.beiwe.app.survey;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * This class makes it easier to pass around the description of a question so
  * that it can be recorded in Survey Answers and Survey Timings files.
@@ -10,6 +13,7 @@ package org.beiwe.app.survey;
  */
 
 public class QuestionData {
+
 	private String id = null;
 	private QuestionType.Type type = null;
 	private String text = null;
@@ -40,9 +44,9 @@ public class QuestionData {
 	public String getAnswerString() { return answerString; }
 	public void setAnswerString(String answerString) { this.answerString = answerString; }
 
-	public Integer getAnswerIntegerValue() { return answerIntegerValue; }
+	public Integer getAnswerInteger() { return answerIntegerValue; }
 	public void setAnswerIntegerValue(Integer answerIntegerValue) { this.answerIntegerValue = answerIntegerValue; }
 
-	public Double getAnswerDoubleValue() { return answerDoubleValue ; }
+	public Double getAnswerDouble() { return answerDoubleValue ; }
 	public void setAnswerDoubleValue(Double answerDoubleValue) { this.answerDoubleValue  = answerDoubleValue; }
 }
