@@ -57,7 +57,7 @@ public class SessionActivity extends RunningBackgroundServiceActivity {
 	
 	@Override
 	/** Sets the logout timer, should trigger whenever onResume is called. */
-	protected void doBackgroundDependantTasks() { 
+	protected void doBackgroundDependentTasks() {
 		// Log.i("SessionActivity", "printed from SessionActivity");
 		authenticateAndLoginIfNecessary();
 	}

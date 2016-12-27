@@ -47,7 +47,7 @@ public class RunningBackgroundServiceActivity extends Activity {
 	        // Log.d("ServiceConnection", "Background Service Connected");
 	        BackgroundServiceBinder some_binder = (BackgroundServiceBinder) binder;
 	        backgroundService = some_binder.getService();
-	        doBackgroundDependantTasks();
+	        doBackgroundDependentTasks();
 //	        isBound = true;
 	    }
 	    
@@ -67,7 +67,7 @@ public class RunningBackgroundServiceActivity extends Activity {
 	}
 	
 	/** Override this function to do tasks on creation, but only after the background Service has been initialized. */
-	protected void doBackgroundDependantTasks() { /*Log.d("RunningBackgroundServiceActivity", "doBackgroundDependantTasks ran as default (do nothing)");*/ }
+	protected void doBackgroundDependentTasks() { /*Log.d("RunningBackgroundServiceActivity", "doBackgroundDependentTasks ran as default (do nothing)");*/ }
 	
 	@Override
 	/**On creation of RunningBackgroundServiceActivity we guarantee that the BackgroundService is

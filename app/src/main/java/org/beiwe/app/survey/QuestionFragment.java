@@ -82,7 +82,7 @@ public class QuestionFragment extends Fragment {
         String answerString = getAnswerString(questionLayout, questionType);
         if (answerString != null) { questionData.setAnswerString(answerString); }
         Integer answerIntegerValue = getAnswerIntegerValue(questionLayout, questionType);
-        if (answerIntegerValue != null) { questionData.setAnswerIntegerValue(answerIntegerValue); }
+        if (answerIntegerValue != null) { questionData.setAnswerInteger(answerIntegerValue); }
         return questionData;
     }
 

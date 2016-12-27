@@ -39,7 +39,7 @@ public class DeviceInfo {
 	
 	private static String androidID;
 	private static String bluetoothMAC;
-	//TDOO: Eli. phoneNumbeer is not used anywhere...
+	//TODO: Eli. phoneNumbeer is not used anywhere...
 	private static String phoneNumber;
 
 	/** grab the Android ID and the Bluetooth's MAC address */

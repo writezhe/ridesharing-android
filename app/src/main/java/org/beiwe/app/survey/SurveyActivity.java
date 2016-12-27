@@ -55,8 +55,8 @@ public class SurveyActivity extends SessionActivity implements
 	}
 
 	@Override
-	protected void doBackgroundDependantTasks() {
-		super.doBackgroundDependantTasks();
+	protected void doBackgroundDependentTasks() {
+		super.doBackgroundDependentTasks();
 		// Onnela lab requested this line in the debug log
 		TextFileManager.getDebugLogFile().writeEncrypted(initialViewMoment + " opened survey " + surveyId + ".");
 		setupQuestions(surveyId);
