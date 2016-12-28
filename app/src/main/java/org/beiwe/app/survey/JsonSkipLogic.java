@@ -219,7 +219,7 @@ public class JsonSkipLogic {
 	 * @return Boolean result of the operation, or false if the referenced question has no answer.
 	 * @throws JSONException */
 	private Boolean runNumericLogic(String comparator, JSONArray parameters) throws JSONException {
-		Log.d("json logic", "inside numeric logic: " + comparator + ", " + parameters.toString());
+//		Log.d("json logic", "inside numeric logic: " + comparator + ", " + parameters.toString());
 		String targetQuestionId = parameters.getString(0);
 		if ( !QuestionAnswer.containsKey(targetQuestionId) ) { return false; } // false if DNE
 		Double userAnswer = QuestionAnswer.get(targetQuestionId).getAnswerDouble();
