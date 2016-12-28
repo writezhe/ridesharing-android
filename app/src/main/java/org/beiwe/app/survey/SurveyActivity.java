@@ -126,10 +126,8 @@ public class SurveyActivity extends SessionActivity implements
 			e.printStackTrace();
 		}
 
-		// Get survey content as an array of questions; each question is a JSON object
-		JSONArray jsonQuestions = new JSONArray();
-		try {
-			jsonQuestions = new JSONArray(PersistentData.getSurveyContent(surveyId));
+		try { // Get survey content as an array of questions; each question is a JSON object
+			JSONArray jsonQuestions = new JSONArray(PersistentData.getSurveyContent(surveyId));
 			// If randomizing the question order, reshuffle the questions in the JSONArray
 			if (randomize && !randomizeWithMemory) { jsonQuestions = JSONUtils.shuffleJSONArray(jsonQuestions, numberQuestions); }
 			if (randomize && randomizeWithMemory) { jsonQuestions = JSONUtils.shuffleJSONArrayWithMemory(jsonQuestions, numberQuestions, surveyId); }
