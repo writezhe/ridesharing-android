@@ -46,4 +46,7 @@ public class QuestionData {
 
 	public Double getAnswerDouble() { return answerDouble; }
 	public void setAnswerDouble(Double answerDoubleValue) { this.answerDouble  = answerDoubleValue; }
+
+	/**  @return False if the answer is null, true if an answer exists. */
+	public Boolean questionIsAnswered(){ return answerString != null; }
 }

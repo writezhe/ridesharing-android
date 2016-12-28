@@ -54,6 +54,8 @@ public class SurveyAnswersRecorder {
 	/**Get the answer from a Slider Question
 	 * @return the answer as a String */
 	public static String getStringAnswerFromSliderQuestion(View questionLayout) {
+		Integer answer = getNullableIntAnswerFromSliderQuestion(questionLayout);
+		if (answer == null) { return null; } //return a null instead of a string of "null" on no answer.
 		return "" + getNullableIntAnswerFromSliderQuestion(questionLayout);
 	}
 
