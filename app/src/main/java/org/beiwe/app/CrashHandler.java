@@ -75,13 +75,30 @@ public class CrashHandler implements java.lang.Thread.UncaughtExceptionHandler{
 				for (StackTraceElement element : throwable.getStackTrace() ) { exceptionInfo +="\t" + element.toString() + "\n"; }
 			}
 		}
-		
-		exceptionInfo += "\nError-fill:\n";
-		for (StackTraceElement element : exception.fillInStackTrace().getStackTrace() ) { exceptionInfo += "\t" + element.toString() + "\n"; }
-		exceptionInfo += "\nActual Error:\n";
-		for (StackTraceElement element : exception.getCause().getStackTrace() ) { exceptionInfo += "\t" + element.toString() + "\n"; }
 
-		Log.e("BEIWE ENCOUNTERED THIS ERROR", exceptionInfo); //Log error...
+		//We encountered an error exactly once where we had a null reference inside this function,
+		// this occurred when downloading a new survey to test that randomized surveys worked,
+		// crashed with a null reference error on an element of a stacktrace. We now check for null.
+		if (exception.fillInStackTrace().getStackTrace() != null) {
+			exceptionInfo += "\nError-fill:\n";
+			for (StackTraceElement element : exception.fillInStackTrace().getStackTrace()) {
+				exceptionInfo += "\t" + element.toString() + "\n";
+			}
+		}
+		else { exceptionInfo += "java threw an error with an error-fill stack trace that was null."; }
+
+		if (exception.getCause().getStackTrace() != null) {
+			exceptionInfo += "\nActual Error:\n";
+			for (StackTraceElement element : exception.getCause().getStackTrace()) {
+				exceptionInfo += "\t" + element.toString() + "\n";
+			}
+		}
+		else { exceptionInfo += "java threw an error with a null error stack trace."; }
+
+		//Print an error log if debug mode is active.
+		if (LoadingActivity.loadThisActivity == DebugInterfaceActivity.class) {
+			Log.e("BEIWE ENCOUNTERED THIS ERROR", exceptionInfo); //Log error...
+		}
 
 		FileOutputStream outStream; //write a file...
 		try { outStream = context.openFileOutput("crashlog_" + System.currentTimeMillis(), Context.MODE_APPEND);
