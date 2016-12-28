@@ -40,13 +40,11 @@ public class JsonSkipLogic {
 		COMPARATORS = Collections.unmodifiableSet(COMPARATORS);
 	}
 
-	//TODO: Eli. WHen we know whether sliders can have floating point values define a string representation.
-	private static final String SLIDER_STRING_FORMAT = "%.2f";
-	private static final String NUMERIC_OPEN_RESPONSE_FORMAT = "%.2f";
-
 	// For checking equality between Doubles.
 	// http://stackoverflow.com/questions/25160375/comparing-double-values-for-equality-in-java
-	private static final Double delta = 0.00001;
+	private static final String NUMERIC_OPEN_RESPONSE_FORMAT = "%.5f";
+	public static final Double ANSWER_COMPARISON_EQUALITY_DELTA = 0.00001;
+
 
 	private static boolean isEqual(double d1, double d2) {
 		return d1 == d2 || isRelativelyEqual(d1,d2); //this short circuit just makes it faster
@@ -54,7 +52,7 @@ public class JsonSkipLogic {
 
 	/** checks if the numbers are separated by a predefined absolute difference.*/
 	private static boolean isRelativelyEqual(double d1, double d2) {
-		return delta > Math.abs(d1 - d2) / Math.max(Math.abs(d1), Math.abs(d2));
+		return ANSWER_COMPARISON_EQUALITY_DELTA > Math.abs(d1 - d2) / Math.max(Math.abs(d1), Math.abs(d2));
 	}
 
 
@@ -76,7 +74,7 @@ public class JsonSkipLogic {
 		String questionId;
 		JSONObject question;
 		JSONObject displayLogic;
-		String questionType;
+
 		//construct the various question id collections
 		QuestionAnswer = new HashMap<String, QuestionData> (MAX_SIZE);
 		QuestionSkipLogic = new HashMap<String, JSONObject> (MAX_SIZE);
@@ -116,27 +114,27 @@ public class JsonSkipLogic {
 		currentQuestion++;
 		//if we would overflow the list (>= size) we are done, return null.
 		if (currentQuestion >= QuestionOrder.size()) {
-			Log.w("json logic", "overflowed...");
+//			Log.w("json logic", "overflowed...");
 			return null; }
 		//if display logic has been disabled we skip logic processing and return the next question
 		if (!runDisplayLogic) {
-			Log.d("json logic", "runDisplayLogic set to true! doing all questions!");
+//			Log.d("json logic", "runDisplayLogic set to true! doing all questions!");
 			return Questions.get(QuestionOrder.get(currentQuestion)); }
 
 		String questionId = QuestionOrder.get(currentQuestion);
-		Log.v("json logic", "starting question " + QuestionOrder.indexOf(questionId) + " (" + questionId + "))");
+//		Log.v("json logic", "starting question " + QuestionOrder.indexOf(questionId) + " (" + questionId + "))");
 		// if questionId does not have skip logic we display it.
-		//TODO: handle skip logic is empty to have same behavior as not existing
+
 		if ( !QuestionSkipLogic.containsKey(questionId) ) {
-			Log.d("json logic", "Question " + QuestionOrder.indexOf(questionId) + " (" + questionId + ") has no skip logic, done.");
+//			Log.d("json logic", "Question " + QuestionOrder.indexOf(questionId) + " (" + questionId + ") has no skip logic, done.");
 			return Questions.get(questionId);
 		}
 		if ( shouldQuestionDisplay(questionId) ) {
-			Log.d("json logic", "Question " + QuestionOrder.indexOf(questionId) + " (" + questionId + ") evaluated as true, done.");
+//			Log.d("json logic", "Question " + QuestionOrder.indexOf(questionId) + " (" + questionId + ") evaluated as true, done.");
 			return Questions.get(questionId);
 		}
 		else {
-			Log.d("json logic", "Question " + QuestionOrder.indexOf(questionId) + " (" + questionId + ") did not evaluate as true, proceeding to next question...");
+//			Log.d("json logic", "Question " + QuestionOrder.indexOf(questionId) + " (" + questionId + ") did not evaluate as true, proceeding to next question...");
 			return getNextQuestion();
 		}
 	}
@@ -176,7 +174,7 @@ public class JsonSkipLogic {
 		//todo: Eli. test not, it may not be in the reference.
 		if ( comparator.equals("not") ) {
 			//we need to pass in the Json _Object_ of the next layer in
-			Log.d("json logic", "evaluating as not (invert)");
+//			Log.d("json logic", "evaluating as NOT (invert)");
 			return !parseLogicTree(questionId, logic.getJSONObject(comparator) );
 		}
 
@@ -190,7 +188,7 @@ public class JsonSkipLogic {
 			//get array of logic operations
 			JSONArray manyLogics = logic.getJSONArray(comparator);
 			List<Boolean> results = new ArrayList<Boolean>(manyLogics.length());
-			Log.v("json logic", "evaluating as boolean, " + manyLogics.length() + " things to process...");
+//			Log.v("json logic", "evaluating as boolean, " + manyLogics.length() + " things to process...");
 
 			//iterate over array, get the booleans into a list
 			for (int i = 0; i < manyLogics.length(); i++) { //jsonArrays are not iterable...
@@ -251,33 +249,32 @@ public class JsonSkipLogic {
 		throw new NullPointerException("numeric logic fail");
 	}
 
-	//TODO: Eli. make a get question answer for josh from uuid (he may not use it)
 
-	@SuppressLint("DefaultLocale")
+   @SuppressLint("DefaultLocale")
 	public void setAnswer(QuestionData questionData) {
 		QuestionType.Type questionType = questionData.getType();
-//		if ( questionType.equals(QuestionType.Type.CHECKBOX)) // Do nothing, we don't need to support this.
+	   if ( questionType.equals(QuestionType.Type.CHECKBOX)) // Do nothing, we don't need to support this.
 
-		if ( questionType.equals(QuestionType.Type.FREE_RESPONSE) ) {//comes in as a string, coerce to float (don't bother coercing to integer
-			if (questionData.getAnswerInteger() != null) {
-				questionData.setAnswerDouble(Double.valueOf(questionData.getAnswerInteger())); }
-			if (questionData.getAnswerDouble() != null) {
-				questionData.setAnswerString(String.format(NUMERIC_OPEN_RESPONSE_FORMAT, questionData.getAnswerDouble())); }
-		}
-		if ( questionType.equals(QuestionType.Type.SLIDER) ) { //comes in as an integer, coerce to float, coerce to string
-			if (questionData.getAnswerInteger() != null) {
-				questionData.setAnswerDouble( Double.valueOf(questionData.getAnswerInteger()) ); }
-			if (questionData.getAnswerDouble() != null) {
-				questionData.setAnswerString("" + questionData.getAnswerInteger()); }
-		}
-		if ( questionType.equals(QuestionType.Type.RADIO_BUTTON) ) {//comes in as an integer, coerce to float, coerce to string
-			if (questionData.getAnswerInteger() != null) {
-				questionData.setAnswerDouble( Double.valueOf(questionData.getAnswerInteger()) ); }
-			if (questionData.getAnswerDouble() != null) {
-				questionData.setAnswerString("" + questionData.getAnswerInteger()); }
-		}
-		QuestionAnswer.put(questionData.getId(), questionData);
-	}
+	   if ( questionType.equals(QuestionType.Type.FREE_RESPONSE) ) {//comes in as a string, coerce to float (don't bother coercing to integer
+		   if (questionData.getAnswerInteger() != null) {
+			   questionData.setAnswerDouble(Double.valueOf(questionData.getAnswerInteger())); }
+		   if (questionData.getAnswerDouble() != null) {
+			   questionData.setAnswerString(String.format(NUMERIC_OPEN_RESPONSE_FORMAT, questionData.getAnswerDouble())); }
+	   }
+	   if ( questionType.equals(QuestionType.Type.SLIDER) ) { //comes in as an integer, coerce to float, coerce to string
+		   if (questionData.getAnswerInteger() != null) {
+			   questionData.setAnswerDouble( Double.valueOf(questionData.getAnswerInteger()) ); }
+		   if (questionData.getAnswerDouble() != null) {
+			   questionData.setAnswerString("" + questionData.getAnswerInteger()); }
+	   }
+	   if ( questionType.equals(QuestionType.Type.RADIO_BUTTON) ) {//comes in as an integer, coerce to float, coerce to string
+		   if (questionData.getAnswerInteger() != null) {
+			   questionData.setAnswerDouble( Double.valueOf(questionData.getAnswerInteger()) ); }
+		   if (questionData.getAnswerDouble() != null) {
+			   questionData.setAnswerString("" + questionData.getAnswerInteger()); }
+	   }
+	   QuestionAnswer.put(questionData.getId(), questionData);
+   }
 
 
 	/** @return a list of QuestionData objects for serialization to the answers file. */
@@ -290,23 +287,47 @@ public class JsonSkipLogic {
 		return answers;
 	}
 
-	/**@return a list of question JSONObjects that would display but are not answered. */
+	/**@return a list of QuestionData objects A) should have displayed, B) will be accessible by paging back, C) don't have answers.*/
 	public ArrayList<String> getUnansweredQuestions() {
 		ArrayList<String> unanswered = new ArrayList<> (QuestionOrder.size());
-		String questionType;
-		JSONObject question;
-		int i = 1;
+		QuestionData question;
+		int questionDisplayNumber = 0;
+		Boolean questionWouldDisplay;
+
+		//Guarantee: the questions in QuestionAnswer will consist of all _displayed_ questions.
 		for (String questionId : QuestionOrder) {
-			//cases: check for an answer, check for string not existing, check that question should have displayed.
-			if ( !QuestionAnswer.containsKey(questionId) ) {
-				question = Questions.get(questionId);
-				questionType = question.optString("question_type");
-				Boolean shouldDisplay = shouldQuestionDisplay(questionId);
 
-				if (shouldDisplay) { i++; }
+			//QuestionData objects are put in the QuestionAnswers dictionary if they are ever
+			// displayed. (The user must also proceed to the next question, but that has no effect.)
+			//No QuestionAnswer object means question did not display, which means we can skip it.
+			if ( QuestionAnswer.containsKey(questionId) ) {
+				//A user may have viewed questions along a Display Logic Path A, but failed to answer
+				// certain questions, then reversed and changed some answers. If so they may have created
+				// a logic path B that no longer displays a previously answered question.
+				//If that occurred then we have a a QuestionData object in QuestionAnswers that
+				// effectively should not have displayed (returns false on evaluation of
+				// shouldQuestionDisplay), so we need to catch that case.
+				//The only way to catch that case is to run shouldQuestionDisplay on every QuestionData
+				// object in QuestionAnswers.
+				//There is one exception: INFO_TEXT_BOX questions are always ignored.
+				question = QuestionAnswer.get(questionId);
 
-				if ( questionType != null && !questionType.equals("info_text_box") && shouldQuestionDisplay(questionId) ) {
-					unanswered.add( "Question " + i + ": " + question.optString("question_text") );
+				//INFO_TEXT_BOX - skip it.
+				if ( question.getType().equals(QuestionType.Type.INFO_TEXT_BOX) ) {
+					continue;
+				}
+				//check if should display, store value
+				questionWouldDisplay = shouldQuestionDisplay(questionId);
+
+				if ( questionWouldDisplay ) { //If would display, increment question number.
+					questionDisplayNumber++;
+				} else { //If would not display not, skip it without incrementing.
+					continue;
+				}
+
+				//If question is actually unanswered construct a display string.
+				if ( !question.questionIsAnswered() ){
+					unanswered.add("Question " + questionDisplayNumber + ": " + question.getText());
 				}
 			}
 		}

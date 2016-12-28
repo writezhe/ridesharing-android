@@ -45,7 +45,7 @@ public class SurveyActivity extends SessionActivity implements
 		setContentView(R.layout.activity_survey);
 		Intent triggerIntent = getIntent();
 		surveyId = triggerIntent.getStringExtra("surveyId");
-		//FIXME: Eli. talk with josh about whether we need to handle storing questions for a user to come back, if so I need to do something with survey logic
+		//TODO: Josh. determine whether we need to handle storing questions for a user to come back.
 //		if (savedInstanceState == null) {
 //			Bundle extras = getIntent().getExtras();
 //			if (extras != null) {
@@ -80,19 +80,6 @@ public class SurveyActivity extends SessionActivity implements
     }
 
 
-//    /**If a question with the same questionId is already in the answers ArrayList, return that
-//     * questionId. Otherwise, return -1. */
-//    private int getAnswersIndexForQuestionId(String questionId) {
-//        for (int i = 0; i < answers.size(); i++) {
-//            QuestionData question = answers.get(i);
-//            if (question.getId().equals(questionId)) {
-//                return i;
-//            }
-//        }
-//        return -1;
-//    }
-
-
     private void displaySurveyQuestionFragment(JSONObject jsonQuestion, Boolean isFirstQuestion) {
 		// Create a question fragment with the attributes of the question
 		QuestionFragment questionFragment = new QuestionFragment();
@@ -111,10 +98,8 @@ public class SurveyActivity extends SessionActivity implements
 
 
     private void displaySubmitButtonFragment() {
-//		ArrayList<String> unansweredQuestions = getUnansweredQuestionsList();
-		ArrayList<String> unansweredQuestions = surveySkipLogic.getUnansweredQuestions();
 		Bundle args = new Bundle();
-		args.putStringArrayList("unansweredQuestions", unansweredQuestions);
+		args.putStringArrayList("unansweredQuestions", surveySkipLogic.getUnansweredQuestions());
 
 		SubmitButtonFragment submitFragment = new SubmitButtonFragment();
 		submitFragment.setArguments(args);
@@ -124,18 +109,6 @@ public class SurveyActivity extends SessionActivity implements
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
-
-//	//FIXME: Eli. overwrite.
-//	private ArrayList<String> getUnansweredQuestionsList() {
-//		ArrayList<String> unansweredQuestions = new ArrayList<>();
-//		for (int i = 0; i < answers.size(); i++) {
-//			QuestionData questionData = answers.get(i);
-//			if (questionData.getAnswerString() == null) {
-//				unansweredQuestions.add("Question " + (i + 1) + ": " + questionData.getText());
-//			}
-//		}
-//		return unansweredQuestions;
-//	}
 
 
 	private void setupQuestions(String surveyId) {
@@ -171,16 +144,11 @@ public class SurveyActivity extends SessionActivity implements
 	 * saves the answers, and takes the user back to the main page. */
 	@Override
 	public void submitButtonClicked() {
-		Log.i("SURVEYTIMINGSRECORDER**", "SUBMIT button clicked");
+//		Log.i("SURVEYTIMINGSRECORDER**", "SUBMIT button clicked");
 		SurveyTimingsRecorder.recordSubmit(getApplicationContext());
-		recordAnswersAndClose();
-	}
 
-
-	/**Write the Survey answers to a new SurveyAnswers.csv file, and show a Toast reporting either success or failure*/
-	private void recordAnswersAndClose() {
 		// Write the data to a SurveyAnswers file
-        SurveyAnswersRecorder answersRecorder = new SurveyAnswersRecorder();
+		SurveyAnswersRecorder answersRecorder = new SurveyAnswersRecorder();
 		// Show a Toast telling the user either "Thanks, success!" or "Oops, there was an error"
 		String toastMsg = null;
 		if (answersRecorder.writeLinesToFile(surveyId, surveySkipLogic.getQuestionsForSerialization())) {
@@ -192,7 +160,7 @@ public class SurveyActivity extends SessionActivity implements
 
 		// Close the Activity
 		startActivity(new Intent(getApplicationContext(), MainMenuActivity.class));
-		PersistentData.setSurveyNotificationState(surveyId, false);		
+		PersistentData.setSurveyNotificationState(surveyId, false);
 		SurveyNotifications.dismissNotification(getApplicationContext(), surveyId);
 		finish();
 	}
