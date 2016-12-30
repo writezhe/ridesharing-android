@@ -95,7 +95,7 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 	private void doRegister(final String url) { new HTTPUIAsync(url, this) {
 		@Override
 		protected Void doInBackground(Void... arg0) {
-			parameters= PostRequest.makeParameter("bluetooth_id", DeviceInfo.getBlootoothMAC() ) +
+			parameters= PostRequest.makeParameter("bluetooth_id", DeviceInfo.getBluetoothMAC() ) +
 						PostRequest.makeParameter("new_password", newPassword) +
 						PostRequest.makeParameter("phone_number", ((RegisterActivity) activity).getPhoneNumber() ) + 
 						PostRequest.makeParameter("device_id", DeviceInfo.getAndroidID() ) +

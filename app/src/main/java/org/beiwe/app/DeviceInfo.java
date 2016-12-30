@@ -70,5 +70,5 @@ public class DeviceInfo {
 	public static String getManufacturer() { return android.os.Build.MANUFACTURER; }
 	public static String getModel() { return android.os.Build.MODEL; }
 	public static String getAndroidID() { return EncryptionEngine.safeHash(androidID); }
-	public static String getBlootoothMAC() { return EncryptionEngine.safeHash(bluetoothMAC); } //FIXME: Eli. wow, typo.
+	public static String getBluetoothMAC() { return EncryptionEngine.safeHash(bluetoothMAC); } //FIXME: Eli. wow, typo.
 }
