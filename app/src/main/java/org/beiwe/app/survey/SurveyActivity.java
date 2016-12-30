@@ -35,9 +35,6 @@ public class SurveyActivity extends SessionActivity implements
     //FIXME: Josh. Check if Checkbox question no answer is the same as before
     //TODO: Josh. Give open response questions autofocus
 
-	//Fixme: Eli. I appear to have broken question display at the end, fix that.
-
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
