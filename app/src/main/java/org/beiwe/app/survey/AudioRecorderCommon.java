@@ -243,7 +243,6 @@ public class AudioRecorderCommon extends SessionActivity {
     /** When the user presses "Done", just kill this activity and take them
      * back to the last one; the audio file should already be saved, so we
      * don't need to do anything other than kill the activity.  */
-    //TODO: confirm the above
     public void buttonDonePressed(View v) { //I love the name of this function...
     	if (currentlyRecording) { stopRecording(); }
     	PersistentData.setSurveyNotificationState(surveyId, false);

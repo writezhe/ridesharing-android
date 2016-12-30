@@ -22,7 +22,6 @@ public class SurveyAnswersRecorder {
 	/** Return a String representation of the answer to a question. If the question is not answered,
 	 *  return null. */
 	public static String getAnswerString(View questionLayout, QuestionType.Type questionType) {
-		//TODO: Eli. confirm these are all correctly ... coercing data types
 		if (questionType == QuestionType.Type.SLIDER) {
 			return SurveyAnswersRecorder.getStringAnswerFromSliderQuestion(questionLayout);
 		} else if (questionType == QuestionType.Type.RADIO_BUTTON) {
@@ -36,7 +35,6 @@ public class SurveyAnswersRecorder {
 		}
 	}
 
-	//TODO: Eli. for the radio button will need to convert to double in here... somewhere
 	/** If the question is a radio button or slider question, return the answer as a nullable Java
 	 *  Integer. If it's any other type of question, or if it wasn't answered, return null. */
 	public static Integer getAnswerIntegerValue(View questionLayout, QuestionType.Type questionType) {
