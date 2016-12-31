@@ -199,11 +199,13 @@ public class JsonSkipLogic {
 
 			//And. if anything is false, return false. If those all pass, return true.
 			if ( comparator.equals("and") ) {
+				Log.d("logic meanderings", questionId + " AND bools: " + results.toString());
 				for (Boolean bool : results) { if ( !bool ) { return false; } }
 				return true;
 			}
 			//Or. if anything is true, return true. If those all pass, return false.
 			if ( comparator.equals("or") ) {
+				Log.d("logic meanderings", questionId + " OR bools: " + results.toString());
 				for (Boolean bool : results) { if ( bool ) { return true; } }
 				return false;
 			}
@@ -225,27 +227,23 @@ public class JsonSkipLogic {
 		Double userAnswer = QuestionAnswer.get(targetQuestionId).getAnswerDouble();
 		Double surveyValue = parameters.getDouble(1);
 
+//		Log.d("logic...", "evaluating useranswer " + userAnswer + comparator + surveyValue);
+
 		//If we encounter an unanswered question, that evaluates as false. (defined in the spec.)
 		if ( userAnswer == null ) { return false; }
 
 		if ( comparator.equals("<") ) {
-//			Log.d("logic...", "evaluating useranswer " + userAnswer + " < survey value" + surveyValue);
 			return userAnswer < surveyValue && !isEqual(userAnswer, surveyValue);  }
 		if ( comparator.equals(">") ) {
-//			Log.d("logic...", "evaluating useranswer " + userAnswer + " > survey value" + surveyValue);
 			return userAnswer > surveyValue && !isEqual(userAnswer, surveyValue); }
   		if ( comparator.equals("<=") ) {
-//		    Log.d("logic...", "evaluating useranswer " + userAnswer + " <= survey value" + surveyValue);
 		    return userAnswer <= surveyValue || isEqual(userAnswer, surveyValue); } //the <= is slightly redundant, its fine.
 		if ( comparator.equals(">=") ) {
-//			Log.d("logic...", "evaluating useranswer " + userAnswer + " >= survey value" + surveyValue);
 			return userAnswer >= surveyValue || isEqual(userAnswer, surveyValue); } //the >= is slightly redundant, its fine.
 		if ( comparator.equals("==") ) {
-//			Log.d("logic...", "evaluating useranswer " + userAnswer + " == survey value" + surveyValue);
-			return !isEqual(userAnswer, surveyValue); }
-		if ( comparator.equals("!=") ) {
-//			Log.d("logic...", "evaluating useranswer " + userAnswer + " != survey value" + surveyValue);
 			return isEqual(userAnswer, surveyValue); }
+		if ( comparator.equals("!=") ) {
+			return !isEqual(userAnswer, surveyValue); }
 		throw new NullPointerException("numeric logic fail");
 	}
 
