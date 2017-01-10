@@ -30,7 +30,7 @@ import static org.beiwe.app.survey.SurveyAnswersRecorder.getAnswerString;
 import static org.beiwe.app.survey.SurveyAnswersRecorder.getSelectedCheckboxes;
 
 /**
- * Created by admin on 11/30/16.
+ * Created by Josh Zagorsky on 11/30/16.
  */
 
 public class QuestionFragment extends Fragment {

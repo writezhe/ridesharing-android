@@ -23,14 +23,14 @@ import org.json.JSONObject;
 
 public class SurveyActivity extends SessionActivity implements
         QuestionFragment.OnGoToNextQuestionListener,
-        SubmitButtonFragment.OnSubmitButtonClickedListener {
+        SurveySubmitFragment.OnSubmitButtonClickedListener {
 	private String surveyId;
 	private JsonSkipLogic surveySkipLogic;
 	private boolean onResumeHasBeenCalledBefore = false;
 	private long initialViewMoment;
 
 	//FIXME: Josh. Save fragment state so that when someone hits back, their answers are preserved  <-- use getQuestionAnswer in JsonSkipLogic
-    //FIXME: Josh. If the SubmitButtonFragment has too many unanswered questions, they fill the whole screen and block the Submit button.  Figure out how to get the list to scroll.
+    //FIXME: Josh. If the SurveySubmitFragment has too many unanswered questions, they fill the whole screen and block the Submit button.  Figure out how to get the list to scroll.
     //FIXME: Josh. Check if Checkbox question no answer is the same as before
     //TODO: Josh. Give open response questions autofocus
 
@@ -66,6 +66,7 @@ public class SurveyActivity extends SessionActivity implements
 		}
 	}
 
+
 	@Override
     public void goToNextQuestion(QuestionData dataFromOldQuestion) {
 		// store the answer from the previous question
@@ -75,7 +76,7 @@ public class SurveyActivity extends SessionActivity implements
 
 	    JSONObject nextQuestion = surveySkipLogic.getNextQuestion();
         // If you've run out of questions, display the Submit button
-        if (nextQuestion == null) { displaySubmitButtonFragment(); }
+        if (nextQuestion == null) { displaySurveySubmitFragment(); }
         else { displaySurveyQuestionFragment(nextQuestion, surveySkipLogic.onFirstQuestion()); }
     }
 
@@ -97,11 +98,11 @@ public class SurveyActivity extends SessionActivity implements
 	}
 
 
-    private void displaySubmitButtonFragment() {
+    private void displaySurveySubmitFragment() {
 		Bundle args = new Bundle();
 		args.putStringArrayList("unansweredQuestions", surveySkipLogic.getUnansweredQuestions());
 
-		SubmitButtonFragment submitFragment = new SubmitButtonFragment();
+		SurveySubmitFragment submitFragment = new SurveySubmitFragment();
 		submitFragment.setArguments(args);
 
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();

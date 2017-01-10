@@ -1,7 +1,7 @@
 package org.beiwe.app.survey;
 
 /**
- * Created by admin on 12/11/16.
+ * Created by Josh Zagorsky on 12/11/16.
  */
 
 public class QuestionType {
