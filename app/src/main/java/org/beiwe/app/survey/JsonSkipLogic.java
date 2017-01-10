@@ -140,6 +140,15 @@ public class JsonSkipLogic {
 	}
 
 
+	public void goBackOneQuestion() {
+		Log.i("JsonSkipLogic.java", "back button pressed");
+		// FIXME: Eli, handle going back a question. This gets called when the user presses the hardware back button.
+		/*if (currentQuestion >= 0) {
+			currentQuestion--;
+		}*/
+	}
+
+
 	/** @return whether the current logic is on question 1 */
 	public Boolean onFirstQuestion(){ return currentQuestion < 1; }
 

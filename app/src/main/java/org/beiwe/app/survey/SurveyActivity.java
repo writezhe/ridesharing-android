@@ -78,6 +78,12 @@ public class SurveyActivity extends SessionActivity implements
     }
 
 
+	@Override
+	public void onBackPressed() {
+		surveySkipLogic.goBackOneQuestion();
+	}
+
+
     private void displaySurveyQuestionFragment(JSONObject jsonQuestion, Boolean isFirstQuestion) {
 		// Create a question fragment with the attributes of the question
 		QuestionFragment questionFragment = new QuestionFragment();
