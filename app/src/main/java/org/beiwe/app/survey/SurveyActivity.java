@@ -80,6 +80,7 @@ public class SurveyActivity extends SessionActivity implements
 
 	@Override
 	public void onBackPressed() {
+        super.onBackPressed();
 		surveySkipLogic.goBackOneQuestion();
 	}
 
