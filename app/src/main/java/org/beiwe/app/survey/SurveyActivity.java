@@ -17,8 +17,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
 /**The SurveyActivity displays to the user the survey that has been pushed to the device.
  * Layout in this activity is rendered, not static.
  * @author Josh Zagorsky, Eli Jones */
@@ -28,6 +26,7 @@ public class SurveyActivity extends SessionActivity implements
         SubmitButtonFragment.OnSubmitButtonClickedListener {
 	private String surveyId;
 	private JsonSkipLogic surveySkipLogic;
+	private boolean onResumeHasBeenCalledBefore = false;
 	private long initialViewMoment;
 
 	//FIXME: Josh. Save fragment state so that when someone hits back, their answers are preserved  <-- use getQuestionAnswer in JsonSkipLogic
@@ -51,16 +50,20 @@ public class SurveyActivity extends SessionActivity implements
 //		}
 	}
 
+
 	@Override
 	protected void doBackgroundDependentTasks() {
 		super.doBackgroundDependentTasks();
-		// Onnela lab requested this line in the debug log
-		TextFileManager.getDebugLogFile().writeEncrypted(initialViewMoment + " opened survey " + surveyId + ".");
-		setupQuestions(surveyId);
-		//run the logic as if we had just pressed next without answering a hypothetical questior -1
-		goToNextQuestion(null);
-		// Record the time that the survey was first visible to the user
-		SurveyTimingsRecorder.recordSurveyFirstDisplayed(surveyId);
+		if (!onResumeHasBeenCalledBefore) {
+			setUpQuestions(surveyId);
+			// Run the logic as if we had just pressed next without answering a hypothetical question -1
+			goToNextQuestion(null);
+			// Record the time that the survey was first visible to the user
+			SurveyTimingsRecorder.recordSurveyFirstDisplayed(surveyId);
+			// Onnela lab requested this line in the debug log
+			TextFileManager.getDebugLogFile().writeEncrypted(initialViewMoment + " opened survey " + surveyId + ".");
+			onResumeHasBeenCalledBefore = true;
+		}
 	}
 
 	@Override
@@ -108,7 +111,7 @@ public class SurveyActivity extends SessionActivity implements
     }
 
 
-	private void setupQuestions(String surveyId) {
+	private void setUpQuestions(String surveyId) {
 		// Get survey settings
 		Boolean randomizeWithMemory = false;
 		Boolean randomize = false;

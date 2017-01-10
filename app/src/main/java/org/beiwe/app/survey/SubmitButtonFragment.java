@@ -45,7 +45,7 @@ public class SubmitButtonFragment extends Fragment {
     }
 
 
-    // Interface for the "Next" button to signal the Activity
+    // Interface for the "Submit" button to pass a signal back to the Activity
     public interface OnSubmitButtonClickedListener {
         public void submitButtonClicked();
     }
