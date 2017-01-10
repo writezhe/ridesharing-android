@@ -1,6 +1,7 @@
 package org.beiwe.app.survey;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.beiwe.app.storage.TextFileManager;
 
@@ -32,12 +33,12 @@ public class SurveyTimingsRecorder {
 	public static void recordAnswer(String answer, QuestionData questionData) {
 		String message = "";
 		message += sanitizeString(questionData.getId()) + TextFileManager.DELIMITER;
-		message += sanitizeString(questionData.getType().toString()) + TextFileManager.DELIMITER;
+		message += sanitizeString(questionData.getType().getStringName()) + TextFileManager.DELIMITER;
 		message += sanitizeString(questionData.getText()) + TextFileManager.DELIMITER;
 		message += sanitizeString(questionData.getOptions()) + TextFileManager.DELIMITER;
 		message += sanitizeString(answer);
 
-//		Log.i("SURVEYTIMINGSRECORDER**", message);
+		Log.i("SurveyResponse timings", message);
 		appendLineToLogFile(message);
 	}
 

@@ -97,7 +97,7 @@ public class SurveyAnswersRecorder {
 		LinearLayout checkboxesList = (LinearLayout) questionLayout.findViewById(R.id.checkboxesList);
 		String selectedAnswers = getSelectedCheckboxes(checkboxesList);
 		if (selectedAnswers.equals("[]")) {
-			return noAnswer;
+			return null;
 		} else {
 			return selectedAnswers;
 		}
@@ -125,7 +125,7 @@ public class SurveyAnswersRecorder {
 		String line = "";
 		line += SurveyTimingsRecorder.sanitizeString(questionData.getId());
 		line += TextFileManager.DELIMITER;
-		line += SurveyTimingsRecorder.sanitizeString(questionData.getType().toString());
+		line += SurveyTimingsRecorder.sanitizeString(questionData.getType().getStringName());
 		line += TextFileManager.DELIMITER;
 		line += SurveyTimingsRecorder.sanitizeString(questionData.getText());
 		line += TextFileManager.DELIMITER;
@@ -147,7 +147,7 @@ public class SurveyAnswersRecorder {
 			TextFileManager.getSurveyAnswersFile().newFile(surveyId);
 			for (QuestionData answer : answers) {
 				String line = answerFileLine(answer);
-				Log.i("SurveyAnswersRecorder", line);
+				Log.i("SurveyResponse answers", line);
 				TextFileManager.getSurveyAnswersFile().writeEncrypted(line);
 			}
 			TextFileManager.getSurveyAnswersFile().closeFile();

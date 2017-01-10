@@ -6,10 +6,20 @@ package org.beiwe.app.survey;
 
 public class QuestionType {
     public enum Type {
-        INFO_TEXT_BOX,
-        SLIDER,
-        RADIO_BUTTON,
-        CHECKBOX,
-        FREE_RESPONSE;
+        INFO_TEXT_BOX("Info Text Box"),
+        SLIDER("Slider Question"),
+        RADIO_BUTTON("Radio Button Question"),
+        CHECKBOX("Checkbox Question"),
+        FREE_RESPONSE("Open Response Question");
+
+        private final String stringName;
+
+        Type(String stringName) {
+            this.stringName = stringName;
+        }
+
+        public String getStringName() {
+            return stringName;
+        }
     }
 }

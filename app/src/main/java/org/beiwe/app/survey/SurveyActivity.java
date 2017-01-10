@@ -30,8 +30,6 @@ public class SurveyActivity extends SessionActivity implements
 	private long initialViewMoment;
 
 	//FIXME: Josh. Save fragment state so that when someone hits back, their answers are preserved  <-- use getQuestionAnswer in JsonSkipLogic
-    //FIXME: Josh. If the SurveySubmitFragment has too many unanswered questions, they fill the whole screen and block the Submit button.  Figure out how to get the list to scroll.
-    //FIXME: Josh. Check if Checkbox question no answer is the same as before
     //TODO: Josh. Give open response questions autofocus
 
 	@Override
@@ -41,7 +39,6 @@ public class SurveyActivity extends SessionActivity implements
 		setContentView(R.layout.activity_survey);
 		Intent triggerIntent = getIntent();
 		surveyId = triggerIntent.getStringExtra("surveyId");
-		//TODO: Josh. determine whether we need to handle storing questions for a user to come back.
 //		if (savedInstanceState == null) {
 //			Bundle extras = getIntent().getExtras();
 //			if (extras != null) {
@@ -143,7 +140,6 @@ public class SurveyActivity extends SessionActivity implements
 	 * saves the answers, and takes the user back to the main page. */
 	@Override
 	public void submitButtonClicked() {
-//		Log.i("SURVEYTIMINGSRECORDER**", "SUBMIT button clicked");
 		SurveyTimingsRecorder.recordSubmit(getApplicationContext());
 
 		// Write the data to a SurveyAnswers file
