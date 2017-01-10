@@ -28,17 +28,17 @@ public class SurveyTimingsRecorder {
 	/**
 	 * Record (in the Survey Response file) the answer to a single survey question
 	 * @param answer the user's input answer
-	 * @param questionDescription the question that was answered
+	 * @param questionData the question that was answered
 	 */
-	public static void recordAnswer(String answer, QuestionData questionDescription) {
+	public static void recordAnswer(String answer, QuestionData questionData) {
 		String message = "";
-		message += sanitizeString(questionDescription.getId()) + TextFileManager.DELIMITER;
-		message += sanitizeString(questionDescription.getType().toString()) + TextFileManager.DELIMITER;
-		message += sanitizeString(questionDescription.getText()) + TextFileManager.DELIMITER;
-		message += sanitizeString(questionDescription.getOptions()) + TextFileManager.DELIMITER;
+		message += sanitizeString(questionData.getId()) + TextFileManager.DELIMITER;
+		message += sanitizeString(questionData.getType().getStringName()) + TextFileManager.DELIMITER;
+		message += sanitizeString(questionData.getText()) + TextFileManager.DELIMITER;
+		message += sanitizeString(questionData.getOptions()) + TextFileManager.DELIMITER;
 		message += sanitizeString(answer);
 
-//		Log.i("SURVEYTIMINGSRECORDER**", message);
+		Log.i("SurveyResponse timings", message);
 		appendLineToLogFile(message);
 	}
 

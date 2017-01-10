@@ -17,22 +17,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
 /**The SurveyActivity displays to the user the survey that has been pushed to the device.
  * Layout in this activity is rendered, not static.
  * @author Josh Zagorsky, Eli Jones */
 
 public class SurveyActivity extends SessionActivity implements
         QuestionFragment.OnGoToNextQuestionListener,
-        SubmitButtonFragment.OnSubmitButtonClickedListener {
+        SurveySubmitFragment.OnSubmitButtonClickedListener {
 	private String surveyId;
 	private JsonSkipLogic surveySkipLogic;
+	private boolean onResumeHasBeenCalledBefore = false;
 	private long initialViewMoment;
 
 	//FIXME: Josh. Save fragment state so that when someone hits back, their answers are preserved  <-- use getQuestionAnswer in JsonSkipLogic
-    //FIXME: Josh. If the SubmitButtonFragment has too many unanswered questions, they fill the whole screen and block the Submit button.  Figure out how to get the list to scroll.
-    //FIXME: Josh. Check if Checkbox question no answer is the same as before
     //TODO: Josh. Give open response questions autofocus
 
 	@Override
@@ -42,7 +39,6 @@ public class SurveyActivity extends SessionActivity implements
 		setContentView(R.layout.activity_survey);
 		Intent triggerIntent = getIntent();
 		surveyId = triggerIntent.getStringExtra("surveyId");
-		//TODO: Josh. determine whether we need to handle storing questions for a user to come back.
 //		if (savedInstanceState == null) {
 //			Bundle extras = getIntent().getExtras();
 //			if (extras != null) {
@@ -51,17 +47,22 @@ public class SurveyActivity extends SessionActivity implements
 //		}
 	}
 
+
 	@Override
 	protected void doBackgroundDependentTasks() {
 		super.doBackgroundDependentTasks();
-		// Onnela lab requested this line in the debug log
-		TextFileManager.getDebugLogFile().writeEncrypted(initialViewMoment + " opened survey " + surveyId + ".");
-		setupQuestions(surveyId);
-		//run the logic as if we had just pressed next without answering a hypothetical questior -1
-		goToNextQuestion(null);
-		// Record the time that the survey was first visible to the user
-		SurveyTimingsRecorder.recordSurveyFirstDisplayed(surveyId);
+		if (!onResumeHasBeenCalledBefore) {
+			setUpQuestions(surveyId);
+			// Run the logic as if we had just pressed next without answering a hypothetical question -1
+			goToNextQuestion(null);
+			// Record the time that the survey was first visible to the user
+			SurveyTimingsRecorder.recordSurveyFirstDisplayed(surveyId);
+			// Onnela lab requested this line in the debug log
+			TextFileManager.getDebugLogFile().writeEncrypted(initialViewMoment + " opened survey " + surveyId + ".");
+			onResumeHasBeenCalledBefore = true;
+		}
 	}
+
 
 	@Override
     public void goToNextQuestion(QuestionData dataFromOldQuestion) {
@@ -72,9 +73,15 @@ public class SurveyActivity extends SessionActivity implements
 
 	    JSONObject nextQuestion = surveySkipLogic.getNextQuestion();
         // If you've run out of questions, display the Submit button
-        if (nextQuestion == null) { displaySubmitButtonFragment(); }
+        if (nextQuestion == null) { displaySurveySubmitFragment(); }
         else { displaySurveyQuestionFragment(nextQuestion, surveySkipLogic.onFirstQuestion()); }
     }
+
+
+	@Override
+	public void onBackPressed() {
+		surveySkipLogic.goBackOneQuestion();
+	}
 
 
     private void displaySurveyQuestionFragment(JSONObject jsonQuestion, Boolean isFirstQuestion) {
@@ -94,11 +101,11 @@ public class SurveyActivity extends SessionActivity implements
 	}
 
 
-    private void displaySubmitButtonFragment() {
+    private void displaySurveySubmitFragment() {
 		Bundle args = new Bundle();
 		args.putStringArrayList("unansweredQuestions", surveySkipLogic.getUnansweredQuestions());
 
-		SubmitButtonFragment submitFragment = new SubmitButtonFragment();
+		SurveySubmitFragment submitFragment = new SurveySubmitFragment();
 		submitFragment.setArguments(args);
 
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
@@ -108,7 +115,7 @@ public class SurveyActivity extends SessionActivity implements
     }
 
 
-	private void setupQuestions(String surveyId) {
+	private void setUpQuestions(String surveyId) {
 		// Get survey settings
 		Boolean randomizeWithMemory = false;
 		Boolean randomize = false;
@@ -139,7 +146,6 @@ public class SurveyActivity extends SessionActivity implements
 	 * saves the answers, and takes the user back to the main page. */
 	@Override
 	public void submitButtonClicked() {
-//		Log.i("SURVEYTIMINGSRECORDER**", "SUBMIT button clicked");
 		SurveyTimingsRecorder.recordSubmit(getApplicationContext());
 
 		// Write the data to a SurveyAnswers file

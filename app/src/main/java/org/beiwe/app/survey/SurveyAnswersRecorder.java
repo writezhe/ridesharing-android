@@ -97,7 +97,7 @@ public class SurveyAnswersRecorder {
 		LinearLayout checkboxesList = (LinearLayout) questionLayout.findViewById(R.id.checkboxesList);
 		String selectedAnswers = getSelectedCheckboxes(checkboxesList);
 		if (selectedAnswers.equals("[]")) {
-			return noAnswer;
+			return null;
 		} else {
 			return selectedAnswers;
 		}
@@ -119,22 +119,22 @@ public class SurveyAnswersRecorder {
 	
 	/**Create a line (that will get written to a CSV file) that includes
 	 * question metadata and the user's answer
-	 * @param questionDescription metadata on the question
+	 * @param questionData metadata on the question
 	 * @return a String that can be written as a line to a file */
-	private String answerFileLine(QuestionData questionDescription) {
+	private String answerFileLine(QuestionData questionData) {
 		String line = "";
-		line += SurveyTimingsRecorder.sanitizeString(questionDescription.getId());
+		line += SurveyTimingsRecorder.sanitizeString(questionData.getId());
 		line += TextFileManager.DELIMITER;
-		line += SurveyTimingsRecorder.sanitizeString(questionDescription.getType().toString());
+		line += SurveyTimingsRecorder.sanitizeString(questionData.getType().getStringName());
 		line += TextFileManager.DELIMITER;
-		line += SurveyTimingsRecorder.sanitizeString(questionDescription.getText());
+		line += SurveyTimingsRecorder.sanitizeString(questionData.getText());
 		line += TextFileManager.DELIMITER;
-		line += SurveyTimingsRecorder.sanitizeString(questionDescription.getOptions());
+		line += SurveyTimingsRecorder.sanitizeString(questionData.getOptions());
 		line += TextFileManager.DELIMITER;
-		if (questionDescription.getAnswerString() == null) {
+		if (questionData.getAnswerString() == null) {
 			line += noAnswer;
 		} else {
-			line += SurveyTimingsRecorder.sanitizeString(questionDescription.getAnswerString());
+			line += SurveyTimingsRecorder.sanitizeString(questionData.getAnswerString());
 		}
 		return line;
 	}
@@ -147,7 +147,7 @@ public class SurveyAnswersRecorder {
 			TextFileManager.getSurveyAnswersFile().newFile(surveyId);
 			for (QuestionData answer : answers) {
 				String line = answerFileLine(answer);
-				Log.i("SurveyAnswersRecorder", line);
+				Log.i("SurveyResponse answers", line);
 				TextFileManager.getSurveyAnswersFile().writeEncrypted(line);
 			}
 			TextFileManager.getSurveyAnswersFile().closeFile();

@@ -30,7 +30,7 @@ import static org.beiwe.app.survey.SurveyAnswersRecorder.getAnswerString;
 import static org.beiwe.app.survey.SurveyAnswersRecorder.getSelectedCheckboxes;
 
 /**
- * Created by admin on 11/30/16.
+ * Created by Josh Zagorsky on 11/30/16.
  */
 
 public class QuestionFragment extends Fragment {
@@ -148,7 +148,7 @@ public class QuestionFragment extends Fragment {
     private LinearLayout createSliderQuestion(LayoutInflater inflater, String questionID,
                                              String questionText, int min, int max) {
 
-        QuestionLinearLayout question = (QuestionLinearLayout) inflater.inflate(R.layout.survey_slider_question, null);
+        LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_slider_question, null);
         SeekBarEditableThumb slider = (SeekBarEditableThumb) question.findViewById(R.id.slider);
 
         // Set the text of the question itself
@@ -194,7 +194,7 @@ public class QuestionFragment extends Fragment {
      */
     private LinearLayout createRadioButtonQuestion(LayoutInflater inflater, String questionID, String questionText, String[] answers) {
 
-        QuestionLinearLayout question = (QuestionLinearLayout) inflater.inflate(R.layout.survey_radio_button_question, null);
+        LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_radio_button_question, null);
         RadioGroup radioGroup = (RadioGroup) question.findViewById(R.id.radioGroup);
 
         // Set the text of the question itself
@@ -238,7 +238,7 @@ public class QuestionFragment extends Fragment {
      */
     private LinearLayout createCheckboxQuestion(LayoutInflater inflater, String questionID, String questionText, String[] options) {
 
-        QuestionLinearLayout question = (QuestionLinearLayout) inflater.inflate(R.layout.survey_checkbox_question, null);
+        LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_checkbox_question, null);
         LinearLayout checkboxesList = (LinearLayout) question.findViewById(R.id.checkboxesList);
 
         // Set the text of the question itself
@@ -283,7 +283,7 @@ public class QuestionFragment extends Fragment {
     private LinearLayout createFreeResponseQuestion(LayoutInflater inflater, String questionID,
                                                    String questionText, TextFieldType.Type inputTextType) {
 
-        QuestionLinearLayout question = (QuestionLinearLayout) inflater.inflate(R.layout.survey_open_response_question, null);
+        LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_open_response_question, null);
 
         // Set the text of the question itself
         TextView questionTextView = (TextView) question.findViewById(R.id.questionText);
