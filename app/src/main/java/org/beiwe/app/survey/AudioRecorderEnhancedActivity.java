@@ -59,10 +59,10 @@ public class AudioRecorderEnhancedActivity extends AudioRecorderCommon{
 	
 	@Override
 	public void onDestroy() {
-		super.onDestroy();
 		if ( isFinishing() ) { // If the activity is being finished()...
-	        if (recorder != null) { stopRecording(); }
+			if (recorder != null) { stopRecording(); }
 		}
+		super.onDestroy();
 	}
 
     /*#########################################################
@@ -107,6 +107,8 @@ public class AudioRecorderEnhancedActivity extends AudioRecorderCommon{
     	AudioFileManager.copyToWaveFile( unencryptedRawAudioFilePath, unencryptedTempAudioFilePath,
                      					 SAMPLE_RATE, BIT_DEPTH, BUFFER_SIZE );
     	AudioFileManager.delete(unencryptedRawAudioFileName);
+	    //File has been copy, can now display the button.
+	    displayPlaybackButton();
         // Encrypt the audio file as soon as recording is finished
         new EncryptAudioFileTask().execute();
         //TODO: Eli. Low priority. in cases where long audio recordings are taken the with uncompressed files there is the possibility of an out-of-memory error.

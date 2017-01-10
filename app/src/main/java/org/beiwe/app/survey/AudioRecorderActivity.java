@@ -14,7 +14,8 @@ import android.util.Log;
 public class AudioRecorderActivity extends AudioRecorderCommon {    
     
 	private int BIT_RATE = 64000;
-	
+	protected MediaRecorder mRecorder = null;
+
 	@Override
 	protected String getFileExtension() { return ".mp4"; }
         
@@ -24,11 +25,11 @@ public class AudioRecorderActivity extends AudioRecorderCommon {
 
     @Override
 	public void onDestroy() {
-		super.onDestroy();
 		if (isFinishing()) { // If the activity is being finished()...
-	        if (mRecorder != null) { stopRecording(); }
+			if (mRecorder != null) { stopRecording(); }
 		}
-	}
+	    super.onDestroy();
+    }
     
     @Override
 	public void onCreate( Bundle savedInstanceState ) {
@@ -75,6 +76,8 @@ public class AudioRecorderActivity extends AudioRecorderCommon {
         mRecorder.reset();
         mRecorder.release();
         mRecorder = null;
+	    //recorder has finished, can now display playback button()
+	    displayPlaybackButton();
         // Encrypt the audio file as soon as recording is finished
         new EncryptAudioFileTask().execute();
     }
