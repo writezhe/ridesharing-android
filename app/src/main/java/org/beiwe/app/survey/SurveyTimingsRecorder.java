@@ -1,7 +1,6 @@
 package org.beiwe.app.survey;
 
 import android.content.Context;
-import android.util.Log;
 
 import org.beiwe.app.storage.TextFileManager;
 
@@ -28,14 +27,14 @@ public class SurveyTimingsRecorder {
 	/**
 	 * Record (in the Survey Response file) the answer to a single survey question
 	 * @param answer the user's input answer
-	 * @param questionDescription the question that was answered
+	 * @param questionData the question that was answered
 	 */
-	public static void recordAnswer(String answer, QuestionData questionDescription) {
+	public static void recordAnswer(String answer, QuestionData questionData) {
 		String message = "";
-		message += sanitizeString(questionDescription.getId()) + TextFileManager.DELIMITER;
-		message += sanitizeString(questionDescription.getType().toString()) + TextFileManager.DELIMITER;
-		message += sanitizeString(questionDescription.getText()) + TextFileManager.DELIMITER;
-		message += sanitizeString(questionDescription.getOptions()) + TextFileManager.DELIMITER;
+		message += sanitizeString(questionData.getId()) + TextFileManager.DELIMITER;
+		message += sanitizeString(questionData.getType().toString()) + TextFileManager.DELIMITER;
+		message += sanitizeString(questionData.getText()) + TextFileManager.DELIMITER;
+		message += sanitizeString(questionData.getOptions()) + TextFileManager.DELIMITER;
 		message += sanitizeString(answer);
 
 //		Log.i("SURVEYTIMINGSRECORDER**", message);
