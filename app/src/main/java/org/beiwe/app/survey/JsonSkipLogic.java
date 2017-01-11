@@ -147,6 +147,9 @@ public class JsonSkipLogic {
 		}
 		else {
 //			Log.d("json logic", "Question " + QuestionOrder.indexOf(questionId) + " (" + questionId + ") did not evaluate as true, proceeding to next question...");
+			/* If it didn't meet any of the above conditions (and didn't display a question), call
+			this function recursively, and keep doing that until you reach a question that should
+			display. */
 			return getQuestion(goForward);
 		}
 	}

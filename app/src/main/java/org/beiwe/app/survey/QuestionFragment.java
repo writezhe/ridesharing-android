@@ -69,7 +69,7 @@ public class QuestionFragment extends Fragment {
 
     // Interface for the "Next" button to signal the Activity
     public interface OnGoToNextQuestionListener {
-        public void goToNextQuestion(QuestionData dataFromCurrentQuestion);
+        void goToNextQuestion(QuestionData dataFromCurrentQuestion);
     }
     @Override
     public void onAttach(Context context) {
@@ -164,23 +164,24 @@ public class QuestionFragment extends Fragment {
 
         // Set the slider's range and default/starting value
         slider.setMax(max - min);
-        slider.setProgress(0);
         slider.setMin(min);
-
-//        setViewId(slider);
+        if ((questionData != null) && (questionData.getAnswerInteger() != null)) {
+            slider.setProgress(questionData.getAnswerInteger());
+            slider.markAsTouched();
+        } else {
+            // Make the slider invisible until it's touched (so there's effectively no default value)
+            slider.setProgress(0);
+            makeSliderInvisibleUntilTouched(slider);
+            // Create text strings that represent the question and its answer choices
+            String options = "min = " + min + "; max = " + max;
+            questionData = new QuestionData(questionID, QuestionType.Type.SLIDER, questionText, options);
+        }
 
         // Add a label above the slider with numbers that mark points on a scale
         addNumbersLabelingToSlider(inflater, question, min, max);
 
-        // Create text strings that represent the question and its answer choices
-        String options = "min = " + min + "; max = " + max;
-        questionData = new QuestionData(questionID, QuestionType.Type.SLIDER, questionText, options);
-
         // Set the slider to listen for and record user input
         slider.setOnSeekBarChangeListener(new SliderListener(questionData));
-
-        // Make the slider invisible until it's touched (so there's effectively no default value)
-        makeSliderInvisibleUntilTouched(slider);
 
         return question;
     }
@@ -215,12 +216,15 @@ public class QuestionFragment extends Fragment {
             if (answers[i] != null) {
                 radioButton.setText(answers[i]);
             }
-//            setViewId(radioButton);
             radioGroup.addView(radioButton);
         }
 
-        // Create text strings that represent the question and its answer choices
-        questionData = new QuestionData(questionID, QuestionType.Type.RADIO_BUTTON, questionText, Arrays.toString(answers));
+        if ((questionData != null) && (questionData.getAnswerInteger() != null)) {
+            radioGroup.check(radioGroup.getChildAt(questionData.getAnswerInteger()).getId());
+        } else {
+            // Create text strings that represent the question and its answer choices
+            questionData = new QuestionData(questionID, QuestionType.Type.RADIO_BUTTON, questionText, Arrays.toString(answers));
+        }
 
         // Set the group of radio buttons to listen for and record user input
         radioGroup.setOnCheckedChangeListener(new RadioButtonListener(questionData));
@@ -245,8 +249,16 @@ public class QuestionFragment extends Fragment {
         TextView questionTextView = (TextView) question.findViewById(R.id.questionText);
         if (questionText != null) { questionTextView.setText(questionText); }
 
-        // Create text strings that represent the question and its answer choices
-        questionData = new QuestionData(questionID, QuestionType.Type.CHECKBOX, questionText, Arrays.toString(options));
+        String[] checkedAnswers = null;
+        if ((questionData != null) && (questionData.getAnswerString() != null)) {
+            String answerString = questionData.getAnswerString();
+            if (answerString.length() > 2) {
+                checkedAnswers = answerString.substring(1, answerString.length() - 1).split(", ");
+            }
+        } else {
+            // Create text strings that represent the question and its answer choices
+            questionData = new QuestionData(questionID, QuestionType.Type.CHECKBOX, questionText, Arrays.toString(options));
+        }
 
         // Loop through the options strings, and make each one a checkbox option
         if (options != null) {
@@ -258,9 +270,11 @@ public class QuestionFragment extends Fragment {
                 // Set the text if it's provided; otherwise leave text as default error message
                 if (options[i] != null) {
                     checkbox.setText(options[i]);
+                    // If it should be checked, check it
+                    if ((checkedAnswers != null) && (Arrays.asList(checkedAnswers).contains(options[i]))) {
+                        checkbox.setChecked(true);
+                    }
                 }
-
-//                setViewId(checkbox);
 
                 // Make the checkbox listen for and record user input
                 checkbox.setOnClickListener(new CheckboxListener(questionData));
@@ -282,7 +296,7 @@ public class QuestionFragment extends Fragment {
      */
     private LinearLayout createFreeResponseQuestion(LayoutInflater inflater, String questionID,
                                                    String questionText, TextFieldType.Type inputTextType) {
-
+        //TODO: Josh. Give open response questions autofocus and make the keyboard appear
         LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_open_response_question, null);
 
         // Set the text of the question itself
@@ -314,11 +328,13 @@ public class QuestionFragment extends Fragment {
 		/* Improvement idea: when the user presses Enter, jump to the next
 		 * input field */
 
-//        setViewId(editText);
-
-        // Create text strings that represent the question and its answer choices
-        String options = "Text-field input type = " + inputTextType.toString();
-        questionData = new QuestionData(questionID, QuestionType.Type.FREE_RESPONSE, questionText, options);
+        if ((questionData != null) && (questionData.getAnswerString() != null)) {
+            editText.setText(questionData.getAnswerString());
+        } else {
+            // Create text strings that represent the question and its answer choices
+            String options = "Text-field input type = " + inputTextType.toString();
+            questionData = new QuestionData(questionID, QuestionType.Type.FREE_RESPONSE, questionText, options);
+        }
 
         // Set the text field to listen for and record user input
         editText.setOnFocusChangeListener(new OpenResponseListener(questionData));
@@ -528,17 +544,4 @@ public class QuestionFragment extends Fragment {
             }
         }
     }
-
-
-// TODO: Josh. I think we no longer need this
-//    private int viewID;
-//    /**
-//     * Set the view's ID so that its data are automatically saved when the screen rotates
-//     * @param view
-//     */
-//    private synchronized void setViewId(View view) {
-//        view.setId(viewID);
-//        viewID++;
-//    }
-
 }

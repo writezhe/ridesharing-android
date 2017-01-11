@@ -29,9 +29,6 @@ public class SurveyActivity extends SessionActivity implements
 	private boolean onResumeHasBeenCalledBefore = false;
 	private long initialViewMoment;
 
-	//FIXME: Josh. Save fragment state so that when someone hits back, their answers are preserved  <-- use getQuestionAnswer in JsonSkipLogic
-    //TODO: Josh. Give open response questions autofocus
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
