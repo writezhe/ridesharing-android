@@ -110,8 +110,20 @@ public class JsonSkipLogic {
 	/** Determines question should be displayed next.
 	 * @return a question id string, null if there is no next item. */
 	@SuppressWarnings("TailRecursion")
-	public JSONObject getNextQuestion() {
-		currentQuestion++;
+	private JSONObject getQuestion(Boolean goForward) {
+		if (goForward) currentQuestion++;
+		else currentQuestion--;
+
+		//if currentQuestion is set to anything less than zero, reset to zero (shouldn't occur)
+		if (currentQuestion < 0) {
+//			Log.w("json logic", "underflowed...");
+			currentQuestion = 0; }
+
+		//if it is the first question it should invariably display.
+		if (currentQuestion == 0) {
+//			Log.i("json logic", "skipping logic and displaying first question");
+			return Questions.get(QuestionOrder.get(0)); }
+
 		//if we would overflow the list (>= size) we are done, return null.
 		if (currentQuestion >= QuestionOrder.size()) {
 //			Log.w("json logic", "overflowed...");
@@ -135,18 +147,13 @@ public class JsonSkipLogic {
 		}
 		else {
 //			Log.d("json logic", "Question " + QuestionOrder.indexOf(questionId) + " (" + questionId + ") did not evaluate as true, proceeding to next question...");
-			return getNextQuestion();
+			return getQuestion(goForward);
 		}
 	}
 
+	public JSONObject getNextQuestion() { return getQuestion(true); }
 
-	public void goBackOneQuestion() {
-		Log.i("JsonSkipLogic.java", "back button pressed");
-		// FIXME: Eli, handle going back a question. This gets called when the user presses the hardware back button.
-		/*if (currentQuestion >= 0) {
-			currentQuestion--;
-		}*/
-	}
+	public JSONObject goBackOneQuestion() { return getQuestion(false); }
 
 
 	/** @return whether the current logic is on question 1 */
