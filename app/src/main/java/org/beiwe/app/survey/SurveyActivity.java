@@ -26,7 +26,7 @@ public class SurveyActivity extends SessionActivity implements
         SurveySubmitFragment.OnSubmitButtonClickedListener {
 	private String surveyId;
 	private JsonSkipLogic surveySkipLogic;
-	private boolean onResumeHasBeenCalledBefore = false;
+	private boolean hasLoadedBefore = false;
 	private long initialViewMoment;
 
 	@Override
@@ -48,7 +48,7 @@ public class SurveyActivity extends SessionActivity implements
 	@Override
 	protected void doBackgroundDependentTasks() {
 		super.doBackgroundDependentTasks();
-		if (!onResumeHasBeenCalledBefore) {
+		if (!hasLoadedBefore ) {
 			setUpQuestions(surveyId);
 			// Run the logic as if we had just pressed next without answering a hypothetical question -1
 			goToNextQuestion(null);
@@ -56,7 +56,7 @@ public class SurveyActivity extends SessionActivity implements
 			SurveyTimingsRecorder.recordSurveyFirstDisplayed(surveyId);
 			// Onnela lab requested this line in the debug log
 			TextFileManager.getDebugLogFile().writeEncrypted(initialViewMoment + " opened survey " + surveyId + ".");
-			onResumeHasBeenCalledBefore = true;
+			hasLoadedBefore = true;
 		}
 	}
 
