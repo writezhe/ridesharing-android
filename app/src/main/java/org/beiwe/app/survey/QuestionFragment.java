@@ -55,8 +55,6 @@ public class QuestionFragment extends Fragment {
         final View questionLayout = createQuestion(inflater, getArguments());
         questionContainer.addView(questionLayout);
 
-
-
         // Set an onClickListener for the "Next" button
         Button nextButton = (Button) fragmentQuestionLayout.findViewById(R.id.nextButton);
         nextButton.setOnClickListener(new View.OnClickListener() {
@@ -67,12 +65,6 @@ public class QuestionFragment extends Fragment {
         });
 
         return fragmentQuestionLayout;
-    }
-
-
-    // Interface for the "Next" button to signal the Activity
-    public interface OnGoToNextQuestionListener {
-        void goToNextQuestion(QuestionData dataFromCurrentQuestion);
     }
 
     /* The following dual declaration is due to a change/deprecation in the Android
@@ -101,7 +93,6 @@ public class QuestionFragment extends Fragment {
         goToNextQuestionListener = (OnGoToNextQuestionListener) activity;
     }
 
-
     private QuestionData getAnswer(View questionLayout, QuestionType.Type questionType) {
         String answerString = getAnswerString(questionLayout, questionType);
         if (answerString != null) { questionData.setAnswerString(answerString); }
@@ -109,7 +100,6 @@ public class QuestionFragment extends Fragment {
         if (answerIntegerValue != null) { questionData.setAnswerInteger(answerIntegerValue); }
         return questionData;
     }
-
 
     private View createQuestion(LayoutInflater inflater, Bundle args) {
         String questionID = args.getString("question_id");
@@ -163,6 +153,15 @@ public class QuestionFragment extends Fragment {
         return infoTextbox;
     }
 
+    private void conditionallyPrepareExistingAnswers(){
+        /* We need to check whether questionData already has an object assigned to it, which occurs
+        when the back button gets pressed and pops the backstack.  When the next button is pressed
+        we pull any answer that has been saved by the activity.
+        This operation may do nothing (re-set value to null) if there is no answer, that is fine. */
+        if (questionData == null) {
+            questionData = ((SurveyActivity) getActivity()).getCurrentQuestionData();
+        }
+    }
 
     /**
      * Creates a slider with a range of discrete values
@@ -189,6 +188,8 @@ public class QuestionFragment extends Fragment {
         // Set the slider's range and default/starting value
         slider.setMax(max - min);
         slider.setMin(min);
+
+        conditionallyPrepareExistingAnswers();
         if ((questionData != null) && (questionData.getAnswerInteger() != null)) {
             slider.setProgress(questionData.getAnswerInteger());
             slider.markAsTouched();
@@ -243,6 +244,7 @@ public class QuestionFragment extends Fragment {
             radioGroup.addView(radioButton);
         }
 
+        conditionallyPrepareExistingAnswers();
         if ((questionData != null) && (questionData.getAnswerInteger() != null)) {
             radioGroup.check(radioGroup.getChildAt(questionData.getAnswerInteger()).getId());
         } else {
@@ -274,6 +276,7 @@ public class QuestionFragment extends Fragment {
         if (questionText != null) { questionTextView.setText(questionText); }
 
         String[] checkedAnswers = null;
+        conditionallyPrepareExistingAnswers();
         if ((questionData != null) && (questionData.getAnswerString() != null)) {
             String answerString = questionData.getAnswerString();
             if (answerString.length() > 2) {
@@ -351,7 +354,7 @@ public class QuestionFragment extends Fragment {
 
 		/* Improvement idea: when the user presses Enter, jump to the next
 		 * input field */
-
+        conditionallyPrepareExistingAnswers();
         if ((questionData != null) && (questionData.getAnswerString() != null)) {
             editText.setText(questionData.getAnswerString());
         } else {
@@ -398,9 +401,7 @@ public class QuestionFragment extends Fragment {
         else if (range % 2 == 0) {
             numberOfLabels = 3;
         }
-        else {
-            numberOfLabels = 2;
-        }
+        else { numberOfLabels = 2; }
 
         // Create labels and spacers
         int numberResourceID = R.layout.survey_slider_single_number_label;
@@ -462,10 +463,7 @@ public class QuestionFragment extends Fragment {
             this.questionDescription = questionDescription;
         }
 
-        @Override
-        public void onProgressChanged(SeekBar seekBar, int progress,
-                                      boolean fromUser) {
-        }
+        @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {}
 
         @Override
         public void onStartTrackingTouch(SeekBar seekBar) {
@@ -480,9 +478,7 @@ public class QuestionFragment extends Fragment {
                 SeekBarEditableThumb slider = (SeekBarEditableThumb) seekBar;
                 answer += slider.getProgress() + slider.getMin();
             }
-            else {
-                answer += seekBar.getProgress();
-            }
+            else { answer += seekBar.getProgress(); }
             SurveyTimingsRecorder.recordAnswer(answer, questionDescription);
         }
     }
@@ -568,4 +564,10 @@ public class QuestionFragment extends Fragment {
             }
         }
     }
+
+    // Interface for the "Next" button to signal the Activity
+    public interface OnGoToNextQuestionListener {
+        void goToNextQuestion(QuestionData dataFromCurrentQuestion);
+    }
+
 }

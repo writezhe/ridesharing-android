@@ -28,6 +28,7 @@ public class SurveyActivity extends SessionActivity implements
 	private JsonSkipLogic surveySkipLogic;
 	private boolean hasLoadedBefore = false;
 	private long initialViewMoment;
+	private QuestionFragment questionFragment;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -78,13 +79,16 @@ public class SurveyActivity extends SessionActivity implements
 	@Override
 	public void onBackPressed() {
         super.onBackPressed();
+		//TODO: UI improvement. implement saving a question that has been answered but the user pressed back
+		// In order oto do that we need to execute the fragment's getAnswer function.
+		// surveySkipLogic.setAnswer( questionFragment.getAnswer(...) );
 		surveySkipLogic.goBackOneQuestion();
 	}
 
 
     private void displaySurveyQuestionFragment(JSONObject jsonQuestion, Boolean isFirstQuestion) {
 		// Create a question fragment with the attributes of the question
-		QuestionFragment questionFragment = new QuestionFragment();
+		questionFragment = new QuestionFragment();
 		questionFragment.setArguments(QuestionJSONParser.getQuestionArgsFromJSONString(jsonQuestion));
 
 		// Put the fragment into the view
@@ -139,6 +143,7 @@ public class SurveyActivity extends SessionActivity implements
 		} catch (JSONException e) { e.printStackTrace(); }
 	}
 
+	public QuestionData getCurrentQuestionData(){ return surveySkipLogic.getCurrentQuestionData(); }
 
 	/**Called when the user presses "Submit" at the end of the survey,
 	 * saves the answers, and takes the user back to the main page. */

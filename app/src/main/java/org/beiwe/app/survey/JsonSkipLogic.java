@@ -106,6 +106,11 @@ public class JsonSkipLogic {
 	 * @return returns a QuestionData if it has been answered, otherwise null. */
 	public QuestionData getQuestionAnswer(String questionId) { return QuestionAnswer.get(questionId); }
 
+	/** @return the QuestionData object for the current question, null otherwise */
+	public QuestionData getCurrentQuestionData() {
+		if (currentQuestion >= QuestionOrder.size()) { return null; }
+		return QuestionAnswer.get(QuestionOrder.get(currentQuestion));
+	}
 
 	/** Determines question should be displayed next.
 	 * @return a question id string, null if there is no next item. */
