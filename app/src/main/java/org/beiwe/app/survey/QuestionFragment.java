@@ -76,16 +76,16 @@ public class QuestionFragment extends Fragment {
     }
 
     /* The following dual declaration is due to a change/deprecation in the Android
-     Fragment _handling_ code.  It is difficult to determine exactly which API version
-     this change occurs in, but the linked stack overflow article assumes API 23 (6.0).
-     The difference in the declarations is that one takes an activity, and one takes
-     a context.  Starting in 6 the OS guarantees a call to the one that takes an
-     activity, previous versions called the one that takes an activity.
-     ...
-     If one of these is missing then goToNextQuestionListener fails to
-     instantiate, causing a crash inside the onClick function for the next button.
-     ...
-     http://stackoverflow.com/questions/32604552/onattach-not-called-in-fragment */
+    Fragment _handling_ code.  It is difficult to determine exactly which API version
+    this change occurs in, but the linked stack overflow article assumes API 23 (6.0).
+    The difference in the declarations is that one takes an activity, and one takes
+    a context.  Starting in 6 the OS guarantees a call to the one that takes an
+    activity, previous versions called the one that takes an activity.
+    ...
+    If one of these is missing then goToNextQuestionListener fails to
+    instantiate, causing a crash inside the onClick function for the next button.
+    ...
+    http://stackoverflow.com/questions/32604552/onattach-not-called-in-fragment */
 
     @Override
     /** This function will get called on NEW versions of android. */
@@ -93,6 +93,7 @@ public class QuestionFragment extends Fragment {
         super.onAttach(context);
         goToNextQuestionListener = (OnGoToNextQuestionListener) context;
     }
+
     @Override
     /** This function will get called on OLD versions of android. */
     public void onAttach(Activity activity) {
