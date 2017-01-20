@@ -20,6 +20,13 @@ android {
     useLibrary "org.apache.http.legacy"
 }
 
+repositories {
+    maven {
+        url "https://s3.amazonaws.com/repo.commonsware.com"
+    }
+}
+
 dependencies {
     compile 'com.android.support:appcompat-v7:19.1.0'
+    compile 'com.commonsware.cwac:anddown:0.3.0'
 }

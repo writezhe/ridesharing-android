@@ -84,7 +84,7 @@ public class AudioRecorderCommon extends SessionActivity {
         surveyId = getIntent().getStringExtra("surveyId");
 
     	// grab the layout element objects that we will add questions to:
-		TextView textbox = (TextView) findViewById(R.id.record_activity_textview );
+		MarkDownTextView textbox = (MarkDownTextView) findViewById(R.id.record_activity_textview );
 		textbox.setText( getPromptText(surveyId, getApplicationContext() ) );
         // Handle file path issues with this variable
 

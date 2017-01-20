@@ -175,7 +175,7 @@ public class QuestionFragment extends Fragment {
         SeekBarEditableThumb slider = (SeekBarEditableThumb) question.findViewById(R.id.slider);
 
         // Set the text of the question itself
-        TextView questionTextView = (TextView) question.findViewById(R.id.questionText);
+        MarkDownTextView questionTextView = (MarkDownTextView) question.findViewById(R.id.questionText);
         if (questionText != null) { questionTextView.setText(questionText); }
 
         // The min must be greater than the max, and the range must be at most 100.
@@ -224,7 +224,7 @@ public class QuestionFragment extends Fragment {
         RadioGroup radioGroup = (RadioGroup) question.findViewById(R.id.radioGroup);
 
         // Set the text of the question itself
-        TextView questionTextView = (TextView) question.findViewById(R.id.questionText);
+        MarkDownTextView questionTextView = (MarkDownTextView) question.findViewById(R.id.questionText);
         if (questionText != null) { questionTextView.setText(questionText); }
 
         // If the array of answers is null or too short, replace it with an error message
@@ -272,7 +272,7 @@ public class QuestionFragment extends Fragment {
         LinearLayout checkboxesList = (LinearLayout) question.findViewById(R.id.checkboxesList);
 
         // Set the text of the question itself
-        TextView questionTextView = (TextView) question.findViewById(R.id.questionText);
+        MarkDownTextView questionTextView = (MarkDownTextView) question.findViewById(R.id.questionText);
         if (questionText != null) { questionTextView.setText(questionText); }
 
         String[] checkedAnswers = null;
@@ -327,7 +327,7 @@ public class QuestionFragment extends Fragment {
         LinearLayout question = (LinearLayout) inflater.inflate(R.layout.survey_open_response_question, null);
 
         // Set the text of the question itself
-        TextView questionTextView = (TextView) question.findViewById(R.id.questionText);
+        MarkDownTextView questionTextView = (MarkDownTextView) question.findViewById(R.id.questionText);
         if (questionText != null) { questionTextView.setText(questionText); }
 
         EditText editText = null;
