@@ -132,6 +132,17 @@ public class QuestionFragment extends Fragment {
     }
 
 
+    private void conditionallyPrepareExistingAnswers(){
+        /* We need to check whether questionData already has an object assigned to it, which occurs
+        when the back button gets pressed and pops the backstack.  When the next button is pressed
+        we pull any answer that has been saved by the activity.
+        This operation may do nothing (re-set value to null) if there is no answer, that is fine. */
+        if (questionData == null) {
+            questionData = ((SurveyActivity) getActivity()).getCurrentQuestionData();
+        }
+    }
+
+
     /**
      * Creates an informational text view that does not have an answer type
      * @param infoText The informational text
@@ -139,7 +150,7 @@ public class QuestionFragment extends Fragment {
      */
     private TextView createInfoTextbox(LayoutInflater inflater, String questionID, String infoText) {
 
-        TextView infoTextbox = (TextView) inflater.inflate(R.layout.survey_info_textbox, null);
+        MarkDownTextView infoTextbox = (MarkDownTextView) inflater.inflate(R.layout.survey_info_textbox, null);
 
         // Clean inputs
         if (infoText == null) {
@@ -153,15 +164,6 @@ public class QuestionFragment extends Fragment {
         return infoTextbox;
     }
 
-    private void conditionallyPrepareExistingAnswers(){
-        /* We need to check whether questionData already has an object assigned to it, which occurs
-        when the back button gets pressed and pops the backstack.  When the next button is pressed
-        we pull any answer that has been saved by the activity.
-        This operation may do nothing (re-set value to null) if there is no answer, that is fine. */
-        if (questionData == null) {
-            questionData = ((SurveyActivity) getActivity()).getCurrentQuestionData();
-        }
-    }
 
     /**
      * Creates a slider with a range of discrete values
