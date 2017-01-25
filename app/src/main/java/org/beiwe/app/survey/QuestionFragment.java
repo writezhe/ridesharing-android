@@ -80,14 +80,14 @@ public class QuestionFragment extends Fragment {
     http://stackoverflow.com/questions/32604552/onattach-not-called-in-fragment */
 
     @Override
-    /** This function will get called on NEW versions of android. */
+    /** This function will get called on NEW versions of Android (6+). */
     public void onAttach(Context context) {
         super.onAttach(context);
         goToNextQuestionListener = (OnGoToNextQuestionListener) context;
     }
 
     @Override
-    /** This function will get called on OLD versions of android. */
+    /** This function will get called on OLD versions of Android (<6). */
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         goToNextQuestionListener = (OnGoToNextQuestionListener) activity;

@@ -1,5 +1,6 @@
 package org.beiwe.app.survey;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
@@ -46,9 +47,16 @@ public class SurveySubmitFragment extends Fragment {
         void submitButtonClicked();
     }
     @Override
+    /** This function will get called on NEW versions of Android (6+). */
     public void onAttach(Context context) {
         super.onAttach(context);
         submitButtonClickedListener = (OnSubmitButtonClickedListener) context;
+    }
+    @Override
+    /** This function will get called on OLD versions of Android (<6). */
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        submitButtonClickedListener = (OnSubmitButtonClickedListener) activity;
     }
 
 
