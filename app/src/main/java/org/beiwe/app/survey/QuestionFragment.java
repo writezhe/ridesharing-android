@@ -156,11 +156,12 @@ public class QuestionFragment extends Fragment {
         if (infoText == null) {
             // Set the question text to the error string
             try {
-                infoTextbox.setText(getContext().getResources().getString(R.string.question_error_text));
+                infoText = getContext().getResources().getString(R.string.question_error_text);
             } catch (NoSuchMethodError e) {
-                infoTextbox.setText(getActivity().getResources().getString(R.string.question_error_text));
+                infoText = getActivity().getResources().getString(R.string.question_error_text);
             }
         }
+        infoTextbox.setText(infoText);
         return infoTextbox;
     }
 
