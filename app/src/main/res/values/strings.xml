@@ -12,7 +12,7 @@
 
     <string name="permission_registration_actually_need_sms_alert"> Beiwe requires SMS permissions in order to register for a study, but you appear to have denied it permission. We are going to bump you to the Beiwe app\'s settings so that you can manually enable SMS access. </string>
 
-    <string name="power_management_exception_alert"> This permission prompt you are about to see is required to allow Beiwe to execute in the background, it is required.</string>
+    <string name="power_management_exception_alert"> This permission prompt you are about to see is required to allow Beiwe to execute in the background. </string>
 
 
     <!-- API URLs -->
