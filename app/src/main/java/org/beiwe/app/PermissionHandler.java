@@ -115,7 +115,6 @@ public class PermissionHandler {
 			if ( !checkAccessBluetoothAdmin(context)) return Manifest.permission.BLUETOOTH_ADMIN; }
 		if (PersistentData.getCallsEnabled() ) {
 			if ( !checkAccessReadPhoneState(context)) return Manifest.permission.READ_PHONE_STATE;  
-			if ( !checkAccessCallPhone(context)) return Manifest.permission.CALL_PHONE;
 			if ( !checkAccessReadCallLog(context)) return Manifest.permission.READ_CALL_LOG; }
 		if (PersistentData.getTextsEnabled()) {
 			if ( !checkAccessReadContacts(context)) return Manifest.permission.READ_CONTACTS;  
@@ -124,7 +123,11 @@ public class PermissionHandler {
 			if ( !checkAccessReceiveSms(context)) return Manifest.permission.RECEIVE_SMS; }
 		if (includeRecording) {
 			if ( !checkAccessRecordAudio(context)) { return Manifest.permission.RECORD_AUDIO; } }
-		
+
+		//The phone call permission is invariant, it is required for all studies in order for the
+		// call clinician functionality to work
+		if ( !checkAccessCallPhone(context)) return Manifest.permission.CALL_PHONE;
+
 		if ( android.os.Build.VERSION.SDK_INT >= 23 ) {
 			PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
 			if (! pm.isIgnoringBatteryOptimizations(context.getPackageName()) ) {
