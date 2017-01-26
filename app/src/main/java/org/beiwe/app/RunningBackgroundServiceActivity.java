@@ -128,6 +128,7 @@ public class RunningBackgroundServiceActivity extends Activity {
 	
 	
 	/** sends user to phone, calls the user's clinician. */
+	@SuppressWarnings("MissingPermission")
 	public void callClinician(View v) {
 		Intent callIntent = new Intent(Intent.ACTION_CALL);
 		String phoneNum = PersistentData.getPrimaryCareNumber();
@@ -136,6 +137,7 @@ public class RunningBackgroundServiceActivity extends Activity {
 	}
 	
 	/** sends user to phone, calls the study's research assistant. */
+	@SuppressWarnings("MissingPermission")
 	public void callResearchAssistant(View v) {
 		Intent callIntent = new Intent(Intent.ACTION_CALL);
 		String phoneNum = PersistentData.getPasswordResetNumber();
