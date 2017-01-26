@@ -154,13 +154,13 @@ public class QuestionFragment extends Fragment {
 
         // Clean inputs
         if (infoText == null) {
-            Context appContext = getContext();  // TODO: Josh. does this work in API < 23?
-            infoText = appContext.getResources().getString(R.string.question_error_text);
+            // Set the question text to the error string
+            try {
+                infoTextbox.setText(getContext().getResources().getString(R.string.question_error_text));
+            } catch (NoSuchMethodError e) {
+                infoTextbox.setText(getActivity().getResources().getString(R.string.question_error_text));
+            }
         }
-
-        // Set the question text
-        infoTextbox.setText(infoText);
-
         return infoTextbox;
     }
 
@@ -231,8 +231,12 @@ public class QuestionFragment extends Fragment {
 
         // If the array of answers is null or too short, replace it with an error message
         if ((answers == null) || (answers.length < 2)) {
-            Context appContext = getContext();  // TODO: Josh. does this work in API < 23?
-            String replacementAnswer = appContext.getResources().getString(R.string.question_error_text);
+            String replacementAnswer;
+            try {
+                replacementAnswer = getContext().getResources().getString(R.string.question_error_text);
+            } catch (NoSuchMethodError e) {
+                replacementAnswer = getActivity().getResources().getString(R.string.question_error_text);
+            }
             String[] replacementAnswers = {replacementAnswer, replacementAnswer};
             answers = replacementAnswers;
         }
@@ -552,7 +556,12 @@ public class QuestionFragment extends Fragment {
 
                 // Set the EditText so that if the user taps outside, the keyboard disappears
                 if (v instanceof EditText) {
-                    TextFieldKeyboard keyboard = new TextFieldKeyboard(getContext());  // TODO: Josh. does this work in API < 23?
+                    TextFieldKeyboard keyboard;
+                    try {
+                        keyboard = new TextFieldKeyboard(getContext());
+                    } catch (NoSuchMethodError e) {
+                        keyboard = new TextFieldKeyboard(getActivity());
+                    }
                     keyboard.makeKeyboardBehave((EditText) v);
                 }
             }

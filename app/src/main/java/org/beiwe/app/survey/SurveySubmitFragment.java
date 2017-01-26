@@ -77,7 +77,12 @@ public class SurveySubmitFragment extends Fragment {
         }
         // Show a list of the unanswered questions
         ListView unansweredQuestionsListView = (ListView) unansweredQuestionsLayout.findViewById(R.id.unansweredQuestionsListView);
-        ArrayAdapter adapter = new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1, unansweredQuestions);
+        ArrayAdapter adapter;
+        try {
+            adapter = new ArrayAdapter(getContext(), android.R.layout.simple_list_item_1, unansweredQuestions);
+        } catch (NoSuchMethodError e) {
+            adapter = new ArrayAdapter(getActivity(), android.R.layout.simple_list_item_1, unansweredQuestions);
+        }
         unansweredQuestionsListView.setAdapter(adapter);
         // Attach the submit button to the bottom of the list
         LinearLayout submitButton = (LinearLayout) renderSubmitButton(inflater, "Submit Answers Anyway");

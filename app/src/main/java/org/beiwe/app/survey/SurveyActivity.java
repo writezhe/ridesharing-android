@@ -79,7 +79,6 @@ public class SurveyActivity extends SessionActivity implements
 	@Override
 	public void onBackPressed() {
         super.onBackPressed();
-		//TODO: UI improvement. implement saving a question that has been answered but the user pressed back
 		// In order oto do that we need to execute the fragment's getAnswer function.
 		// surveySkipLogic.setAnswer( questionFragment.getAnswer(...) );
 		surveySkipLogic.goBackOneQuestion();
