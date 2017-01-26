@@ -127,7 +127,8 @@ public class JsonSkipLogic {
 		//if it is the first question it should invariably display.
 		if (currentQuestion == 0) {
 //			Log.i("json logic", "skipping logic and displaying first question");
-			return Questions.get(QuestionOrder.get(0)); }
+			if (QuestionOrder.size() == 0) { return null; }
+			else { return Questions.get(QuestionOrder.get(0)); }}
 
 		//if we would overflow the list (>= size) we are done, return null.
 		if (currentQuestion >= QuestionOrder.size()) {
