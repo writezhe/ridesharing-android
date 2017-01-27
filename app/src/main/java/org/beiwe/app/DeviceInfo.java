@@ -32,9 +32,11 @@ public class DeviceInfo {
 	 * 7: audio survey files now contain the surveyid for the correct audio survey.
 	 * 8: Now support a flag for data upload over cellular, fixed bug in wifi scanning.
 	 * 9: Moves Record/Play buttons outside the scroll window on voice recording screen.
-	 * 10: Change to TextFileManager to potentially improve uninitialized errors, added device idle and low power mode change to power state listener.*/
+	 * 10: Change to TextFileManager to potentially improve uninitialized errors, added device idle and low power mode change to power state listener.
+	 * 11: development version of 12.
+	 * 12: several bug fixes including a fix for the open-survey crash, adds support for branching serveys (conditional display logic) */
 
-	private static String beiweVersion = "11";
+	private static String beiweVersion = "12";
 	//DO NOT FORGET TO UPDATE THE MANIFEST VERSION NUMBERS AS WELL.
 	
 	private static String androidID;
