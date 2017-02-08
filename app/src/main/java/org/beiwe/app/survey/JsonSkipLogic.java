@@ -277,10 +277,13 @@ public class JsonSkipLogic {
 	public void setAnswer(QuestionData questionData) {
 	    QuestionType.Type questionType = questionData.getType();
 		// Ignore checkbox questions, since they don't have numeric answers
-
 	    if ( questionType.equals(QuestionType.Type.FREE_RESPONSE) ) {//comes in as a string, coerce to float (don't bother coercing to integer
 			if (questionData.getAnswerString() != null) {
-				questionData.setAnswerDouble(Double.parseDouble(questionData.getAnswerString()));
+				try {
+					questionData.setAnswerDouble(Double.parseDouble(questionData.getAnswerString()));
+				} catch (NumberFormatException e) {
+					// If the number is un-parse-able, do nothing
+				}
 			}
 	    }
         if ( questionType.equals(QuestionType.Type.SLIDER) ) { //comes in as an integer, coerce to float, coerce to string
