@@ -273,7 +273,7 @@ public class JsonSkipLogic {
 	}
 
 
-   @SuppressLint("DefaultLocale")
+    @SuppressLint("DefaultLocale")
 	public void setAnswer(QuestionData questionData) {
 	    QuestionType.Type questionType = questionData.getType();
 		// Ignore checkbox questions, since they don't have numeric answers
@@ -283,20 +283,20 @@ public class JsonSkipLogic {
 				questionData.setAnswerDouble(Double.parseDouble(questionData.getAnswerString()));
 			}
 	    }
-	   if ( questionType.equals(QuestionType.Type.SLIDER) ) { //comes in as an integer, coerce to float, coerce to string
-		   if (questionData.getAnswerInteger() != null) {
-			   questionData.setAnswerDouble( Double.valueOf(questionData.getAnswerInteger()) ); }
-		   if (questionData.getAnswerDouble() != null) {
-			   questionData.setAnswerString("" + questionData.getAnswerInteger()); }
-	   }
-	   if ( questionType.equals(QuestionType.Type.RADIO_BUTTON) ) {//comes in as an integer, coerce to float, coerce to string
-		   if (questionData.getAnswerInteger() != null) {
-			   questionData.setAnswerDouble( Double.valueOf(questionData.getAnswerInteger()) ); }
-		   if (questionData.getAnswerDouble() != null) {
-			   questionData.setAnswerString("" + questionData.getAnswerInteger()); }
-	   }
-	   QuestionAnswer.put(questionData.getId(), questionData);
-   }
+        if ( questionType.equals(QuestionType.Type.SLIDER) ) { //comes in as an integer, coerce to float, coerce to string
+		    if (questionData.getAnswerInteger() != null) {
+			    questionData.setAnswerDouble( Double.valueOf(questionData.getAnswerInteger()) ); }
+		    if (questionData.getAnswerDouble() != null) {
+			    questionData.setAnswerString("" + questionData.getAnswerInteger()); }
+	    }
+	    if ( questionType.equals(QuestionType.Type.RADIO_BUTTON) ) {//comes in as an integer, coerce to float, coerce to string
+		    if (questionData.getAnswerInteger() != null) {
+			    questionData.setAnswerDouble( Double.valueOf(questionData.getAnswerInteger()) ); }
+		    if (questionData.getAnswerDouble() != null) {
+			    questionData.setAnswerString("" + questionData.getAnswerInteger()); }
+	    }
+	    QuestionAnswer.put(questionData.getId(), questionData);
+    }
 
 
 	/** @return a list of QuestionData objects for serialization to the answers file. */
