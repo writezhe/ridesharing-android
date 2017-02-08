@@ -275,15 +275,14 @@ public class JsonSkipLogic {
 
    @SuppressLint("DefaultLocale")
 	public void setAnswer(QuestionData questionData) {
-		QuestionType.Type questionType = questionData.getType();
-	   if ( questionType.equals(QuestionType.Type.CHECKBOX)) // Do nothing, we don't need to support this.
+	    QuestionType.Type questionType = questionData.getType();
+		// Ignore checkbox questions, since they don't have numeric answers
 
-	   if ( questionType.equals(QuestionType.Type.FREE_RESPONSE) ) {//comes in as a string, coerce to float (don't bother coercing to integer
-		   if (questionData.getAnswerInteger() != null) {
-			   questionData.setAnswerDouble(Double.valueOf(questionData.getAnswerInteger())); }
-		   if (questionData.getAnswerDouble() != null) {
-			   questionData.setAnswerString(String.format(NUMERIC_OPEN_RESPONSE_FORMAT, questionData.getAnswerDouble())); }
-	   }
+	    if ( questionType.equals(QuestionType.Type.FREE_RESPONSE) ) {//comes in as a string, coerce to float (don't bother coercing to integer
+			if (questionData.getAnswerString() != null) {
+				questionData.setAnswerDouble(Double.parseDouble(questionData.getAnswerString()));
+			}
+	    }
 	   if ( questionType.equals(QuestionType.Type.SLIDER) ) { //comes in as an integer, coerce to float, coerce to string
 		   if (questionData.getAnswerInteger() != null) {
 			   questionData.setAnswerDouble( Double.valueOf(questionData.getAnswerInteger()) ); }
