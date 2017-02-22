@@ -1,6 +1,7 @@
 package org.beiwe.app.listeners;
 
 import org.beiwe.app.CrashHandler;
+import org.beiwe.app.PermissionHandler;
 import org.beiwe.app.storage.TextFileManager;
 
 import android.content.Context;
@@ -28,56 +29,69 @@ public class GPSListener implements LocationListener {
 	private Context appContext;
 	private PackageManager pkgManager;
 	private LocationManager locationManager;
-	
-	private Boolean trueGPS = null;
-	private Boolean networkGPS = null;
+
 	private Boolean enabled = null;
-	//does not have an explicit "exists" boolean.  Use check_status() function, it will return false if there is no GPS. 
-	
-	public synchronized Boolean check_status(){
-		// (need to implement something for provider changes first.
-		if (trueGPS || networkGPS) { return enabled; }
-		else { return false; }
+	//does not have an explicit "exists" boolean.  Use check_status() function, it will return false if there is no GPS.
+
+	private void makeDebugLogStatement(String message) {
+		TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis() + " " + message);
+		Log.w("GPS recording warning", message);
 	}
-	
+
 	/** Listens for GPS updates from the network GPS location provider and/or the true
-	 * GPS provider, both if possible.  It is NOT activated upon instantiation.  Requires an 
+	 * GPS provider, both if possible.  It is NOT activated upon instantiation.  Requires an
 	 * application Context object be passed in in order to interface with location services.
 	 * When activated using the turn_on() function it will log any location updates to the GPS log.
 	 * @param appContext A Context provided an Activity or Service. */
-	public GPSListener (Context appContext){
+	public GPSListener (Context appContext) {
 		this.appContext = appContext;
 		pkgManager = this.appContext.getPackageManager();
-		
-		trueGPS = pkgManager.hasSystemFeature(PackageManager.FEATURE_LOCATION_GPS);
-		networkGPS = pkgManager.hasSystemFeature(PackageManager.FEATURE_LOCATION_NETWORK);
 		enabled = false;
-//		Log.i("location services:", "GPS:"+trueGPS.toString()+ " Network:"+networkGPS);
-		
-		try { locationManager = (LocationManager) this.appContext.getSystemService(Context.LOCATION_SERVICE); }
-		catch (SecurityException e) {
-			Log.i("the LocationManager failed to initiate, SecurityException, see stack trace.", "");
-			CrashHandler.writeCrashlog(e, appContext); }
+		Log.d("initializing GPS...", "initializing GPS...");
+		//There is a possibility (mostly in development) that this will not be instantiated all the time, so we instantiate an extra one here.
+		locationManager = (LocationManager) this.appContext.getSystemService(Context.LOCATION_SERVICE);
 	}
-	
-	/** Turns on GPS providers, provided they are accessible. */
+
+	/** Turns on GPS providers, provided they are accessible. Handles permission errors appropriately */
 	@SuppressWarnings("MissingPermission")
-	public synchronized void turn_on(){
-		//if both DNE, return false.
-		if ( !trueGPS & !networkGPS ) {
-			Log.w("GPS", "GPS was told to turn on, but it is not available.");
-			return; }
-		// if already enabled return true.
-		if ( enabled ) {
-			//Log.i("GPS","GPS was turned on when it was already on."); 
-			return; }
+	public synchronized void turn_on() {
+		Boolean coarsePermissible = PermissionHandler.checkAccessCoarseLocation(appContext);
+		Boolean finePermissible = PermissionHandler.checkAccessFineLocation(appContext);
+
+		if ( !coarsePermissible ) { makeDebugLogStatement("Beiwe has not been granted permissions for coarse location updates."); }
+		if ( !finePermissible ) { makeDebugLogStatement("Beiwe has not been granted permissions for fine location updates."); }
+
+		Boolean fineExists = pkgManager.hasSystemFeature(PackageManager.FEATURE_LOCATION_GPS);
+		Boolean coarseExists = pkgManager.hasSystemFeature(PackageManager.FEATURE_LOCATION_NETWORK);
+
+		if ( !fineExists ){ makeDebugLogStatement("Fine location updates are unsupported on this device."); }
+		if ( !coarseExists ){ makeDebugLogStatement("Coarse location updates are unsupported on this device."); }
+		if ( !fineExists & !coarseExists ) { return; }
+
+		// if already enabled return true.  We want the above logging, do not refactor to earlier in the logic.
+		if ( enabled ) { return; }
+
+		//Instantiate a new location manager (looks like the fine and coarse available variables get confused if we use an old one.)
+		locationManager = (LocationManager) this.appContext.getSystemService(Context.LOCATION_SERVICE);
+
 		//If the feature exists, request locations from it. (enable if their boolean flag is true.)
-		if ( trueGPS ) {			// parameters: provider, minTime, minDistance, listener);
-			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this); 
-			enabled = true; }
-		if ( networkGPS ) {
-			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this); 
-			enabled = true; }
+		if ( fineExists && finePermissible && coarsePermissible) { // parameters: provider, minTime, minDistance, listener);
+			//AndroidStudio insists that both of these require the same location permissions, which seems to be correct
+			// since there is only one toggle in userland anyway, yes or no to location permissions.
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+		}
+		if ( coarseExists && finePermissible && coarsePermissible) { // parameters: provider, minTime, minDistance, listener);
+			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+		}
+
+		//Verbose statements on the quality of GPS data streams.
+		Boolean fineAvailable = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+		Boolean coarseAvailable = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+		//using single & because we don't want to short-circuit these logical statements, we want exclusive behavior.
+		if (!fineAvailable) { makeDebugLogStatement("GPS data stream warning: fine location updates are currently disabled."); }
+		if (!coarseAvailable) { makeDebugLogStatement("GPS data stream warning: coarse location updates are currently disabled."); }
+
+		enabled = true;
 	}
 
 	/** Disable all location updates */
@@ -90,7 +104,7 @@ public class GPSListener implements LocationListener {
 	
 	/** pushes an update to us whenever there is a location update. */
 	@Override
-	public void onLocationChanged(Location location) {		
+	public void onLocationChanged(Location location) {
 		Long javaTimeCode = System.currentTimeMillis();
 //		Log.d("GPSListener", "gps update...");
 		//order: time, latitude, longitude, altitude, horizontal_accuracy\n
