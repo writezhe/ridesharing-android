@@ -69,11 +69,12 @@ public class BackgroundService extends Service {
 	public void doSetup() {
 		//Accelerometer and power state don't need permissons
 		startPowerStateListener();
+		gpsListener = new GPSListener(appContext);
+		WifiListener.initialize( appContext );
 		if ( PersistentData.getAccelerometerEnabled() ) { accelerometerListener = new AccelerometerListener( appContext ); }
 		//Bluetooth, wifi, gps, calls, and texts need permissions
 		if ( PermissionHandler.confirmBluetooth(appContext)) { startBluetooth(); }
-		if ( PermissionHandler.confirmWifi(appContext) ) { WifiListener.initialize( appContext ); }
-		if ( PermissionHandler.confirmGps(appContext)) { gpsListener = new GPSListener(appContext); }
+//		if ( PermissionHandler.confirmWifi(appContext) ) { WifiListener.initialize( appContext ); }
 		if ( PermissionHandler.confirmTexts(appContext) ) { startSmsSentLogger(); startMmsSentLogger(); }
 		if ( PermissionHandler.confirmCalls(appContext) ) { startCallLogger(); }
 		//Only do the following if the device is registered
@@ -183,15 +184,12 @@ public class BackgroundService extends Service {
 			sendBroadcast( Timer.accelerometerOnIntent ); // start accelerometer timers (immediately runs accelerometer recording session).
 			//note: when there is no accelerometer-off timer that means we are in-between scans.  This state is fine, so we don't check for it.
 		}
-		if ( PermissionHandler.confirmGps(appContext) && (  //identical logic to accelerometer-start logic, but we also check for permissions
-				//FIXME: Eli. that other fixme about gps alarms, make the alarm trigger but the blowup if lacking the permission ... not.
-				PersistentData.getMostRecentAlarmTime( getString( R.string.turn_gps_on )) < now ||
-				!timer.alarmIsSet(Timer.gpsOnIntent) ) ) {
+		if ( PersistentData.getMostRecentAlarmTime(getString( R.string.turn_gps_on )) < now || !timer.alarmIsSet(Timer.gpsOnIntent) ) {
+			//FIXME: Eli. that other fixme about gps alarms, make the alarm trigger but the blowup if lacking the permission ... not.
 			sendBroadcast( Timer.gpsOnIntent ); }
 		
-		if ( PermissionHandler.confirmWifi(appContext) && ( //identical logic to accelerometer start logic, except we don't have an off-timer to not care about. 
-				PersistentData.getMostRecentAlarmTime( getString(R.string.run_wifi_log)) < now || //the most recent wifi log time is in the past or
-				!timer.alarmIsSet(Timer.wifiLogIntent) ) ) {
+		if ( PersistentData.getMostRecentAlarmTime( getString(R.string.run_wifi_log)) < now || //the most recent wifi log time is in the past or
+				!timer.alarmIsSet(Timer.wifiLogIntent) ) {
 			sendBroadcast( Timer.wifiLogIntent ); }
 		
 		//if Bluetooth recording is enabled and there is no scheduled next-bluetooth-enable event, set up the next Bluetooth-on alarm.
@@ -264,11 +262,10 @@ public class BackgroundService extends Service {
 				//record the system time that the next alarm is supposed to go off at, so that we can recover in the event of a reboot or crash. 
 				PersistentData.setMostRecentAlarmTime(getString(R.string.turn_accelerometer_on), alarmTime );
 				return; }
-			//GPS. Almost identical logic to accelerometer above, but adds checkGPS to handle any permissions issues.
+			//GPS. Almost identical logic to accelerometer above.
 			if (broadcastAction.equals( appContext.getString(R.string.turn_gps_on) ) ) {
 				if ( !PersistentData.getGpsEnabled() ) { Log.e("BackgroundService Listener", "invalid GPS on received"); return; }
-				if ( PermissionHandler.checkGpsPermissions(appContext) ) { gpsListener.turn_on(); }
-				else { TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis() + " user has not provided permission for GPS."); } 
+				gpsListener.turn_on();
 				timer.setupExactSingleAlarm(PersistentData.getGpsOnDurationMilliseconds(), Timer.gpsOffIntent);
 				long alarmTime = timer.setupExactSingleAlarm(PersistentData.getGpsOnDurationMilliseconds() + PersistentData.getGpsOffDurationMilliseconds(), Timer.gpsOnIntent);
 				PersistentData.setMostRecentAlarmTime(getString(R.string.turn_gps_on), alarmTime );
