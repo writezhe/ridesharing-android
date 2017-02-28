@@ -34,7 +34,7 @@ public class DeviceInfo {
 	 * 9: Moves Record/Play buttons outside the scroll window on voice recording screen.
 	 * 10: Change to TextFileManager to potentially improve uninitialized errors, added device idle and low power mode change to power state listener.
 	 * 11: development version of 12.
-	 * 12: several bug fixes including a fix for the open-survey crash, adds support for branching serveys (conditional display logic)
+	 * 12: several bug fixes including a fix for the on-opening-surveyactivity crash and a crash that could occur when when encrypting audio files. Adds support for branching serveys (conditional display logic)
 	 * 13: data improvements to GPS and WIFI data streams, improvements in said data streams and additional context provided in the app log (debug log). */
 
 	private static String beiweVersion = "13";
