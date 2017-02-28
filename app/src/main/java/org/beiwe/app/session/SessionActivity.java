@@ -48,11 +48,18 @@ public class SessionActivity extends RunningBackgroundServiceActivity {
 	protected void onPause() {
 		super.onPause();
 		activityNotVisible = true;
-		if (backgroundService == null) {
-			Log.w("sessionactivity", "background service is null, you have a race condition with instantiating the background service.");
-			TextFileManager.getDebugLogFile().writeEncrypted("a sessionactivity tried to clear the automatic logout countdown timer, but the background service did not exist.");
-		}
-		BackgroundService.clearAutomaticLogoutCountdownTimer();
+		if (backgroundService != null) {
+			//If an activity is active there is a countdown to bump a user to a login screen after
+			// some amount of time (setting is pushed by study).  If we leave the session activity
+			// we need to cancel that action.
+			//This issue has occurred literally once ever (as of February 27 2016) but the prior
+			// behavior was broken and caused the app to crash.  Really, this state is incomprehensible
+			// (activity is open an mature enough that onPause can occur, yet the background service
+			// has not started?) so a crash does at least reboot Beiwe into a functional state,
+			// but that obviously has its own problems.  Updated code should merely be bad UX as
+			// a user could possibly get bumped to the login screen from another app.
+			BackgroundService.clearAutomaticLogoutCountdownTimer(); }
+		else { Log.w("SessionActivity bug","the background service was not running, could not cancel UI bump to login screen."); }
 	}
 	
 	@Override
