@@ -33,7 +33,7 @@ public class GraphActivity extends SessionActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_graph));
+		setContentView(R.layout.activity_graph);
 		
 		Button callClinicianButton = (Button) findViewById(R.id.graph_call_clinician);
 		callClinicianButton.setText(PersistentData.getCallClinicianButtonText());
