@@ -48,3 +48,6 @@ signing keystore*
 
 # Eli's builds folder
 builds
+
+# A folder
+private/*
