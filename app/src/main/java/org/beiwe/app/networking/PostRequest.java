@@ -279,7 +279,7 @@ public class PostRequest {
 	 * @param filename the short name (not the full path) of the file to upload
 	 * @return TRUE if the server reported "200 OK"; FALSE otherwise */
 	private static Boolean tryToUploadFile(String filename) throws IOException {
-		URL uploadUrl = new URL( appContext.getResources().getString(R.string.data_upload_url) );
+		URL uploadUrl = new URL( addWebsitePrefix( appContext.getResources().getString(R.string.data_upload_url) ) );
 		File file = new File( appContext.getFilesDir() + "/" + filename );
 		
 		if ( PostRequest.doFileUpload( file, uploadUrl ) == 200 ) { return true; }
@@ -307,4 +307,10 @@ public class PostRequest {
 				makeParameter("password", password) +
 				makeParameter("device_id", deviceId);
 	}
+
+	public static String addWebsitePrefix(String URL){
+		if (DeviceInfo.APP_IS_BETA) return appContext.getResources().getString(R.string.staging_website) + URL;
+		else return appContext.getResources().getString(R.string.production_website) + URL;
+	}
+
 }

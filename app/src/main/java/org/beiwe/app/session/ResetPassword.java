@@ -11,6 +11,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.widget.Toast;
 
+import static org.beiwe.app.networking.PostRequest.addWebsitePrefix;
+
 /**
  * Code designed to be used in two very similar Activities: ResetPassword and ForgotPassword.
  * Both Activities have three text-input fields (EditTexts): current password, new password, and
@@ -51,7 +53,7 @@ public class ResetPassword {
 	
 	/** Runs the network operation to reset the password on the server.*/
 	public void doResetPasswordRequest() {
-		String url = appContext.getString(R.string.reset_password_url);
+		String url = addWebsitePrefix(appContext.getString(R.string.reset_password_url));
 		new HTTPUIAsync(url, currentActivity) {
 			
 			@Override

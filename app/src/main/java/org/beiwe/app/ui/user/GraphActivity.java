@@ -13,6 +13,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
 
+import static org.beiwe.app.networking.PostRequest.addWebsitePrefix;
+
 /**
  * The activity that shows the graph to the user. Displays the Beiwe webpage that houses the graph.
  * It also features the options to call clinician, as well as immediate sign out
@@ -31,7 +33,7 @@ public class GraphActivity extends SessionActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_graph);
+		setContentView(R.layout.activity_graph));
 		
 		Button callClinicianButton = (Button) findViewById(R.id.graph_call_clinician);
 		callClinicianButton.setText(PersistentData.getCallClinicianButtonText());
@@ -59,7 +61,7 @@ public class GraphActivity extends SessionActivity {
 
 		//TODO: Low priority. Eli. find a way to Kill this use of securityparameters, make securityparameters private.
 		String postData = PostRequest.securityParameters(null);
-		String graphUrl = getApplicationContext().getString(R.string.graph_url);
+		String graphUrl = addWebsitePrefix(getApplicationContext().getString(R.string.graph_url));
 		browser.postUrl(graphUrl, EncodingUtils.getBytes(postData, "BASE64"));
 	}
 

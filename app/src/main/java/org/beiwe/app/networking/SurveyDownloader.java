@@ -17,11 +17,13 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.util.Log;
 
+import static org.beiwe.app.networking.PostRequest.addWebsitePrefix;
+
 public class SurveyDownloader {
 	
 	public static void downloadSurveys( Context appContext ) {
 		// Log.d("QuestionsDownloader", "downloadJSONQuestions() called");
-		doDownload( appContext.getResources().getString(R.string.download_surveys_url), appContext );		
+		doDownload( addWebsitePrefix(appContext.getResources().getString(R.string.download_surveys_url)), appContext );
 	}
 
 	private static void doDownload(final String url, final Context appContext) { new HTTPAsync(url) {

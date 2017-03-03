@@ -40,7 +40,8 @@ public class DeviceInfo {
 
 	private static String beiweVersion = "13";
 	//DO NOT FORGET TO UPDATE THE MANIFEST VERSION NUMBERS AS WELL.
-	
+	public static boolean APP_IS_BETA = true;
+
 	private static String androidID;
 	private static String bluetoothMAC;
 	//TODO: Eli. phoneNumbeer is not used anywhere...

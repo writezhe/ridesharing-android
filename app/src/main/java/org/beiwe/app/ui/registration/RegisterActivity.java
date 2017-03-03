@@ -25,6 +25,8 @@ import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.EditText;
 
+import static org.beiwe.app.networking.PostRequest.addWebsitePrefix;
+
 
 /**Activity used to log a user in to the application for the first time. This activity should only be called on ONCE,
  * as once the user is logged in, data is saved on the phone.
@@ -85,7 +87,7 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 		else if ( PersistentData.passwordMeetsRequirements(passwordStr, this) ) {
 			PersistentData.setLoginCredentials(userIDStr, passwordStr);
 //			Log.d("RegisterActivity", "trying \"" + LoginManager.getPatientID() + "\" with password \"" + LoginManager.getPassword() + "\"" );
-			doRegister(getApplicationContext().getString(R.string.register_url));
+			doRegister(addWebsitePrefix(getApplicationContext().getString(R.string.register_url)));
 		}
 	}
 	
