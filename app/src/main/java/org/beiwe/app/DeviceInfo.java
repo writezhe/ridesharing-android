@@ -32,19 +32,20 @@ public class DeviceInfo {
 	 * 7: audio survey files now contain the surveyid for the correct audio survey.
 	 * 8: Now support a flag for data upload over cellular, fixed bug in wifi scanning.
 	 * 9: Moves Record/Play buttons outside the scroll window on voice recording screen.
-	 * 10: Change to TextFileManager to potentially improve uninitialized errors, added device idle and low power mode change to power state listener.
+	 * 10: app version 2.0, Change to TextFileManager to potentially improve uninitialized errors, added device idle and low power mode change to power state listener.
 	 * 11: development version of 12.
-	 * 12: several bug fixes including a fix for the on-opening-surveyactivity crash and a crash that could occur when when encrypting audio files. Adds support for branching serveys (conditional display logic)
-	 * 13: data improvements to GPS and WIFI data streams, improvements in said data streams and additional context provided in the app log (debug log).
-	 * 14: minor behavior improvement in extremely rare occurrence inside of sessionActivity, see inline documentation there for details. */
+	 * 12: app version 2.1, several bug fixes including a fix for the on-opening-surveyactivity crash and a crash that could occur when when encrypting audio files. Adds support for branching serveys (conditional display logic)
+	 * 13: app version 2.1.1, data improvements to GPS and WIFI data streams, improvements in said data streams and additional context provided in the app log (debug log).
+	 * 14: app version 2.1.2, minor behavior improvement in extremely rare occurrence inside of sessionActivity, see inline documentation there for details.
+	 * 15: bug fix in crash handler */
 
-	private static String beiweVersion = "13";
+	private static String beiweVersion = "15";
 	//DO NOT FORGET TO UPDATE THE MANIFEST VERSION NUMBERS AS WELL.
 	public static boolean APP_IS_BETA = true;
 
 	private static String androidID;
 	private static String bluetoothMAC;
-	//TODO: Eli. phoneNumbeer is not used anywhere...
+	//TODO: Eli. phoneNumber is not used anywhere...
 	private static String phoneNumber;
 
 	/** grab the Android ID and the Bluetooth's MAC address */
