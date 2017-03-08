@@ -87,13 +87,13 @@ public class CrashHandler implements java.lang.Thread.UncaughtExceptionHandler{
 		}
 		else { exceptionInfo += "java threw an error with an error-fill stack trace that was null."; }
 
-		if (exception.getCause().getStackTrace() != null) {
+		if (exception.getCause() != null && exception.getCause().getStackTrace() != null) {
 			exceptionInfo += "\nActual Error:\n";
 			for (StackTraceElement element : exception.getCause().getStackTrace()) {
 				exceptionInfo += "\t" + element.toString() + "\n";
 			}
 		}
-		else { exceptionInfo += "java threw an error with a null error stack trace."; }
+		else { exceptionInfo += "java threw an error with a null error cause or stack trace, this means we are manually creating a crash report."; }
 
 		//Print an error log if debug mode is active.
 		if (LoadingActivity.loadThisActivity == DebugInterfaceActivity.class) {
