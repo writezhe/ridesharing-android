@@ -42,6 +42,7 @@ public class DeviceInfo {
 	private static String beiweVersion = "15";
 	//DO NOT FORGET TO UPDATE THE MANIFEST VERSION NUMBERS AS WELL.
 	public static boolean APP_IS_BETA = true;
+	public static boolean APP_IS_DEV = true;
 
 	private static String androidID;
 	private static String bluetoothMAC;

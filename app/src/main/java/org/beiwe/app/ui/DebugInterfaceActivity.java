@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.beiwe.app.BackgroundService;
+import org.beiwe.app.CrashHandler;
 import org.beiwe.app.PermissionHandler;
 import org.beiwe.app.R;
 import org.beiwe.app.Timer;
@@ -25,6 +26,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
+import static org.beiwe.app.DeviceInfo.APP_IS_DEV;
 
 
 public class DebugInterfaceActivity extends SessionActivity {
@@ -36,6 +41,28 @@ public class DebugInterfaceActivity extends SessionActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_debug_interface);
 		appContext = this.getApplicationContext();
+
+		if (APP_IS_DEV) {
+			((TextView) findViewById(R.id.debugtexttwenty)).setVisibility(View.VISIBLE);
+			((Button) findViewById(R.id.button)).setVisibility(View.VISIBLE);
+			((Button) findViewById(R.id.buttonPrintInternalLog)).setVisibility(View.VISIBLE);
+			((Button) findViewById(R.id.buttonClearInternalLog)).setVisibility(View.VISIBLE);
+			((Button) findViewById(R.id.buttonDeleteEverything)).setVisibility(View.VISIBLE);
+			((Button) findViewById(R.id.buttonListFiles)).setVisibility(View.VISIBLE);
+			((Button) findViewById(R.id.buttonTimer)).setVisibility(View.VISIBLE);
+			((Button) findViewById(R.id.buttonGetKeyFile)).setVisibility(View.VISIBLE);
+			((Button) findViewById(R.id.testEncryption)).setVisibility(View.VISIBLE);
+			((Button) findViewById(R.id.buttonLogDataToggles)).setVisibility(View.VISIBLE);
+			((Button) findViewById(R.id.buttonAlarmStates)).setVisibility(View.VISIBLE);
+			((Button) findViewById(R.id.buttonFeaturesEnabled)).setVisibility(View.VISIBLE);
+			((Button) findViewById(R.id.buttonFeaturesPermissable)).setVisibility(View.VISIBLE);
+			((Button) findViewById(R.id.buttonCrashUi)).setVisibility(View.VISIBLE);
+			((Button) findViewById(R.id.buttonCrashBackground)).setVisibility(View.VISIBLE);
+			((Button) findViewById(R.id.buttonCrashBackgroundInFive)).setVisibility(View.VISIBLE);
+			((Button) findViewById(R.id.buttonTestManualErrorReport)).setVisibility(View.VISIBLE);
+			((Button) findViewById(R.id.stopBackgroundService)).setVisibility(View.VISIBLE);
+		}
+
 	}
 	
 	//Intent triggers caught in BackgroundService
@@ -137,7 +164,12 @@ public class DebugInterfaceActivity extends SessionActivity {
 		for( String file : files ) { Log.i( "files...", file); }
 		TextFileManager.deleteEverything(); }
 	public void listFiles(View view){
-		String[] files = TextFileManager.getAllFiles();
+		Log.w( "files...", "UPLOADABLE FILES");
+		String[] files = TextFileManager.getAllUploadableFiles();
+		Arrays.sort(files);
+		for( String file : files ) { Log.i( "files...", file); }
+		Log.w( "files...", "ALL FILES");
+		files = TextFileManager.getAllFiles();
 		Arrays.sort(files);
 		for( String file : files ) { Log.i( "files...", file); }
 	}
@@ -155,6 +187,10 @@ public class DebugInterfaceActivity extends SessionActivity {
 	public void crashBackground(View view) { BackgroundService.timer.setupExactSingleAlarm((long) 0, new Intent("crashBeiwe")); }
 	public void crashBackgroundInFive(View view) { BackgroundService.timer.setupExactSingleAlarm((long) 5000, new Intent("crashBeiwe")); }
 	public void stopBackgroundService(View view) { backgroundService.stop(); }
+	public void testManualErrorReport(View view) {
+		try{ throw new NullPointerException("this is a test null pointer exception from the debug interface"); }
+		catch (Exception e) { CrashHandler.writeCrashlog(e, getApplicationContext()); }
+	}
 
 	//runs tests on the json logic parser
 	public void testJsonLogicParser(View view) {
@@ -166,7 +202,7 @@ public class DebugInterfaceActivity extends SessionActivity {
 			questions = new JSONArray(JsonQuestionsListString);
 			steve = new JsonSkipLogic(questions, runDisplayLogic, getApplicationContext());
 		} catch (JSONException e) {
-			Log.e("Debug", "it done gon wronge.");
+			Log.e("Debug", "it dun gon wronge.");
 			e.printStackTrace();
 			throw new NullPointerException("it done gon wronge");
 		}
@@ -219,5 +255,6 @@ public class DebugInterfaceActivity extends SessionActivity {
 		steve.getNextQuestion();
 		Log.v("debug", "" + i); i++;
 	}
+
 
 }
