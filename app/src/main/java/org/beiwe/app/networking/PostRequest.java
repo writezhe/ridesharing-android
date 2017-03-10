@@ -283,7 +283,7 @@ public class PostRequest {
 		for (String fileName: TextFileManager.getAllUploadableFiles()) {
 			try {
 				 file = new File(appContext.getFilesDir() + "/" + fileName);
-				if (APP_IS_DEV) { Log.d("uploading", "uploading " + file.getName()); }
+//				Log.d("uploading", "uploading " + file.getName());
 				if ( PostRequest.doFileUpload(file, uploadUrl, stopTime) == 200 ) { TextFileManager.delete(fileName); }
 			}
 			catch (IOException e) { Log.w("PostRequest.java", "Failed to upload file " + fileName + ". Raised exception: " + e.getCause()); }
