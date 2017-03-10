@@ -1,5 +1,7 @@
 package org.beiwe.app.networking;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -9,9 +11,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -27,13 +26,15 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.util.Log;
 
+import static org.beiwe.app.DeviceInfo.APP_IS_DEV;
+
 /** PostRequest is our class for handling all HTTP operations we need; they are all in the form of HTTP post requests. 
  * All HTTP connections are HTTPS, and automatically include a password and identifying information. 
  * @author Josh, Eli, Dor */
 
 //TODO: Low priority. Eli. clean this up and update docs. It does not adequately state that it puts into any request automatic security parameters, and it is not obvious why some of the functions exist (minimal http thing)
 public class PostRequest {
-	private static Context appContext;	
+	private static Context appContext;
 
 	/**Uploads must be initialized with an appContext before they can access the wifi state or upload a _file_. */
 	private PostRequest( Context applicationContext ) { appContext = applicationContext; }
@@ -202,35 +203,49 @@ public class PostRequest {
 	
 
 	/** Constructs and sends a multipart HTTP POST request with a file attached.
-	 * This function uses minimalHTTP() directly because it needs to add a header (?) to the HttpsURLConnection object before it writes a file to it.
-	 * Based on http://stackoverflow.com/a/11826317
+	 * This function uses minimalHTTP() directly because it needs to add a header (?) to the
+	 * HttpsURLConnection object before it writes a file to it.
+	 * This function had performance issues with large files, these have been resolved by conversion
+	 * to use buffered file reads and http/tcp stream writes.
 	 * @param file the File to be uploaded
 	 * @param uploadUrl the destination URL that receives the upload
 	 * @return HTTP Response code as int
 	 * @throws IOException */
-	private static int doFileUpload(File file, URL uploadUrl) throws IOException {
+	private static int doFileUpload(File file, URL uploadUrl, long stopTime) throws IOException {
+		if (file.length() >  1024*1024*10) { Log.i("upload", "file length: " + file.length() ); }
 		HttpsURLConnection connection = minimalHTTP( uploadUrl );
-		DataOutputStream request = new DataOutputStream( connection.getOutputStream() );
-		//insert the multipart parameter here.
-		DataInputStream inputStream = new DataInputStream( new FileInputStream(file) );
+		BufferedOutputStream request = new BufferedOutputStream( connection.getOutputStream() , 65536);
+		BufferedInputStream inputStream = new BufferedInputStream( new FileInputStream(file) , 65536);
 
-		request.writeBytes( securityParameters(null) );
-		request.writeBytes( makeParameter("file_name", file.getName() ) );
-		request.writeBytes( "file=" );
-
+		request.write( securityParameters(null).getBytes() );
+		request.write( makeParameter("file_name", file.getName() ).getBytes() );
+		request.write( "file=".getBytes() );
+//		long start = System.currentTimeMillis();
 		// Read in data from the file, and pour it into the POST request stream
 		int data;
-		while( ( data = inputStream.read() ) != -1 ) request.write( (char) data );
+		int i = 0;
+		while ( ( data = inputStream.read() ) != -1 ) {
+			request.write((char) data);
+			i++;
+			//This check has been profiled, it causes no slowdown in upload speeds, and vastly improves upload behavior.
+			if (i % 65536 == 0 && stopTime<System.currentTimeMillis()) {
+				connection.disconnect();
+				return -1;
+			}
+		}
+//		long stop = System.currentTimeMillis();
+//		if (file.length() >  1024*1024*10) {
+//			Log.w("upload", "speed: " + (file.length() / ((stop - start) / 1000)) / 1024 + "KBps");
+//		}
 		inputStream.close();
-		
-		request.writeBytes("");
+		request.write("".getBytes());
 		request.flush();
 		request.close();
 
-		// Get HTTP Response
-		// Log.d("PostRequest.java", "File: " + file.getName() + " Response: " + connection.getResponseMessage());
+		// Get HTTP Response. Pretty sure this blocks, nothing can really be done about that.
 		int response = connection.getResponseCode();
 		connection.disconnect();
+		if (APP_IS_DEV) { Log.d("uploading", "finished uploading " + file.getName()); }
 		return response;
 	}
 
@@ -242,48 +257,43 @@ public class PostRequest {
 
 	/** Uploads all available files on a separate thread. */
 	public static void uploadAllFiles() {
-		Log.i("DOING UPLOAD STUFF", "DOING UPLOAD STUFF");
 		// determine if you are allowed to upload over WiFi or cellular data, return if not.
 		if ( !NetworkUtility.canUpload(appContext) ) { return; }
-		
+
+		Log.i("DOING UPLOAD STUFF", "DOING UPLOAD STUFF");
 		// Run the HTTP POST on a separate thread
-		ExecutorService executor = Executors.newFixedThreadPool(1);
-		Callable <HttpsURLConnection> thread = new Callable<HttpsURLConnection>() {
-			@Override
-			public synchronized HttpsURLConnection call() {
-				// Log.i("PostRequest.java", "Uploading files");
-				doTryUploadDelete();
-				Log.i("DOING UPLOAD STUFF", "DONE DOING UPLOAD STUFF");
-				return null; //(indentation was stupid, made a function.)
-			}
-		};
-		executor.submit(thread);
+		Thread uploaderThread = new Thread( new Runnable() {
+			@Override public void run() { doUploadAllFiles(); }
+		}, "uploader_thread");
+		uploaderThread.start();
 	}
 
-
-	/** For each file name given, tries to upload that file.  If successful it then deletes the file.*/
-	private static synchronized void doTryUploadDelete() {
+	/** Uploads all files to the Beiwe server.
+	 * Ensures that the upload task will stop itself ~2.5 seconds before the next upload event should occur.
+	 * Files get deleted as soon as a 200 OK code in received from the server. */
+	private static void doUploadAllFiles(){
+		long stopTime = System.currentTimeMillis() + (PersistentData.getUploadDataFilesFrequencyMilliseconds() - 2500);
 		String[] files = TextFileManager.getAllUploadableFiles();
-		for (String fileName : files) {
+		Log.i("uploading", "uploading " + files.length + " files");
+		File file = null;
+		URL uploadUrl = null; //set up url, write a crash log and fail gracefully if this ever breaks.
+		try { uploadUrl = new URL(addWebsitePrefix(appContext.getResources().getString(R.string.data_upload_url))); }
+		catch (MalformedURLException e) { CrashHandler.writeCrashlog(e, appContext); return; }
+
+		for (String fileName: TextFileManager.getAllUploadableFiles()) {
 			try {
-				if ( tryToUploadFile(fileName) ) { TextFileManager.delete(fileName); } }
-			catch (IOException e) {
-				Log.w( "PostRequest.java", "Failed to upload file " + fileName + ". Raised exception: " + e.getCause() );
+				 file = new File(appContext.getFilesDir() + "/" + fileName);
+				if (APP_IS_DEV) { Log.d("uploading", "uploading " + file.getName()); }
+				if ( PostRequest.doFileUpload(file, uploadUrl, stopTime) == 200 ) { TextFileManager.delete(fileName); }
+			}
+			catch (IOException e) { Log.w("PostRequest.java", "Failed to upload file " + fileName + ". Raised exception: " + e.getCause()); }
+
+			if (stopTime < System.currentTimeMillis()) {
+				Log.w("UPLOAD STUFF", "shutting down upload due to time limit, should restart in ~2.5 seconds.");
+				return;
 			}
 		}
-		// Log.i("PostRequest.java", "Finished upload loop.");
-	}
-
-
-	/**Try to upload a file to the server
-	 * @param filename the short name (not the full path) of the file to upload
-	 * @return TRUE if the server reported "200 OK"; FALSE otherwise */
-	private static Boolean tryToUploadFile(String filename) throws IOException {
-		URL uploadUrl = new URL( addWebsitePrefix( appContext.getResources().getString(R.string.data_upload_url) ) );
-		File file = new File( appContext.getFilesDir() + "/" + filename );
-		
-		if ( PostRequest.doFileUpload( file, uploadUrl ) == 200 ) { return true; }
-		return false;
+		Log.i("DOING UPLOAD STUFF", "DONE WITH UPLOAD");
 	}
 
 
