@@ -185,7 +185,6 @@ public class BackgroundService extends Service {
 			//note: when there is no accelerometer-off timer that means we are in-between scans.  This state is fine, so we don't check for it.
 		}
 		if ( PersistentData.getMostRecentAlarmTime(getString( R.string.turn_gps_on )) < now || !timer.alarmIsSet(Timer.gpsOnIntent) ) {
-			//FIXME: Eli. that other fixme about gps alarms, make the alarm trigger but the blowup if lacking the permission ... not.
 			sendBroadcast( Timer.gpsOnIntent ); }
 		
 		if ( PersistentData.getMostRecentAlarmTime( getString(R.string.run_wifi_log)) < now || //the most recent wifi log time is in the past or
@@ -236,13 +235,17 @@ public class BackgroundService extends Service {
 	/**The timerReceiver is an Android BroadcastReceiver that listens for our timer events to trigger,
 	 * and then runs the appropriate code for that trigger. 
 	 * Note: every condition has a return statement at the end; this is because the trigger survey notification
-	 * action requires a fairly expensive dive into PersistantData JSON unpacking.*/ 
+	 * action requires a fairly expensive dive into PersistantData JSON unpacking.*/
 	private BroadcastReceiver timerReceiver = new BroadcastReceiver() {
 		@Override public void onReceive(Context appContext, Intent intent) {
 			Log.d("BackgroundService - timers", "Received broadcast: " + intent.toString() );
 			TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis() + " Received Broadcast: " + intent.toString() );
 			String broadcastAction = intent.getAction();
-			
+
+			/** For GPS and Accelerometer the failure modes are:
+			 * 1. If a recording event is triggered and followed by Doze being enabled then Beiwe will record until the Doze period ends.
+			 * 2. If, after Doze ends, the timers trigger out of order Beiwe ceaces to record and triggers a new recording event in the future. */
+
 			/** Disable active sensor */
 			if (broadcastAction.equals( appContext.getString(R.string.turn_accelerometer_off) ) ) {
 				accelerometerListener.turn_off();
@@ -352,7 +355,10 @@ public class BackgroundService extends Service {
 	// We could also use, and may change it if we encounter problems, START_REDELIVER_INTENT, which has nearly identical behavior.
 	@Override public int onStartCommand(Intent intent, int flags, int startId){ //Log.d("BackroundService onStartCommand", "started with flag " + flags );
 		TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis()+" "+"started with flag " + flags);
-		return START_STICKY; }
+//		return START_STICKY;
+		//we are testing out this restarting behavior for the service.  It is entirely unclear that this will have any observable effect.
+		return START_REDELIVER_INTENT;
+	}
 	//(the rest of these are identical, so I have compactified it)
 	@Override public void onTaskRemoved(Intent rootIntent) { //Log.d("BackroundService onTaskRemoved", "onTaskRemoved called with intent: " + rootIntent.toString() );
 		TextFileManager.getDebugLogFile().writeEncrypted(System.currentTimeMillis()+" "+"onTaskRemoved called with intent: " + rootIntent.toString());
