@@ -50,8 +50,9 @@ public class SurveyDownloader {
 		List<String> surveys;
 		try { surveys = JSONUtils.jsonArrayToStringList( new JSONArray(jsonString) );}
 		catch (JSONException e) {
-			CrashHandler.writeCrashlog(e, appContext);
-			Log.e("Survey Downloader", "JSON PARSING FAIL FAIL FAIL"); return -1; }
+//			CrashHandler.writeCrashlog(e, appContext); // this crash report has causes problems.
+			Log.e("Survey Downloader", "JSON PARSING FAIL FAIL FAIL");
+			return -1; }
 		
 		JSONObject surveyJSON;
 		List<String> oldSurveyIds = PersistentData.getSurveyIds();
