@@ -88,7 +88,7 @@ public class AudioRecorderEnhancedActivity extends AudioRecorderCommon{
 			@Override public void run() { writeAudioDataToFile(); }
 		}, "AudioRecorder Thread");
 		recordingThread.start();
-		startRecordingTimeout();  //TODO: Eli. test recording timeout with enhanced recording...
+		startRecordingTimeout();
     }
     
     /** Stop recording, and reset the button to "record" */
