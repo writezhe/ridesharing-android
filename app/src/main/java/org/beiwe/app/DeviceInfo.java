@@ -37,9 +37,10 @@ public class DeviceInfo {
 	 * 12: app version 2.1, several bug fixes including a fix for the on-opening-surveyactivity crash and a crash that could occur when when encrypting audio files. Adds support for branching serveys (conditional display logic)
 	 * 13: app version 2.1.1, data improvements to GPS and WIFI data streams, improvements in said data streams and additional context provided in the app log (debug log).
 	 * 14: app version 2.1.2, minor behavior improvement in extremely rare occurrence inside of sessionActivity, see inline documentation there for details.
-	 * 15: bug fix in crash handler */
+	 * 15: bug fix in crash handler
+	 * 16: app version 2.1.3, rewrite of file uploading to fix App Not Responding (ANR) errors; also BackgroundService.onStartCommand() now uses START_REDELIVER_INTENT */
 
-	private static String beiweVersion = "15";
+	private static String beiweVersion = "16";
 	//DO NOT FORGET TO UPDATE THE MANIFEST VERSION NUMBERS AS WELL.
 	public static boolean APP_IS_BETA = true;
 	public static boolean APP_IS_DEV = true;
