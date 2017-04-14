@@ -38,9 +38,10 @@ public class DeviceInfo {
 	 * 13: app version 2.1.1, data improvements to GPS and WIFI data streams, improvements in said data streams and additional context provided in the app log (debug log).
 	 * 14: app version 2.1.2, minor behavior improvement in extremely rare occurrence inside of sessionActivity, see inline documentation there for details.
 	 * 15: bug fix in crash handler
-	 * 16: app version 2.1.3, rewrite of file uploading to fix App Not Responding (ANR) errors; also BackgroundService.onStartCommand() now uses START_REDELIVER_INTENT */
+	 * 16: app version 2.1.3, rewrite of file uploading to fix App Not Responding (ANR) errors; also BackgroundService.onStartCommand() now uses START_REDELIVER_INTENT
+	 * 17: app version 2.1.4, fixed a bug that still showed the next survey, even if that survey time had been deleted in the backend and the update had propagated to the phone */
 
-	private static String beiweVersion = "16";
+	private static String beiweVersion = "17";
 	//DO NOT FORGET TO UPDATE THE MANIFEST VERSION NUMBERS AS WELL.
 	public static boolean APP_IS_BETA = true;
 	public static boolean APP_IS_DEV = true;
