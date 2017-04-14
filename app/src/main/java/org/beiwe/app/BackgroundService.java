@@ -231,6 +231,8 @@ public class BackgroundService extends Service {
 	
 	/** The Timer requires the BackgroundService in order to create alarms, hook into that functionality here. */
 	public static void setSurveyAlarm(String surveyId, Calendar alarmTime) { timer.startSurveyAlarm(surveyId, alarmTime); }
+
+	public static void cancelSurveyAlarm(String surveyId) { timer.cancelAlarm(new Intent(surveyId)); }
 	
 	/**The timerReceiver is an Android BroadcastReceiver that listens for our timer events to trigger,
 	 * and then runs the appropriate code for that trigger. 

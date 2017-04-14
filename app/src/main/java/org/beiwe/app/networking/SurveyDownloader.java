@@ -1,7 +1,7 @@
 package org.beiwe.app.networking;
 
-import java.util.ArrayList;
-import java.util.List;
+import android.content.Context;
+import android.util.Log;
 
 import org.beiwe.app.BackgroundService;
 import org.beiwe.app.CrashHandler;
@@ -14,8 +14,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Context;
-import android.util.Log;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.beiwe.app.networking.PostRequest.addWebsitePrefix;
 
@@ -109,6 +109,8 @@ public class SurveyDownloader {
 //				Log.d("debugging survey update", "A) " + jsonTimingsString);
 //				Log.d("debugging survey update", "B) " + PersistentData.getSurveyTimes(surveyId) );
 				if ( ! PersistentData.getSurveyTimes(surveyId).equals(jsonTimingsString) ) {
+//					Log.i("SurveyDownloader.java", "The survey times, they are a changin!");
+					BackgroundService.cancelSurveyAlarm(surveyId);
 					PersistentData.setSurveyTimes(surveyId, jsonTimingsString);
 					SurveyScheduler.scheduleSurvey(surveyId);
 				}
