@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 25
     buildToolsVersion "25.0.0"
 
     defaultConfig {
         applicationId "org.beiwe.app"
         minSdkVersion 16
-        targetSdkVersion 23
+        targetSdkVersion 25
     }
 
     buildTypes {
@@ -27,6 +27,9 @@ repositories {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:19.1.0'
+    compile 'com.android.support:appcompat-v7:25.2.0'
     compile 'com.commonsware.cwac:anddown:0.3.0'
+    compile 'com.google.firebase:firebase-messaging:10.2.6'
 }
+
+apply plugin: 'com.google.gms.google-services'

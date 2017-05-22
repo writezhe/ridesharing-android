@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "667420868057",
+    "firebase_url": "https://beiwe-android.firebaseio.com",
+    "project_id": "beiwe-android",
+    "storage_bucket": "beiwe-android.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:667420868057:android:584d9d12e690ed82",
+        "android_client_info": {
+          "package_name": "org.beiwe.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "667420868057-53asrvnm10r17lanpooevpkkpmbshq6j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "org.beiwe.app",
+            "certificate_hash": "465f4c0c7dad3e0d93141551c1fac343414ae626"
+          }
+        },
+        {
+          "client_id": "667420868057-6lvjbm7us1h70d8m1iqngmld7kpc209a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnOUjtI1i-sxTNV_vevdf3-cRVWHDM9jw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "667420868057-6lvjbm7us1h70d8m1iqngmld7kpc209a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
