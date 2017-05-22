@@ -98,8 +98,18 @@
             android:label="@string/title_activity_graph" >
         </activity>
 
-        <!-- SERVICE -->
+        <!-- SERVICES -->
 
+        <service android:name=".networking.FCMInstanceIDService" android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+        <service android:name=".networking.FCMService" android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
         <service
             android:name=".BackgroundService"
             android:exported="false"
