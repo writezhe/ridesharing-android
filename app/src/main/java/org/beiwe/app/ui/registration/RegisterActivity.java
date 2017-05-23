@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.icu.util.TimeZone;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -109,6 +110,7 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 						PostRequest.makeParameter("model", DeviceInfo.getModel() ) +
 						PostRequest.makeParameter("product", DeviceInfo.getProduct() ) +
 						PostRequest.makeParameter("fcm_instance_id", PersistentData.getFCMInstanceID() ) +
+						PostRequest.makeParameter("timezone", TimeZone.getDefault().getID() ) +
 						PostRequest.makeParameter("beiwe_version", DeviceInfo.getBeiweVersion() );
 					
 			responseCode = PostRequest.httpRegister(parameters, url);
