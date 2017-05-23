@@ -39,6 +39,8 @@ public class PersistentData {
 	private static final String PCP_PHONE_KEY = "primary_care";
 	private static final String PASSWORD_RESET_NUMBER_KEY = "reset_number";
 
+	private static final String FCM_INSTANCE_ID = "fcmInstanceID";
+
 	private static final String ACCELEROMETER = "accelerometer";
 	private static final String GPS = "gps";
 	private static final String CALLS = "calls";
@@ -146,7 +148,17 @@ public class PersistentData {
 		editor.commit();
 	}
 
-	
+	/*#####################################################################################
+	################################# Firebase Cloud Messaging Instance ID ################
+	#####################################################################################*/
+
+	public static void setFCMInstanceID(String fcmInstanceID) {
+		editor.putString(FCM_INSTANCE_ID, fcmInstanceID);
+		editor.commit(); }
+
+	public static String getFCMInstanceID() {
+		return pref.getString(FCM_INSTANCE_ID, null); }
+
 	/*#####################################################################################
 	################################# Listener Settings ###################################
 	#####################################################################################*/

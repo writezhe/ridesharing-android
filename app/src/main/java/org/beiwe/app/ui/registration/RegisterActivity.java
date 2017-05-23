@@ -1,16 +1,5 @@
 package org.beiwe.app.ui.registration;
 
-import org.beiwe.app.DeviceInfo;
-import org.beiwe.app.PermissionHandler;
-import org.beiwe.app.R;
-import org.beiwe.app.RunningBackgroundServiceActivity;
-import org.beiwe.app.networking.HTTPUIAsync;
-import org.beiwe.app.networking.PostRequest;
-import org.beiwe.app.storage.EncryptionEngine;
-import org.beiwe.app.storage.PersistentData;
-import org.beiwe.app.survey.TextFieldKeyboard;
-import org.beiwe.app.ui.utils.AlertsManager;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -24,6 +13,17 @@ import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.EditText;
+
+import org.beiwe.app.DeviceInfo;
+import org.beiwe.app.PermissionHandler;
+import org.beiwe.app.R;
+import org.beiwe.app.RunningBackgroundServiceActivity;
+import org.beiwe.app.networking.HTTPUIAsync;
+import org.beiwe.app.networking.PostRequest;
+import org.beiwe.app.storage.EncryptionEngine;
+import org.beiwe.app.storage.PersistentData;
+import org.beiwe.app.survey.TextFieldKeyboard;
+import org.beiwe.app.ui.utils.AlertsManager;
 
 import static org.beiwe.app.networking.PostRequest.addWebsitePrefix;
 
@@ -108,6 +108,7 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 						PostRequest.makeParameter("manufacturer", DeviceInfo.getManufacturer() ) +
 						PostRequest.makeParameter("model", DeviceInfo.getModel() ) +
 						PostRequest.makeParameter("product", DeviceInfo.getProduct() ) +
+						PostRequest.makeParameter("fcm_instance_id", PersistentData.getFCMInstanceID() ) +
 						PostRequest.makeParameter("beiwe_version", DeviceInfo.getBeiweVersion() );
 					
 			responseCode = PostRequest.httpRegister(parameters, url);
