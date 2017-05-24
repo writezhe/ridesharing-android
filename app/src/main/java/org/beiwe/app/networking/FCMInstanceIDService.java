@@ -12,7 +12,7 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService {
     public void onTokenRefresh() {
         // Get updated InstanceID token.
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        Log.d("FirebaseInstanceIDServ", "Refreshed token: " + refreshedToken);
+        Log.d("FCMmessaging", "Refreshed token: " + refreshedToken);
         PersistentData.setFCMInstanceID(refreshedToken);
     }
 }

@@ -205,7 +205,7 @@ public class BackgroundService extends Service {
 		for (String surveyId : PersistentData.getSurveyIds() ){
 			if ( PersistentData.getSurveyNotificationState(surveyId) || PersistentData.getMostRecentSurveyAlarmTime(surveyId) < now ) {
 				//if survey notification should be active or the most recent alarm time is in the past, trigger the notification.
-				SurveyNotifications.displaySurveyNotification(appContext, surveyId); } }
+				SurveyNotifications.displayNotificationForSurveyStoredInPersistentData(appContext, surveyId); } }
 		
 		//checks that surveys are actually scheduled, if a survey is not scheduled, schedule it!
 		for (String surveyId : PersistentData.getSurveyIds() ) {
@@ -325,7 +325,7 @@ public class BackgroundService extends Service {
 			//checks if the action is the id of a survey (expensive), if so pop up the notification for that survey, schedule the next alarm
 			if ( PersistentData.getSurveyIds().contains( broadcastAction ) ) {
 //				Log.i("BACKGROUND SERVICE", "new notification: " + broadcastAction);
-				SurveyNotifications.displaySurveyNotification(appContext, broadcastAction);
+				SurveyNotifications.displayNotificationForSurveyStoredInPersistentData(appContext, broadcastAction);
 				SurveyScheduler.scheduleSurvey(broadcastAction);
 				return; }
 			

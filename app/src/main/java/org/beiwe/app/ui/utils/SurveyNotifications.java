@@ -1,5 +1,13 @@
 package org.beiwe.app.ui.utils;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.support.v4.app.NotificationCompat;
+
 import org.beiwe.app.R;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.survey.AudioRecorderActivity;
@@ -8,29 +16,27 @@ import org.beiwe.app.survey.SurveyActivity;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.support.v4.app.NotificationCompat;
-import android.util.Log;
-
 /**The purpose of this class is to deal with all that has to do with Survey Notifications.
  * This is a STATIC method, and is called from the background service.
  * @author Eli Jones */
 //TODO: Low priority: Eli. Redoc.
 public class SurveyNotifications {
-	/**Creates a survey notification that transfers the user to the survey activity. 
+
+	public static void displayNotificationForSurveyStoredInPersistentData(Context appContext, String surveyId) {
+		String surveyTypeString = PersistentData.getSurveyType(surveyId);
+		displaySurveyNotification(appContext, surveyId, surveyTypeString);
+	}
+
+
+	/**Creates a survey notification that transfers the user to the survey activity.
 	 * Note: the notification can only be dismissed through submitting the survey
 	 * @param appContext */
-	public static void displaySurveyNotification(Context appContext, String surveyId) {
+	public static void displaySurveyNotification(Context appContext, String surveyId, String surveyTypeString) {
 		//activityIntent contains information on the action triggered by tapping the notification. 
 		Intent activityIntent;
 		NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(appContext);
 		notificationBuilder.setContentTitle( appContext.getString(R.string.app_name) );
-		if ( PersistentData.getSurveyType(surveyId).equals("tracking_survey" ) ) {
+		if (surveyTypeString.equals("tracking_survey" )) {
 			activityIntent = new Intent(appContext, SurveyActivity.class);
 			activityIntent.setAction( appContext.getString(R.string.start_tracking_survey) );
 			notificationBuilder.setTicker( appContext.getResources().getString(R.string.new_android_survey_notification_ticker) );
@@ -38,7 +44,7 @@ public class SurveyNotifications {
 			notificationBuilder.setSmallIcon(R.drawable.survey_icon);
 			notificationBuilder.setLargeIcon( BitmapFactory.decodeResource(appContext.getResources(), R.drawable.survey_icon ) );
 		}
-		else if ( PersistentData.getSurveyType(surveyId).equals("audio_survey" ) ) {
+		else if (surveyTypeString.equals("audio_survey" )) {
 			activityIntent = new Intent( appContext, getAudioSurveyClass(surveyId) );
 			activityIntent.setAction( appContext.getString(R.string.start_audio_survey) );
 			notificationBuilder.setTicker( appContext.getResources().getString(R.string.new_audio_survey_notification_ticker) );
@@ -46,7 +52,7 @@ public class SurveyNotifications {
 			notificationBuilder.setSmallIcon( R.drawable.voice_recording_icon );
 			notificationBuilder.setLargeIcon( BitmapFactory.decodeResource(appContext.getResources(), R.drawable.voice_recording_icon) );
 		}
-		else { throw new NullPointerException("survey type did not parse correctly: " + PersistentData.getSurveyType(surveyId)); }
+		else { throw new NullPointerException("survey type did not parse correctly: " + surveyTypeString); }
 
         activityIntent.putExtra( "surveyId", surveyId );
 		activityIntent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TOP ); //modifies behavior when the user is already in the app.
@@ -81,8 +87,7 @@ public class SurveyNotifications {
 	
 	
 	/**Use to dismiss the notification corresponding the surveyIdInt.
-	 * @param appContext
-	 * @param notifCode */
+	 * @param appContext */
 	public static void dismissNotification(Context appContext, String surveyId) {
  		NotificationManager notificationManager = (NotificationManager) appContext.getSystemService(Context.NOTIFICATION_SERVICE);
 		notificationManager.cancel(surveyId.hashCode());

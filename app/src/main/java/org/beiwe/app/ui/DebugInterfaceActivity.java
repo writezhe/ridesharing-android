@@ -178,7 +178,7 @@ public class DebugInterfaceActivity extends SessionActivity {
 	public void loadMainMenu(View view) { startActivity(new Intent(appContext, MainMenuActivity.class) ); }
 	public void popSurveyNotifications(View view) {
 		for (String surveyId : PersistentData.getSurveyIds()){
-			SurveyNotifications.displaySurveyNotification(appContext, surveyId);
+			SurveyNotifications.displayNotificationForSurveyStoredInPersistentData(appContext, surveyId);
 		}
 	}
 	
