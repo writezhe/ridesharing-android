@@ -7,7 +7,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.icu.util.TimeZone;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -110,7 +109,7 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 						PostRequest.makeParameter("model", DeviceInfo.getModel() ) +
 						PostRequest.makeParameter("product", DeviceInfo.getProduct() ) +
 						PostRequest.makeParameter("fcm_instance_id", PersistentData.getFCMInstanceID() ) +
-						PostRequest.makeParameter("timezone", getTimezone() ) +
+						PostRequest.makeParameter("timezone", java.util.TimeZone.getDefault().getID() ) +
 						PostRequest.makeParameter("beiwe_version", DeviceInfo.getBeiweVersion() );
 					
 			responseCode = PostRequest.httpRegister(parameters, url);
@@ -140,15 +139,6 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 		return EncryptionEngine.hashPhoneNumber(phoneNumber);
 	}
 
-	/** Return the time zone the phone is currently in **/
-	public String getTimezone() {
-		try {
-			return TimeZone.getDefault().getID();  // Only works in Android API 24+
-		} catch (NoClassDefFoundError e) {
-			return java.util.TimeZone.getDefault().getID();
-		}
-	}
-	
 	/*####################################################################
 	###################### Permission Prompting ##########################
 	####################################################################*/
