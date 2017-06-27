@@ -1,16 +1,15 @@
 package org.beiwe.app.listeners;
 
-import org.beiwe.app.storage.EncryptionEngine;
-import org.beiwe.app.storage.TextFileManager;
-
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Telephony;
 import android.telephony.SmsMessage;
 import android.util.Log;
+
+import org.beiwe.app.storage.EncryptionEngine;
+import org.beiwe.app.storage.TextFileManager;
 
 /* Improvement idea: we could also read the messages in the inbox, and possibly
  * get more data from that, such as whether a message was opened. */
@@ -73,11 +72,11 @@ public class SmsReceivedLogger extends BroadcastReceiver {
 		if (bundle != null) {
 			try {
 				Object[] pdus = (Object[]) bundle.get("pdus");
+				String format = bundle.getString("format");
 				messages = new SmsMessage[pdus.length];
 				for (int i = 0; i < pdus.length; i++) {
-					if ( android.os.Build.VERSION.SDK_INT < 19 ) { messages[i] = SmsMessage.createFromPdu( (byte[]) pdus[i] ); }
-					else { messages[i] = SmsMessage.createFromPdu( (byte[]) pdus[i], Telephony.Sms.Intents.SMS_RECEIVED_ACTION); }
-					
+					if ( android.os.Build.VERSION.SDK_INT < 23 ) { messages[i] = SmsMessage.createFromPdu( (byte[]) pdus[i] ); }
+					else { messages[i] = SmsMessage.createFromPdu( (byte[]) pdus[i], format); }
 					messageFrom = messages[i].getOriginatingAddress();
 					String messageBody = messages[i].getMessageBody();
 					long timestamp = messages[i].getTimestampMillis();
