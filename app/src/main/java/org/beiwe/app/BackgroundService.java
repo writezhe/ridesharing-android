@@ -122,9 +122,8 @@ public class BackgroundService extends Service {
 	
 	public void startMmsSentLogger(){
 		MMSSentLogger mmsMonitor = new MMSSentLogger(new Handler(), appContext);
-		//this is retarded, it needs to be mms-sms here, and just "mms" in the mms code
-		this.getContentResolver().registerContentObserver(Uri.parse("content://mms-sms/conversation?simple=true"), true, mmsMonitor); }
-	
+		this.getContentResolver().registerContentObserver(Uri.parse("content://mms/"), true, mmsMonitor); }
+
 	/** Initializes the call logger. */
 	private void startCallLogger() {
 		CallLogger callLogger = new CallLogger(new Handler(), appContext);
