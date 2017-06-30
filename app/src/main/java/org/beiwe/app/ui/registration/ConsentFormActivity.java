@@ -1,19 +1,18 @@
 package org.beiwe.app.ui.registration;
 
-import org.beiwe.app.R;
-import org.beiwe.app.RunningBackgroundServiceActivity;
-import org.beiwe.app.networking.SurveyDownloader;
-import org.beiwe.app.storage.PersistentData;
-import org.beiwe.app.storage.TextFileManager;
-import org.beiwe.app.ui.LoadingActivity;
-
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+
+import org.beiwe.app.R;
+import org.beiwe.app.RunningBackgroundServiceActivity;
+import org.beiwe.app.networking.SurveyDownloader;
+import org.beiwe.app.storage.PersistentData;
+import org.beiwe.app.storage.TextFileManager;
+import org.beiwe.app.ui.LoadingActivity;
 
 public class ConsentFormActivity extends RunningBackgroundServiceActivity {
 	
@@ -60,7 +59,7 @@ public class ConsentFormActivity extends RunningBackgroundServiceActivity {
 		backgroundService.doSetup();
 		
 		// Start the Main Screen Activity, destroy this activity
-		startActivity(new Intent(getApplicationContext(), LoadingActivity.loadThisActivity) );
+		startActivity(new Intent(getApplicationContext(), LoadingActivity.class) );
 		finish();
 	}
 }

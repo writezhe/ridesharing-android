@@ -50,12 +50,6 @@ public class CrashHandler implements java.lang.Thread.UncaughtExceptionHandler{
 	 * @param context An android Context */
 	public static void writeCrashlog(Throwable exception, Context context) {
 		//TODO: Eli. low priority. Add optional message parameter
-		String appVariant = "unknown";
-//		public static Class loadThisActivity = DebugInterfaceActivity.class;
-//		public static Class loadThisActivity = MainMenuActivity.class;
-		if( LoadingActivity.loadThisActivity == MainMenuActivity.class ) { appVariant = "clinical variant"; }
-		if( LoadingActivity.loadThisActivity == DebugInterfaceActivity.class ) { appVariant = "debug variant"; }
-		
 		String exceptionInfo =  System.currentTimeMillis() + "\n"
 				                + "BeiweVersion:" + DeviceInfo.getBeiweVersion()
 								+ ", AndroidVersion:" + DeviceInfo.getAndroidVersion()
@@ -63,8 +57,7 @@ public class CrashHandler implements java.lang.Thread.UncaughtExceptionHandler{
 								+ ", Brand:" + DeviceInfo.getBrand()
 								+ ", HardwareId:" + DeviceInfo.getHardwareId()
 								+ ", Manufacturer:" + DeviceInfo.getManufacturer()
-								+ ", Model:" + DeviceInfo.getModel()
-								+ ", App Variant:" + appVariant + "\n";
+								+ ", Model:" + DeviceInfo.getModel() + "\n";
 
 		exceptionInfo += "Error message: " + exception.getMessage() + "\n";
 		exceptionInfo += "Error type: " + exception.getClass() + "\n";
@@ -96,7 +89,7 @@ public class CrashHandler implements java.lang.Thread.UncaughtExceptionHandler{
 		else { exceptionInfo += "java threw an error with a null error cause or stack trace, this means we are manually creating a crash report."; }
 
 		//Print an error log if debug mode is active.
-		if (LoadingActivity.loadThisActivity == DebugInterfaceActivity.class) {
+		if (BuildConfig.APP_IS_BETA) {
 			Log.e("BEIWE ENCOUNTERED THIS ERROR", exceptionInfo); //Log error...
 		}
 

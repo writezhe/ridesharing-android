@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.beiwe.app.BackgroundService;
+import org.beiwe.app.BuildConfig;
 import org.beiwe.app.CrashHandler;
 import org.beiwe.app.PermissionHandler;
 import org.beiwe.app.R;
@@ -29,8 +30,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import static org.beiwe.app.DeviceInfo.APP_IS_DEV;
-
 
 public class DebugInterfaceActivity extends SessionActivity {
 	//extends a session activity.
@@ -42,7 +41,7 @@ public class DebugInterfaceActivity extends SessionActivity {
 		setContentView(R.layout.activity_debug_interface);
 		appContext = this.getApplicationContext();
 
-		if (APP_IS_DEV) {
+		if (BuildConfig.APP_IS_DEV) {
 			((TextView) findViewById(R.id.debugtexttwenty)).setVisibility(View.VISIBLE);
 			((Button) findViewById(R.id.button)).setVisibility(View.VISIBLE);
 			((Button) findViewById(R.id.buttonPrintInternalLog)).setVisibility(View.VISIBLE);

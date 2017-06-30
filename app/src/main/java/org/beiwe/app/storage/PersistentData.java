@@ -1,6 +1,7 @@
 package org.beiwe.app.storage;
 import java.util.List;
 
+import org.beiwe.app.BuildConfig;
 import org.beiwe.app.JSONUtils;
 import org.beiwe.app.R;
 import org.beiwe.app.ui.DebugInterfaceActivity;
@@ -123,8 +124,11 @@ public class PersistentData {
 	public static boolean passwordMeetsRequirements(String password, Activity currentActivity) {
 		// If the password has too few characters, pop up an alert saying so
 		int minPasswordLength;
-		if (LoadingActivity.loadThisActivity == DebugInterfaceActivity.class) { minPasswordLength = 1; }
-		else { minPasswordLength = 6; }
+		if (BuildConfig.APP_IS_BETA) {
+			minPasswordLength = 1;
+		} else {
+			minPasswordLength = 6;
+		}
 		if (password.length() < minPasswordLength) {
 			String alertMessage = String.format(appContext.getString(R.string.password_too_short), minPasswordLength);
 			AlertsManager.showAlert(alertMessage, currentActivity);

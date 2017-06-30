@@ -16,8 +16,6 @@ import org.beiwe.app.networking.SurveyDownloader;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.storage.TextFileManager;
 import org.beiwe.app.survey.SurveyScheduler;
-import org.beiwe.app.ui.DebugInterfaceActivity;
-import org.beiwe.app.ui.LoadingActivity;
 import org.beiwe.app.ui.user.LoginActivity;
 import org.beiwe.app.ui.utils.SurveyNotifications;
 
@@ -85,7 +83,7 @@ public class BackgroundService extends Service {
 	}
 	
 	/** Stops the BackgroundService instance. */
-	public void stop() { if ( LoadingActivity.loadThisActivity == DebugInterfaceActivity.class) { this.stopSelf(); } }
+	public void stop() { if (BuildConfig.APP_IS_BETA) { this.stopSelf(); } }
 	
 	/*#############################################################################
 	#########################         Starters              #######################
@@ -329,7 +327,8 @@ public class BackgroundService extends Service {
 				return; }
 			
 			//this is a special action that will only run if the app device is in debug mode.
-			if (broadcastAction == "crashBeiwe" && LoadingActivity.loadThisActivity == DebugInterfaceActivity.class) { throw new NullPointerException("beeeeeoooop."); }
+			if (broadcastAction == "crashBeiwe" && BuildConfig.APP_IS_BETA) {
+				throw new NullPointerException("beeeeeoooop."); }
 		}
 	};
 		
@@ -387,5 +386,6 @@ public class BackgroundService extends Service {
 	    alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 500, restartServicePendingIntent);
 	}
 	
-	public void crashBackgroundService() { if (LoadingActivity.loadThisActivity == DebugInterfaceActivity.class) { throw new NullPointerException("stop poking me!"); } }
+	public void crashBackgroundService() { if (BuildConfig.APP_IS_BETA) {
+		throw new NullPointerException("stop poking me!"); } }
 }

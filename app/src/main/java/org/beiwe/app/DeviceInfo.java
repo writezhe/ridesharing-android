@@ -43,9 +43,6 @@ public class DeviceInfo {
 	 * 16: app version 2.1.3, rewrite of file uploading to fix App Not Responding (ANR) errors; also BackgroundService.onStartCommand() now uses START_REDELIVER_INTENT
 	 * 17: app version 2.1.4, fixed a bug that still showed the next survey, even if that survey time had been deleted in the backend and the update had propagated to the phone */
 
-	public static boolean APP_IS_BETA = true;
-	public static boolean APP_IS_DEV = true;
-
 	private static String androidID;
 	private static String bluetoothMAC;
 	//TODO: Eli. phoneNumber is not used anywhere...
@@ -76,7 +73,7 @@ public class DeviceInfo {
 	public static String getBeiweVersion() {
 		try {
 			PackageInfo info = context.getPackageManager().getPackageInfo(context.getPackageName(),0);
-			return String.valueOf(info.versionCode);
+			return String.valueOf(info.versionCode) + "-" + BuildConfig.BUILD_TYPE;
 		} catch (PackageManager.NameNotFoundException e) {
 			e.printStackTrace();
 			return "unknown";

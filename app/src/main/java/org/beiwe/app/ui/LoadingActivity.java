@@ -1,23 +1,25 @@
 package org.beiwe.app.ui;
 
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
-
-import org.beiwe.app.BackgroundService;
-import org.beiwe.app.BackgroundService.BackgroundServiceBinder;
-import org.beiwe.app.R;
-import org.beiwe.app.RunningBackgroundServiceActivity;
-import org.beiwe.app.storage.EncryptionEngine;
-import org.beiwe.app.storage.PersistentData;
-import org.beiwe.app.ui.registration.RegisterActivity;
-import org.beiwe.app.ui.utils.AlertsManager;
-
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+
+import org.beiwe.app.BackgroundService;
+import org.beiwe.app.BackgroundService.BackgroundServiceBinder;
+import org.beiwe.app.BuildConfig;
+import org.beiwe.app.R;
+import org.beiwe.app.RunningBackgroundServiceActivity;
+import org.beiwe.app.storage.EncryptionEngine;
+import org.beiwe.app.storage.PersistentData;
+import org.beiwe.app.ui.registration.RegisterActivity;
+import org.beiwe.app.ui.user.MainMenuActivity;
+import org.beiwe.app.ui.utils.AlertsManager;
+
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 
 /**The LoadingActivity is a temporary RunningBackgroundServiceActivity (Not a SessionActivity,
  * check out those classes if you are confused) that pops up when the user opens the app.
@@ -29,10 +31,6 @@ import android.os.IBinder;
 
 public class LoadingActivity extends RunningBackgroundServiceActivity {
 	
-	//swap the commented line below to enable/disable the debuginterface
-	@SuppressWarnings("rawtypes")
-	public static Class loadThisActivity = DebugInterfaceActivity.class;
-//	public static Class loadThisActivity = MainMenuActivity.class;
 	//TODO: Low priority.  Eli.  Why does this reimplement functionality in RunningBackgroundService? investigate.
 	protected BackgroundService backgroundService;
 	protected boolean isBound = false;
@@ -85,7 +83,13 @@ public class LoadingActivity extends RunningBackgroundServiceActivity {
 		//if the device is not registered, push the user to the register activity
 		if ( !PersistentData.isRegistered() ){ startActivity(new Intent(this, RegisterActivity.class) ); }
 		//if device is registered push user to the main menu.
-		else { startActivity(new Intent(this, loadThisActivity) ); }
+		else {
+			if (BuildConfig.APP_IS_BETA) {
+				startActivity(new Intent(this, DebugInterfaceActivity.class));
+			} else {
+				startActivity(new Intent(this, MainMenuActivity.class));
+			}
+		}
 		unbindService(backgroundServiceConnection);
 		finish(); //destroy the loading screen
 	}

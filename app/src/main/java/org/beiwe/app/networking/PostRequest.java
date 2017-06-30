@@ -1,5 +1,18 @@
 package org.beiwe.app.networking;
 
+import android.content.Context;
+import android.util.Log;
+
+import org.beiwe.app.BuildConfig;
+import org.beiwe.app.CrashHandler;
+import org.beiwe.app.DeviceInfo;
+import org.beiwe.app.R;
+import org.beiwe.app.storage.PersistentData;
+import org.beiwe.app.storage.SetDeviceSettings;
+import org.beiwe.app.storage.TextFileManager;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -13,20 +26,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
-
-import org.beiwe.app.CrashHandler;
-import org.beiwe.app.DeviceInfo;
-import org.beiwe.app.R;
-import org.beiwe.app.storage.PersistentData;
-import org.beiwe.app.storage.SetDeviceSettings;
-import org.beiwe.app.storage.TextFileManager;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.content.Context;
-import android.util.Log;
-
-import static org.beiwe.app.DeviceInfo.APP_IS_DEV;
 
 /** PostRequest is our class for handling all HTTP operations we need; they are all in the form of HTTP post requests. 
  * All HTTP connections are HTTPS, and automatically include a password and identifying information. 
@@ -245,7 +244,7 @@ public class PostRequest {
 		// Get HTTP Response. Pretty sure this blocks, nothing can really be done about that.
 		int response = connection.getResponseCode();
 		connection.disconnect();
-		if (APP_IS_DEV) { Log.d("uploading", "finished uploading " + file.getName()); }
+		if (BuildConfig.APP_IS_DEV) { Log.d("uploading", "finished uploading " + file.getName()); }
 		return response;
 	}
 
@@ -319,7 +318,7 @@ public class PostRequest {
 	}
 
 	public static String addWebsitePrefix(String URL){
-		if (DeviceInfo.APP_IS_BETA) return appContext.getResources().getString(R.string.staging_website) + URL;
+		if (BuildConfig.APP_IS_BETA) return appContext.getResources().getString(R.string.staging_website) + URL;
 		else return appContext.getResources().getString(R.string.production_website) + URL;
 	}
 
