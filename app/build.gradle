@@ -1,23 +1,53 @@
 apply plugin: 'com.android.application'
 
+def keystorePropertiesFile = rootProject.file("private/keystore.properties");
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 android {
+    signingConfigs {
+        config {
+            storeFile file(keystoreProperties['storeFile'])
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storePassword keystoreProperties['storePassword']
+        }
+    }
     compileSdkVersion 23
     buildToolsVersion "25.0.0"
-
     defaultConfig {
         applicationId "org.beiwe.app"
         minSdkVersion 16
         targetSdkVersion 23
+        versionCode 17       //TODO: update this Beiwe version code for new releases
+        versionName '2.1.4'  //TODO: update this Beiwe version number for new releases
+        setProperty("archivesBaseName", "Beiwe-$versionName")
     }
-
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            signingConfig signingConfigs.config
+            resValue "string", "app_name", "Beiwe"
+        }
+        beta {
+            versionNameSuffix("-beta")
+            signingConfig signingConfigs.config
+            resValue "string", "app_name", "Beiwe-beta"
+        }
+        development {
+            versionNameSuffix("-development")
+            signingConfig signingConfigs.config
+            resValue "string", "app_name", "Beiwe-development"
         }
     }
-
     useLibrary "org.apache.http.legacy"
+}
+// Don't include the default "debug" build variant as an option
+android.variantFilter { variant ->
+    if(variant.buildType.name.equals('debug')) {
+        variant.setIgnore(true);
+    }
 }
 
 repositories {

@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.beiwe.app"
-    android:versionCode="17"
-    android:versionName="2.1.4" >
+    package="org.beiwe.app">
 
     <uses-sdk
         android:minSdkVersion="16"

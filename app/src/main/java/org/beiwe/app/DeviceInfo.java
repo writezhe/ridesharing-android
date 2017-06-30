@@ -3,6 +3,8 @@ package org.beiwe.app;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 
@@ -41,8 +43,6 @@ public class DeviceInfo {
 	 * 16: app version 2.1.3, rewrite of file uploading to fix App Not Responding (ANR) errors; also BackgroundService.onStartCommand() now uses START_REDELIVER_INTENT
 	 * 17: app version 2.1.4, fixed a bug that still showed the next survey, even if that survey time had been deleted in the backend and the update had propagated to the phone */
 
-	private static String beiweVersion = "17";
-	//DO NOT FORGET TO UPDATE THE MANIFEST VERSION NUMBERS AS WELL.
 	public static boolean APP_IS_BETA = true;
 	public static boolean APP_IS_DEV = true;
 
@@ -50,10 +50,12 @@ public class DeviceInfo {
 	private static String bluetoothMAC;
 	//TODO: Eli. phoneNumber is not used anywhere...
 	private static String phoneNumber;
+	private static Context context;
 
 	/** grab the Android ID and the Bluetooth's MAC address */
 	@SuppressLint("HardwareIds")
 	public static void initialize(Context appContext) {
+		context = appContext;
 		androidID = Settings.Secure.getString( appContext.getContentResolver(), Settings.Secure.ANDROID_ID );
 		
 		/* If the BluetoothAdapter is null, or if the BluetoothAdapter.getAddress() returns null 
@@ -71,7 +73,15 @@ public class DeviceInfo {
 		if (phoneNumber == null) phoneNumber = "";
 	}
 	
-	public static String getBeiweVersion() { return beiweVersion; }
+	public static String getBeiweVersion() {
+		try {
+			PackageInfo info = context.getPackageManager().getPackageInfo(context.getPackageName(),0);
+			return String.valueOf(info.versionCode);
+		} catch (PackageManager.NameNotFoundException e) {
+			e.printStackTrace();
+			return "unknown";
+		}
+	}
 	public static String getAndroidVersion() { return android.os.Build.VERSION.RELEASE; }
 	public static String getProduct() { return android.os.Build.PRODUCT; }
 	public static String getBrand() { return android.os.Build.BRAND; }
