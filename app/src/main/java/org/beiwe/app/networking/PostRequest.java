@@ -244,7 +244,8 @@ public class PostRequest {
 		// Get HTTP Response. Pretty sure this blocks, nothing can really be done about that.
 		int response = connection.getResponseCode();
 		connection.disconnect();
-		if (BuildConfig.APP_IS_DEV) { Log.d("uploading", "finished uploading " + file.getName()); }
+		if (BuildConfig.APP_IS_DEV) { Log.d("uploading", "finished attempt to upload " +
+				file.getName() + "; received code " + response); }
 		return response;
 	}
 
