@@ -1,22 +1,28 @@
 package org.beiwe.app.ui.registration;
 
-import org.beiwe.app.R;
-import org.beiwe.app.RunningBackgroundServiceActivity;
-import org.beiwe.app.session.ResetPassword;
-import org.beiwe.app.storage.PersistentData;
-
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.beiwe.app.R;
+import org.beiwe.app.RunningBackgroundServiceActivity;
+import org.beiwe.app.session.ResetPassword;
+import org.beiwe.app.storage.PersistentData;
+import org.beiwe.app.survey.TextFieldKeyboard;
+
 /**
  * @author Dor Samet, Eli Jones
  */
 public class ForgotPasswordActivity extends RunningBackgroundServiceActivity {
-	
+	private EditText tempPasswordInput;
+	private EditText newPasswordInput;
+	private EditText confirmNewPasswordInput;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -24,25 +30,34 @@ public class ForgotPasswordActivity extends RunningBackgroundServiceActivity {
 
 		/* Add the user's Patient ID to the heading in the activity, so the user can tell it to the
 		 * administrator when the user calls the research assistant asking for a temporary password. */
-		TextView title = (TextView) findViewById(R.id.forgotPasswordTitle);
-		String titleWithIdResource = getApplicationContext().getString(R.string.forgot_password_title_with_id);
-		String instructionsWithId = String.format(titleWithIdResource, PersistentData.getPatientID());
-		title.setText(instructionsWithId);
+		TextView instructionsText = (TextView) findViewById(R.id.forgotPasswordInstructionsText);
+		String instructionsTextWithPlaceholder = getApplicationContext().getString(R.string.forgot_password_instructions_text);
+		String instructionsTextFilledOut = String.format(instructionsTextWithPlaceholder, PersistentData.getPatientID());
+		instructionsText.setText(instructionsTextFilledOut);
+
+		tempPasswordInput = (EditText) findViewById(R.id.forgotPasswordTempPasswordInput);
+		newPasswordInput = (EditText) findViewById(R.id.forgotPasswordNewPasswordInput);
+		confirmNewPasswordInput = (EditText) findViewById(R.id.forgotPasswordConfirmNewPasswordInput);
+		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(getApplicationContext());
+		textFieldKeyboard.makeKeyboardBehave(tempPasswordInput);
+		textFieldKeyboard.makeKeyboardBehave(newPasswordInput);
+		textFieldKeyboard.makeKeyboardBehave(confirmNewPasswordInput);
 	}
-	
-	
+
+	/** Kill this activity and go back to the homepage */
+	public void cancelButtonPressed(View view) {
+		this.finish();
+	}
+
 	/** calls the reset password HTTPAsync query. */
 	public void registerNewPassword(View view) {
 		// Get the user's temporary password (they get this from a human admin by calling the research assistant)
-		EditText tempPasswordInputField = (EditText) findViewById(R.id.forgotPasswordTempPasswordInput);
-		String tempPassword = tempPasswordInputField.getText().toString();
+		String tempPassword = tempPasswordInput.getText().toString();
 
 		// Get the new, permanent password the user wants
-		EditText newPasswordInput = (EditText) findViewById(R.id.forgotPasswordNewPasswordInput);
 		String newPassword = newPasswordInput.getText().toString();
 
 		// Get the confirmation of the new, permanent password (should be the same as the previous field)
-		EditText confirmNewPasswordInput = (EditText) findViewById(R.id.forgotPasswordConfirmNewPasswordInput);
 		String confirmNewPassword = confirmNewPasswordInput.getText().toString();
 
 		/* Pass all three to the ResetPassword class, which will check validity, and, if valid,
@@ -50,11 +65,11 @@ public class ForgotPasswordActivity extends RunningBackgroundServiceActivity {
 		ResetPassword resetPassword = new ResetPassword(this);
 		resetPassword.checkInputsAndTryToResetPassword(tempPassword, newPassword, confirmNewPassword);
 	}
-	
-	public void callResetPassword(View view){
+
+	public void callResetPassword(View view) {
 		Intent callIntent = new Intent(Intent.ACTION_CALL);
 		String phoneNum = PersistentData.getPasswordResetNumber();
-	    callIntent.setData(Uri.parse("tel:" + phoneNum));
-	    startActivity(callIntent);
+		callIntent.setData(Uri.parse("tel:" + phoneNum));
+		startActivity(callIntent);
 	}
 }

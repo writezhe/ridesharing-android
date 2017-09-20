@@ -1,15 +1,15 @@
 package org.beiwe.app.session;
 
+import android.app.Activity;
+import android.content.Context;
+import android.widget.Toast;
+
 import org.beiwe.app.R;
 import org.beiwe.app.networking.HTTPUIAsync;
 import org.beiwe.app.networking.PostRequest;
 import org.beiwe.app.storage.EncryptionEngine;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.ui.utils.AlertsManager;
-
-import android.app.Activity;
-import android.content.Context;
-import android.widget.Toast;
 
 import static org.beiwe.app.networking.PostRequest.addWebsitePrefix;
 
@@ -40,13 +40,19 @@ public class ResetPassword {
 	public void checkInputsAndTryToResetPassword(String currentPassword, String newPassword, String confirmNewPassword) {
 		this.hashedCurrentPassword = EncryptionEngine.safeHash(currentPassword);
 		this.newPassword = newPassword;
-		// If the new passwords don't match, pop up an alert, and do nothing else
-		if (!newPassword.equals(confirmNewPassword)) {
-			AlertsManager.showAlert(appContext.getString(R.string.password_mismatch), currentActivity);
+		// If the new password has too few characters, pop up an alert, and do nothing else
+		if (!PersistentData.passwordMeetsRequirements(newPassword)) {
+			String alertMessage = String.format(appContext.getString(R.string.password_too_short), PersistentData.minPasswordLength());
+			AlertsManager.showAlert(alertMessage, appContext.getString(R.string.reset_password_error_alert_title), currentActivity);
 			return;
 		}
-		// If the new password has too few characters, pop up an alert, and do nothing else
-		if (!PersistentData.passwordMeetsRequirements(newPassword, currentActivity)) { return; }
+		// If the new passwords don't match, pop up an alert, and do nothing else
+		if (!newPassword.equals(confirmNewPassword)) {
+			AlertsManager.showAlert(appContext.getString(R.string.password_mismatch),
+									appContext.getString(R.string.reset_password_error_alert_title),
+									currentActivity);
+			return;
+		}
 		// If new password and confirm new password are valid, try resetting them on the server
 		doResetPasswordRequest();
 	}
@@ -76,6 +82,8 @@ public class ResetPassword {
 					Toast.makeText(appContext, message, Toast.LENGTH_LONG).show();
 					// Kill the activity
 					currentActivity.finish();
+				} else {
+					AlertsManager.showAlert(responseCode, appContext.getString(R.string.reset_password_error_alert_title), currentActivity);
 				}
 			}
 		};

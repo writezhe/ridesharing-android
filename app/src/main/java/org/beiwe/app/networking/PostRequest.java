@@ -318,6 +318,10 @@ public class PostRequest {
 				makeParameter("device_id", deviceId);
 	}
 
+	public static void setWebsitePrefix(String URL) {
+		Log.i("setting the URL", URL);
+	}
+
 	public static String addWebsitePrefix(String URL){
 		if (BuildConfig.APP_IS_BETA) return appContext.getResources().getString(R.string.staging_website) + URL;
 		else return appContext.getResources().getString(R.string.production_website) + URL;

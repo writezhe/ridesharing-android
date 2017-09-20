@@ -12,8 +12,7 @@ import android.util.Log;
  * HTTPAsync objects start executing on instantiation. While working it pops up an android UI spinner.
  * If the spinner UI element ("progressBar"?) is not declared in the activity's manifest it will instead run "silently" 
  * 
- * Inside your overridden doInBackground function you must assign the HTTP return value to either response (as an int)
- * or responseString (as a String, this string must have a length of 3.).
+ * Inside your overridden doInBackground function you must assign the HTTP return value to responseCode (as an int).
  * 
  * @author Eli */
 public class HTTPAsync extends AsyncTask<Void, Void, Void> {
@@ -21,11 +20,9 @@ public class HTTPAsync extends AsyncTask<Void, Void, Void> {
 	protected String url;
 	protected String parameters = "";
 	protected int responseCode = -1;
-	protected String responseString = null; //if this variable is still null after an attempt to execute then the request failed.
-	
+
 	/**An HTTPAsyc instance will begin execution immediately upon instantiation.
-	 * @param url a string containing The URL with which you will connect. 
-	 * @param activity The current visible activity */
+	 * @param url a string containing The URL with which you will connect. */
 	public HTTPAsync(String url) { this.url = url; }
 	
 	/** Your code should override doInBackground function, do NOT call super.doInBackground().*/
@@ -33,7 +30,7 @@ public class HTTPAsync extends AsyncTask<Void, Void, Void> {
 	protected Void doInBackground(Void... arg0) {
 		Log.e("AsyncPostRequest", "You are not using this right, exiting program for your own good");
 		System.exit(1);
-		return null; //Hate.
+		return null;
 	}
 	
 	/** Your code should override the onPostExecute function, and handle
@@ -44,28 +41,10 @@ public class HTTPAsync extends AsyncTask<Void, Void, Void> {
 	
 	/**Does the logging operation executed in onPostExecute.*/
 	protected void alertSystem() {
-		if (responseCode == -1 && responseString == null) {
-			Log.w("HTTPAsync", "WARNING: the responseCode and responseString variables were never set, HTTPAsync is unable check validity."); }
-		else if ((responseCode == -1) && (responseString.length() == 3)) {
-			try { Log.e("HTTPAsync", responseCodeAlert( Integer.parseInt(responseString))); }
-			catch (NumberFormatException e) { Log.w("HTTPAsync", "Unable to determine http response code." ); }
+		if (responseCode == -1 ) {
+			Log.w("HTTPAsync", "WARNING: the responseCode was never set; HTTPAsync is unable check validity.");
+		} else if (responseCode != 200) {
+			Log.e("HTTPAsync", "Received HTTP response code " + responseCode);
 		}
-		else if (responseCode != 200) { Log.e("HTTPAsync", responseCodeAlert(responseCode)); }
-	}
-	
-	
-	//TODO: Low priority. Eli/Josh.  move these error messages to strings.xml
-	/**Checks a given response code sent from the server, and then returns a string corresponding to that code's meaning.
-	 * @param responseCode HTTP response code
-	 * @return String to be displayed on the Alert in case of a problem	 */
-	public static String responseCodeAlert(int responseCode) {
-		if (responseCode == 200) {return "OK";}
-		else if (responseCode == 400) {return "This device could not be registered under the provided patient ID, please contact research staff." ;}
-		else if (responseCode == 403) { return "The patient ID or password did not match the patient ID or password on the server.";}
-		else if (responseCode == 405) { return "Phone is not registered to this user. Please contact research staff.";}
-		else if (responseCode == 502) { return "Please connect to the internet and try again";}
-		else if (responseCode == 1) { return "Someone misconfigured the server, please contact research staff.";}
-		else { Log.e("HTTPAsync", "unknown response code: " + responseCode); 
-			return "An unknown error occured."; }
 	}
 }

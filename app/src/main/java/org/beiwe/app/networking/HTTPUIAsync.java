@@ -1,12 +1,11 @@
 package org.beiwe.app.networking;
 
-import org.beiwe.app.R;
-import org.beiwe.app.ui.utils.AlertsManager;
-
 import android.app.Activity;
-import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
+
+import org.beiwe.app.R;
 
 //TODO: Low priority. Eli. Redoc.
 
@@ -17,17 +16,16 @@ import android.widget.ProgressBar;
  * HTTPAsync objects start executing on instantiation. While working it pops up an android UI spinner.
  * If the spinner UI element ("progressBar"?) is not declared in the activity's manifest it will instead run "silently" 
  * 
- * Inside your overridden doInBackground function you must assign the HTTP return value to either response (as an int)
- * or responseString (as a String, this string must have a length of 3.).
- * 
+ * Inside your overridden doInBackground function you must assign the HTTP return value to response (as an int).
+ *
  * @author Eli */
 public class HTTPUIAsync extends HTTPAsync {
 	//Private UI element
 	private View alertSpinner;
+	private Button submitButton;
 	// Common variables
 	protected Activity activity;
-	protected String responseString = null; //if this variable is still null after an attempt to execute then the request failed.
-	
+
 	/**An HTTPAsyc instance will begin execution immediately upon instantiation.
 	 * @param url a string containing The URL with which you will connect. 
 	 * @param activity The current visible activity */
@@ -42,16 +40,13 @@ public class HTTPUIAsync extends HTTPAsync {
 	 * as the first line in your custom logic. This is when the spinner will appear.*/
 	@Override
 	protected void onPreExecute() {
+		// If there's a progress spinner, make it appear
 		alertSpinner = (ProgressBar) activity.findViewById(R.id.progressBar);
 		if (alertSpinner != null) alertSpinner.setVisibility(View.VISIBLE);
-	}
-	
-	/** Your code should override doInBackground function, do NOT call super.doInBackground().*/
-	@Override
-	protected Void doInBackground(Void... arg0) {
-		Log.e("HTTPUIAsync", "You are not using this right, exiting program for your own good");
-		System.exit(1);
-		return null; //Hate.
+
+		// If there's a submit button, disable it so the user can't submit twice
+		submitButton = (Button) activity.findViewById(R.id.submitButton);
+		if (submitButton != null) submitButton.setEnabled(false);
 	}
 	
 	/** Your code should override the onPostExecute function, call super.onPostExecute(), and handle
@@ -60,21 +55,11 @@ public class HTTPUIAsync extends HTTPAsync {
 	@Override
 	protected void onPostExecute(Void arg) {
 		super.onPostExecute(arg);
+
+		// Hide the progress spinner
 		if (alertSpinner != null) alertSpinner.setVisibility(View.GONE);
-		alertUser();
-	}
-	
-	/**Pops up an alert with the interpreted message from the server, according to the 
-	 * response code received.  These response codes and messages are specific to the app,
-	 * and may not have identical meaning to the (strict) HTTP spec. */
-	protected void alertUser() {   activity.runOnUiThread(new Runnable() {
-		public void run() {
-			if (responseCode == -1 && responseString == null) { Log.e("HTTPUIAsync", "WARNING: the responseCode and responseString variables were never set, HTTPAsync is unable to handle user notification."); }
-			else if ((responseCode == -1) && (responseString.length() == 3)) {
-				try { AlertsManager.showAlert(responseCodeAlert( Integer.parseInt(responseString) ), activity); } //display a real error.
-				catch (NumberFormatException e) { AlertsManager.showAlert( responseCodeAlert( 1 ), activity); } } //display the default error.
-			else if (responseCode != 200) {
-				AlertsManager.showAlert(responseCodeAlert(responseCode), activity); }
-		} }	);
+
+		// Re-enable the submit button
+		if (submitButton != null) submitButton.setEnabled(true);
 	}
 }

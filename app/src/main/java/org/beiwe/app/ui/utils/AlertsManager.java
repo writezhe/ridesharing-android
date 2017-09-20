@@ -3,6 +3,11 @@ package org.beiwe.app.ui.utils;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.util.Log;
+
+import org.beiwe.app.R;
+import org.beiwe.app.ui.registration.ForgotPasswordActivity;
+import org.beiwe.app.ui.registration.ResetPasswordActivity;
 
 /**
  * This is a class that holds the function to show alerts. In case we want to use other alert functionalities,
@@ -21,19 +26,28 @@ public class AlertsManager {
 	 * @param activity
 	 */
 	public static void showAlert(String message, Activity activity) {
+		showAlert(message, "Alert", activity);
+	}
+
+	public static void showAlert(int httpResponseCode, String title, Activity activity) {
+		String message = httpResponseCodeExplanation(httpResponseCode, activity);
+		showAlert(message, title, activity);
+	}
+
+	public static void showAlert(String message, String title, Activity activity) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-		builder.setTitle("Alert");
+		builder.setTitle(title);
 		builder.setMessage(message);
 		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-			
+
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				// Nothing!
 			}
-		});		
+		});
 		builder.create().show();
 	}
-	
+
 	public static void showErrorAlert(String message, Activity activity, final int alertNumber) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 		builder.setTitle("A critical error occured");
@@ -48,5 +62,31 @@ public class AlertsManager {
 		});		
 		builder.create().show();
 	}
-	
+
+	/**Checks a given HTTP response code sent from the server, and then returns a string explaining
+	 * that code's meaning.  These response codes and messages are specific to Beiwe, and may not
+	 * have identical meaning to the (strict) HTTP spec.
+	 * @param httpPesponseCode HTTP response code
+	 * @return String to be displayed on the Alert in case of a problem	 */
+	private static String httpResponseCodeExplanation(int httpPesponseCode, Activity activity) {
+		if (httpPesponseCode == 200) {return "OK";}
+		else if (httpPesponseCode == 1) {return activity.getString(R.string.http_message_1);}
+		else if (httpPesponseCode == 2) {return activity.getString(R.string.invalid_encryption_key);}
+		else if (httpPesponseCode == 400) {return activity.getString(R.string.http_message_400);}
+		else if (httpPesponseCode == 405) {return activity.getString(R.string.http_message_405);}
+		else if (httpPesponseCode == 502) {return activity.getString(R.string.http_message_502);}
+		else if (httpPesponseCode == 403) {
+			if (activity.getClass() == ResetPasswordActivity.class) {
+				return activity.getString(R.string.http_message_403_wrong_password);
+			} else if (activity.getClass() == ForgotPasswordActivity.class) {
+				return activity.getString(R.string.http_message_403_wrong_password_forgot_password_page);
+			} else {
+				return activity.getString(R.string.http_message_403_during_registration);
+			}
+		}
+		else {
+			Log.e("HTTPAsync", "unknown response code: " + httpPesponseCode);
+			return activity.getString(R.string.http_message_unknown_response_code);
+		}
+	}
 }

@@ -1,16 +1,5 @@
 package org.beiwe.app.ui.registration;
 
-import org.beiwe.app.DeviceInfo;
-import org.beiwe.app.PermissionHandler;
-import org.beiwe.app.R;
-import org.beiwe.app.RunningBackgroundServiceActivity;
-import org.beiwe.app.networking.HTTPUIAsync;
-import org.beiwe.app.networking.PostRequest;
-import org.beiwe.app.storage.EncryptionEngine;
-import org.beiwe.app.storage.PersistentData;
-import org.beiwe.app.survey.TextFieldKeyboard;
-import org.beiwe.app.ui.utils.AlertsManager;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -25,20 +14,32 @@ import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.EditText;
 
+import org.beiwe.app.DeviceInfo;
+import org.beiwe.app.PermissionHandler;
+import org.beiwe.app.R;
+import org.beiwe.app.RunningBackgroundServiceActivity;
+import org.beiwe.app.networking.HTTPUIAsync;
+import org.beiwe.app.networking.PostRequest;
+import org.beiwe.app.storage.EncryptionEngine;
+import org.beiwe.app.storage.PersistentData;
+import org.beiwe.app.survey.TextFieldKeyboard;
+import org.beiwe.app.ui.utils.AlertsManager;
+
 import static org.beiwe.app.networking.PostRequest.addWebsitePrefix;
 
 
 /**Activity used to log a user in to the application for the first time. This activity should only be called on ONCE,
  * as once the user is logged in, data is saved on the phone.
- * @author Dor Samet, Eli Jones */
+ * @author Dor Samet, Eli Jones, Josh Zagorsky */
 
 @SuppressLint("ShowToast")
 public class RegisterActivity extends RunningBackgroundServiceActivity {
-	// Private fields
-	private EditText userID;
-	private EditText password;
-	private String newPassword;
-	
+	private EditText serverUrlInput;
+	private EditText userIdInput;
+	private EditText tempPasswordInput;
+	private EditText newPasswordInput;
+	private EditText confirmNewPasswordInput;
+
 	private final static int PERMISSION_CALLBACK = 0; //This callback value can be anything, we are not really using it
 	private final static int REQUEST_PERMISSIONS_IDENTIFIER = 1500;
 	
@@ -47,86 +48,95 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_register);
-		userID = (EditText) findViewById(R.id.registerUserIdInput);
-		password = (EditText) findViewById(R.id.registerTempPasswordInput);
-		
-		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard( getApplicationContext() );
-		textFieldKeyboard.makeKeyboardBehave(userID);
-		textFieldKeyboard.makeKeyboardBehave(password);
+
+		serverUrlInput = (EditText) findViewById(R.id.serverUrlInput);
+		userIdInput = (EditText) findViewById(R.id.registerUserIdInput);
+		tempPasswordInput = (EditText) findViewById(R.id.registerTempPasswordInput);
+		newPasswordInput = (EditText) findViewById(R.id.registerNewPasswordInput);
+		confirmNewPasswordInput = (EditText) findViewById(R.id.registerConfirmNewPasswordInput);
+		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(getApplicationContext());
+		textFieldKeyboard.makeKeyboardBehave(serverUrlInput);
+		textFieldKeyboard.makeKeyboardBehave(userIdInput);
+		textFieldKeyboard.makeKeyboardBehave(tempPasswordInput);
+		textFieldKeyboard.makeKeyboardBehave(newPasswordInput);
+		textFieldKeyboard.makeKeyboardBehave(confirmNewPasswordInput);
 	}
 
-	/**Registration sequence begins here, called when the submit button is pressed.
-	 * Normally there would be interaction with the server, in order to verify the user ID as well as the phone ID.
-	 * Right now it does simple checks to see that the user actually inserted a value.
-	 * @param view */
-	public synchronized void registrationSequence(View view) {
-		String userIDStr = userID.getText().toString();
-		String passwordStr = password.getText().toString();
 
-		EditText newPasswordInput = (EditText) findViewById(R.id.registerNewPasswordInput);
-		EditText confirmNewPasswordInput = (EditText) findViewById(R.id.registerConfirmNewPasswordInput);
-		
-		newPassword = newPasswordInput.getText().toString();
+	/** Registration sequence begins here, called when the submit button is pressed.
+	 * @param view */
+	public synchronized void registerButtonPressed(View view) {
+		String serverUrl = serverUrlInput.getText().toString();
+		String userID = userIdInput.getText().toString();
+		String tempPassword = tempPasswordInput.getText().toString();
+		String newPassword = newPasswordInput.getText().toString();
 		String confirmNewPassword = confirmNewPasswordInput.getText().toString();
 
-		// If the user id length is too short, alert the user
-		if(userIDStr.length() == 0) {
-			AlertsManager.showAlert( getString(R.string.invalid_user_id), this);
-			return; }
-
-		// If the new password doesn't match the confirm new password
-		else if (!newPassword.equals(confirmNewPassword)) {
-			AlertsManager.showAlert( getString(R.string.password_mismatch), this);
-			return; }
-		
-		// If the new password has too few characters, pop up an alert, and do nothing else
-		//(note: the user alert is handled internally.)
-		if (!PersistentData.passwordMeetsRequirements(newPassword, this) ) { return; }
-
-		// If the password length is too short, alert the user
-		else if ( PersistentData.passwordMeetsRequirements(passwordStr, this) ) {
-			PersistentData.setLoginCredentials(userIDStr, passwordStr);
-//			Log.d("RegisterActivity", "trying \"" + LoginManager.getPatientID() + "\" with password \"" + LoginManager.getPassword() + "\"" );
-			doRegister(addWebsitePrefix(getApplicationContext().getString(R.string.register_url)));
+		if (serverUrl.length() == 0) {
+			// If the study URL is empty, alert the user
+			AlertsManager.showAlert(getString(R.string.url_too_short), getString(R.string.couldnt_register), this);
+		} else if (userID.length() == 0) {
+			// If the user id length is too short, alert the user
+			AlertsManager.showAlert(getString(R.string.invalid_user_id), getString(R.string.couldnt_register), this);
+			return;
+		} else if (tempPassword.length() < 1) {
+			// If the temporary registration password isn't filled in
+			AlertsManager.showAlert(getString(R.string.empty_temp_password), getString(R.string.couldnt_register), this);
+		} else if (!PersistentData.passwordMeetsRequirements(newPassword)) {
+			// If the new password has too few characters
+			String alertMessage = String.format(getString(R.string.password_too_short), PersistentData.minPasswordLength());
+			AlertsManager.showAlert(alertMessage, getString(R.string.couldnt_register), this);
+			return;
+		} else if (!newPassword.equals(confirmNewPassword)) {
+			// If the new password doesn't match the confirm new password
+			AlertsManager.showAlert(getString(R.string.password_mismatch), getString(R.string.couldnt_register), this);
+			return;
+		} else {
+			PostRequest.setWebsitePrefix(serverUrl);
+			PersistentData.setLoginCredentials(userID, tempPassword);
+			// Log.d("RegisterActivity", "trying \"" + LoginManager.getPatientID() + "\" with password \"" + LoginManager.getPassword() + "\"" );
+			tryToRegisterWithTheServer(addWebsitePrefix(getApplicationContext().getString(R.string.register_url)), newPassword);
 		}
 	}
 	
 	
 	/**Implements the server request logic for user, device registration. 
 	 * @param url the URL for device registration*/
-	private void doRegister(final String url) { new HTTPUIAsync(url, this) {
-		@Override
-		protected Void doInBackground(Void... arg0) {
-			parameters= PostRequest.makeParameter("bluetooth_id", DeviceInfo.getBluetoothMAC() ) +
-						PostRequest.makeParameter("new_password", newPassword) +
-						PostRequest.makeParameter("phone_number", ((RegisterActivity) activity).getPhoneNumber() ) + 
-						PostRequest.makeParameter("device_id", DeviceInfo.getAndroidID() ) +
-						PostRequest.makeParameter("device_os", "Android") +
-						PostRequest.makeParameter("os_version", DeviceInfo.getAndroidVersion() ) +
-						PostRequest.makeParameter("hardware_id", DeviceInfo.getHardwareId() ) +
-						PostRequest.makeParameter("brand", DeviceInfo.getBrand() ) +
-						PostRequest.makeParameter("manufacturer", DeviceInfo.getManufacturer() ) +
-						PostRequest.makeParameter("model", DeviceInfo.getModel() ) +
-						PostRequest.makeParameter("product", DeviceInfo.getProduct() ) +
-						PostRequest.makeParameter("beiwe_version", DeviceInfo.getBeiweVersion() );
-					
-			responseCode = PostRequest.httpRegister(parameters, url);
-			return null; //hate
-		}
+	private void tryToRegisterWithTheServer(final String url, final String newPassword) {
+		final Activity currentActivity = this;
+
+		new HTTPUIAsync(url, this) {
+			@Override
+			protected Void doInBackground(Void... arg0) {
+				parameters= PostRequest.makeParameter("bluetooth_id", DeviceInfo.getBluetoothMAC() ) +
+							PostRequest.makeParameter("new_password", newPassword) +
+							PostRequest.makeParameter("phone_number", ((RegisterActivity) activity).getPhoneNumber() ) +
+							PostRequest.makeParameter("device_id", DeviceInfo.getAndroidID() ) +
+							PostRequest.makeParameter("device_os", "Android") +
+							PostRequest.makeParameter("os_version", DeviceInfo.getAndroidVersion() ) +
+							PostRequest.makeParameter("hardware_id", DeviceInfo.getHardwareId() ) +
+							PostRequest.makeParameter("brand", DeviceInfo.getBrand() ) +
+							PostRequest.makeParameter("manufacturer", DeviceInfo.getManufacturer() ) +
+							PostRequest.makeParameter("model", DeviceInfo.getModel() ) +
+							PostRequest.makeParameter("product", DeviceInfo.getProduct() ) +
+							PostRequest.makeParameter("beiwe_version", DeviceInfo.getBeiweVersion() );
+				responseCode = PostRequest.httpRegister(parameters, url);
+				return null;
+			}
 		
-		@Override
-		protected void onPostExecute(Void arg) {
-			if (responseCode == 200) {
-				PersistentData.setPassword(newPassword);
-				activity.startActivity(new Intent(activity.getApplicationContext(), PhoneNumberEntryActivity.class) );
-				activity.finish(); }
-			else if (responseCode == 2) {
-				AlertsManager.showAlert( getString(R.string.invalid_encryption_key), this.activity );
-				super.onPostExecute(arg); }
-			else { AlertsManager.showAlert( getString(R.string.couldnt_register), this.activity );
-				   super.onPostExecute(arg); }
-		}
-	};}
+			@Override
+			protected void onPostExecute(Void arg) {
+				super.onPostExecute(arg);
+				if (responseCode == 200) {
+					PersistentData.setPassword(newPassword);
+					activity.startActivity(new Intent(activity.getApplicationContext(), PhoneNumberEntryActivity.class) );
+					activity.finish();
+				} else {
+					AlertsManager.showAlert(responseCode, getString(R.string.couldnt_register), currentActivity);
+				}
+			}
+		};
+	}
 	
 	/**This is the fuction that requires SMS permissions.  We need to supply a (unique) identifier for phone numbers to the registration arguments.
 	 * @return */
@@ -234,5 +244,4 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() { @Override public void onClick(DialogInterface arg0, int arg1) {  } } ); //Okay button
 		builder.create().show();
 	}
-	
 }

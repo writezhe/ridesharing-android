@@ -28,14 +28,19 @@
             android:layout_height="30dp" />
 
         <TextView
-            android:id="@+id/register_message"
+            android:id="@+id/serverUrlCaption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/register_activity_instructions" />
+            android:text="@string/registration_server_url_caption" />
 
-        <View
-            android:layout_width="wrap_content"
-            android:layout_height="30dp" />
+        <EditText
+            android:id="@+id/serverUrlInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textUri"
+            android:ems="10" >
+            <requestFocus />
+        </EditText>
 
         <TextView
             android:id="@+id/registerUserIdCaption"
@@ -49,7 +54,6 @@
             android:layout_height="wrap_content"
             android:inputType="text"
             android:ems="10" >
-            <requestFocus />
         </EditText>
 
         <TextView
@@ -92,11 +96,11 @@
             android:ems="10"/>
 
         <Button
-            android:id="@+id/submit_button"
+            android:id="@+id/submitButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:onClick="registrationSequence"
+            android:onClick="registerButtonPressed"
             android:text="@string/register_activity_submit" />
 
         <ProgressBar

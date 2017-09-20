@@ -1,13 +1,14 @@
 package org.beiwe.app.ui.registration;
 
-import org.beiwe.app.R;
-import org.beiwe.app.RunningBackgroundServiceActivity;
-import org.beiwe.app.session.ResetPassword;
-
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+
+import org.beiwe.app.R;
+import org.beiwe.app.RunningBackgroundServiceActivity;
+import org.beiwe.app.session.ResetPassword;
+import org.beiwe.app.survey.TextFieldKeyboard;
 
 /**
  * An activity to manage users who forgot their passwords.
@@ -16,26 +17,38 @@ import android.widget.EditText;
 
 @SuppressLint("ShowToast")
 public class ResetPasswordActivity extends RunningBackgroundServiceActivity {
-	
+	private EditText currentPasswordInput;
+	private EditText newPasswordInput;
+	private EditText confirmNewPasswordInput;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_reset_password);
+
+		currentPasswordInput = (EditText) findViewById(R.id.resetPasswordCurrentPasswordInput);
+		newPasswordInput = (EditText) findViewById(R.id.resetPasswordNewPasswordInput);
+		confirmNewPasswordInput = (EditText) findViewById(R.id.resetPasswordConfirmNewPasswordInput);
+		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(getApplicationContext());
+		textFieldKeyboard.makeKeyboardBehave(currentPasswordInput);
+		textFieldKeyboard.makeKeyboardBehave(newPasswordInput);
+		textFieldKeyboard.makeKeyboardBehave(confirmNewPasswordInput);
 	}
-	
-	
+
+	/** Kill this activity and go back to the homepage */
+	public void cancelButtonPressed(View view) {
+		this.finish();
+	}
+
 	/** calls the reset password HTTPAsync query. */
 	public void registerNewPassword(View view) {
 		// Get the user's current password
-		EditText currentPasswordInputField = (EditText) findViewById(R.id.resetPasswordCurrentPasswordInput);
-		String currentPassword = currentPasswordInputField.getText().toString();
+		String currentPassword = currentPasswordInput.getText().toString();
 
 		// Get the new, permanent password the user wants
-		EditText newPasswordInput = (EditText) findViewById(R.id.resetPasswordNewPasswordInput);
 		String newPassword = newPasswordInput.getText().toString();
 		
 		// Get the confirmation of the new, permanent password (should be the same as the previous field)
-		EditText confirmNewPasswordInput = (EditText) findViewById(R.id.resetPasswordConfirmNewPasswordInput);
 		String confirmNewPassword = confirmNewPasswordInput.getText().toString();
 
 		/* Pass all three to the ResetPassword class, which will check validity, and, if valid,
@@ -43,5 +56,4 @@ public class ResetPasswordActivity extends RunningBackgroundServiceActivity {
 		ResetPassword resetPassword = new ResetPassword(this);
 		resetPassword.checkInputsAndTryToResetPassword(currentPassword, newPassword, confirmNewPassword);
 	}
-
 }

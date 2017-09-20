@@ -27,16 +27,17 @@ public class SurveyDownloader {
 	}
 
 	private static void doDownload(final String url, final Context appContext) { new HTTPAsync(url) {
+		String jsonResponseString;
 		@Override
 		protected Void doInBackground(Void... arg0) {
 			String parameters = "";
-			try { responseString = PostRequest.httpRequestString( parameters, url); }
+			try { jsonResponseString = PostRequest.httpRequestString( parameters, url); }
 			catch (NullPointerException e) {  }  //We do not care.
 			return null; //hate
 		}
 		@Override
 		protected void onPostExecute(Void arg) {
-			responseCode = updateSurveys( appContext, responseString);
+			responseCode = updateSurveys( appContext, jsonResponseString);
 			super.onPostExecute(arg);
 		} }.execute();
 	}

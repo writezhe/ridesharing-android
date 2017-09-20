@@ -37,6 +37,14 @@
     <string name="question_error_text">If you are reading this, something broke. Please contact the study administrators, and tell them that there is a bug in the survey!</string>
     <string name="invalid_device">This device does not meet minimum specifications for this app, to avoid any issues resulting from this please uninstall the app.</string>
     <string name="invalid_encryption_key">Received an invalid encryption key, please contact the a Beiwe administrator.</string>
+    <string name="http_message_1">Someone misconfigured the server! Please contact research staff.</string>
+    <string name="http_message_400">This device could not be registered under the provided patient ID; please contact research staff.</string>
+    <string name="http_message_403_during_registration">Sorry: either your Study URL, your User ID, or your Registration Code is incorrect.</string>
+    <string name="http_message_403_wrong_password">Sorry, your Current Password is incorrect.</string>
+    <string name="http_message_403_wrong_password_forgot_password_page">Sorry, your Temporary Password is incorrect.</string>
+    <string name="http_message_405">Sorry, this User ID already has a phone registered. Please contact the research staff and ask them to clear your registration so that you can register this new phone.</string>
+    <string name="http_message_502">It looks like you\'re not connected to the internet- please connect to the internet and try again.</string>
+    <string name="http_message_unknown_response_code">An unknown error occurred.</string>
 
     <!-- Survey Activity Strings -->
     <string name="survey_next_button_text">Next</string>
@@ -47,10 +55,8 @@
 
     <!-- Login Activity Strings -->
     <string name="login_page_for_app">Login page for app</string>
-    <string name="login_activity_please_enter_password">Please enter password:</string>
+    <string name="login_activity_please_enter_password">Password:</string>
     <string name="incorrect_user_pass_combo">Incorrect user-password combination!</string>
-    <string name="title_activity_forgot_password">Forgot Password</string>
-    <string name="title_activity_reset_password">Reset Password</string>
     <string name="title_activity_register">Register</string>
     <string name="title_activity_login">Log In</string>
     <string name="title_activity_login_string">Log In</string>
@@ -59,37 +65,40 @@
     <string name="password_system_mismatch">Incorrect user ID and password combination</string>
 
     <!-- Reset Password Activity Strings -->
-    <string name="reset_password_title">Reset your password</string>
-    <string name="reset_password_current_password_caption">Please enter your old password:</string>
-    <string name="reset_password_new_password_caption">Please enter your new password:</string>
-    <string name="reset_password_confirm_new_password_caption">Enter your new password again:</string>
-    <string name="reset_password_submit">Submit</string>
+    <string name="title_activity_reset_password">Change Password</string>
+    <string name="reset_password_title">Change your password</string>
+    <string name="reset_password_current_password_caption">Current password:</string>
+    <string name="reset_password_new_password_caption">New password:</string>
+    <string name="reset_password_confirm_new_password_caption">Confirm new password:</string>
+    <string name="reset_password_submit">Change password</string>
+    <string name="reset_password_error_alert_title">Can\'t change password</string>
     <string name="invalid_old_password">Old password incorrect</string>
-    <string name="pass_reset_complete">Password reset complete</string>
-    <string name="password_mismatch">Password does not match confirm password</string>
-    <string name="password_too_short">Your password must be longer than %d characters.</string>
+    <string name="pass_reset_complete">Your password was successfully changed</string>
+    <string name="password_mismatch">New Password doesn\'t match Confirm New Password.</string>
+    <string name="password_too_short">Your new password must be at least %d characters long.</string>
 
     <!-- Forgot Password Activity Strings -->
+    <string name="title_activity_forgot_password">Forgot Password</string>
     <string name="forgot_password_title">Call the research assistant to get a temporary password</string>
     <string name="forgot_password_title_with_id">Call the research assistant to get a temporary password. Your ID is \"%s\".</string>
-    <string name="forgot_password_instructions_text">Press the button to call the research assistance and ask for a temporary password.  Identify yourself only by your User ID instead of by name.  Enter the temporary password you receive and a new, permanent password you want to use.</string>
-    <string name="forgot_password_image_button_description">Call Button</string>
-    <string name="forgot_password_temporary_password_caption">Enter your temporary password (get this by calling the research assistant)</string>
-    <string name="forgot_password_new_password_caption">Please enter your new permanent password (the one you want to use)</string>
-    <string name="forgot_password_confirm_new_password_caption">Enter your new permanent password again (the one you want to use)</string>
+    <string name="forgot_password_instructions_text">Your ID is \"%s\"; please identify yourself by that ID and not by your name.</string>
+    <string name="forgot_password_call_button_text">Call research assistant</string>
+    <string name="forgot_password_temporary_password_caption">Temporary password (the one the research assistant gave you)</string>
 
     <!-- Registration Activity Strings -->
-    <string name="register_activity_welcoming_message">Welcome to the study</string>
-    <string name="register_activity_instructions">Please fill out the information below</string>
-    <string name="register_activity_user_id">Please enter your user ID:</string>
-    <string name="register_activity_temp_password_caption">Please enter your temporary registration password:</string>
-    <string name="register_activity_new_password_caption">Please enter your new, permanent password:</string>
-    <string name="register_activity_confirm_new_password_caption">Enter your new, permanent password again:</string>
-    <string name="register_activity_submit">Submit</string>
+    <string name="register_activity_welcoming_message">Welcome to the research study!</string>
+    <string name="registration_server_url_caption">URL for the study:</string>
+    <string name="register_activity_user_id">User ID:</string>
+    <string name="register_activity_temp_password_caption">Registration code:</string>
+    <string name="register_activity_new_password_caption">Set your new password:</string>
+    <string name="register_activity_confirm_new_password_caption">Confirm your new password:</string>
+    <string name="register_activity_submit">Join the research study</string>
     <string name="title_activity_loading">Loading Beiwe</string>
-    <string name="invalid_user_id">Invalid user ID</string>
-    <string name="invalid_password">Invalid password</string>
-    <string name="couldnt_register">Could not register this device</string>
+    <string name="empty_temp_password">Please enter the Registration Code you were given at signup.</string>
+    <string name="url_too_short">Please enter the URL for the study.</string>
+    <string name="invalid_user_id">Please enter your User ID.</string>
+    <string name="invalid_password">Invalid password.</string>
+    <string name="couldnt_register">Can\'t register</string>
 
     <!-- Phone Numbers -->
     <string name="title_activity_phone_number_entry">PhoneNumberEntry</string>

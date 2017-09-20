@@ -1,20 +1,16 @@
 package org.beiwe.app.storage;
-import java.util.List;
-
-import org.beiwe.app.BuildConfig;
-import org.beiwe.app.JSONUtils;
-import org.beiwe.app.R;
-import org.beiwe.app.ui.DebugInterfaceActivity;
-import org.beiwe.app.ui.LoadingActivity;
-import org.beiwe.app.ui.utils.AlertsManager;
-import org.json.JSONArray;
-import org.json.JSONException;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
+
+import org.beiwe.app.BuildConfig;
+import org.beiwe.app.JSONUtils;
+import org.beiwe.app.R;
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.List;
 
 /**A class for managing patient login sessions.
  * Uses SharedPreferences in order to save username-password combinations.
@@ -100,8 +96,7 @@ public class PersistentData {
 		editor.putLong(LOGIN_EXPIRATION, 0);
 		editor.commit(); }
 
-	/**Getter for the IS_REGISTERED value.
-	 * @param value */
+	/**Getter for the IS_REGISTERED value. */
 	public static boolean isRegistered() { 
 		if (pref == null) Log.w("LoginManager", "FAILED AT ISREGISTERED");
 		return pref.getBoolean(IS_REGISTERED, false); }
@@ -118,23 +113,18 @@ public class PersistentData {
 
 	/**Checks that an input matches valid password requirements. (this only checks length)
 	 * Throws up an alert notifying the user if the password is not valid.
-	 * @param input
-	 * @param activity
+	 * @param password
 	 * @return true or false based on password requirements.*/
-	public static boolean passwordMeetsRequirements(String password, Activity currentActivity) {
-		// If the password has too few characters, pop up an alert saying so
-		int minPasswordLength;
+	public static boolean passwordMeetsRequirements(String password) {
+		return (password.length() >= minPasswordLength());
+	}
+
+	public static int minPasswordLength() {
 		if (BuildConfig.APP_IS_BETA) {
-			minPasswordLength = 1;
+			return 1;
 		} else {
-			minPasswordLength = 6;
+			return 6;
 		}
-		if (password.length() < minPasswordLength) {
-			String alertMessage = String.format(appContext.getString(R.string.password_too_short), minPasswordLength);
-			AlertsManager.showAlert(alertMessage, currentActivity);
-			return false;
-		}
-		return true;
 	}
 
  	/**Takes an input string and returns a boolean value stating whether the input matches the current password.
