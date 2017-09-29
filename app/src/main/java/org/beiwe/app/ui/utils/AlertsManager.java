@@ -66,16 +66,16 @@ public class AlertsManager {
 	/**Checks a given HTTP response code sent from the server, and then returns a string explaining
 	 * that code's meaning.  These response codes and messages are specific to Beiwe, and may not
 	 * have identical meaning to the (strict) HTTP spec.
-	 * @param httpPesponseCode HTTP response code
+	 * @param httpResponseCode HTTP response code
 	 * @return String to be displayed on the Alert in case of a problem	 */
-	private static String httpResponseCodeExplanation(int httpPesponseCode, Activity activity) {
-		if (httpPesponseCode == 200) {return "OK";}
-		else if (httpPesponseCode == 1) {return activity.getString(R.string.http_message_1);}
-		else if (httpPesponseCode == 2) {return activity.getString(R.string.invalid_encryption_key);}
-		else if (httpPesponseCode == 400) {return activity.getString(R.string.http_message_400);}
-		else if (httpPesponseCode == 405) {return activity.getString(R.string.http_message_405);}
-		else if (httpPesponseCode == 502) {return activity.getString(R.string.http_message_502);}
-		else if (httpPesponseCode == 403) {
+	private static String httpResponseCodeExplanation(int httpResponseCode, Activity activity) {
+		if (httpResponseCode == 200) {return "OK";}
+		else if (httpResponseCode == 1) {return activity.getString(R.string.http_message_1);}
+		else if (httpResponseCode == 2) {return activity.getString(R.string.invalid_encryption_key);}
+		else if (httpResponseCode == 400) {return activity.getString(R.string.http_message_400);}
+		else if (httpResponseCode == 405) {return activity.getString(R.string.http_message_405);}
+		else if (httpResponseCode == 502) {return activity.getString(R.string.http_message_502);}
+		else if (httpResponseCode == 403) {
 			if (activity.getClass() == ResetPasswordActivity.class) {
 				return activity.getString(R.string.http_message_403_wrong_password);
 			} else if (activity.getClass() == ForgotPasswordActivity.class) {
@@ -85,7 +85,7 @@ public class AlertsManager {
 			}
 		}
 		else {
-			Log.e("HTTPAsync", "unknown response code: " + httpPesponseCode);
+			Log.e("HTTPAsync", "unknown response code: " + httpResponseCode);
 			return activity.getString(R.string.http_message_unknown_response_code);
 		}
 	}

@@ -92,7 +92,7 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 			AlertsManager.showAlert(getString(R.string.password_mismatch), getString(R.string.couldnt_register), this);
 			return;
 		} else {
-			PostRequest.setWebsitePrefix(serverUrl);
+			PersistentData.setServerUrl(serverUrl);
 			PersistentData.setLoginCredentials(userID, tempPassword);
 			// Log.d("RegisterActivity", "trying \"" + LoginManager.getPatientID() + "\" with password \"" + LoginManager.getPassword() + "\"" );
 			tryToRegisterWithTheServer(addWebsitePrefix(getApplicationContext().getString(R.string.register_url)), newPassword);

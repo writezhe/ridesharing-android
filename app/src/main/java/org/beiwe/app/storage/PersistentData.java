@@ -29,6 +29,7 @@ public class PersistentData {
 	
 	/**  Editor key-strings */
 	private static final String PREF_NAME = "BeiwePref";
+	private static final String SERVER_URL_KEY = "serverUrl";
 	private static final String KEY_ID = "uid";
 	private static final String KEY_PASSWORD = "password";
 	private static final String IS_REGISTERED = "IsRegistered";
@@ -299,8 +300,23 @@ public class PersistentData {
 	################################### User Credentials ########################################
 	###########################################################################################*/
 
+	public static void setServerUrl(String serverUrl) {
+		if (editor == null) Log.e("LoginManager.java", "editor is null in setServerUrl()");
+		editor.putString(SERVER_URL_KEY, prependHttpsToServerUrl(serverUrl));
+		editor.commit(); }
+	private static String prependHttpsToServerUrl(String serverUrl) {
+		if (serverUrl.startsWith("https://")) {
+			return serverUrl;
+		} else if (serverUrl.startsWith("http://")) {
+			return "https://" + serverUrl.substring(7, serverUrl.length());
+		} else {
+			return "https://" + serverUrl;
+		}
+	}
+	public static String getServerUrl() { return pref.getString(SERVER_URL_KEY, null); }
+
 	public static void setLoginCredentials( String userID, String password ) {
-		if (editor == null) Log.e("LoginManager.java", "editor is null");
+		if (editor == null) Log.e("LoginManager.java", "editor is null in setLoginCredentials()");
 		editor.putString(KEY_ID, userID);
 		setPassword(password);
 		editor.commit(); }
