@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.util.Log;
 
 import org.beiwe.app.R;
+import org.beiwe.app.networking.NetworkUtility;
 import org.beiwe.app.ui.registration.ForgotPasswordActivity;
 import org.beiwe.app.ui.registration.ResetPasswordActivity;
 
@@ -69,12 +70,16 @@ public class AlertsManager {
 	 * @param httpResponseCode HTTP response code
 	 * @return String to be displayed on the Alert in case of a problem	 */
 	private static String httpResponseCodeExplanation(int httpResponseCode, Activity activity) {
+		Log.i("HTTPAsync", "got HTTP response code " + httpResponseCode);
 		if (httpResponseCode == 200) {return "OK";}
 		else if (httpResponseCode == 1) {return activity.getString(R.string.http_message_1);}
 		else if (httpResponseCode == 2) {return activity.getString(R.string.invalid_encryption_key);}
 		else if (httpResponseCode == 400) {return activity.getString(R.string.http_message_400);}
 		else if (httpResponseCode == 405) {return activity.getString(R.string.http_message_405);}
-		else if (httpResponseCode == 502) {return activity.getString(R.string.http_message_502);}
+		else if (httpResponseCode == 502 && !NetworkUtility.networkIsAvailable(activity)) {
+			return activity.getString(R.string.http_message_internet_disconnected);}
+		else if (httpResponseCode == 502 || httpResponseCode == 404) {
+			return activity.getString(R.string.http_message_server_not_found);}
 		else if (httpResponseCode == 403) {
 			if (activity.getClass() == ResetPasswordActivity.class) {
 				return activity.getString(R.string.http_message_403_wrong_password);

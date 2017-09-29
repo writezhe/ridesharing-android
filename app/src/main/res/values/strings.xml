@@ -43,7 +43,8 @@
     <string name="http_message_403_wrong_password">Sorry, your Current Password is incorrect.</string>
     <string name="http_message_403_wrong_password_forgot_password_page">Sorry, your Temporary Password is incorrect.</string>
     <string name="http_message_405">Sorry, this User ID already has a phone registered. Please contact the research staff and ask them to clear your registration so that you can register this new phone.</string>
-    <string name="http_message_502">It looks like you\'re not connected to the internet- please connect to the internet and try again.</string>
+    <string name="http_message_internet_disconnected">It looks like you\'re not connected to the internet- please connect to the internet and try again.</string>
+    <string name="http_message_server_not_found">Are you sure the URL for the study is correct?  Beiwe can\'t connect to the server.</string>
     <string name="http_message_unknown_response_code">An unknown error occurred.</string>
 
     <!-- Survey Activity Strings -->

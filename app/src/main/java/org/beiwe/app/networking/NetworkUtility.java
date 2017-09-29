@@ -1,12 +1,12 @@
 package org.beiwe.app.networking;
 
-import org.beiwe.app.storage.PersistentData;
-
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkInfo;
 import android.util.Log;
+
+import org.beiwe.app.storage.PersistentData;
 
 
 /** Contains a single function to check whether wifi is active and functional.
@@ -16,34 +16,40 @@ import android.util.Log;
 public class NetworkUtility {
 	
 	/**Return TRUE if WiFi is connected; FALSE otherwise.
-	 * Android 6 adds support for multiple network connections of the same type and the older get-network-by-type command is deprecated.
+	 * Android 6 adds support for multiple network connections of the same type and the older
+	 * get-network-by-type command is deprecated.
 	 * We need to handle both cases.
 	 * @return boolean value of whether the wifi is on and network connectivity is available. */
-	public static Boolean canUpload( Context appContext ) {
-		ConnectivityManager connManager = (ConnectivityManager) appContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-		
-		// If the device has had the upload over cellular flag set to true we run this logic
-		if ( PersistentData.getAllowUploadOverCellularData() ) {
+	public static boolean canUpload(Context appContext) {
+		// If you're allowed to upload over cellular data, simply check whether the phone's
+		// connected to the internet at all.
+		if (PersistentData.getAllowUploadOverCellularData()) {
 			Log.i("WIFICHECK", "ALLOW OVER CELLULAR!!!!");
-			NetworkInfo activeNetwork = connManager.getActiveNetworkInfo();
-			if ( activeNetwork != null && activeNetwork.isConnected() && activeNetwork.isAvailable() ) {
-				return true; }
-//			else { return false; } // hookay, we can disable this, and run through the rest of the logic. This behavior should be safer if the android networking stack is... weird.
-		}
-		
-		//If the user is restricted to wifi uploads we do this logic, we have android +- 6 code paths.
-		//do android < 6
+			if (networkIsAvailable(appContext)) return true; }
+
+		// If you're only allowed to upload over WiFi, or if the simple networkIsAvailable() check
+		// returned false, check if a WiFi network is connected.
+		ConnectivityManager connManager =
+				(ConnectivityManager) appContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+		// Check if WiFi is connected for Android version 5 and below
 		if (android.os.Build.VERSION.SDK_INT < 23) { return oldTimeyWiFiConnectivityCheck(connManager); }
-		//do android >= 6
+		// Check if WiFi is connected for Android version 6 and above
 		return newFangledWiFiConnectivityCheck(connManager);
 	}
 	
-	
+
+	public static boolean networkIsAvailable(Context appContext) {
+		ConnectivityManager connManager = (ConnectivityManager) appContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNetwork = connManager.getActiveNetworkInfo();
+		return (activeNetwork != null) && (activeNetwork.isConnected()) && (activeNetwork.isAvailable());
+	}
+
+
 	@SuppressWarnings("deprecation")
 	/** This is the function for running pre-Android 6 wifi connectivity checks.
 	 *  This code is separated so that the @SuppressWarnings("deprecation") decorator 
 	 *  does not cause headaches if something else is deprecated in the future. */
-	private static Boolean oldTimeyWiFiConnectivityCheck( ConnectivityManager connManager ){
+	private static boolean oldTimeyWiFiConnectivityCheck( ConnectivityManager connManager ){
 		Log.i("WIFICHECK", "oldTimeyWiFiConnectivityCheck");
 		NetworkInfo networkInfo = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 		return networkInfo.isConnected() && networkInfo.isAvailable();
@@ -51,7 +57,7 @@ public class NetworkUtility {
 	
 	
 	/** This is the function for running Android 6+ wifi connectivity checks. */
-	private static Boolean newFangledWiFiConnectivityCheck( ConnectivityManager connManager ){
+	private static boolean newFangledWiFiConnectivityCheck( ConnectivityManager connManager ){
 		Log.i("WIFICHECK", "newFangledWiFiConnectivityCheck");
 		Network[] networks = connManager.getAllNetworks();
 		if (networks == null) { //No network connectivity at all,
