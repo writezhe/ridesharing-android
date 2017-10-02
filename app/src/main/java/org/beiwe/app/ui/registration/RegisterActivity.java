@@ -1,21 +1,13 @@
 package org.beiwe.app.ui.registration;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.EditText;
 
 import org.beiwe.app.DeviceInfo;
-import org.beiwe.app.PermissionHandler;
 import org.beiwe.app.R;
 import org.beiwe.app.RunningBackgroundServiceActivity;
 import org.beiwe.app.networking.HTTPUIAsync;
@@ -40,9 +32,6 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 	private EditText newPasswordInput;
 	private EditText confirmNewPasswordInput;
 
-	private final static int PERMISSION_CALLBACK = 0; //This callback value can be anything, we are not really using it
-	private final static int REQUEST_PERMISSIONS_IDENTIFIER = 1500;
-	
 	/** Users will go into this activity first to register information on the phone and on the server. */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +49,9 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 		textFieldKeyboard.makeKeyboardBehave(tempPasswordInput);
 		textFieldKeyboard.makeKeyboardBehave(newPasswordInput);
 		textFieldKeyboard.makeKeyboardBehave(confirmNewPasswordInput);
+
+		// TODO: can we ensure that DeviceInfo is still initialized when it's called below?
+		DeviceInfo.initialize(getApplicationContext());
 	}
 
 
@@ -110,7 +102,7 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 			protected Void doInBackground(Void... arg0) {
 				parameters= PostRequest.makeParameter("bluetooth_id", DeviceInfo.getBluetoothMAC() ) +
 							PostRequest.makeParameter("new_password", newPassword) +
-							PostRequest.makeParameter("phone_number", ((RegisterActivity) activity).getPhoneNumber() ) +
+							PostRequest.makeParameter("phone_number", ((RegisterActivity) activity).getHashedPhoneNumber() ) +
 							PostRequest.makeParameter("device_id", DeviceInfo.getAndroidID() ) +
 							PostRequest.makeParameter("device_os", "Android") +
 							PostRequest.makeParameter("os_version", DeviceInfo.getAndroidVersion() ) +
@@ -138,110 +130,10 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 		};
 	}
 	
+
 	/**This is the fuction that requires SMS permissions.  We need to supply a (unique) identifier for phone numbers to the registration arguments.
 	 * @return */
-	private String getPhoneNumber() {
-		TelephonyManager phoneManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
-		String phoneNumber = phoneManager.getLine1Number();
-		if (phoneNumber == null) { return EncryptionEngine.hashPhoneNumber(""); }
-		return EncryptionEngine.hashPhoneNumber(phoneNumber);
-	}
-	
-	
-	/*####################################################################
-	###################### Permission Prompting ##########################
-	####################################################################*/
-	
-	private static Boolean prePromptActive = false;
-	private static Boolean postPromptActive = false;
-	private static Boolean thisResumeCausedByFalseActivityReturn = false;
-	private static Boolean aboutToResetFalseActivityReturn = false;
-	private static Boolean activityNotVisible = false;
-
-	private void goToSettings() {
-		// Log.i("reg", "goToSettings");
-        Intent myAppSettings = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + getPackageName()));
-        myAppSettings.addCategory(Intent.CATEGORY_DEFAULT);
-        myAppSettings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivityForResult(myAppSettings, REQUEST_PERMISSIONS_IDENTIFIER);
-    }
-
-	
-	@Override
-	protected void onResume() {  
-		// Log.i("reg", "onResume");
-		super.onResume();
-		activityNotVisible = false;
-		if (aboutToResetFalseActivityReturn) {
-			aboutToResetFalseActivityReturn = false;
-			thisResumeCausedByFalseActivityReturn = false;
-			return;
-		}
-		if ( !PermissionHandler.checkAccessReadSms(getApplicationContext()) && !thisResumeCausedByFalseActivityReturn) {
-			if (shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS) ) {
-				if (!prePromptActive && !postPromptActive ) { showPostPermissionAlert(this); } 
-			}
-			else if (!prePromptActive && !postPromptActive ) { showPrePermissionAlert(this); }
-		}
-		else { DeviceInfo.initialize(getApplicationContext()); }
-	}
-	
-	@Override
-	protected void onPause() {
-		super.onPause();
-		activityNotVisible = true;
-	};
-	
-	@Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// Log.i("reg", "onActivityResult. requestCode: " + requestCode + ", resultCode: " + resultCode );
-		aboutToResetFalseActivityReturn = true;
-    }
-
-	@Override
-	public void onRequestPermissionsResult (int requestCode, String[] permissions, int[] grantResults) {
-		// Log.i("reg", "onRequestPermissionResult");
-		if (activityNotVisible) return; //this is identical logical progression to the way it works in SessionActivity.
-		for (int i = 0; i < grantResults.length; i++) {
-			if ( permissions[i].equals( Manifest.permission.READ_SMS ) ) {
-//				Log.i("permiss", "permission return: " + permissions[i]);
-				if ( grantResults[i] == PermissionHandler.PERMISSION_GRANTED ) { break; }
-				if ( shouldShowRequestPermissionRationale(permissions[i]) ) { showPostPermissionAlert(this); } //(shouldShow... "This method returns true if the app has requested this permission previously and the user denied the request.")
-			}
-//			else { Log.w("permiss", "permission return: " + permissions[i]); }
-		}
-	}
-	
-	/* Message Popping */
-	
-	public static void showPrePermissionAlert(final Activity activity) {
-		// Log.i("reg", "showPreAlert");
-		if (prePromptActive) { return; }
-		prePromptActive = true;
-		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-		builder.setTitle("Permissions Requirement:");
-		builder.setMessage(R.string.permission_registration_read_sms_alert);
-		builder.setOnDismissListener( new DialogInterface.OnDismissListener() { @Override public void onDismiss(DialogInterface dialog) {
-			activity.requestPermissions(new String[]{ Manifest.permission.READ_SMS }, PERMISSION_CALLBACK );
-			prePromptActive = false;
-		} } );
-		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() { @Override public void onClick(DialogInterface arg0, int arg1) { } } ); //Okay button
-		builder.create().show();
-	}
-	
-	public static void showPostPermissionAlert(final RegisterActivity activity) {
-		// Log.i("reg", "showPostAlert");
-		if (postPromptActive) { return; }
-		postPromptActive = true;
-		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-		builder.setTitle("Permissions Requirement:");
-		builder.setMessage(R.string.permission_registration_actually_need_sms_alert);
-		builder.setOnDismissListener( new DialogInterface.OnDismissListener() { @Override public void onDismiss(DialogInterface dialog) {
-			thisResumeCausedByFalseActivityReturn = true;
-			activity.goToSettings();
-			postPromptActive = false;
-		} } );
-		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() { @Override public void onClick(DialogInterface arg0, int arg1) {  } } ); //Okay button
-		builder.create().show();
+	private String getHashedPhoneNumber() {
+		return EncryptionEngine.hashPhoneNumber("");
 	}
 }

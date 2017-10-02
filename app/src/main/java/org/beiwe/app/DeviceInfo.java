@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.provider.Settings;
-import android.telephony.TelephonyManager;
 
 import org.beiwe.app.storage.EncryptionEngine;
 
@@ -46,8 +45,6 @@ public class DeviceInfo {
 
 	private static String androidID;
 	private static String bluetoothMAC;
-	//TODO: Eli. phoneNumber is not used anywhere...
-	private static String phoneNumber;
 	private static Context context;
 
 	/** grab the Android ID and the Bluetooth's MAC address */
@@ -66,9 +63,6 @@ public class DeviceInfo {
 			if ( bluetoothAdapter == null || bluetoothAdapter.getAddress() == null ) { bluetoothMAC = ""; }
 			else { bluetoothMAC = bluetoothAdapter.getAddress(); }
 		}
-		TelephonyManager phoneManager = (TelephonyManager) appContext.getSystemService(Context.TELEPHONY_SERVICE);
-		phoneNumber = phoneManager.getLine1Number();
-		if (phoneNumber == null) phoneNumber = "";
 	}
 	
 	public static String getBeiweVersion() {
