@@ -1,15 +1,15 @@
 package org.beiwe.app;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.beiwe.app.storage.PersistentData;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.PowerManager;
+
+import org.beiwe.app.storage.PersistentData;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PermissionHandler {
 	public static final int PERMISSION_GRANTED = PackageManager.PERMISSION_GRANTED;
@@ -20,6 +20,7 @@ public class PermissionHandler {
 	static {permissionMap.put( Manifest.permission.ACCESS_FINE_LOCATION, 1 );
 			permissionMap.put( Manifest.permission.ACCESS_NETWORK_STATE, 2 );
 			permissionMap.put( Manifest.permission.ACCESS_WIFI_STATE, 3 );
+			permissionMap.put( Manifest.permission.READ_SMS, 4 );
 			permissionMap.put( Manifest.permission.BLUETOOTH, 5 );
 			permissionMap.put( Manifest.permission.BLUETOOTH_ADMIN, 6 );
 			permissionMap.put( Manifest.permission.CALL_PHONE, 8 );
@@ -35,6 +36,7 @@ public class PermissionHandler {
 	static {permissionMessages.put( Manifest.permission.ACCESS_FINE_LOCATION, "use Location Services." );
 			permissionMessages.put( Manifest.permission.ACCESS_NETWORK_STATE, "view your Network State." );
 			permissionMessages.put( Manifest.permission.ACCESS_WIFI_STATE, "view your Wifi State." );
+			permissionMessages.put( Manifest.permission.READ_SMS, "view your SMS messages." );
 			permissionMessages.put( Manifest.permission.BLUETOOTH, "use Bluetooth." );
 			permissionMessages.put( Manifest.permission.BLUETOOTH_ADMIN, "use Bluetooth." );
 			permissionMessages.put( Manifest.permission.CALL_PHONE, "access your Phone service." );
