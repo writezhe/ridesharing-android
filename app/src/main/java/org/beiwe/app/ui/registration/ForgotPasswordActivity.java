@@ -1,9 +1,5 @@
 package org.beiwe.app.ui.registration;
 
-import android.Manifest;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -67,9 +63,6 @@ public class ForgotPasswordActivity extends RunningBackgroundServiceActivity {
 	}
 
 	public void callResetPassword(View view) {
-		Intent callIntent = new Intent(Intent.ACTION_CALL);
-		String phoneNum = PersistentData.getPasswordResetNumber();
-		callIntent.setData(Uri.parse("tel:" + phoneNum));
-		startActivity(callIntent);
+		super.callResearchAssistant(view);
 	}
 }
