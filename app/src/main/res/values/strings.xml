@@ -90,9 +90,9 @@
 
     <!-- Registration Activity Strings -->
     <string name="register_activity_welcoming_message">Welcome to the research study!</string>
-    <string name="registration_server_url_caption">URL for the study:</string>
+    <string name="registration_server_url_caption">Study server:</string>
     <string name="register_activity_user_id">User ID:</string>
-    <string name="register_activity_temp_password_caption">Registration code:</string>
+    <string name="register_activity_temp_password_caption">Temporary password:</string>
     <string name="register_activity_new_password_caption">Set your new password:</string>
     <string name="register_activity_confirm_new_password_caption">Confirm your new password:</string>
     <string name="register_activity_submit">Join the research study</string>
@@ -104,11 +104,11 @@
     <string name="couldnt_register">Can\'t register</string>
 
     <!-- Phone Numbers -->
-    <string name="title_activity_phone_number_entry">PhoneNumberEntry</string>
-    <string name="number_entry_top_message">Number Entry</string>
+    <string name="title_activity_phone_number_entry">Phone Numbers</string>
+    <string name="number_entry_top_message">Phone Numbers</string>
     <string name="number_entry_button">Set Numbers</string>
-    <string name="primaryCarePrompt">The phone number of the primary researcher</string>
-    <string name="passwordResetPrompt">The phone number of the study research assistant</string>
+    <string name="primaryCarePrompt">Your clinician\'s phone number:</string>
+    <string name="passwordResetPrompt">Phone number of the person running this study:</string>
 
     <!-- Loading Activity Strings -->
     <string name="loading_activity_loading_message" tools:ignore="TypographyEllipsis">Loading...</string>

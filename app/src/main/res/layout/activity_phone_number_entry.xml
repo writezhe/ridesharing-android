@@ -16,11 +16,14 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_gravity="center" />
 
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="30dp" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/primaryCarePrompt"
-        android:layout_gravity="center" />
+        android:text="@string/primaryCarePrompt" />
 
     <EditText
         android:id="@+id/primaryCareNumber"
@@ -34,8 +37,7 @@
    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/passwordResetPrompt"
-        android:layout_gravity="left" />
+        android:text="@string/passwordResetPrompt" />
 
     <EditText
         android:id="@+id/passwordResetNumber"
