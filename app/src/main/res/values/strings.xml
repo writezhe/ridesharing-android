@@ -89,13 +89,13 @@
     <string name="forgot_password_temporary_password_caption">Temporary password (the one the research assistant gave you)</string>
 
     <!-- Registration Activity Strings -->
-    <string name="register_activity_welcoming_message">Welcome to the research study!</string>
-    <string name="registration_server_url_caption">Study server:</string>
-    <string name="register_activity_user_id">User ID:</string>
-    <string name="register_activity_temp_password_caption">Temporary password:</string>
-    <string name="register_activity_new_password_caption">Set your new password:</string>
-    <string name="register_activity_confirm_new_password_caption">Confirm your new password:</string>
-    <string name="register_activity_submit">Join the research study</string>
+    <string name="registration_welcome_message">Welcome to the research study!</string>
+    <string name="registration_server_url_label">Study server:</string>
+    <string name="registration_user_id_label">User ID:</string>
+    <string name="registration_temp_password_label">Temporary password:</string>
+    <string name="registration_new_password_label">Set your new password:</string>
+    <string name="registration_confirm_new_password_label">Confirm your new password:</string>
+    <string name="registration_submit">Join the research study</string>
     <string name="title_activity_loading">Loading Beiwe</string>
     <string name="empty_temp_password">Please enter the Registration Code you were given at signup.</string>
     <string name="url_too_short">Please enter the URL for the study.</string>
@@ -107,8 +107,8 @@
     <string name="title_activity_phone_number_entry">Phone Numbers</string>
     <string name="number_entry_top_message">Phone Numbers</string>
     <string name="number_entry_button">Set Numbers</string>
-    <string name="primaryCarePrompt">Your clinician\'s phone number:</string>
-    <string name="passwordResetPrompt">Phone number of the person running this study:</string>
+    <string name="phone_number_entry_your_clinician_label">Your clinician\'s phone number:</string>
+    <string name="phone_number_entry_research_assistant_label">Phone number of the person running this study:</string>
 
     <!-- Loading Activity Strings -->
     <string name="loading_activity_loading_message" tools:ignore="TypographyEllipsis">Loading...</string>

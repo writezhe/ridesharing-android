@@ -22,7 +22,7 @@
 
     <TextView
         style="@style/RegistrationInputLabelStyle"
-        android:text="@string/primaryCarePrompt" />
+        android:text="@string/phone_number_entry_your_clinician_label" />
 
     <EditText
         android:id="@+id/primaryCareNumber"
@@ -33,7 +33,7 @@
 
     <TextView
         style="@style/RegistrationInputLabelStyle"
-        android:text="@string/passwordResetPrompt" />
+        android:text="@string/phone_number_entry_research_assistant_label" />
 
     <EditText
         android:id="@+id/passwordResetNumber"
