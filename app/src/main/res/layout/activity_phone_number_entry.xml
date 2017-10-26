@@ -21,8 +21,7 @@
         android:layout_height="30dp" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/RegistrationInputLabelStyle"
         android:text="@string/primaryCarePrompt" />
 
     <EditText
@@ -34,9 +33,8 @@
         <requestFocus />
     </EditText>
 
-   <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <TextView
+        style="@style/RegistrationInputLabelStyle"
         android:text="@string/passwordResetPrompt" />
 
     <EditText
@@ -49,8 +47,7 @@
     
     <Button
         android:id="@+id/phoneNumbersConfirmButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/RegistrationSubmitButton"
         android:text="@+string/number_entry_button"
         android:onClick="checkAndPromptConsent" />
 

@@ -29,14 +29,12 @@
 
         <TextView
             android:id="@+id/serverUrlCaption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/RegistrationInputLabelStyle"
             android:text="@string/registration_server_url_caption" />
 
         <EditText
             android:id="@+id/serverUrlInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/RegistrationInputStyle"
             android:inputType="textUri"
             android:ems="10" >
             <requestFocus />
@@ -44,62 +42,52 @@
 
         <TextView
             android:id="@+id/registerUserIdCaption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/RegistrationInputLabelStyle"
             android:text="@string/register_activity_user_id" />
 
         <EditText
             android:id="@+id/registerUserIdInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/RegistrationInputStyle"
             android:inputType="text"
             android:ems="10" >
         </EditText>
 
         <TextView
             android:id="@+id/registerTempPasswordCaption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/RegistrationInputLabelStyle"
             android:text="@string/register_activity_temp_password_caption" />
 
         <EditText
             android:id="@+id/registerTempPasswordInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/RegistrationInputStyle"
             android:inputType="textPassword"
             android:ems="10" />
 
         <TextView
             android:id="@+id/registerNewPasswordCaption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/RegistrationInputLabelStyle"
             android:text="@string/register_activity_new_password_caption"/>
 
         <EditText
             android:id="@+id/registerNewPasswordInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/RegistrationInputStyle"
             android:inputType="textPassword"
             android:ems="10"/>
 
         <TextView
             android:id="@+id/registerConfirmNewPasswordCaption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/RegistrationInputLabelStyle"
             android:text="@string/register_activity_confirm_new_password_caption"/>
 
         <EditText
             android:id="@+id/registerConfirmNewPasswordInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/RegistrationInputStyle"
             android:inputType="textPassword"
             android:ems="10"/>
 
         <Button
             android:id="@+id/submitButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            style="@style/RegistrationSubmitButton"
             android:onClick="registerButtonPressed"
             android:text="@string/register_activity_submit" />
 

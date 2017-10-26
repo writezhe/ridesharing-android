@@ -175,9 +175,9 @@
     <string name="enter_phone_numbers">You must enter values for the two phone numbers above </string>
 
     <!-- Consent Form -->
-    <string name="title_activity_consent_form">ConsentForm</string>
-    <string name="consentButton"> I Consent </string>
-    <string name="doNotConsentButton"> I do not Consent </string>
+    <string name="title_activity_consent_form">Consent Form</string>
+    <string name="consentButton">I consent</string>
+    <string name="doNotConsentButton">I do not consent</string>
     <string name="doNotConsentAlert"> You have indicated you do not consent to the terms of this application.  If you press "I understand" the app will exit, and you will not be enrolled in the study.  If you press "Cancel" the app will not exit and you will be able to press the "I Consent" button, which will then enroll you in the study. </string>
     <string name="default_consent_form_text">
         The Consent Form\n
