@@ -91,15 +91,15 @@
     <!-- Registration Activity Strings -->
     <string name="registration_welcome_message">Welcome to the research study!</string>
     <string name="registration_server_url_label">Study server:</string>
-    <string name="registration_server_url_hint">For example, www.example.com</string>
+    <string name="registration_server_url_hint">Server address</string>
     <string name="registration_user_id_label">User ID:</string>
-    <string name="registration_user_id_hint">For example, abcd1234</string>
-    <string name="registration_temp_password_label">Registration code:</string>
-    <string name="registration_temp_password_hint">For example, efgh5678</string>
-    <string name="registration_new_password_label">Set your new password:</string>
-    <string name="registration_new_password_hint">At least 6 characters</string>
-    <string name="registration_confirm_new_password_label">Confirm your new password:</string>
-    <string name="registration_confirm_new_password_hint">At least 6 characters</string>
+    <string name="registration_user_id_hint">User ID</string>
+    <string name="registration_temp_password_label">Temporary password:</string>
+    <string name="registration_temp_password_hint">Temp password</string>
+    <string name="registration_new_password_label">New password:</string>
+    <string name="registration_new_password_hint">New password</string>
+    <string name="registration_confirm_new_password_label">Confirm password:</string>
+    <string name="registration_confirm_new_password_hint">Confirm password</string>
     <string name="registration_submit">Join the research study</string>
     <string name="title_activity_loading">Loading Beiwe</string>
     <string name="empty_temp_password">Please enter the Registration Code you were given at signup.</string>
@@ -112,9 +112,9 @@
     <string name="title_activity_phone_number_entry">Phone Numbers</string>
     <string name="number_entry_top_message">Phone Numbers</string>
     <string name="number_entry_button">Set Numbers</string>
-    <string name="phone_number_entry_your_clinician_label">Your clinician\'s phone number:</string>
+    <string name="phone_number_entry_your_clinician_label">Primary researcher phone:</string>
     <string name="phone_number_entry_your_clinician_hint">10-digit number</string>
-    <string name="phone_number_entry_research_assistant_label">Phone number of the person running this study:</string>
+    <string name="phone_number_entry_research_assistant_label">Research assistant phone:</string>
     <string name="phone_number_entry_research_assistant_hint">10-digit number</string>
 
     <!-- Loading Activity Strings -->
