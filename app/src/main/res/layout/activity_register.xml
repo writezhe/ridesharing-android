@@ -35,8 +35,7 @@
         <EditText
             android:id="@+id/serverUrlInput"
             style="@style/RegistrationInputStyle"
-            android:inputType="textUri"
-            android:ems="10" >
+            android:inputType="textUri" >
             <requestFocus />
         </EditText>
 
@@ -49,8 +48,7 @@
             android:id="@+id/registerUserIdInput"
             style="@style/RegistrationInputStyle"
             android:inputType="text"
-            android:ems="10" >
-        </EditText>
+            android:ems="10" />
 
         <TextView
             android:id="@+id/registerTempPasswordCaption"
@@ -60,8 +58,7 @@
         <EditText
             android:id="@+id/registerTempPasswordInput"
             style="@style/RegistrationInputStyle"
-            android:inputType="textPassword"
-            android:ems="10" />
+            android:inputType="textPassword" />
 
         <TextView
             android:id="@+id/registerNewPasswordCaption"
@@ -71,8 +68,7 @@
         <EditText
             android:id="@+id/registerNewPasswordInput"
             style="@style/RegistrationInputStyle"
-            android:inputType="textPassword"
-            android:ems="10"/>
+            android:inputType="textPassword" />
 
         <TextView
             android:id="@+id/registerConfirmNewPasswordCaption"
@@ -82,8 +78,7 @@
         <EditText
             android:id="@+id/registerConfirmNewPasswordInput"
             style="@style/RegistrationInputStyle"
-            android:inputType="textPassword"
-            android:ems="10"/>
+            android:inputType="textPassword" />
 
         <Button
             android:id="@+id/submitButton"
