@@ -45,7 +45,8 @@ public class DeviceInfo {
 	 * 18: app version 2.1.5, fixed bugs with recording received SMS messages and sent MMS messages
 	 * 19: app version 2.2.0, enabled app to point to any server URL; improved Registration and Password Reset interfaces and networking.
 	 * 20: app version 2.2.1, updated text on Registration screens
-	 * 21: app version 2.2.2, updates styles, restores grouped survey notifications in Android 7 */
+	 * 21: app version 2.2.2, updates styles, restores persistent, individual survey notifications in Android 7
+	 * 22: app version 2.2.3, improves error messages */
 
 	private static String androidID;
 	private static String bluetoothMAC;
