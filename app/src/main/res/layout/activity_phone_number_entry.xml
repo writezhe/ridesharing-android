@@ -45,7 +45,7 @@
     <Button
         android:id="@+id/phoneNumbersConfirmButton"
         style="@style/RegistrationSubmitButton"
-        android:text="@+string/number_entry_button"
+        android:text="@string/number_entry_button"
         android:onClick="checkAndPromptConsent" />
 
     <ProgressBar

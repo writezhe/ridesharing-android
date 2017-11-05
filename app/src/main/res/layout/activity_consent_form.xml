@@ -19,12 +19,12 @@
         android:id="@+id/consentButton"
         style="@style/RegistrationSubmitButton"
         android:onClick="consentButton"
-        android:text="@+string/consentButton" />
+        android:text="@string/consentButton" />
 
     <Button
         android:id="@+id/doNotConsentButton"
         style="@style/RegistrationSubmitButton"
         android:onClick="doNotConsentButton"
-        android:text="@+string/doNotConsentButton" />
+        android:text="@string/doNotConsentButton" />
 
 </LinearLayout>
