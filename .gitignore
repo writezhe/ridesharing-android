@@ -8,9 +8,11 @@
 # Java class files
 *.class
 
-# generated files
+# generated files and APKs
 bin/
 gen/
+app/googlePlayStore
+app/onnelaLabServer
 
 # local config file (sdk path, etc)
 local.properties
