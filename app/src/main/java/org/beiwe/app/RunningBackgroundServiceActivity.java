@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,7 +36,7 @@ import org.beiwe.app.ui.user.AboutActivityLoggedOut;
  * 
  * @author Eli Jones, Josh Zagorsky
  */
-public class RunningBackgroundServiceActivity extends Activity {
+public class RunningBackgroundServiceActivity extends AppCompatActivity {
 	/** The backgroundService variable is an Activity's connection to the ... BackgroundService.
 	 * We ensure the BackgroundService is running in the onResume call, and functionality that
 	 * relies on the BackgroundService is always tied to UI elements, reducing the chance of
