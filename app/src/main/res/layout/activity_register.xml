@@ -28,6 +28,7 @@
             android:layout_height="30dp" />
 
         <TextView
+            android:id="@+id/serverUrlCaption"
             style="@style/RegistrationInputLabelStyle"
             android:text="@string/registration_server_url_label" />
 

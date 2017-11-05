@@ -320,7 +320,7 @@ public class PostRequest {
 
 	public static String addWebsitePrefix(String URL){
 		String serverUrl = PersistentData.getServerUrl();
-		if (serverUrl != null) {
+		if ((BuildConfig.CUSTOMIZABLE_SERVER_URL) && (serverUrl != null)) {
 			return serverUrl + URL;
 		} else {
 			// If serverUrl == null, this should be an old version of the app that didn't let the

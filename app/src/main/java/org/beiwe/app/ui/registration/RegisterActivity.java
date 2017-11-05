@@ -13,7 +13,9 @@ import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
+import org.beiwe.app.BuildConfig;
 import org.beiwe.app.DeviceInfo;
 import org.beiwe.app.PermissionHandler;
 import org.beiwe.app.R;
@@ -49,6 +51,13 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_register);
 
+		if (!BuildConfig.CUSTOMIZABLE_SERVER_URL) {
+			TextView serverUrlCaption = (TextView) findViewById(R.id.serverUrlCaption);
+			EditText serverUrlInput = (EditText) findViewById(R.id.serverUrlInput);
+			serverUrlCaption.setVisibility(View.GONE);
+			serverUrlInput.setVisibility(View.GONE);
+		}
+
 		serverUrlInput = (EditText) findViewById(R.id.serverUrlInput);
 		userIdInput = (EditText) findViewById(R.id.registerUserIdInput);
 		tempPasswordInput = (EditText) findViewById(R.id.registerTempPasswordInput);
@@ -75,7 +84,7 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 		String newPassword = newPasswordInput.getText().toString();
 		String confirmNewPassword = confirmNewPasswordInput.getText().toString();
 
-		if (serverUrl.length() == 0) {
+		if ((serverUrl.length() == 0) && (BuildConfig.CUSTOMIZABLE_SERVER_URL)) {
 			// If the study URL is empty, alert the user
 			AlertsManager.showAlert(getString(R.string.url_too_short), getString(R.string.couldnt_register), this);
 		} else if (userID.length() == 0) {
@@ -95,7 +104,9 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 			AlertsManager.showAlert(getString(R.string.password_mismatch), getString(R.string.couldnt_register), this);
 			return;
 		} else {
-			PersistentData.setServerUrl(serverUrl);
+			if (BuildConfig.CUSTOMIZABLE_SERVER_URL) {
+				PersistentData.setServerUrl(serverUrl);
+			}
 			PersistentData.setLoginCredentials(userID, tempPassword);
 			// Log.d("RegisterActivity", "trying \"" + LoginManager.getPatientID() + "\" with password \"" + LoginManager.getPassword() + "\"" );
 			tryToRegisterWithTheServer(addWebsitePrefix(getApplicationContext().getString(R.string.register_url)), newPassword);

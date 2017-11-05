@@ -47,6 +47,17 @@ android {
             buildConfigField("boolean", "APP_IS_DEV", "true")
         }
     }
+    flavorDimensions "customizableServerUrl"
+    productFlavors {
+        googlePlayStore {
+            dimension "customizableServerUrl"
+            buildConfigField("boolean", "CUSTOMIZABLE_SERVER_URL", 'true')
+        }
+        onnelaLabServer {
+            dimension "customizableServerUrl"
+            buildConfigField("boolean", "CUSTOMIZABLE_SERVER_URL", "false")
+        }
+    }
     useLibrary "org.apache.http.legacy"
 }
 // Don't include the default "debug" build variant as an option
