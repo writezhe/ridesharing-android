@@ -41,7 +41,7 @@
     <string name="invalid_encryption_key">Received an invalid encryption key, please contact the a Beiwe administrator.</string>
     <string name="http_message_1">Someone misconfigured the server! Please contact research staff.</string>
     <string name="http_message_400">This device could not be registered under the provided patient ID; please contact research staff.</string>
-    <string name="http_message_403_during_registration">Sorry: either your Study URL, your User ID, or your Registration Code is incorrect.</string>
+    <string name="http_message_403_during_registration">Sorry: either your Study URL, your User ID, or your Temporary Password is incorrect.</string>
     <string name="http_message_403_wrong_password">Sorry, your Current Password is incorrect.</string>
     <string name="http_message_403_wrong_password_forgot_password_page">Sorry, your Temporary Password is incorrect.</string>
     <string name="http_message_405">Sorry, this User ID already has a phone registered. Please contact the research staff and ask them to clear your registration so that you can register this new phone.</string>
@@ -103,7 +103,7 @@
     <string name="registration_replacement_password_hint">At least %d characters</string>
     <string name="registration_submit">Register</string>
     <string name="title_activity_loading">Loading Beiwe</string>
-    <string name="empty_temp_password">Please enter the Registration Code you were given at signup.</string>
+    <string name="empty_temp_password">Please enter the Temporary Password you were given at signup.</string>
     <string name="url_too_short">Please enter the URL for the study.</string>
     <string name="invalid_user_id">Please enter your User ID.</string>
     <string name="invalid_password">Invalid password.</string>
