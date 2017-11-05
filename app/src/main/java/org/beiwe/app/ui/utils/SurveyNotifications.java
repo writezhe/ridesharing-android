@@ -37,6 +37,7 @@ public class SurveyNotifications {
 			notificationBuilder.setContentText( appContext.getResources().getString(R.string.new_android_survey_notification_details) );
 			notificationBuilder.setSmallIcon(R.drawable.survey_icon);
 			notificationBuilder.setLargeIcon( BitmapFactory.decodeResource(appContext.getResources(), R.drawable.survey_icon ) );
+			notificationBuilder.setGroup(surveyId);
 		}
 		else if ( PersistentData.getSurveyType(surveyId).equals("audio_survey" ) ) {
 			activityIntent = new Intent( appContext, getAudioSurveyClass(surveyId) );
@@ -45,6 +46,7 @@ public class SurveyNotifications {
 			notificationBuilder.setContentText( appContext.getResources().getString(R.string.new_audio_survey_notification_details) );
 			notificationBuilder.setSmallIcon( R.drawable.voice_recording_icon );
 			notificationBuilder.setLargeIcon( BitmapFactory.decodeResource(appContext.getResources(), R.drawable.voice_recording_icon) );
+			notificationBuilder.setGroup(surveyId);
 		}
 		else { throw new NullPointerException("survey type did not parse correctly: " + PersistentData.getSurveyType(surveyId)); }
 
@@ -82,7 +84,7 @@ public class SurveyNotifications {
 	
 	/**Use to dismiss the notification corresponding the surveyIdInt.
 	 * @param appContext
-	 * @param notifCode */
+	 * @param surveyId */
 	public static void dismissNotification(Context appContext, String surveyId) {
  		NotificationManager notificationManager = (NotificationManager) appContext.getSystemService(Context.NOTIFICATION_SERVICE);
 		notificationManager.cancel(surveyId.hashCode());
