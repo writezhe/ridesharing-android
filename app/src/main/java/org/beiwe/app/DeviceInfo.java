@@ -44,7 +44,8 @@ public class DeviceInfo {
 	 * 17: app version 2.1.4, fixed a bug that still showed the next survey, even if that survey time had been deleted in the backend and the update had propagated to the phone
 	 * 18: app version 2.1.5, fixed bugs with recording received SMS messages and sent MMS messages
 	 * 19: app version 2.2.0, enabled app to point to any server URL; improved Registration and Password Reset interfaces and networking.
-	 * 20: app version 2.2.1, updated text on Registration screens */
+	 * 20: app version 2.2.1, updated text on Registration screens
+	 * 21: app version 2.2.2, updates styles, restores grouped survey notifications in Android 7 */
 
 	private static String androidID;
 	private static String bluetoothMAC;
