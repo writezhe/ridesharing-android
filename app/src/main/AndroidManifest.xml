@@ -44,14 +44,14 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
+        android:label="${appName}${appNameSuffix}"
         android:theme="@style/AppTheme" >
 
         <!-- ACTIVITIES -->
 
         <activity
             android:name="org.beiwe.app.ui.LoadingActivity"
-            android:label="@string/app_name" >
+            android:label="${appName}${appNameSuffix}" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -66,7 +66,7 @@
         
         <activity
             android:name="org.beiwe.app.survey.AudioRecorderEnhancedActivity"
-            android:label="@string/title_activity_audio_recorder" 
+            android:label="@string/title_activity_audio_recorder"
             android:screenOrientation="portrait">
         </activity>
 
@@ -78,7 +78,7 @@
         
         <activity
             android:name="org.beiwe.app.ui.DebugInterfaceActivity"
-            android:label="@string/app_name" />
+            android:label="@string/title_activity_debug_interface" />
         <activity
             android:name="org.beiwe.app.ui.user.LoginActivity"
             android:label="@string/title_activity_login" />

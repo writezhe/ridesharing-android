@@ -33,6 +33,7 @@
     <string name="button_record">Record</string>
 
     <!-- Debug Menu Strings -->
+    <string name="title_activity_debug_interface">Beiwe debug interface</string>
     <string name="title_activity_survey">Survey</string>
 
     <!-- Error Messages -->
@@ -144,6 +145,7 @@
     <string name="timeout_msg_2nd_half">" minutes, so your recording was automatically stopped and saved"</string>
 
     <!-- Notifications -->
+    <string name="survey_notification_app_name">Beiwe</string>
     <string name="new_android_survey_notification_ticker">New survey</string>
     <string name="new_android_survey_notification_details">Please fill out this survey.</string>
     <string name="new_audio_survey_notification_ticker">New voice recording</string>

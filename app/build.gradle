@@ -19,8 +19,8 @@ android {
         applicationId "org.beiwe.app"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 22       //TODO: update this Beiwe version code for new releases
-        versionName '2.2.3'  //TODO: update this Beiwe version number for new releases
+        versionCode 23       //TODO: update this Beiwe version code for new releases
+        versionName '2.2.4'  //TODO: update this Beiwe version number for new releases
         setProperty("archivesBaseName", "Beiwe-$versionName")
     }
     buildTypes {
@@ -28,21 +28,21 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             signingConfig signingConfigs.config
-            resValue "string", "app_name", "Beiwe"
+            manifestPlaceholders = [appNameSuffix: ""]
             buildConfigField("boolean", "APP_IS_BETA", "false")
             buildConfigField("boolean", "APP_IS_DEV", "false")
         }
         beta {
             versionNameSuffix("-beta")
             signingConfig signingConfigs.config
-            resValue "string", "app_name", "Beiwe-beta"
+            manifestPlaceholders = [appNameSuffix: "-beta"]
             buildConfigField("boolean", "APP_IS_BETA", "true")
             buildConfigField("boolean", "APP_IS_DEV", "false")
         }
         development {
             versionNameSuffix("-development")
             signingConfig signingConfigs.config
-            resValue "string", "app_name", "Beiwe-development"
+            manifestPlaceholders = [appNameSuffix: "-development"]
             buildConfigField("boolean", "APP_IS_BETA", "true")
             buildConfigField("boolean", "APP_IS_DEV", "true")
         }
@@ -51,10 +51,12 @@ android {
     productFlavors {
         googlePlayStore {
             dimension "customizableServerUrl"
+            manifestPlaceholders = [appName: "Beiwe2"]
             buildConfigField("boolean", "CUSTOMIZABLE_SERVER_URL", 'true')
         }
         onnelaLabServer {
             dimension "customizableServerUrl"
+            manifestPlaceholders = [appName: "Beiwe"]
             buildConfigField("boolean", "CUSTOMIZABLE_SERVER_URL", "false")
         }
     }

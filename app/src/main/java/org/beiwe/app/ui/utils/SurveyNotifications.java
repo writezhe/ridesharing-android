@@ -29,7 +29,7 @@ public class SurveyNotifications {
 		//activityIntent contains information on the action triggered by tapping the notification. 
 		Intent activityIntent;
 		NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(appContext);
-		notificationBuilder.setContentTitle( appContext.getString(R.string.app_name) );
+		notificationBuilder.setContentTitle( appContext.getString(R.string.survey_notification_app_name) );
 		if ( PersistentData.getSurveyType(surveyId).equals("tracking_survey" ) ) {
 			activityIntent = new Intent(appContext, SurveyActivity.class);
 			activityIntent.setAction( appContext.getString(R.string.start_tracking_survey) );
