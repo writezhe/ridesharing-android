@@ -61,11 +61,17 @@ public class DeviceInfo {
 		context = appContext;
 		androidID = Settings.Secure.getString( appContext.getContentResolver(), Settings.Secure.ANDROID_ID );
 		
-		/* If the BluetoothAdapter is null, or if the BluetoothAdapter.getAddress() returns null 
-		 * (this does happen sometimes!), record an empty string for the Bluetooth Mac address. */
-		
+		/* If the BluetoothAdapter is null, or if the BluetoothAdapter.getAddress() returns null,
+		 * record an empty string for the Bluetooth MAC Address.
+		 * The Bluetooth MAC Address is always empty in Android 8.0 and above, because the app needs
+		 * the LOCAL_MAC_ADDRESS permission, which is a system permission that it's not allowed to
+		 * have:
+		 * https://android-developers.googleblog.com/2017/04/changes-to-device-identifiers-in.html
+		 * The Bluetooth MAC Address is also sometimes empty on Android 7 and lower. */
 		if ( android.os.Build.VERSION.SDK_INT >= 23) { //This will not work on all devices: http://stackoverflow.com/questions/33377982/get-bluetooth-local-mac-address-in-marshmallow
-			bluetoothMAC = EncryptionEngine.safeHash(android.provider.Settings.Secure.getString(appContext.getContentResolver(), "bluetooth_address")); }
+			String bluetoothAddress = Settings.Secure.getString(appContext.getContentResolver(), "bluetooth_address");
+			if (bluetoothAddress == null) { bluetoothAddress = ""; }
+			bluetoothMAC = EncryptionEngine.safeHash(bluetoothAddress); }
 		else { //Android before version 6
 			BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();	
 			if ( bluetoothAdapter == null || bluetoothAdapter.getAddress() == null ) { bluetoothMAC = ""; }
