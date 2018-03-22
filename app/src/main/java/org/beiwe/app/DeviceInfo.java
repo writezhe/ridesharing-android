@@ -47,7 +47,8 @@ public class DeviceInfo {
 	 * 20: app version 2.2.1, updated text on Registration screens
 	 * 21: app version 2.2.2, updates styles, restores persistent, individual survey notifications in Android 7
 	 * 22: app version 2.2.3, improves error messages
-	 * 23: app version 2.2.4, OnnelaLabServer version and GooglePlayStore version (with customizable URL) have different names (Beiwe vs. Beiwe2) */
+	 * 23: app version 2.2.4, OnnelaLabServer version and GooglePlayStore version (with customizable URL) have different names (Beiwe vs. Beiwe2)
+	 * 24: app version 2.2.5, handle null Bluetooth MAC Address in Android 8.0 and above */
 
 	private static String androidID;
 	private static String bluetoothMAC;
