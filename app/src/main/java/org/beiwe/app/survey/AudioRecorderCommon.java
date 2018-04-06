@@ -99,6 +99,9 @@ public class AudioRecorderCommon extends SessionActivity {
     	// Each time the screen is flipped, the app checks if it's time to show the play button
         if (!displayPlaybackButton) { playButton.setVisibility(Button.INVISIBLE); }
     	else { playButton.setVisibility(Button.VISIBLE) ; }
+
+    	// Disable the "Save" button; only enable it once you've made a recording
+    	disableSaveButton();
 	}
 
 	@Override
