@@ -44,7 +44,6 @@ public class AudioRecorderCommon extends SessionActivity {
 	private final Integer ENCRYPTION_TIMEOUT_INTERVAL_MILLISECONDS = 20;
 	protected static final String LOG_TAG = "AudioRecorderActivity";
 	protected final float DISABLED_BUTTON_ALPHA = 0.5f;
-	protected final String toastMsg = PersistentData.getSurveySubmitSuccessToastText();
 
 	protected String unencryptedTempAudioFilePath; //This is to be overridden in subclasses.
 	protected Boolean notEncrypting = true; //This is a lock on deleting that temp file
@@ -113,7 +112,10 @@ public class AudioRecorderCommon extends SessionActivity {
 	         * the user leaves this screen. may be redundant. */
 			waitUntilEncrypted();
 			AudioFileManager.delete(unencryptedTempAudioFileName);
-			if ( everEncrypted ) { Toast.makeText(getApplicationContext(), toastMsg, Toast.LENGTH_LONG).show(); }
+			if (everEncrypted) {
+				Toast.makeText(getApplicationContext(), PersistentData.getSurveySubmitSuccessToastText(), Toast.LENGTH_LONG).show();
+			}
+			// TODO: show an error message if there was a recording and it failed to be encrypted
 		}
 	}
 
