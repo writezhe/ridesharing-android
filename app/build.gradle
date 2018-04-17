@@ -13,11 +13,11 @@ android {
             storePassword keystoreProperties['storePassword']
         }
     }
-    compileSdkVersion 23
+    compileSdkVersion 25
     buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "org.beiwe.app"
-        minSdkVersion 16
+        minSdkVersion 18
         targetSdkVersion 23
         versionCode 24       //TODO: update this Beiwe version code for new releases
         versionName '2.2.5'  //TODO: update this Beiwe version number for new releases
@@ -28,6 +28,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             signingConfig signingConfigs.config
+            debuggable true
             manifestPlaceholders = [appNameSuffix: ""]
             buildConfigField("boolean", "APP_IS_BETA", "false")
             buildConfigField("boolean", "APP_IS_DEV", "false")
@@ -35,6 +36,7 @@ android {
         beta {
             versionNameSuffix("-beta")
             signingConfig signingConfigs.config
+            debuggable true
             manifestPlaceholders = [appNameSuffix: "-beta"]
             buildConfigField("boolean", "APP_IS_BETA", "true")
             buildConfigField("boolean", "APP_IS_DEV", "false")
@@ -42,6 +44,7 @@ android {
         development {
             versionNameSuffix("-development")
             signingConfig signingConfigs.config
+            debuggable true
             manifestPlaceholders = [appNameSuffix: "-development"]
             buildConfigField("boolean", "APP_IS_BETA", "true")
             buildConfigField("boolean", "APP_IS_DEV", "true")
@@ -61,6 +64,10 @@ android {
         }
     }
     useLibrary "org.apache.http.legacy"
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 // Don't include the default "debug" build variant as an option
 android.variantFilter { variant ->
@@ -76,6 +83,19 @@ repositories {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:23.4.0'
+    implementation 'com.google.android.gms:play-services-maps:11.8.0'
+    implementation 'com.google.android.gms:play-services-places:11.8.0'
+    implementation 'com.android.support:support-v4:25.4.0'
+    implementation 'com.android.support:recyclerview-v7:25.4.0'
+    compile 'com.google.android.gms:play-services-location:11.8.0'
+    compile 'com.jakewharton:butterknife:8.4.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
+    compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support:appcompat-v7:25.2.0'
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.uber.sdk:rides-android:0.5.3'
     compile 'com.commonsware.cwac:anddown:0.3.0'
 }
