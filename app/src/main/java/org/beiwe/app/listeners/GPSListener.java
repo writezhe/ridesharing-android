@@ -2,6 +2,7 @@ package org.beiwe.app.listeners;
 
 import org.beiwe.app.CrashHandler;
 import org.beiwe.app.PermissionHandler;
+import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.storage.TextFileManager;
 
 import android.content.Context;
@@ -11,6 +12,13 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Range;
+
+import java.io.Console;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /* Notes/observation on Location Services:
  * We are passing in "0" as the minimum time for location updates to be pushed to us, this results in about
@@ -18,17 +26,23 @@ import android.util.Log;
  * This makes sense, GPSs on phones do not Have that kind of granularity/resolution.
  * However, we need the resolution in milliseconds for the line-by-line encryption scheme.
  * So, we grab the system time instead.  This may add a fraction of a second to the timestamp.
- * 
+ *
  * We are NOT recording which location provider provided the update, or which location providers
  * are available on a given device. */
 
 public class GPSListener implements LocationListener {
-	
+
 	public static String header = "timestamp, latitude, longitude, altitude, accuracy";
-	
+
 	private Context appContext;
 	private PackageManager pkgManager;
 	private LocationManager locationManager;
+	private List<Location> timeFrameLocations;
+	private long updateFrequency;
+	private Location lastLocation;
+	private double distance;
+	private Map<Double, Long> listenerOnMap;
+	private Map<Double, Long> listenerOffMap;
 
 	private Boolean enabled = null;
 	//does not have an explicit "exists" boolean.  Use check_status() function, it will return false if there is no GPS.
@@ -50,11 +64,39 @@ public class GPSListener implements LocationListener {
 		Log.d("initializing GPS...", "initializing GPS...");
 		//There is a possibility (mostly in development) that this will not be instantiated all the time, so we instantiate an extra one here.
 		locationManager = (LocationManager) this.appContext.getSystemService(Context.LOCATION_SERVICE);
+		timeFrameLocations = new ArrayList<Location>();
+		updateFrequency = 0;
+		listenerOnMap = new HashMap<Double, Long>();
+		listenerOnMap.put(0d, 3l);
+		listenerOnMap.put(1d, 4l);
+		listenerOnMap.put(2d, 5l);
+		listenerOnMap.put(3d, 8l);
+		listenerOnMap.put(4d, 10l);
+		listenerOnMap.put(5d, 15l);
+
+		listenerOffMap = new HashMap<Double, Long>();
+		listenerOffMap.put(0d, 200l);
+		listenerOffMap.put(1d, 150l);
+		listenerOffMap.put(2d, 100l);
+		listenerOffMap.put(3d, 100l);
+		listenerOffMap.put(4d, 80l);
+		listenerOffMap.put(5d, 50l);
+
+		PersistentData.setGpsOnDurationSeconds(60);
+		PersistentData.setGpsOffDurationSeconds(30);
 	}
 
 	/** Turns on GPS providers, provided they are accessible. Handles permission errors appropriately */
 	@SuppressWarnings("MissingPermission")
 	public synchronized void turn_on() {
+		turn_on(updateFrequency);
+	}
+
+	/** Turns on GPS providers, provided they are accessible. Handles permission errors appropriately */
+	@SuppressWarnings("MissingPermission")
+	public synchronized void turn_on(long updateFrequency) {
+		Log.d("Location1", "turn_on");
+		Log.d("Location1", "Update frequency : " + updateFrequency);
 		Boolean coarsePermissible = PermissionHandler.checkAccessCoarseLocation(appContext);
 		Boolean finePermissible = PermissionHandler.checkAccessFineLocation(appContext);
 
@@ -78,10 +120,10 @@ public class GPSListener implements LocationListener {
 		if ( fineExists && finePermissible && coarsePermissible) { // parameters: provider, minTime, minDistance, listener);
 			//AndroidStudio insists that both of these require the same location permissions, which seems to be correct
 			// since there is only one toggle in userland anyway, yes or no to location permissions.
-			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, updateFrequency, 0, this);
 		}
 		if ( coarseExists && finePermissible && coarsePermissible) { // parameters: provider, minTime, minDistance, listener);
-			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
+			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, updateFrequency, 0, this);
 		}
 
 		//Verbose statements on the quality of GPS data streams.
@@ -99,9 +141,35 @@ public class GPSListener implements LocationListener {
 	public synchronized void turn_off(){
 		// pretty confident this cannot fail.
 		locationManager.removeUpdates(this);
+		setUpdateFrequency();
+		Log.d("Location1", "turn_off");
 		enabled = false;
 	}
-	
+
+	private void setUpdateFrequency() {
+		if (timeFrameLocations.isEmpty()) {
+			PersistentData.setGpsOffDurationSeconds(30);
+			updateFrequency = 10000;
+			return;
+		}
+		Location start = timeFrameLocations.get(0);
+		Location end = timeFrameLocations.get(timeFrameLocations.size() - 1);
+
+		double elapsedTime = (end.getTime() - start.getTime()) / 1_000; // Convert milliseconds to seconds
+		double calculatedSpeed = distance / elapsedTime;
+		Log.d("Location1", "Speed : " + calculatedSpeed);
+		timeFrameLocations.clear();
+		distance = 0;
+		lastLocation = null;
+		if (!listenerOffMap.containsKey(Math.floor(calculatedSpeed))) {
+			PersistentData.setGpsOffDurationSeconds(30);
+			updateFrequency = 10000;
+			return;
+		}
+		updateFrequency = PersistentData.getGpsOnDurationMilliseconds() / listenerOnMap.get(Math.floor(calculatedSpeed));
+		PersistentData.setGpsOffDurationSeconds(listenerOffMap.get(Math.floor(calculatedSpeed)));
+	}
+
 	/** pushes an update to us whenever there is a location update. */
 	@Override
 	public void onLocationChanged(Location location) {
@@ -113,14 +181,26 @@ public class GPSListener implements LocationListener {
 				+ location.getLongitude() + TextFileManager.DELIMITER
 				+ location.getAltitude() + TextFileManager.DELIMITER
 				+ location.getAccuracy();
+
+		timeFrameLocations.add(location);
+
+		if (lastLocation != null) {
+			distance += location.distanceTo(lastLocation);
+		}
+
+		lastLocation = location;
+
+		Log.d("Location1", "Change");
+		Log.d("Location1", data);
+
 		//note, altitude is notoriously inaccurate, getAccuracy only applies to latitude/longitude
 		TextFileManager.getGPSFile().writeEncrypted(data);
 	}
-	
+
 	/*  We do not actually need to implement any of the following overrides.
 	 *  When a provider has a changed we do not need to record it, and we have
 	 *  not encountered any corner cases where these are relevant. */
-	
+
 //  arg0 for Provider Enabled/Disabled is a string saying "network" or "gps".
 	@Override
 	public void onProviderDisabled(String arg0) { } // Log.d("A location provider was disabled.", arg0); }
