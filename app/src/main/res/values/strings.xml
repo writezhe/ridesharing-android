@@ -4,6 +4,7 @@
     appContext.getResources().getString(R.string.name_of_string) -->
 
     <!-- General Strings -->
+    <string name="app_name">Beiwe</string>
     <string name="action_settings">Settings</string>
 	
     <!-- Permissions Strings -->
@@ -200,5 +201,14 @@
     <string name="randomizeWithMemory">randomize_with_memory</string>
     <string name="numberQuestions">number_of_random_questions</string>
     <string name="triggeredSurvey">trigger_on_first_download</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_directions">DirectionsActivity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="tab_text_1">Uber</string>
+    <string name="tab_text_2">Transit</string>
+    <string name="tab_text_3">Uber + Transit</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
