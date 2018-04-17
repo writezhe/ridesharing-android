@@ -2,6 +2,7 @@ package org.beiwe.app.networking;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.beiwe.app.BuildConfig;
 import org.beiwe.app.CrashHandler;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -82,6 +84,26 @@ public class PostRequest {
 	}
 
 	/**For use with Async tasks.
+	 * Makes an HTTP post request with the provided URL and parameters, returns a string of the server's entire response.
+	 * @param parameters HTTP parameters
+	 * @param urlString a string containing a url
+	 * @return a string of the contents of the return from an HTML request.*/
+	//TODO: Eli. low priority. investigate the android studio warning about making this a package local function
+	public static JSONObject httpRequest(String parameters, String urlString, List<String> headers)  {
+		try {
+			String response = doPostRequestGetResponseString( parameters, urlString, headers);
+			JSONObject responseJSON = new JSONObject();
+			return new JSONObject(response);
+		}
+		catch (Exception e) {
+			Log.e("PostRequest error", "With exception: " + e);
+			Toast.makeText(appContext, e.toString(), Toast.LENGTH_SHORT).show();
+			e.printStackTrace();
+		}
+		return new JSONObject();
+	}
+
+	/**For use with Async tasks.
 	 * Makes an HTTP post request with the provided URL and parameters, returns a string of the server's entire response. 
 	 * @param parameters HTTP parameters
 	 * @param urlString a string containing a url
@@ -117,6 +139,27 @@ public class PostRequest {
 		return connection;
 	}
 
+	/**Creates an HTTP connection with minimal settings.  Some network funcitonality
+	 * requires this minimal object.
+	 * @param url a URL object
+	 * @return a new HttpsURLConnection with minimal settings applied
+	 * @throws IOException This function can throw 2 kinds of IO exceptions: IOExeptions and ProtocolException*/
+	private static HttpsURLConnection
+	minimalHTTP(URL url, List<String> headers) throws IOException {
+		// Create a new HttpsURLConnection and set its parameters
+		HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+		connection.setUseCaches(false);
+		connection.setDoOutput(true);
+		connection.setRequestMethod("POST");
+		for (String s : headers) {
+			connection.setRequestProperty(s.split(",")[0], s.split(",")[1]);
+		}
+		connection.setRequestProperty("Connection", "Keep-Alive");
+		connection.setRequestProperty("Cache-Control", "no-cache");
+		connection.setConnectTimeout(3000);
+		connection.setReadTimeout(5000);
+		return connection;
+	}
 
 	/**For use with functionality that requires additional parameters be added to an HTTP operation.
 	 * @param parameters a string that has been created using the makeParameters function
@@ -128,6 +171,22 @@ public class PostRequest {
 		DataOutputStream request = new DataOutputStream( connection.getOutputStream() );
 		request.write( securityParameters(newPassword).getBytes() );
 		request.write( parameters.getBytes() );
+		request.flush();
+		request.close();
+
+		return connection;
+	}
+
+	/**For use with functionality that requires additional parameters be added to an HTTP operation.
+	 * @param parameters a string that has been created using the makeParameters function
+	 * @param url a URL object
+	 * @return a new HttpsURLConnection with common settings */
+	private static HttpsURLConnection setupHTTP( String parameters, URL url, String newPassword, List<String> headers) throws IOException {
+		HttpsURLConnection connection = minimalHTTP(url, headers);
+
+		DataOutputStream request = new DataOutputStream( connection.getOutputStream() );
+		//request.write( securityParameters(newPassword).getBytes() );
+		request.writeBytes(parameters);
 		request.flush();
 		request.close();
 
@@ -157,6 +216,14 @@ public class PostRequest {
 	
 	private static String doPostRequestGetResponseString(String parameters, String urlString) throws IOException {
 		HttpsURLConnection connection = setupHTTP( parameters, new URL( urlString ), null );
+		connection.connect();
+		String data = readResponse(connection);
+		connection.disconnect();
+		return data;
+	}
+
+	private static String doPostRequestGetResponseString(String parameters, String urlString, List<String> headers) throws IOException {
+		HttpsURLConnection connection = setupHTTP( parameters, new URL( urlString ), null, headers);
 		connection.connect();
 		String data = readResponse(connection);
 		connection.disconnect();
