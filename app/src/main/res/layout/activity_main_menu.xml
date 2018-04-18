@@ -42,4 +42,12 @@
         android:layout_gravity="center"
         android:text="@string/default_call_clinician_text" />
 
+    <Button
+        android:id="@+id/bTransit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="transit"
+        android:layout_gravity="center"
+        android:text="Transit" />
+
 </LinearLayout>

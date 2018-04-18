@@ -22,6 +22,7 @@ import android.view.View;
 import org.beiwe.app.BackgroundService.BackgroundServiceBinder;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.ui.user.AboutActivityLoggedOut;
+import org.beiwe.app.ui.user.MapsActivity;
 
 /**All Activities in the app extend this Activity.  It ensures that the app's key services (i.e.
  * BackgroundService, LoginManager, PostRequest, DeviceInfo, and WifiListener) are running before
@@ -138,6 +139,13 @@ public class RunningBackgroundServiceActivity extends AppCompatActivity {
 	@SuppressWarnings("MissingPermission")
 	public void callClinician(View v) {
 		startPhoneCall(PersistentData.getPrimaryCareNumber());
+	}
+
+	/** sends user to phone, calls the user's clinician. */
+	@SuppressWarnings("MissingPermission")
+	public void transit(View v) {
+		Intent i = new Intent(this, MapsActivity.class);
+		startActivity(i);
 	}
 	
 	/** sends user to phone, calls the study's research assistant. */
