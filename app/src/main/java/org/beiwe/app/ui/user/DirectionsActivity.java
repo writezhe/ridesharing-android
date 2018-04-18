@@ -12,9 +12,9 @@ import com.uber.sdk.android.core.auth.LoginManager;
 
 import org.beiwe.app.R;
 import org.beiwe.app.session.SessionActivity;
-import org.beiwe.app.ui.user.fragments.HybridFragment;
-import org.beiwe.app.ui.user.fragments.TransitFragment;
-import org.beiwe.app.ui.user.fragments.UberFragment;
+import org.beiwe.app.ui.fragments.HybridFragment;
+import org.beiwe.app.ui.fragments.TransitFragment;
+import org.beiwe.app.ui.fragments.UberFragment;
 
 public class DirectionsActivity extends SessionActivity {
 
