@@ -3,7 +3,9 @@ package org.beiwe.app;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,6 +14,7 @@ import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -86,6 +89,15 @@ public class RunningBackgroundServiceActivity extends AppCompatActivity {
 		startingIntent.addFlags(Intent.FLAG_FROM_BACKGROUND);
 		startService(startingIntent);
         bindService( startingIntent, backgroundServiceConnection, Context.BIND_AUTO_CREATE);
+		setupRestartTimer();
+	}
+
+	private void setupRestartTimer() {
+		Intent restartServiceIntent = new Intent( getApplicationContext(), BackgroundService.class);
+		restartServiceIntent.setPackage( getPackageName() );
+		PendingIntent restartServicePendingIntent = PendingIntent.getService( getApplicationContext(), 1, restartServiceIntent, 0 );
+		AlarmManager alarmService = (AlarmManager) getApplicationContext().getSystemService( Context.ALARM_SERVICE );
+		alarmService.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000 * 60 * 2, 100 * 60 * 2, restartServicePendingIntent);
 	}
 
 
