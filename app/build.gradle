@@ -17,7 +17,7 @@ android {
     buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "org.beiwe.app"
-        minSdkVersion 16
+        minSdkVersion 18
         targetSdkVersion 23
         versionCode 26       //TODO: update this Beiwe version code for new releases
         versionName '2.2.7'  //TODO: update this Beiwe version number for new releases
@@ -37,15 +37,15 @@ android {
             versionNameSuffix("-beta")
             signingConfig signingConfigs.config
             manifestPlaceholders = [appNameSuffix: "-beta"]
-            buildConfigField("boolean", "APP_IS_BETA", "true")
-            buildConfigField("boolean", "APP_IS_DEV", "false")
+            buildConfigField("boolean", "APP_IS_BETA", "false")
+            buildConfigField("boolean", "APP_IS_DEV", "true")
             buildConfigField("String", "SENTRY_DSN", "\"" + keystoreProperties['betaDSN'] + "\"")
         }
         development {
             versionNameSuffix("-development")
             signingConfig signingConfigs.config
             manifestPlaceholders = [appNameSuffix: "-development"]
-            buildConfigField("boolean", "APP_IS_BETA", "true")
+            buildConfigField("boolean", "APP_IS_BETA", "false")
             buildConfigField("boolean", "APP_IS_DEV", "true")
             buildConfigField("String", "SENTRY_DSN", "\"" + keystoreProperties['developmentDSN'] + "\"")
             debuggable true
@@ -83,8 +83,13 @@ repositories {
     }
 }
 
+configurations {
+    all {
+        exclude module: 'httpclient'
+    }
+}
+
 dependencies {
-    compile 'com.android.support:appcompat-v7:25.4.0'
     compile 'io.sentry:sentry-android:1.7.3'
     implementation 'com.google.android.gms:play-services-maps:11.8.0'
     implementation 'com.google.android.gms:play-services-places:11.8.0'
@@ -93,7 +98,8 @@ dependencies {
     compile 'com.google.android.gms:play-services-location:11.8.0'
     compile 'com.jakewharton:butterknife:8.4.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
-    compile 'com.android.support:design:25.4.0'
+    compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support:appcompat-v7:25.2.0'
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'

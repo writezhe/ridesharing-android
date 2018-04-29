@@ -4,7 +4,7 @@
     appContext.getResources().getString(R.string.name_of_string) -->
 
     <!-- General Strings -->
-    <string name="app_name">Beiwe</string>
+    <string name="app_name">Futto</string>
     <string name="action_settings">Settings</string>
 	
     <!-- Permissions Strings -->
