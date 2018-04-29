@@ -1,17 +1,29 @@
 package org.beiwe.app.ui.handlers;
 
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.maps.android.PolyUtil;
 
 import org.beiwe.app.networking.GetRequest;
 import org.beiwe.app.networking.HTTPUIAsync;
+import org.beiwe.app.ui.fragments.getPolyline;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.reactivex.Single;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by devsen on 4/2/18.
@@ -129,7 +141,7 @@ public class UberManager {
                 super.onPostExecute(arg);
                 //Toast.makeText(getApplicationContext(), responseCode + "", Toast.LENGTH_SHORT).show();
                 //parseStops(response, transit, listener);
-                parseUberRoutes(response, productId, estimate, listener);
+                parseUberRoutes(response, productId, start, end, estimate, listener);
             }
         };
     }
@@ -163,7 +175,7 @@ public class UberManager {
         }
     }
 
-    private void parseUberRoutes(JSONObject response, String productId, double estimate, UberManagerListener listener) {
+    private void parseUberRoutes(JSONObject response, String productId, LatLng start, LatLng end, double estimate, UberManagerListener listener) {
         try {
             Double fareValue = 0d;
             Double duration = 0d;
@@ -178,18 +190,60 @@ public class UberManager {
                     break;
                 }
             }
-            createStep(fareValue, estimate, duration, distance, listener);
+            createStep(fareValue, start, end, estimate, duration, distance, listener);
         } catch (Exception e) {
             Log.d("Error", e.toString());
         }
     }
 
-    private void createStep(Double fare, Double estimate, Double duration, Double distance, UberManagerListener listener) {
+    private void createStep(Double fare, LatLng start, LatLng end, Double estimate, Double duration, Double distance, UberManagerListener listener) {
         Step s = new Step(estimate, duration);
         s.setType("UBER");
         s.setDuration(duration);
         s.setDistance(distance * 1609);
+        s.setName("Uber for " + String.format("%.2f", duration / 60) + " mins");
         s.setFare(fare);
-        listener.onResponse(s);
+        getPolyline(start, end, s, listener);
+    }
+
+    public void getPolyline(LatLng start, LatLng end, Step step, UberManagerListener listener) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://maps.googleapis.com/maps/api/directions/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        getPolyline polyline = retrofit.create(getPolyline.class);
+
+        polyline.getPolylineData(start.latitude + "," + start.longitude, end.latitude + "," + end.longitude)
+                .enqueue(new Callback<JsonObject>() {
+                    @Override
+                    public void onResponse(@NonNull Call<JsonObject> call, @NonNull Response<JsonObject> response) {
+
+                        JsonObject gson = new JsonParser().parse(response.body().toString()).getAsJsonObject();
+
+                        if (gson == null) {
+                            return;
+                        }
+
+                        try {
+                            List<LatLng> polyline = new ArrayList<LatLng>();
+                            JSONObject jsonObject = new JSONObject(gson.toString());
+                            JSONArray steps = jsonObject.getJSONArray("routes").getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONArray("steps");
+                            for (int i = 0; i < steps.length(); i++) {
+                                String line = steps.getJSONObject(i).getJSONObject("polyline").getString("points");
+                                polyline.addAll(PolyUtil.decode(line));
+                            }
+                            step.setPolyline(PolyUtil.encode(polyline));
+                            listener.onResponse(step);
+                        } catch (Exception e) {
+                            listener.onResponse(step);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<JsonObject> call, Throwable t) {
+
+                    }
+                });
     }
 }

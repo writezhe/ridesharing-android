@@ -61,7 +61,7 @@ public class Step {
             type = step.getString("travel_mode");
             duration = step.getJSONObject("duration").getDouble("value");
             distance = step.getJSONObject("distance").getDouble("value");
-            name = "Walk for " + distance;
+            name = "Walk for " + String.format("%.2f", duration / 60) + " mins";
             this.departureTime = departureTime;
             arrivalTime = new Date(departureTime.getTime() + ((long) duration * 1000));
             start = new LatLng(step.getJSONObject("start_location").getDouble("lat"), step.getJSONObject("start_location").getDouble("lng"));

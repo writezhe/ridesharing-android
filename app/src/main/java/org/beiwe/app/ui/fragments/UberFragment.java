@@ -1,6 +1,8 @@
 package org.beiwe.app.ui.fragments;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,14 +21,22 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.SquareCap;
+import com.google.maps.android.PolyUtil;
+import com.google.maps.android.ui.IconGenerator;
 import com.uber.sdk.android.rides.RideRequestButton;
 
 import org.beiwe.app.R;
+import org.beiwe.app.ui.handlers.Step;
 import org.beiwe.app.ui.handlers.UberHandler;
+import org.beiwe.app.ui.handlers.UberManager;
 import org.beiwe.app.ui.user.MapsActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.google.android.gms.maps.model.JointType.ROUND;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -115,7 +125,43 @@ public class UberFragment extends Fragment implements OnMapReadyCallback {
                 .zoom(17)
                 .build();
         mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        addMarker(source);
-        addMarker(destination);
+
+        Step step = new Step(0);
+        step.setName("Uber to destination");
+        UberManager.getInstance(this).getPolyline(source, destination, step, new UberManager.UberManagerListener() {
+            @Override
+            public void onResponse(Step step) {
+                showPolyline(step);
+            }
+        });
+    }
+
+    private void showPolyline(Step step) {
+        PolylineOptions lineOptions = new PolylineOptions();
+        lineOptions.width(10);
+        lineOptions.color(Color.BLACK);
+        lineOptions.startCap(new SquareCap());
+        lineOptions.endCap(new SquareCap());
+        lineOptions.jointType(ROUND);
+
+        String polyline = step.getPolyline();
+        if (polyline == null) {
+            return;
+        }
+        List<LatLng> latLngs = PolyUtil.decode(polyline);
+        lineOptions.addAll(latLngs);
+
+        IconGenerator icg = new IconGenerator(getActivity());
+        Bitmap bm = icg.makeIcon(step.getName());
+
+        MarkerOptions options = new MarkerOptions();
+        options.position(latLngs.get(0));
+        options.icon(BitmapDescriptorFactory.fromBitmap(bm));
+        mMap.addMarker(options);
+        mMap.addPolyline(lineOptions);
+    }
+
+    public void onBackPressed() {
+
     }
 }

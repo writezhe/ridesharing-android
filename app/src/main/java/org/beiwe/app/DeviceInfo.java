@@ -13,10 +13,10 @@ import org.beiwe.app.storage.EncryptionEngine;
 /**This is a class that NEEDS to be instantiated in the background service. In order to get the Android ID, the class needs
  * Context. Once instantiated, the class assigns two variables for AndroidID and BluetoothMAC. Once they are instantiated,
  * they can be called from different classes to be used. They are hashed when they are called.
- * 
+ *
  * The class is used to grab unique ID data, and pass it to the server. The data is used while authenticating users
- * 
- * @author Dor Samet, Eli Jones */  
+ *
+ * @author Dor Samet, Eli Jones */
 
 public class DeviceInfo {
 	/* TODO:  Ensure this number is updated whenever a version of the app is pushed to the website for any reason.
@@ -48,7 +48,9 @@ public class DeviceInfo {
 	 * 21: app version 2.2.2, updates styles, restores persistent, individual survey notifications in Android 7
 	 * 22: app version 2.2.3, improves error messages
 	 * 23: app version 2.2.4, OnnelaLabServer version and GooglePlayStore version (with customizable URL) have different names (Beiwe vs. Beiwe2)
-	 * 24: app version 2.2.5, handle null Bluetooth MAC Address in Android 8.0 and above */
+	 * 24: app version 2.2.5, handle null Bluetooth MAC Address in Android 8.0 and above
+	 * 25: app version 2.2.6, fix crash on opening app from audio survey notification when AppContext is null
+	 * 26: app version 2.2.7, Added Sentry */
 
 	private static String androidID;
 	private static String bluetoothMAC;
@@ -74,7 +76,7 @@ public class DeviceInfo {
 			if (bluetoothAddress == null) { bluetoothAddress = ""; }
 			bluetoothMAC = EncryptionEngine.safeHash(bluetoothAddress); }
 		else { //Android before version 6
-			BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();	
+			BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 			if ( bluetoothAdapter == null || bluetoothAdapter.getAddress() == null ) { bluetoothMAC = ""; }
 			else { bluetoothMAC = bluetoothAdapter.getAddress(); }
 		}
@@ -82,7 +84,7 @@ public class DeviceInfo {
 		phoneNumber = phoneManager.getLine1Number();
 		if (phoneNumber == null) phoneNumber = "";
 	}
-	
+
 	public static String getBeiweVersion() {
 		try {
 			PackageInfo info = context.getPackageManager().getPackageInfo(context.getPackageName(),0);

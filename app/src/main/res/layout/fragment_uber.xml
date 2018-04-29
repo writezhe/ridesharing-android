@@ -20,14 +20,21 @@
             android:orientation="vertical" >
         </LinearLayout>
 
-        <com.uber.sdk.android.rides.RideRequestButton
-            android:id="@+id/bRideRequest"
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/mapButtonContainer"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="150dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:paddingBottom="30dp"
-            uber:ub__style="black" />
+            android:orientation="vertical" >
+
+            <com.uber.sdk.android.rides.RideRequestButton
+                android:id="@+id/bRideRequest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                uber:ub__style="black" />
+        </LinearLayout>
 
     </RelativeLayout>
 

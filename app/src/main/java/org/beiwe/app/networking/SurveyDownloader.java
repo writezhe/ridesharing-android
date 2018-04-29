@@ -20,7 +20,7 @@ import java.util.List;
 import static org.beiwe.app.networking.PostRequest.addWebsitePrefix;
 
 public class SurveyDownloader {
-	
+
 	public static void downloadSurveys( Context appContext ) {
 		// Log.d("QuestionsDownloader", "downloadJSONQuestions() called");
 		doDownload( addWebsitePrefix(appContext.getResources().getString(R.string.download_surveys_url)), appContext );
@@ -47,14 +47,14 @@ public class SurveyDownloader {
 		if (jsonString == null) {
 			Log.e("Survey Downloader", "jsonString is null, probably have no network connection. squashing.");
 			return -1; }
-		
+
 		List<String> surveys;
 		try { surveys = JSONUtils.jsonArrayToStringList( new JSONArray(jsonString) );}
 		catch (JSONException e) {
 //			CrashHandler.writeCrashlog(e, appContext); // this crash report has causes problems.
 			Log.e("Survey Downloader", "JSON PARSING FAIL FAIL FAIL");
 			return -1; }
-		
+
 		JSONObject surveyJSON;
 		List<String> oldSurveyIds = PersistentData.getSurveyIds();
 		ArrayList<String> newSurveyIds = new ArrayList<String>();
@@ -63,44 +63,44 @@ public class SurveyDownloader {
 		String jsonQuestionsString;
 		String jsonTimingsString;
 		String jsonSettingsString;
-		
+
 		for (String surveyString : surveys){
 			try { surveyJSON = new JSONObject(surveyString); }
-			catch (JSONException e) { 
+			catch (JSONException e) {
 				CrashHandler.writeCrashlog(e, appContext);
 				Log.e("Survey Downloader", "JSON fail 1"); return -1; }
 //			Log.d("debugging survey update", "whole thing: " + surveyJSON.toString());
-			
+
 			try { surveyId = surveyJSON.getString("_id"); }
 			catch (JSONException e) {
 				CrashHandler.writeCrashlog(e, appContext);
 				Log.e("Survey Downloader", "JSON fail 2"); return -1; }
 //			Log.d("debugging survey update", "id: " + surveyId.toString());
-			
+
 			try { surveyType = surveyJSON.getString("survey_type"); }
 			catch (JSONException e) {
 				CrashHandler.writeCrashlog(e, appContext);
 				Log.e("Survey Downloader", "JSON fail 2.5"); return -1; }
 //			Log.d("debugging survey update", "type: " + surveyType.toString());
-			
+
 			try { jsonQuestionsString = surveyJSON.getString("content"); }
 			catch (JSONException e) {
 				CrashHandler.writeCrashlog(e, appContext);
 				Log.e("Survey Downloader", "JSON fail 3"); return -1; }
 //			Log.d("debugging survey update", "questions: " + jsonQuestionsString);
-			
+
 			try { jsonTimingsString = surveyJSON.getString("timings"); }
-			catch (JSONException e) { 
+			catch (JSONException e) {
 				CrashHandler.writeCrashlog(e, appContext);
 				Log.e("Survey Downloader", "JSON fail 4"); return -1; }
 //			Log.d("debugging survey update", "timings: " + jsonTimingsString);
-			
+
 			try { jsonSettingsString = surveyJSON.getString("settings"); }
 			catch (JSONException e) {
 				CrashHandler.writeCrashlog(e, appContext);
 				Log.e("Survey Downloader", "JSON settings not present"); return -1; }
 //			Log.d("debugging survey update", "settings: " + jsonSettingsString);
-			
+
 			if ( oldSurveyIds.contains(surveyId) ) { //if surveyId already exists, check for changes, add to list of new survey ids.
 				// Log.d("debugging survey update", "checking for changes");
 				PersistentData.setSurveyContent(surveyId, jsonQuestionsString);
@@ -121,12 +121,12 @@ public class SurveyDownloader {
 				// Log.d("debugging survey update", "CREATE A SURVEY");
 				PersistentData.addSurveyId(surveyId);
 				PersistentData.createSurveyData(surveyId, jsonQuestionsString, jsonTimingsString, surveyType, jsonSettingsString);
-				BackgroundService.registerTimers(appContext);
+				BackgroundService.registerTimers(appContext); // We need to register the surveyId before we can schedule it
 				SurveyScheduler.scheduleSurvey(surveyId);
 				SurveyScheduler.checkImmediateTriggerSurvey(appContext, surveyId);
 			}
 		}
-		
+
 		for (String oldSurveyId : oldSurveyIds){ //for each old survey id
 			if ( !newSurveyIds.contains( oldSurveyId ) ) { //check if it is still a valid survey (it the list of new survey ids.)
 				// Log.d("survey downloader", "deleting survey " + oldSurveyId);

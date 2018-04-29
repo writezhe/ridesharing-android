@@ -33,6 +33,7 @@ public class DirectionsActivity extends SessionActivity {
      */
     private ViewPager mViewPager;
     private LoginManager loginManager;
+    private Fragment fragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,15 +71,15 @@ public class DirectionsActivity extends SessionActivity {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             if (position == 0) {
-                return UberFragment.newInstance(MapsActivity.from, MapsActivity.to);
+                fragment = UberFragment.newInstance(MapsActivity.from, MapsActivity.to);
             }
             else if (position == 1) {
-                return TransitFragment.newInstance(MapsActivity.from, MapsActivity.to);
+                fragment = TransitFragment.newInstance(MapsActivity.from, MapsActivity.to);
             }
             else if (position == 2) {
-                return HybridFragment.newInstance(MapsActivity.from, MapsActivity.to);
+                fragment =  HybridFragment.newInstance(MapsActivity.from, MapsActivity.to);
             }
-            return UberFragment.newInstance(MapsActivity.from, MapsActivity.to);
+            return fragment;
         }
 
         @Override
