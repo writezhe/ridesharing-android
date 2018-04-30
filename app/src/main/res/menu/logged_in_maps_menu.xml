@@ -6,10 +6,6 @@
         android:icon="@drawable/places_ic_search"
         android:orderInCategory="100"
         app:showAsAction="always" />
-    <item android:id="@+id/menu_call_clinician"
-          android:title="@string/default_call_clinician_text" />
-    <item android:id="@+id/menu_call_research_assistant"
-          android:title="@string/call_research_assistant" />
     <item android:id="@+id/menu_about"
           android:title="@string/menu_about" />
     <item android:id="@+id/menu_change_password"

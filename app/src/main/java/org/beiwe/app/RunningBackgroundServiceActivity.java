@@ -120,7 +120,7 @@ public class RunningBackgroundServiceActivity extends AppCompatActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.logged_out_menu, menu);
-		menu.findItem(R.id.menu_call_clinician).setTitle(PersistentData.getCallClinicianButtonText());
+		//menu.findItem(R.id.menu_call_clinician).setTitle(PersistentData.getCallClinicianButtonText());
 		return true;
 	}
 
@@ -135,12 +135,12 @@ public class RunningBackgroundServiceActivity extends AppCompatActivity {
 		case R.id.menu_about:
 			startActivity(new Intent(getApplicationContext(), AboutActivityLoggedOut.class));
 			return true;
-		case R.id.menu_call_clinician:
+		/*case R.id.menu_call_clinician:
 			callClinician(null);
 			return true;
 		case R.id.menu_call_research_assistant:
 			callResearchAssistant(null);
-			return true;
+			return true;*/
 		default:
 			return super.onOptionsItemSelected(item);
 		}
@@ -156,6 +156,11 @@ public class RunningBackgroundServiceActivity extends AppCompatActivity {
 	/** sends user to phone, calls the user's clinician. */
 	@SuppressWarnings("MissingPermission")
 	public void transit(View v) {
+		Intent i = new Intent(this, MapsActivity.class);
+		startActivity(i);
+	}
+
+	public void web(View v) {
 		Intent i = new Intent(this, MapsActivity.class);
 		startActivity(i);
 	}

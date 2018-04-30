@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,15 +8,27 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/background"
     tools:context="org.beiwe.app.ui.user.MainMenuActivity" >
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/ic_main_magglass" />
 
     <TextView
         android:id="@+id/main_menu_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/main_menu_top_message"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_gravity="center" />
+        android:layout_below="@id/imageView"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/uber_white"
+        android:layout_marginTop="20dp"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <View
         android:id="@+id/Placeholder1"
@@ -33,7 +46,7 @@
         android:id="@+id/Placeholder2"
         android:layout_width="wrap_content"
         android:layout_height="50dp" />
-
+<!--
     <Button
         android:id="@+id/main_menu_call_clinician"
         android:layout_width="wrap_content"
@@ -41,13 +54,25 @@
         android:onClick="callClinician"
         android:layout_gravity="center"
         android:text="@string/default_call_clinician_text" />
+-->
+    <Button
+        android:id="@+id/bWeb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="web"
+        android:layout_below="@id/main_menu_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:text="Jobs" />
 
     <Button
         android:id="@+id/bTransit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="transit"
-        android:layout_gravity="center"
+        android:layout_below="@id/bWeb"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
         android:text="Transit" />
 
 </RelativeLayout>

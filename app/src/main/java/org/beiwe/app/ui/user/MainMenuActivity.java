@@ -17,8 +17,8 @@ public class MainMenuActivity extends SessionActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main_menu);
 		
-		Button callClinicianButton = (Button) findViewById(R.id.main_menu_call_clinician);
-		callClinicianButton.setText(PersistentData.getCallClinicianButtonText());
+		//Button callClinicianButton = (Button) findViewById(R.id.main_menu_call_clinician);
+		//callClinicianButton.setText(PersistentData.getCallClinicianButtonText());
 	}
 	
 	/*#########################################################################

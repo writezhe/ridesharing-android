@@ -150,7 +150,7 @@ public class MapsActivity extends BaseMapsActivity {
 
         PopupMenu popupMenu = new PopupMenu(this, findViewById(R.id.ivMenu));
         popupMenu.getMenu().add(1, R.id.main_menu_call_clinician, 1, R.string.default_call_clinician_text);
-        popupMenu.getMenu().add(1, R.id.menu_call_research_assistant, 2, R.string.call_research_assistant);
+        //popupMenu.getMenu().add(1, R.id.menu_call_research_assistant, 2, R.string.call_research_assistant);
         popupMenu.getMenu().add(1, R.id.menu_about,3, R.string.menu_about);
         popupMenu.getMenu().add(1, R.id.menu_change_password, 4, R.string.menu_change_password);
         popupMenu.getMenu().add(1, R.id.view_survey_answers,5, R.string.view_survey_answers);

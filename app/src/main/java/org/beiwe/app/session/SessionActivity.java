@@ -83,7 +83,7 @@ public class SessionActivity extends RunningBackgroundServiceActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.logged_in_menu, menu);
-		menu.findItem(R.id.menu_call_clinician).setTitle(PersistentData.getCallClinicianButtonText());
+		//menu.findItem(R.id.menu_call_clinician).setTitle(PersistentData.getCallClinicianButtonText());
 		return true;
 	}
 
