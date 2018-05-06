@@ -68,13 +68,6 @@ public class TransitManager {
                 transitStops.add(new Stop(transit.getBus(), stopsList.getJSONObject(i)));
             }
 
-            transitStops.sort(new Comparator<Stop>() {
-                @Override
-                public int compare(Stop o1, Stop o2) {
-                    return o1.getStopId() - o2.getStopId();
-                }
-            });
-
             Stop start = transitStops.stream()
                     .filter(t -> t.getStopName().toLowerCase().contentEquals(transit.getDepartureStop().toLowerCase()))
                     .findFirst()
@@ -90,7 +83,7 @@ public class TransitManager {
             List<Stop> stops = new ArrayList<Stop>();
 
             for (Stop s : transitStops) {
-                if (getDistance(start.getStop(), s.getStop()) <= distance) {
+                if (getDistance(start.getStop(), s.getStop()) <= distance && getDistance(stop.getStop(), s.getStop()) <= distance) {
                     stops.add(s);
                 }
             }
