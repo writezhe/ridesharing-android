@@ -32,6 +32,7 @@ android {
             buildConfigField("boolean", "APP_IS_BETA", "false")
             buildConfigField("boolean", "APP_IS_DEV", "false")
             buildConfigField("String", "SENTRY_DSN", "\"" + keystoreProperties['releaseDSN'] + "\"")
+            debuggable true
         }
         beta {
             versionNameSuffix("-beta")
@@ -40,6 +41,7 @@ android {
             buildConfigField("boolean", "APP_IS_BETA", "false")
             buildConfigField("boolean", "APP_IS_DEV", "true")
             buildConfigField("String", "SENTRY_DSN", "\"" + keystoreProperties['betaDSN'] + "\"")
+            debuggable true
         }
         development {
             versionNameSuffix("-development")
