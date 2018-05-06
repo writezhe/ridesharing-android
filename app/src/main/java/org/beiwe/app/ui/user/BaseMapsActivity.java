@@ -122,7 +122,35 @@ public abstract class BaseMapsActivity extends SessionActivity implements OnMapR
                         }
                     }
                 });
+
+        mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+                mMap.clear();
+                if (destination != null) {
+                    addMarker(destination);
+                }
+                userLocation = new Location("");
+                userLocation.setLatitude(latLng.latitude);
+                userLocation.setLongitude(latLng.longitude);
+                addMarker(latLng);
+                setSource(latLng);
+            }
+        });
+
+        mMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener(){
+            @Override
+            public boolean onMyLocationButtonClick()
+            {
+                //TODO: Any custom actions
+                mMap.clear();
+                addMarker(new LatLng(getUserLocation().getLatitude(), getUserLocation().getLongitude()));
+                return false;
+            }
+        });
     }
+
+    protected abstract void setSource(LatLng source);
 
 
     public void openPlaceAutoCompleteView() {
@@ -175,6 +203,7 @@ public abstract class BaseMapsActivity extends SessionActivity implements OnMapR
             if (resultCode == RESULT_OK) {
                 Place place = PlaceAutocomplete.getPlace(this, data);
                 destination = place.getLatLng();
+                addMarker(destination);
                 setUpPolyLine(place);
 
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
@@ -202,7 +231,7 @@ public abstract class BaseMapsActivity extends SessionActivity implements OnMapR
         }
     }
 
-    private void addMarker(LatLng destination) {
+    public void addMarker(LatLng destination) {
 
         MarkerOptions options = new MarkerOptions();
         options.position(destination);

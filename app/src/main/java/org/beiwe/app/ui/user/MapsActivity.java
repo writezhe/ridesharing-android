@@ -122,8 +122,16 @@ public class MapsActivity extends BaseMapsActivity {
         ivHome.setVisibility(View.VISIBLE);
         LatLng source = new LatLng(getUserLocation().getLatitude(), getUserLocation().getLongitude());
         LatLng destination = getDestinationLatLong();
+        addMarker(destination);
+        addMarker(source);
         from = source;
         to = place.getLatLng();
+    }
+
+    @Override
+    public void setSource(LatLng source) {
+        addMarker(source);
+        from = source;
     }
 
     @Override

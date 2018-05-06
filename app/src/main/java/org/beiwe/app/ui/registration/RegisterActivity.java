@@ -143,7 +143,7 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 				super.onPostExecute(arg);
 				if (responseCode == 200) {
 					PersistentData.setPassword(newPassword);
-					activity.startActivity(new Intent(activity.getApplicationContext(), PhoneNumberEntryActivity.class) );
+					activity.startActivity(new Intent(activity.getApplicationContext(), ConsentFormActivity.class) );
 					activity.finish();
 				} else {
 					AlertsManager.showAlert(responseCode, getString(R.string.couldnt_register), currentActivity);
@@ -191,13 +191,14 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 			thisResumeCausedByFalseActivityReturn = false;
 			return;
 		}
-		if ( !PermissionHandler.checkAccessReadSms(getApplicationContext()) && !thisResumeCausedByFalseActivityReturn) {
+		/*if ( !PermissionHandler.checkAccessReadSms(getApplicationContext()) && !thisResumeCausedByFalseActivityReturn) {
 			if (shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS) ) {
 				if (!prePromptActive && !postPromptActive ) { showPostPermissionAlert(this); } 
 			}
 			else if (!prePromptActive && !postPromptActive ) { showPrePermissionAlert(this); }
 		}
-		else { DeviceInfo.initialize(getApplicationContext()); }
+		else { DeviceInfo.initialize(getApplicationContext()); }*/
+		DeviceInfo.initialize(getApplicationContext());
 	}
 	
 	@Override
