@@ -72,7 +72,7 @@ android {
 }
 // Don't include the default "debug" build variant as an option
 android.variantFilter { variant ->
-    if(variant.buildType.name.equals('debug')) {
+    if (variant.buildType.name.equals('debug')) {
         variant.setIgnore(true);
     }
 }

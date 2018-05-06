@@ -25,6 +25,7 @@ import android.view.View;
 import org.beiwe.app.BackgroundService.BackgroundServiceBinder;
 import org.beiwe.app.storage.PersistentData;
 import org.beiwe.app.ui.user.AboutActivityLoggedOut;
+import org.beiwe.app.ui.user.JobsActivity;
 import org.beiwe.app.ui.user.MapsActivity;
 
 /**All Activities in the app extend this Activity.  It ensures that the app's key services (i.e.
@@ -161,7 +162,7 @@ public class RunningBackgroundServiceActivity extends AppCompatActivity {
 	}
 
 	public void web(View v) {
-		Intent i = new Intent(this, MapsActivity.class);
+		Intent i = new Intent(this, JobsActivity.class);
 		startActivity(i);
 	}
 	

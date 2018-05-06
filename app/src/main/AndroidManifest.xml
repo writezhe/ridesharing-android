@@ -34,18 +34,20 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <!-- Permissions regarding phone calls -->
     <uses-permission android:name="android.permission.CALL_PHONE" />
-	<!-- Permission used in android 6+ for being whitelisted for app standby -->
+    <!-- Permission used in android 6+ for being whitelisted for app standby -->
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <!-- as of the android 6 compatibility update, Beiwe no longer supports installation onto external media -->
     <!-- <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> -->
     <!-- Power management and monitoring, not sure where this would be used... -->
     <uses-permission android:name="android.permission.BATTERY_STATS" />
-    
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="${appName}${appNameSuffix}"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -62,51 +64,44 @@
         <!-- ACTIVITIES -->
 
         <activity
-            android:name="org.beiwe.app.ui.LoadingActivity"
-            android:label="${appName}${appNameSuffix}" >
+            android:name=".ui.LoadingActivity"
+            android:label="${appName}${appNameSuffix}">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name="org.beiwe.app.survey.AudioRecorderActivity"
+            android:name=".survey.AudioRecorderActivity"
             android:label="@string/title_activity_audio_recorder"
-            android:screenOrientation="portrait">
-        </activity>
-        
+            android:screenOrientation="portrait"></activity>
         <activity
-            android:name="org.beiwe.app.survey.AudioRecorderEnhancedActivity"
+            android:name=".survey.AudioRecorderEnhancedActivity"
             android:label="@string/title_activity_audio_recorder"
-            android:screenOrientation="portrait">
-        </activity>
-
+            android:screenOrientation="portrait"></activity>
         <activity
-            android:name="org.beiwe.app.survey.SurveyActivity"
+            android:name=".survey.SurveyActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/title_activity_survey">
-        </activity>
-        
+            android:label="@string/title_activity_survey"></activity>
         <activity
-            android:name="org.beiwe.app.ui.DebugInterfaceActivity"
+            android:name=".ui.DebugInterfaceActivity"
             android:label="@string/title_activity_debug_interface" />
         <activity
-            android:name="org.beiwe.app.ui.user.LoginActivity"
+            android:name=".ui.user.LoginActivity"
             android:label="@string/title_activity_login" />
         <activity
-            android:name="org.beiwe.app.ui.registration.ForgotPasswordActivity"
+            android:name=".ui.registration.ForgotPasswordActivity"
             android:label="@string/title_activity_forgot_password" />
         <activity
-            android:name="org.beiwe.app.ui.registration.RegisterActivity"
+            android:name=".ui.registration.RegisterActivity"
             android:label="@string/title_activity_register" />
         <activity
-            android:name="org.beiwe.app.ui.user.MainMenuActivity"
+            android:name=".ui.user.MainMenuActivity"
             android:label="@string/title_activity_main_menu" />
         <activity
-            android:name="org.beiwe.app.ui.user.GraphActivity"
-            android:label="@string/title_activity_graph" >
-        </activity>
+            android:name=".ui.user.GraphActivity"
+            android:label="@string/title_activity_graph"></activity>
 
         <!-- SERVICE -->
 
@@ -117,12 +112,12 @@
 
         <!-- RECEIVERS -->
 
-        <receiver android:name=".listeners.BootListener" >
+        <receiver android:name=".listeners.BootListener">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".listeners.SmsReceivedLogger" >
+        <receiver android:name=".listeners.SmsReceivedLogger">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
@@ -132,11 +127,8 @@
                 <data android:mimeType="application/vnd.wap.mms-message" />
             </intent-filter>
         </receiver>
-        
-        <receiver android:name=".listeners.BluetoothListener" >
-        </receiver>
-        
-        <receiver android:name=".listeners.PowerStateListener" >
+        <receiver android:name=".listeners.BluetoothListener"></receiver>
+        <receiver android:name=".listeners.PowerStateListener">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
@@ -147,21 +139,17 @@
         </receiver>
 
         <activity
-            android:name="org.beiwe.app.ui.registration.ResetPasswordActivity"
-            android:label="@string/title_activity_reset_password" >
-        </activity>
+            android:name=".ui.registration.ResetPasswordActivity"
+            android:label="@string/title_activity_reset_password"></activity>
         <activity
             android:name=".ui.user.AboutActivityLoggedOut"
-            android:label="@string/title_activity_about" >
-        </activity>
+            android:label="@string/title_activity_about"></activity>
         <activity
             android:name=".ui.user.AboutActivityLoggedIn"
-            android:label="@string/title_activity_about" >
-        </activity>
+            android:label="@string/title_activity_about"></activity>
         <activity
-            android:name="org.beiwe.app.ui.registration.PhoneNumberEntryActivity"
-            android:label="@string/title_activity_phone_number_entry" >
-        </activity>
+            android:name=".ui.registration.PhoneNumberEntryActivity"
+            android:label="@string/title_activity_phone_number_entry"></activity>
         <activity
             android:name=".ui.registration.ConsentFormActivity"
             android:label="@string/title_activity_consent_form" />
@@ -173,12 +161,17 @@
             android:label="@string/title_activity_directions"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="org.beiwe.app" android:host="redirect" />
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="redirect"
+                    android:scheme="org.beiwe.app" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.user.JobsActivity"></activity>
     </application>
 
 </manifest>

@@ -6,7 +6,7 @@
     <!-- General Strings -->
     <string name="app_name">Futto</string>
     <string name="action_settings">Settings</string>
-	
+
     <!-- Permissions Strings -->
     <string name="permission_registration_read_sms_alert"> In order to register for a study, Futto requires access to some this device\'s telephone services. Please press \"Allow\" when you see a menu requesting permissions to access SMS. Depending on the details of the study, you are allowed to disable this permission in the Futto app\'s preferences after registration is complete.</string>
 
