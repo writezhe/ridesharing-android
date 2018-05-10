@@ -16,7 +16,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion '26.0.2'
     defaultConfig {
-        applicationId "org.beiwe.app"
+        applicationId "org.futto.app"
         minSdkVersion 18
         targetSdkVersion 23
         versionCode 26       //TODO: update this Beiwe version code for new releases

@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="org.beiwe.app.ui.fragments.HybridFragment">
+    tools:context="org.futto.app.ui.fragments.HybridFragment">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/mapHolder1"

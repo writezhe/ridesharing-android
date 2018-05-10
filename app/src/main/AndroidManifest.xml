@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.beiwe.app">
+    package="org.futto.app">
 
     <uses-sdk
         android:minSdkVersion="16"
@@ -64,7 +64,7 @@
         <!-- ACTIVITIES -->
 
         <activity
-            android:name=".ui.LoadingActivity"
+            android:name="org.futto.app.ui.LoadingActivity"
             android:label="${appName}${appNameSuffix}">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -73,51 +73,51 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".survey.AudioRecorderActivity"
+            android:name="org.futto.app.survey.AudioRecorderActivity"
             android:label="@string/title_activity_audio_recorder"
             android:screenOrientation="portrait"></activity>
         <activity
-            android:name=".survey.AudioRecorderEnhancedActivity"
+            android:name="org.futto.app.survey.AudioRecorderEnhancedActivity"
             android:label="@string/title_activity_audio_recorder"
             android:screenOrientation="portrait"></activity>
         <activity
-            android:name=".survey.SurveyActivity"
+            android:name="org.futto.app.survey.SurveyActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_survey"></activity>
         <activity
-            android:name=".ui.DebugInterfaceActivity"
+            android:name="org.futto.app.ui.DebugInterfaceActivity"
             android:label="@string/title_activity_debug_interface" />
         <activity
-            android:name=".ui.user.LoginActivity"
+            android:name="org.futto.app.ui.user.LoginActivity"
             android:label="@string/title_activity_login" />
         <activity
-            android:name=".ui.registration.ForgotPasswordActivity"
+            android:name="org.futto.app.ui.registration.ForgotPasswordActivity"
             android:label="@string/title_activity_forgot_password" />
         <activity
-            android:name=".ui.registration.RegisterActivity"
+            android:name="org.futto.app.ui.registration.RegisterActivity"
             android:label="@string/title_activity_register" />
         <activity
-            android:name=".ui.user.MainMenuActivity"
+            android:name="org.futto.app.ui.user.MainMenuActivity"
             android:label="@string/title_activity_main_menu" />
         <activity
-            android:name=".ui.user.GraphActivity"
+            android:name="org.futto.app.ui.user.GraphActivity"
             android:label="@string/title_activity_graph"></activity>
 
         <!-- SERVICE -->
 
         <service
-            android:name=".BackgroundService"
+            android:name="org.futto.app.BackgroundService"
             android:exported="false"
             android:label="BackgroundService-thing" />
 
         <!-- RECEIVERS -->
 
-        <receiver android:name=".listeners.BootListener">
+        <receiver android:name="org.futto.app.listeners.BootListener">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".listeners.SmsReceivedLogger">
+        <receiver android:name="org.futto.app.listeners.SmsReceivedLogger">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
@@ -127,8 +127,8 @@
                 <data android:mimeType="application/vnd.wap.mms-message" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".listeners.BluetoothListener"></receiver>
-        <receiver android:name=".listeners.PowerStateListener">
+        <receiver android:name="org.futto.app.listeners.BluetoothListener"></receiver>
+        <receiver android:name="org.futto.app.listeners.PowerStateListener">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
@@ -139,25 +139,25 @@
         </receiver>
 
         <activity
-            android:name=".ui.registration.ResetPasswordActivity"
+            android:name="org.futto.app.ui.registration.ResetPasswordActivity"
             android:label="@string/title_activity_reset_password"></activity>
         <activity
-            android:name=".ui.user.AboutActivityLoggedOut"
+            android:name="org.futto.app.ui.user.AboutActivityLoggedOut"
             android:label="@string/title_activity_about"></activity>
         <activity
-            android:name=".ui.user.AboutActivityLoggedIn"
+            android:name="org.futto.app.ui.user.AboutActivityLoggedIn"
             android:label="@string/title_activity_about"></activity>
         <activity
-            android:name=".ui.registration.PhoneNumberEntryActivity"
+            android:name="org.futto.app.ui.registration.PhoneNumberEntryActivity"
             android:label="@string/title_activity_phone_number_entry"></activity>
         <activity
-            android:name=".ui.registration.ConsentFormActivity"
+            android:name="org.futto.app.ui.registration.ConsentFormActivity"
             android:label="@string/title_activity_consent_form" />
         <activity
-            android:name=".ui.user.MapsActivity"
+            android:name="org.futto.app.ui.user.MapsActivity"
             android:label="@string/title_activity_maps" />
         <activity
-            android:name=".ui.user.DirectionsActivity"
+            android:name="org.futto.app.ui.user.DirectionsActivity"
             android:label="@string/title_activity_directions"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -171,7 +171,7 @@
                     android:scheme="org.beiwe.app" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.user.JobsActivity"></activity>
+        <activity android:name="org.futto.app.ui.user.JobsActivity"></activity>
     </application>
 
 </manifest>
