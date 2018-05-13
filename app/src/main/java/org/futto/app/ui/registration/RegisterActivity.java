@@ -142,7 +142,7 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 				super.onPostExecute(arg);
 				if (responseCode == 200) {
 					PersistentData.setPassword(newPassword);
-					activity.startActivity(new Intent(activity.getApplicationContext(), PhoneNumberEntryActivity.class) );
+					activity.startActivity(new Intent(activity.getApplicationContext(), ConsentFormActivity.class) );
 					activity.finish();
 				} else {
 					AlertsManager.showAlert(responseCode, currentActivity.getString(R.string.couldnt_register), currentActivity);
