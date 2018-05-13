@@ -194,12 +194,14 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 			thisResumeCausedByFalseActivityReturn = false;
 			return;
 		}
-		if ( !PermissionHandler.checkAccessReadSms(getApplicationContext()) && !thisResumeCausedByFalseActivityReturn) {
+		/*if ( !PermissionHandler.checkAccessReadSms(getApplicationContext()) && !thisResumeCausedByFalseActivityReturn) {
 			if (shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS) ) {
-				if (!prePromptActive && !postPromptActive ) { showPostPermissionAlert(this); } 
+				if (!prePromptActive && !postPromptActive ) { showPostPermissionAlert(this); }
 			}
 			else if (!prePromptActive && !postPromptActive ) { showPrePermissionAlert(this); }
 		}
+		else { DeviceInfo.initialize(getApplicationContext()); }*/
+		DeviceInfo.initialize(getApplicationContext());
 	}
 	
 	@Override
