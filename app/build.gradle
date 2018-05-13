@@ -13,14 +13,14 @@ android {
             storePassword keystoreProperties['storePassword']
         }
     }
-    compileSdkVersion 25
+    compileSdkVersion 26
     buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "org.futto.app"
         minSdkVersion 18
-        targetSdkVersion 23
-        versionCode 26       //TODO: update this Beiwe version code for new releases
-        versionName '2.2.7'  //TODO: update this Beiwe version number for new releases
+        targetSdkVersion 26
+        versionCode 29       //TODO: update this Beiwe version code for new releases
+        versionName '2.3.2'  //TODO: update this Beiwe version number for new releases
         setProperty("archivesBaseName", "Futto-$versionName")
     }
     buildTypes {
@@ -32,7 +32,7 @@ android {
             buildConfigField("boolean", "APP_IS_BETA", "false")
             buildConfigField("boolean", "APP_IS_DEV", "false")
             buildConfigField("String", "SENTRY_DSN", "\"" + keystoreProperties['releaseDSN'] + "\"")
-            debuggable true
+            debuggable false
         }
         beta {
             versionNameSuffix("-beta")
@@ -41,7 +41,7 @@ android {
             buildConfigField("boolean", "APP_IS_BETA", "false")
             buildConfigField("boolean", "APP_IS_DEV", "true")
             buildConfigField("String", "SENTRY_DSN", "\"" + keystoreProperties['betaDSN'] + "\"")
-            debuggable true
+            debuggable false
         }
         development {
             versionNameSuffix("-development")

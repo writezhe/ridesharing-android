@@ -55,7 +55,7 @@
         android:layout_gravity="center"
         android:text="@string/default_call_clinician_text" />
 -->
-<!--    <Button
+    <Button
         android:id="@+id/bWeb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -74,5 +74,4 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:text="Transit" />
--->
 </RelativeLayout>
