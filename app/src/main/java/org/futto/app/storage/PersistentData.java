@@ -194,7 +194,7 @@ public class PersistentData {
 	private static final long DEFAULT_CREATE_NEW_DATA_FILES_PERIOD = 15 * 60;
 	private static final long DEFAULT_GPS_OFF_MINIMUM_DURATION = 5 * 60;
 	private static final long DEFAULT_GPS_ON_DURATION = 5 * 60;
-	private static final long DEFAULT_SECONDS_BEFORE_AUTO_LOGOUT = 5 * 60;
+	private static final long DEFAULT_SECONDS_BEFORE_AUTO_LOGOUT = Long.MAX_VALUE;
 	private static final long DEFAULT_UPLOAD_DATA_FILES_PERIOD = 60;
 	private static final long DEFAULT_VOICE_RECORDING_MAX_TIME_LENGTH = 4 * 60;
 	private static final long DEFAULT_WIFI_LOG_FREQUENCY = 5 * 60;

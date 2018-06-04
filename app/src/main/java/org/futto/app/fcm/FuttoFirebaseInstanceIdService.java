@@ -20,9 +20,12 @@ import android.util.Log;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
+import org.futto.app.storage.PersistentData;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -42,14 +45,15 @@ public class FuttoFirebaseInstanceIdService extends FirebaseInstanceIdService {
     @Override
     public void onTokenRefresh() {
         // Get updated InstanceID token.
-
+        String username = null;
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        while(!PersistentData.isLoggedIn()) username = PersistentData.getPatientID();
         Log.d(LOG_TAG, "Refreshed token: " + refreshedToken);
 
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
-        sendRegistrationToServer(refreshedToken);
+        sendRegistrationToServer(refreshedToken,username);
     }
 
     /**
@@ -60,12 +64,12 @@ public class FuttoFirebaseInstanceIdService extends FirebaseInstanceIdService {
      *
      * @param token The new token.
      */
-    private void sendRegistrationToServer(String token) {
+    private void sendRegistrationToServer(String token, String username) {
         // Add custom implementation, as needed.
         //Enviar para servidor
         Log.d(LOG_TAG, token); //NOT PRINT
 
-        HttpsURLConnection connection;
+        HttpURLConnection connection;
 
         URL url = null;
         if (token == null || token.length() == 0) {
@@ -73,8 +77,9 @@ public class FuttoFirebaseInstanceIdService extends FirebaseInstanceIdService {
         }
         //Send the FCM token to the server
         try {
-            url = new URL("https://warm-tor-38946.herokuapp.com/FCM_RECIEVER/register&"+token);
-            connection = (HttpsURLConnection) url.openConnection();
+            String adress = "http://futtonotification.us-east-1.elasticbeanstalk.com/FCM_RECIEVER/register&"+token +"&"+ username;
+            url = new URL(adress);
+            connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             String output = "";
             StringBuilder xmlResponse = new StringBuilder();
