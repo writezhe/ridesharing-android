@@ -65,7 +65,7 @@
     <string name="title_activity_register">Register</string>
     <string name="title_activity_login">Log In</string>
     <string name="title_activity_login_string">Log In</string>
-    <string name="login_activity_welcoming_message">Log in to Futto</string>
+    <string name="login_activity_welcoming_message">Welcome Back </string>
     <string name="user_id_system_mismatch">User ID does not match the one in the system. Try again</string>
     <string name="password_system_mismatch">Incorrect user ID and password combination</string>
 
@@ -210,5 +210,9 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="action_relogin_pass">Enter your password</string>
+    <string name="application_name">Futto</string>
+    <string name="hello">Hello!</string>
+    <string name="username">Username</string>
 
 </resources>

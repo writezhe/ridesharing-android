@@ -1,34 +1,54 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@drawable/background"
+    android:background="#f5f5f5"
     tools:context="org.futto.app.ui.user.MainMenuActivity" >
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:src="@drawable/ic_main_magglass" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:background="@drawable/font_page_post"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/main_menu_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/main_menu_top_message"
-        android:layout_below="@id/imageView"
-        android:layout_centerHorizontal="true"
-        android:textColor="@color/uber_white"
-        android:layout_marginTop="20dp"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="80dp" />
+
+        <TextView
+            android:id="@+id/application_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_bold"
+            android:gravity="left"
+            android:paddingLeft="20dp"
+            android:paddingTop="20dp"
+
+            android:text="@string/hello"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#ffffff"
+            android:textSize="30dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_bold"
+            android:paddingLeft="20dp"
+            android:paddingTop="2dp"
+            android:gravity="left"
+            android:text="@string/username"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#ffffff"
+            android:textSize="30dp"
+            android:textStyle="bold" />
+
+
+    </LinearLayout>
 
     <View
         android:id="@+id/Placeholder1"
@@ -42,11 +62,7 @@
         android:text="@string/main_menu_view_graph"
         android:onClick="graphResults" /-->
 
-    <View
-        android:id="@+id/Placeholder2"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp" />
-<!--
+    <!--
     <Button
         android:id="@+id/main_menu_call_clinician"
         android:layout_width="wrap_content"
@@ -74,4 +90,4 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:text="Transit" />
-</RelativeLayout>
+</LinearLayout>
