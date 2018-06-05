@@ -3,7 +3,9 @@ package org.futto.app.ui.user;
 import org.futto.app.R;
 import org.futto.app.session.SessionActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 /**The main menu activity of the app. Currently displays 4 buttons - Audio Recording, Graph, Call Clinician, and Sign out.
  * @author Dor Samet */
@@ -18,7 +20,8 @@ public class MainMenuActivity extends SessionActivity {
 		//Button callClinicianButton = (Button) findViewById(R.id.main_menu_call_clinician);
 		//callClinicianButton.setText(PersistentData.getCallClinicianButtonText());
 	}
-	
+
+
 	/*#########################################################################
 	############################## Buttons ####################################
 	#########################################################################*/

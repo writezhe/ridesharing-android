@@ -1,20 +1,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#f5f5f5"
-    tools:context="org.futto.app.ui.user.MainMenuActivity" >
+    android:orientation="vertical"
+    tools:context="org.futto.app.ui.user.MainMenuActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@drawable/font_page_post"
+        android:layout_height="180dp"
+        android:background="@drawable/mom2"
+        android:baselineAligned="false"
         android:orientation="vertical">
 
         <View
             android:layout_width="wrap_content"
-            android:layout_height="80dp" />
+            android:layout_height="70dp" />
 
         <TextView
             android:id="@+id/application_name"
@@ -22,72 +24,256 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/roboto_bold"
-            android:gravity="left"
-            android:paddingLeft="20dp"
+            android:gravity="start"
+            android:paddingEnd="20dp"
+            android:paddingStart="20dp"
             android:paddingTop="20dp"
-
             android:text="@string/hello"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#ffffff"
-            android:textSize="30dp"
-            android:textStyle="bold" />
+            android:textSize="25sp"
+            android:textStyle="bold"></TextView>
 
         <TextView
-            android:id="@+id/username"
+            android:id="@+id/username_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:fontFamily="@font/roboto_bold"
-            android:paddingLeft="20dp"
-            android:paddingTop="2dp"
-            android:gravity="left"
+            android:gravity="start"
+            android:paddingEnd="20dp"
+            android:paddingStart="20dp"
             android:text="@string/username"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#ffffff"
-            android:textSize="30dp"
-            android:textStyle="bold" />
-
+            android:textSize="25sp"
+            android:textStyle="bold"></TextView>
 
     </LinearLayout>
 
     <View
         android:id="@+id/Placeholder1"
         android:layout_width="wrap_content"
-        android:layout_height="50dp" />
+        android:layout_height="20dp" />
 
-    <!--Button
-        android:id="@+id/graph"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/main_menu_view_graph"
-        android:onClick="graphResults" /-->
-
-    <!--
-    <Button
-        android:id="@+id/main_menu_call_clinician"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="callClinician"
+    <LinearLayout
+        android:baselineAligned="false"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:layout_gravity="center"
-        android:text="@string/default_call_clinician_text" />
--->
-    <Button
-        android:id="@+id/bWeb"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="web"
-        android:layout_below="@id/main_menu_title"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:text="Jobs" />
+        android:layout_marginEnd="15dp"
+        android:layout_marginStart="15dp"
+        android:background="@drawable/rounded_noti_btn"
+        android:elevation="3dp"
+        android:orientation="horizontal"
+        android:padding="1dp" tools:targetApi="lollipop">
 
-    <Button
-        android:id="@+id/bTransit"
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:contentDescription="@string/username"
+            android:padding="3dp"
+            app:srcCompat="@drawable/ic_notifications" />
+
+        <TextView
+            android:id="@+id/noti_str"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/roboto_bold"
+            android:gravity="start"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:text="@string/username"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="	#696969"
+            android:textSize="15sp"
+            android:textStyle="bold"></TextView>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/Placeholder2"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="transit"
-        android:layout_below="@id/bWeb"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
-        android:text="Transit" />
+        android:layout_height="20dp" />
+
+    <LinearLayout
+        android:baselineAligned="false"
+        android:id="@+id/btnGroup"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:baselineAligned="false"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:background="#ffffff"
+                android:onClick="transit"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:elevation="10dp"
+                android:orientation="vertical"
+                android:padding="18dp">
+
+                <ImageView
+                    android:id="@+id/searchLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/username"
+                    android:padding="5dp"
+                    app:srcCompat="@drawable/find_location" />
+
+                <TextView
+                    android:id="@+id/searchLocationStr"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="0.1"
+                    android:fontFamily="@font/roboto_bold"
+                    android:gravity="left|center_horizontal|start"
+                    android:text="@string/searchJob"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="	#696969"
+                    android:textSize="18sp"
+                    android:textStyle="bold"></TextView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:onClick="web"
+                android:baselineAligned="false"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:background="#ffffff"
+                android:elevation="10dp"
+                android:orientation="vertical"
+                android:padding="18dp">
+
+                <ImageView
+                    android:id="@+id/searchJob"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/username"
+                    android:padding="5dp"
+                    app:srcCompat="@drawable/find_job" />
+
+                <TextView
+                    android:id="@+id/searchJobDes"
+                    android:layout_weight="0.1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/roboto_bold"
+                    android:gravity="left|center_horizontal|start"
+                    android:text="@string/searchJob"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="	#696969"
+                    android:textSize="18sp"
+                    android:textStyle="bold"></TextView>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_weight="1"
+            android:background="@drawable/btn_group"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:background="#ffffff"
+                android:elevation="10dp"
+                android:baselineAligned="false"
+                android:orientation="vertical"
+                android:padding="18dp">
+
+                <ImageView
+                    android:id="@+id/surveyHistory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/username"
+                    android:padding="5dp"
+                    app:srcCompat="@drawable/survey_history" />
+
+                <TextView
+                    android:id="@+id/surveyHistoryStr"
+                    android:layout_weight="0.1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/roboto_bold"
+                    android:gravity="left|center_horizontal|start"
+                    android:text="@string/searchJob"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="	#696969"
+                    android:textSize="18sp"
+                    android:textStyle="bold"></TextView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="2dp"
+                android:layout_weight="1"
+                android:background="#ffffff"
+                android:elevation="10dp"
+                android:baselineAligned="false"
+                android:orientation="vertical"
+                android:padding="18dp">
+
+                <ImageView
+                    android:id="@+id/editSurvey"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/username"
+                    android:padding="5dp"
+                    android:paddingLeft="6dp"
+                    app:srcCompat="@drawable/edit_survey" />
+
+                <TextView
+                    android:id="@+id/editSurveyDes"
+                    android:layout_weight="0.1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/roboto_bold"
+                    android:gravity="left|center_horizontal|start"
+                    android:text="@string/searchJob"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="	#696969"
+                    android:textSize="18sp"
+                    android:textStyle="bold">
+
+                </TextView>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>
+
+    <!--<Button--><!--android:id="@+id/bWeb"--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--android:layout_marginTop="30dp"--><!--android:onClick="web"--><!--android:text="Jobs" />-->
+
+    <!--<Button--><!--android:id="@+id/bTransit"--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--android:layout_marginTop="10dp"--><!--android:onClick="transit"--><!--android:text="Transit" />-->

@@ -164,7 +164,7 @@ public class RunningBackgroundServiceActivity extends AppCompatActivity {
 		Intent i = new Intent(this, JobsActivity.class);
 		startActivity(i);
 	}
-	
+
 	/** sends user to phone, calls the study's research assistant. */
 	@SuppressWarnings("MissingPermission")
 	public void callResearchAssistant(View v) {

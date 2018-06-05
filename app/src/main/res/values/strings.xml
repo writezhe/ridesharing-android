@@ -214,5 +214,7 @@
     <string name="application_name">Futto</string>
     <string name="hello">Hello!</string>
     <string name="username">Username</string>
+    <string name="searchLocation">Search Route</string>
+    <string name="searchJob">Find Job</string>
 
 </resources>
