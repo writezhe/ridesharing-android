@@ -9,7 +9,9 @@ import org.futto.app.ui.utils.AlertsManager;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 
@@ -22,7 +24,7 @@ import android.widget.EditText;
 public class LoginActivity extends RunningBackgroundServiceActivity {	
 	private EditText password;
 	private Context appContext;
-	
+	private Toolbar toolbar;
 	@Override
 	/**The login activity prompts the user for the password. */
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,9 +37,16 @@ public class LoginActivity extends RunningBackgroundServiceActivity {
 		
 		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(appContext);
 		textFieldKeyboard.makeKeyboardBehave(password);
+		displayToobar();
 	}
-	
-	
+
+	private void displayToobar() {
+		toolbar = findViewById(R.id.toolbar_main);
+		setSupportActionBar(toolbar);
+		toolbar.setTitleTextColor(Color.WHITE);
+		getSupportActionBar().setTitle("Futto Main Menu");
+	}
+
 	/**The Login Button
 	 * IF session is logged in (value in shared prefs), keep the session logged in.
 	 * IF session is not logged in, wait for user input.

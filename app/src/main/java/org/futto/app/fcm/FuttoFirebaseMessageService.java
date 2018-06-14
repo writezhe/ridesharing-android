@@ -20,13 +20,17 @@
 package org.futto.app.fcm;
         import android.app.NotificationManager;
         import android.content.Context;
+        import android.content.Intent;
         import android.media.RingtoneManager;
         import android.net.Uri;
+        import android.os.Parcelable;
         import android.support.v4.app.NotificationCompat;
         import android.util.Log;
         import com.google.firebase.messaging.FirebaseMessagingService;
         import com.google.firebase.messaging.RemoteMessage;
         import org.futto.app.R;
+        import org.futto.app.ui.user.MainMenuActivity;
+
         import java.util.Map;
 
 /**
@@ -38,6 +42,8 @@ public class FuttoFirebaseMessageService extends FirebaseMessagingService {
 
     private static final int NOTIFICATION_MAX_CHARACTERS = 30;
     private static String LOG_TAG = FuttoFirebaseMessageService.class.getSimpleName();
+    private static boolean isRecieve = false;
+    private static String receivedTitle;
 
     /**
      * Called when message is received.
@@ -74,6 +80,12 @@ public class FuttoFirebaseMessageService extends FirebaseMessagingService {
 
             // Send a notification that you got a new message
             sendNotification(data);
+            isRecieve = true;
+            Intent in = new Intent(this, MainMenuActivity.class);
+//            in.putExtra("title",receivedTitle);
+//            startActivity(in);
+        }else{
+            isRecieve = false;
         }
     }
 
@@ -100,5 +112,9 @@ public class FuttoFirebaseMessageService extends FirebaseMessagingService {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        receivedTitle = data.get("title");
     }
+
+    public static boolean checkNotificationExit(){ return isRecieve;}
+    public static String getNoteTitle(){ return receivedTitle;}
 }

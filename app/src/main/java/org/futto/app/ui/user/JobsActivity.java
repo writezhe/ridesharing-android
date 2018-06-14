@@ -18,7 +18,7 @@ public class JobsActivity extends SessionActivity {
 
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         mWebView = new WebView(this);
-        mWebView.loadUrl("http://google.com");
+        mWebView.loadUrl("http://www.findyourdreamjob.org/");
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {

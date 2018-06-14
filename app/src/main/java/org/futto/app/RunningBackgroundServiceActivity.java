@@ -21,6 +21,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.muddzdev.styleabletoastlibrary.StyleableToast;
+
 import org.futto.app.BackgroundService.BackgroundServiceBinder;
 import org.futto.app.storage.PersistentData;
 import org.futto.app.ui.user.AboutActivityLoggedOut;
@@ -158,6 +160,10 @@ public class RunningBackgroundServiceActivity extends AppCompatActivity {
 	public void transit(View v) {
 		Intent i = new Intent(this, MapsActivity.class);
 		startActivity(i);
+	}
+	//display the unavailable feature
+	public void featureIsNotAvailable(View v){
+		StyleableToast.makeText(this, "Sorry, this feature is temporary unavailable", R.style.mytoast).show();
 	}
 
 	public void web(View v) {

@@ -7,9 +7,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.EditText;
@@ -36,12 +38,12 @@ import static org.futto.app.networking.PostRequest.addWebsitePrefix;
 
 @SuppressLint("ShowToast")
 public class RegisterActivity extends RunningBackgroundServiceActivity {
-	private EditText serverUrlInput;
+//	private EditText serverUrlInput;
 	private EditText userIdInput;
 	private EditText tempPasswordInput;
 	private EditText newPasswordInput;
 	private EditText confirmNewPasswordInput;
-
+	private Toolbar toolbar;
 	private final static int PERMISSION_CALLBACK = 0; //This callback value can be anything, we are not really using it
 	private final static int REQUEST_PERMISSIONS_IDENTIFIER = 1500;
 	
@@ -51,20 +53,18 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_register);
 
-		if (!BuildConfig.CUSTOMIZABLE_SERVER_URL) {
-			TextView serverUrlCaption = (TextView) findViewById(R.id.serverUrlCaption);
-			EditText serverUrlInput = (EditText) findViewById(R.id.serverUrlInput);
-			serverUrlCaption.setVisibility(View.GONE);
-			serverUrlInput.setVisibility(View.GONE);
-		}
+//		if (!BuildConfig.CUSTOMIZABLE_SERVER_URL) {
+//			EditText serverUrlInput = (EditText) findViewById(R.id.serverUrlInput);
+//			serverUrlInput.setVisibility(View.GONE);
+//		}
 
-		serverUrlInput = (EditText) findViewById(R.id.serverUrlInput);
+//		serverUrlInput = (EditText) findViewById(R.id.serverUrlInput);
 		userIdInput = (EditText) findViewById(R.id.registerUserIdInput);
 		tempPasswordInput = (EditText) findViewById(R.id.registerTempPasswordInput);
 		newPasswordInput = (EditText) findViewById(R.id.registerNewPasswordInput);
 		confirmNewPasswordInput = (EditText) findViewById(R.id.registerConfirmNewPasswordInput);
 		TextFieldKeyboard textFieldKeyboard = new TextFieldKeyboard(getApplicationContext());
-		textFieldKeyboard.makeKeyboardBehave(serverUrlInput);
+//		textFieldKeyboard.makeKeyboardBehave(serverUrlInput);
 		textFieldKeyboard.makeKeyboardBehave(userIdInput);
 		textFieldKeyboard.makeKeyboardBehave(tempPasswordInput);
 		textFieldKeyboard.makeKeyboardBehave(newPasswordInput);
@@ -72,22 +72,33 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 
 		newPasswordInput.setHint(String.format(getString(R.string.registration_replacement_password_hint), PersistentData.minPasswordLength()));
 		confirmNewPasswordInput.setHint(String.format(getString(R.string.registration_replacement_password_hint), PersistentData.minPasswordLength()));
+		displayToobar();
 	}
+
+	private void displayToobar() {
+		toolbar = findViewById(R.id.toolbar_main);
+		setSupportActionBar(toolbar);
+		toolbar.setTitleTextColor(Color.WHITE);
+//		getSupportActionBar().setTitle("Register on Futto");
+	}
+
 
 
 	/** Registration sequence begins here, called when the submit button is pressed.
 	 * @param view */
 	public synchronized void registerButtonPressed(View view) {
-		String serverUrl = serverUrlInput.getText().toString();
+//		String serverUrl = serverUrlInput.getText().toString();
+		String serverUrl = "https://test.findyourdreamjob.org/";
 		String userID = userIdInput.getText().toString();
 		String tempPassword = tempPasswordInput.getText().toString();
 		String newPassword = newPasswordInput.getText().toString();
 		String confirmNewPassword = confirmNewPasswordInput.getText().toString();
 
-		if ((serverUrl.length() == 0) && (BuildConfig.CUSTOMIZABLE_SERVER_URL)) {
-			// If the study URL is empty, alert the user
-			AlertsManager.showAlert(getString(R.string.url_too_short), getString(R.string.couldnt_register), this);
-		} else if (userID.length() == 0) {
+//		if ((serverUrl.length() == 0) && (BuildConfig.CUSTOMIZABLE_SERVER_URL)) {
+//			// If the study URL is empty, alert the user
+//			AlertsManager.showAlert(getString(R.string.url_too_short), getString(R.string.couldnt_register), this);
+//		} else
+ 		if (userID.length() == 0) {
 			// If the user id length is too short, alert the user
 			AlertsManager.showAlert(getString(R.string.invalid_user_id), getString(R.string.couldnt_register), this);
 			return;

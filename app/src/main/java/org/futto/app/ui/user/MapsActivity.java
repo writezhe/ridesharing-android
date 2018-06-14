@@ -57,7 +57,7 @@ public class MapsActivity extends BaseMapsActivity {
         setContentView(R.layout.activity_maps);
         ButterKnife.bind(this);
 
-        getSupportActionBar().hide();
+
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(MapsActivity.this);

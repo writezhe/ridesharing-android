@@ -103,10 +103,10 @@ public class DebugInterfaceActivity extends SessionActivity {
 		Log.i("test hash:", EncryptionEngine.safeHash( encrypted ) );
 	}
 	public void logDataToggles(View view) {
-		Log.i("DebugInterfaceActivity.logDataToggles()", "Accelerometer: " + Boolean.toString(PersistentData.getAccelerometerEnabled()));
+//		Log.i("DebugInterfaceActivity.logDataToggles()", "Accelerometer: " + Boolean.toString(PersistentData.getAccelerometerEnabled()));
 		Log.i("DebugInterfaceActivity.logDataToggles()", "GPS: " + Boolean.toString(PersistentData.getGpsEnabled()));
-		Log.i("DebugInterfaceActivity.logDataToggles()", "Calls: " + Boolean.toString(PersistentData.getCallsEnabled()));
-		Log.i("DebugInterfaceActivity.logDataToggles()", "Texts: " + Boolean.toString(PersistentData.getTextsEnabled()));
+//		Log.i("DebugInterfaceActivity.logDataToggles()", "Calls: " + Boolean.toString(PersistentData.getCallsEnabled()));
+//		Log.i("DebugInterfaceActivity.logDataToggles()", "Texts: " + Boolean.toString(PersistentData.getTextsEnabled()));
 		Log.i("DebugInterfaceActivity.logDataToggles()", "WiFi: " + Boolean.toString(PersistentData.getWifiEnabled()));
 		Log.i("DebugInterfaceActivity.logDataToggles()", "Bluetooth: " + Boolean.toString(PersistentData.getBluetoothEnabled()));
 		Log.i("DebugInterfaceActivity.logDataToggles()", "Power State: " + Boolean.toString(PersistentData.getPowerStateEnabled()));
@@ -134,14 +134,14 @@ public class DebugInterfaceActivity extends SessionActivity {
 		if (PermissionHandler.checkAccessWifiState(getApplicationContext())) { Log.i("permissions", "AccessWifiState enabled."); } else { Log.e("permissions", "AccessWifiState disabled."); }
 		if (PermissionHandler.checkAccessBluetooth(getApplicationContext())) { Log.i("permissions", "Bluetooth enabled."); } else { Log.e("permissions", "Bluetooth disabled."); }
 		if (PermissionHandler.checkAccessBluetoothAdmin(getApplicationContext())) { Log.i("permissions", "BluetoothAdmin enabled."); } else { Log.e("permissions", "BluetoothAdmin disabled."); }
-		if (PermissionHandler.checkAccessCallPhone(getApplicationContext())) { Log.i("permissions", "CallPhone enabled."); } else { Log.e("permissions", "CallPhone disabled."); }
-		if (PermissionHandler.checkAccessReadCallLog(getApplicationContext())) { Log.i("permissions", "ReadCallLog enabled."); } else { Log.e("permissions", "ReadCallLog disabled."); }
-		if (PermissionHandler.checkAccessReadContacts(getApplicationContext())) { Log.i("permissions", "ReadContacts enabled."); } else { Log.e("permissions", "ReadContacts disabled."); }
-		if (PermissionHandler.checkAccessReadPhoneState(getApplicationContext())) { Log.i("permissions", "ReadPhoneState enabled."); } else { Log.e("permissions", "ReadPhoneState disabled."); }
-		if (PermissionHandler.checkAccessReadSms(getApplicationContext())) { Log.i("permissions", "ReadSms enabled."); } else { Log.e("permissions", "ReadSms disabled."); }
-		if (PermissionHandler.checkAccessReceiveMms(getApplicationContext())) { Log.i("permissions", "ReceiveMms enabled."); } else { Log.e("permissions", "ReceiveMms disabled."); }
-		if (PermissionHandler.checkAccessReceiveSms(getApplicationContext())) { Log.i("permissions", "ReceiveSms enabled."); } else { Log.e("permissions", "ReceiveSms disabled."); }
-		if (PermissionHandler.checkAccessRecordAudio(getApplicationContext())) { Log.i("permissions", "RecordAudio enabled."); } else { Log.e("permissions", "RecordAudio disabled."); }
+//		if (PermissionHandler.checkAccessCallPhone(getApplicationContext())) { Log.i("permissions", "CallPhone enabled."); } else { Log.e("permissions", "CallPhone disabled."); }
+//		if (PermissionHandler.checkAccessReadCallLog(getApplicationContext())) { Log.i("permissions", "ReadCallLog enabled."); } else { Log.e("permissions", "ReadCallLog disabled."); }
+//		if (PermissionHandler.checkAccessReadContacts(getApplicationContext())) { Log.i("permissions", "ReadContacts enabled."); } else { Log.e("permissions", "ReadContacts disabled."); }
+//		if (PermissionHandler.checkAccessReadPhoneState(getApplicationContext())) { Log.i("permissions", "ReadPhoneState enabled."); } else { Log.e("permissions", "ReadPhoneState disabled."); }
+//		if (PermissionHandler.checkAccessReadSms(getApplicationContext())) { Log.i("permissions", "ReadSms enabled."); } else { Log.e("permissions", "ReadSms disabled."); }
+//		if (PermissionHandler.checkAccessReceiveMms(getApplicationContext())) { Log.i("permissions", "ReceiveMms enabled."); } else { Log.e("permissions", "ReceiveMms disabled."); }
+//		if (PermissionHandler.checkAccessReceiveSms(getApplicationContext())) { Log.i("permissions", "ReceiveSms enabled."); } else { Log.e("permissions", "ReceiveSms disabled."); }
+//		if (PermissionHandler.checkAccessRecordAudio(getApplicationContext())) { Log.i("permissions", "RecordAudio enabled."); } else { Log.e("permissions", "RecordAudio disabled."); }
 	}
 
 	public void clearInternalLog(View view) { TextFileManager.getDebugLogFile().deleteSafely(); }
@@ -157,7 +157,7 @@ public class DebugInterfaceActivity extends SessionActivity {
 	//file operations
 	public void makeNewFiles(View view) { TextFileManager.makeNewFilesForEverything(); }
 	public void deleteEverything(View view) {
-		Log.i("Delete Everything button pressed", "poke.");
+//		Log.i("Delete Everything button pressed", "poke.");
 		String[] files = TextFileManager.getAllFiles();
 		Arrays.sort(files);
 		for( String file : files ) { Log.i( "files...", file); }

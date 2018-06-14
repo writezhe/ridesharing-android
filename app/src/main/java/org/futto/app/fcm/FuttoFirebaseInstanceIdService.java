@@ -1,18 +1,18 @@
 /*
-* Copyright (C) 2017 The Android Open Source Project
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*  	http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright (C) 2017 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *  	http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.futto.app.fcm;
 
 import android.util.Log;
@@ -47,13 +47,13 @@ public class FuttoFirebaseInstanceIdService extends FirebaseInstanceIdService {
         // Get updated InstanceID token.
         String username = null;
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        while(!PersistentData.isLoggedIn()) username = PersistentData.getPatientID();
+        while (!PersistentData.isLoggedIn()) username = PersistentData.getPatientID();
         Log.d(LOG_TAG, "Refreshed token: " + refreshedToken);
 
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
-        sendRegistrationToServer(refreshedToken,username);
+        sendRegistrationToServer(refreshedToken, username);
     }
 
     /**
@@ -77,15 +77,17 @@ public class FuttoFirebaseInstanceIdService extends FirebaseInstanceIdService {
         }
         //Send the FCM token to the server
         try {
-            String adress = "http://futtonotification.us-east-1.elasticbeanstalk.com/FCM_RECIEVER/register&"+token +"&"+ username;
+            String adress = "http://futtonotification.us-east-1.elasticbeanstalk.com/FCM_RECIEVER/register&" + token + "&" + username;
             url = new URL(adress);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
-            String output = "";
-            StringBuilder xmlResponse = new StringBuilder();
-            BufferedReader br = new BufferedReader(new InputStreamReader((connection.getInputStream())));
-            while ((output = br.readLine()) != null) {
-                xmlResponse.append(output).append("\n");
+            while (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                String output = "";
+                StringBuilder xmlResponse = new StringBuilder();
+                BufferedReader br = new BufferedReader(new InputStreamReader((connection.getInputStream())));
+                while ((output = br.readLine()) != null) {
+                    xmlResponse.append(output).append("\n");
+                }
             }
             connection.disconnect();
         } catch (IOException e) {

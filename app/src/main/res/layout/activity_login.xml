@@ -2,14 +2,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollView1"
     android:layout_width="match_parent"
-    android:background="@drawable/log_bg"
     android:layout_height="match_parent"
+    android:layout_below="@+id/toobar"
+    android:background="#65c0ba"
     android:orientation="vertical">
 
+        <include
+            layout="@layout/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <View
-            android:layout_width="wrap_content"
-            android:background="@android:color/transparent"
-            android:layout_height="50dp" />
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@android:color/transparent" />
 
 
         <TextView
@@ -17,28 +23,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textColor="#ffffff"
-            android:paddingRight="10dp"
-            android:paddingLeft="10dp"
-            android:textSize="40dp"
-            android:textStyle="bold"
             android:fontFamily="@font/roboto_bold"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:text="@string/login_activity_welcoming_message"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#ffffff"
+            android:textSize="40dp"
+            android:textStyle="bold" />
+
         <TextView
             android:id="@+id/application_name"
-            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textColor="#ffffff"
-            android:paddingRight="10dp"
-            android:paddingLeft="10dp"
-            android:paddingTop="2dp"
-            android:textSize="40dp"
             android:fontFamily="@font/roboto_bold"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="2dp"
             android:text="@string/application_name"
-            android:textAppearance="?android:attr/textAppearanceLarge" />
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#ffffff"
+            android:textSize="40dp"
+            android:textStyle="bold" />
 
         <View
             android:layout_width="wrap_content"
@@ -50,19 +57,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:height="120dp"
-            android:hint="@string/action_relogin_pass"
-            android:padding="16dp"
-            android:autofillHints="@font/roboto_bold"
-            android:textColor="#ffffff"
-            android:textScaleX="1.2"
-            android:fontFamily="@font/roboto_medium"
-            android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:height="120dp"
+            android:autofillHints="@font/roboto_bold"
             android:background="@drawable/rounded_corner"
-            android:inputType="textPassword">
+            android:fontFamily="@font/roboto_medium"
+            android:hint="@string/action_relogin_pass"
+            android:inputType="textPassword"
+            android:padding="16dp"
+            android:textColor="#ffffff"
+            android:textScaleX="1.2">
 
-            <requestFocus />
+                <requestFocus />
         </EditText>
 
         <View
@@ -71,19 +78,19 @@
 
         <Button
             android:id="@+id/login_button"
-            android:elevation="2dp"
-            android:background="@drawable/rounded_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:onClick="loginButton"
-            android:textSize="15dp"
-            android:textStyle="bold"
-            android:textColor="#ffffff"
-            android:fontFamily="@font/roboto_bold"
-            android:layout_marginRight="25dp"
             android:layout_marginLeft="25dp"
-            android:text="@string/title_activity_login_string" />
+            android:layout_marginRight="25dp"
+            android:background="@drawable/rounded_btn"
+            android:elevation="2dp"
+            android:fontFamily="@font/roboto_bold"
+            android:onClick="loginButton"
+            android:text="@string/title_activity_login_string"
+            android:textColor="#ffffff"
+            android:textSize="15dp"
+            android:textStyle="bold" />
 
         <View
             android:layout_width="wrap_content"

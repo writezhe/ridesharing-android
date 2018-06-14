@@ -2,13 +2,43 @@
 
     <!--Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices. -->
-    <style name="AppBaseTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppBaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!--Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
             backward-compatibility can go here.-->
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:textColorSecondary">@color/white</item>
+
+    </style>
+
+    <style name="AppNoBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!--Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.-->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:textColorSecondary">@color/white</item>
+
+    </style>
+    <!-- style toast -->
+    <style name="mytoast">
+        <item name="textBold">true</item>
+        <item name="textColor">#fff</item>
+        <item name="font">@font/roboto_medium</item>
+        <item name="textSize">14sp</item>
+        <item name="colorBackground">#FC5F67</item>
+        <item name="solidBackground">true</item>
+        <item name="strokeWidth">1dp</item>
+        <item name="strokeColor">#fff</item>
+        <item name="iconStart">@drawable/ic_cancel</item>
+        <item name="length">LONG</item>
+        <item name="gravity">center</item>
+        <item name="radius">15dp</item>
     </style>
 
     <!-- Application theme. -->

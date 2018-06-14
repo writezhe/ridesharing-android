@@ -83,12 +83,12 @@ public class BackgroundService extends Service {
 		startPowerStateListener();
 		gpsListener = new GPSListener(appContext);
 		WifiListener.initialize( appContext );
-		if ( PersistentData.getAccelerometerEnabled() ) { accelerometerListener = new AccelerometerListener( appContext ); }
+//		if ( PersistentData.getAccelerometerEnabled() ) { accelerometerListener = new AccelerometerListener( appContext ); }
 		//Bluetooth, wifi, gps, calls, and texts need permissions
 		if ( PermissionHandler.confirmBluetooth(appContext)) { startBluetooth(); }
-//		if ( PermissionHandler.confirmWifi(appContext) ) { WifiListener.initialize( appContext ); }
-		if ( PermissionHandler.confirmTexts(appContext) ) { startSmsSentLogger(); startMmsSentLogger(); }
-		if ( PermissionHandler.confirmCalls(appContext) ) { startCallLogger(); }
+		if ( PermissionHandler.confirmWifi(appContext) ) { WifiListener.initialize( appContext ); }
+//		if ( PermissionHandler.confirmTexts(appContext) ) { startSmsSentLogger(); startMmsSentLogger(); }
+//		if ( PermissionHandler.confirmCalls(appContext) ) { startCallLogger(); }
 		//Only do the following if the device is registered
 		if ( PersistentData.isRegistered() ) {
 			DeviceInfo.initialize( appContext ); //if at registration this has already been initialized. (we don't care.)
