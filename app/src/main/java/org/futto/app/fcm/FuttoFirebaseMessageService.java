@@ -18,20 +18,21 @@
 * limitations under the License.
 */
 package org.futto.app.fcm;
-        import android.app.NotificationManager;
-        import android.content.Context;
-        import android.content.Intent;
-        import android.media.RingtoneManager;
-        import android.net.Uri;
-        import android.os.Parcelable;
-        import android.support.v4.app.NotificationCompat;
-        import android.util.Log;
-        import com.google.firebase.messaging.FirebaseMessagingService;
-        import com.google.firebase.messaging.RemoteMessage;
-        import org.futto.app.R;
-        import org.futto.app.ui.user.MainMenuActivity;
 
-        import java.util.Map;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.support.v4.app.NotificationCompat;
+import android.util.Log;
+
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
+
+import org.futto.app.R;
+import org.futto.app.RunningBackgroundServiceActivity;
+
+import java.util.Map;
 
 /**
  * Listens for Futto FCM messages both in the background and the foreground and responds
@@ -44,7 +45,6 @@ public class FuttoFirebaseMessageService extends FirebaseMessagingService {
     private static String LOG_TAG = FuttoFirebaseMessageService.class.getSimpleName();
     private static boolean isRecieve = false;
     private static String receivedTitle;
-
     /**
      * Called when message is received.
      *
@@ -80,14 +80,12 @@ public class FuttoFirebaseMessageService extends FirebaseMessagingService {
 
             // Send a notification that you got a new message
             sendNotification(data);
-            isRecieve = true;
-            Intent in = new Intent(this, MainMenuActivity.class);
-//            in.putExtra("title",receivedTitle);
-//            startActivity(in);
-        }else{
-            isRecieve = false;
+
+            //write data into db
+            RunningBackgroundServiceActivity.createNews(data.get("title"),data.get("message"));
         }
     }
+
 
 
     /**
