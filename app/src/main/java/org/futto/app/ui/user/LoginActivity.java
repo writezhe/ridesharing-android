@@ -44,7 +44,7 @@ public class LoginActivity extends RunningBackgroundServiceActivity {
 		toolbar = findViewById(R.id.toolbar_main);
 		setSupportActionBar(toolbar);
 		toolbar.setTitleTextColor(Color.WHITE);
-		getSupportActionBar().setTitle("Futto Main Menu");
+//		getSupportActionBar().setTitle("Futto Main Menu");
 	}
 
 	/**The Login Button

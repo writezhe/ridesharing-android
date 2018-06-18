@@ -64,7 +64,7 @@
         <!-- ACTIVITIES -->
 
         <activity
-            android:name="org.futto.app.ui.LoadingActivity"
+            android:name=".ui.LoadingActivity"
             android:label="${appName}${appNameSuffix}">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -73,51 +73,51 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="org.futto.app.survey.AudioRecorderActivity"
+            android:name=".survey.AudioRecorderActivity"
             android:label="@string/title_activity_audio_recorder"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
-            android:name="org.futto.app.survey.AudioRecorderEnhancedActivity"
+            android:name=".survey.AudioRecorderEnhancedActivity"
             android:label="@string/title_activity_audio_recorder"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
         <activity
-            android:name="org.futto.app.survey.SurveyActivity"
+            android:name=".survey.SurveyActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/title_activity_survey"></activity>
+            android:label="@string/title_activity_survey" />
         <activity
-            android:name="org.futto.app.ui.DebugInterfaceActivity"
+            android:name=".ui.DebugInterfaceActivity"
             android:label="@string/title_activity_debug_interface" />
         <activity
-            android:name="org.futto.app.ui.user.LoginActivity"
+            android:name=".ui.user.LoginActivity"
             android:label="@string/title_activity_login" />
         <activity
-            android:name="org.futto.app.ui.registration.ForgotPasswordActivity"
+            android:name=".ui.registration.ForgotPasswordActivity"
             android:label="@string/title_activity_forgot_password" />
         <activity
-            android:name="org.futto.app.ui.registration.RegisterActivity"
+            android:name=".ui.registration.RegisterActivity"
             android:label="@string/title_activity_register" />
         <activity
-            android:name="org.futto.app.ui.user.MainMenuActivity"
+            android:name=".ui.user.MainMenuActivity"
             android:label="@string/title_activity_main_menu" />
         <activity
-            android:name="org.futto.app.ui.user.GraphActivity"
-            android:label="@string/title_activity_graph"></activity>
+            android:name=".ui.user.GraphActivity"
+            android:label="@string/title_activity_graph" />
 
         <!-- SERVICE -->
 
         <service
-            android:name="org.futto.app.BackgroundService"
+            android:name=".BackgroundService"
             android:exported="false"
             android:label="BackgroundService-thing" />
 
         <!-- RECEIVERS -->
 
-        <receiver android:name="org.futto.app.listeners.BootListener">
+        <receiver android:name=".listeners.BootListener">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name="org.futto.app.listeners.SmsReceivedLogger">
+        <receiver android:name=".listeners.SmsReceivedLogger">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
@@ -127,8 +127,8 @@
                 <data android:mimeType="application/vnd.wap.mms-message" />
             </intent-filter>
         </receiver>
-        <receiver android:name="org.futto.app.listeners.BluetoothListener"></receiver>
-        <receiver android:name="org.futto.app.listeners.PowerStateListener">
+        <receiver android:name=".listeners.BluetoothListener" />
+        <receiver android:name=".listeners.PowerStateListener">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
@@ -139,25 +139,25 @@
         </receiver>
 
         <activity
-            android:name="org.futto.app.ui.registration.ResetPasswordActivity"
-            android:label="@string/title_activity_reset_password"></activity>
+            android:name=".ui.registration.ResetPasswordActivity"
+            android:label="@string/title_activity_reset_password" />
         <activity
-            android:name="org.futto.app.ui.user.AboutActivityLoggedOut"
-            android:label="@string/title_activity_about"></activity>
+            android:name=".ui.user.AboutActivityLoggedOut"
+            android:label="@string/title_activity_about" />
         <activity
-            android:name="org.futto.app.ui.user.AboutActivityLoggedIn"
-            android:label="@string/title_activity_about"></activity>
+            android:name=".ui.user.AboutActivityLoggedIn"
+            android:label="@string/title_activity_about" />
         <activity
-            android:name="org.futto.app.ui.registration.PhoneNumberEntryActivity"
-            android:label="@string/title_activity_phone_number_entry"></activity>
+            android:name=".ui.registration.PhoneNumberEntryActivity"
+            android:label="@string/title_activity_phone_number_entry" />
         <activity
-            android:name="org.futto.app.ui.registration.ConsentFormActivity"
+            android:name=".ui.registration.ConsentFormActivity"
             android:label="@string/title_activity_consent_form" />
         <activity
-            android:name="org.futto.app.ui.user.MapsActivity"
+            android:name=".ui.user.MapsActivity"
             android:label="@string/title_activity_maps" />
         <activity
-            android:name="org.futto.app.ui.user.DirectionsActivity"
+            android:name=".ui.user.DirectionsActivity"
             android:label="@string/title_activity_directions"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -171,9 +171,10 @@
                     android:scheme="org.beiwe.app" />
             </intent-filter>
         </activity>
+
         <service android:name=".fcm.FuttoFirebaseInstanceIdService">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
         <!-- Service listening for any incoming messages -->
@@ -182,7 +183,10 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <activity android:name="org.futto.app.ui.user.JobsActivity"></activity>
+
+        <activity android:name=".ui.user.JobsActivity" />
+        <activity android:name=".ui.coupon.NotificationActivity"></activity>
+        <activity android:name=".ui.coupon.BarcodeActivity"></activity>
     </application>
 
 </manifest>

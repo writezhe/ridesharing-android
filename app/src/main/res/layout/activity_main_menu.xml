@@ -68,6 +68,7 @@
             android:layout_height="20dp" />
 
         <LinearLayout
+            android:onClick="notification"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_gravity="center"
@@ -177,7 +178,7 @@
                     android:layout_margin="1dp"
                     android:layout_weight="1"
                     android:baselineAligned="false"
-                    android:onClick="featureIsNotAvailable"
+                    android:onClick="notification"
                     android:orientation="vertical"
                     android:src="@drawable/coupon"></ImageButton>
             </LinearLayout>

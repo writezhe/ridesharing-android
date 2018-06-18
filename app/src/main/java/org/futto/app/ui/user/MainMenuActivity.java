@@ -14,33 +14,18 @@ import android.widget.TextView;
 
 import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobile.client.AWSMobileClient;
-import com.amazonaws.mobile.client.AWSStartupHandler;
-import com.amazonaws.mobile.client.AWSStartupResult;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
-import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.PaginatedList;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
-import com.amazonaws.services.dynamodbv2.model.AttributeValue;
-import com.amazonaws.services.dynamodbv2.model.ComparisonOperator;
-import com.amazonaws.services.dynamodbv2.model.Condition;
-import com.google.gson.Gson;
 import com.muddzdev.styleabletoastlibrary.StyleableToast;
 
 import org.futto.app.R;
-import org.futto.app.RunningBackgroundServiceActivity;
-import org.futto.app.fcm.FuttoFirebaseMessageService;
-import org.futto.app.nosql.NotesDO;
 import org.futto.app.nosql.NotificationDO;
 import org.futto.app.session.SessionActivity;
 import org.futto.app.storage.PersistentData;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
 
 /**
  * The main menu activity of the app. Currently displays 4 buttons - Audio Recording, Graph, Call Clinician, and Sign out.
@@ -56,6 +41,7 @@ public class MainMenuActivity extends SessionActivity {
     private Toolbar toolbar;
     private NavigationView nvDrawer;
     private ActionBarDrawerToggle drawerToggle;
+    List<NotificationDO> result;
     DynamoDBMapper dynamoDBMapper;
     String user = PersistentData.getPatientID();
     @Override
@@ -77,8 +63,9 @@ public class MainMenuActivity extends SessionActivity {
         drawerLayout.addDrawerListener(drawerToggle);
 
         setupDrawerContent(nvDrawer);
-        setUpNotification();
         setUpDB();
+
+
         //Button callClinicianButton = (Button) findViewById(R.id.main_menu_call_clinician);
         //callClinicianButton.setText(PersistentData.getCallClinicianButtonText());
     }
@@ -96,53 +83,52 @@ public class MainMenuActivity extends SessionActivity {
                 .dynamoDBClient(dynamoDBClient)
                 .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
                 .build();
-        readNews();
+        try {
+            readNews();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
 
     }
-    public void readNews() {
-        new Thread(new Runnable() {
+    public void readNews() throws InterruptedException {
+        Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
                 NotificationDO news = new NotificationDO();
                 news.setUserId(user);
                 news.setCreationDate(new Double("1529093763866"));
 
-                Condition rangeKeyCondition = new Condition()
-                        .withComparisonOperator(ComparisonOperator.BEGINS_WITH)
-                        .withAttributeValueList(new AttributeValue().withS("Trial"));
-
                 DynamoDBQueryExpression queryExpression = new DynamoDBQueryExpression()
                         .withHashKeyValues(news)
                         .withConsistentRead(false);
 
-                PaginatedList<NotificationDO> result = dynamoDBMapper.query(NotificationDO.class, queryExpression);
-
-                Gson gson = new Gson();
-                StringBuilder stringBuilder = new StringBuilder();
-
-                // Loop through query results
-                for (int i = 0; i < result.size(); i++) {
-                    String jsonFormOfItem = gson.toJson(result.get(i));
-                    stringBuilder.append(jsonFormOfItem + "\n\n");
-                }
-
-                // Add your code here to deal with the data result
-                Log.d("Query result: ", stringBuilder.toString());
+                result = dynamoDBMapper.query(NotificationDO.class, queryExpression);
 
                 if (result.isEmpty()) {
                     // There were no items matching your query.
+                }else{
+                    Log.d("query", result.get(result.size()-1).getTitle());
                 }
             }
-        }).start();
+        });
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        setUpNotification();
     }
 
 
     private void setUpNotification() {
         notification = (TextView) findViewById(R.id.noti_content);
-        if (FuttoFirebaseMessageService.checkNotificationExit()) {
-//		    String title = getIntent().getStringExtra("title");
-            String title = FuttoFirebaseMessageService.getNoteTitle();
-            notification.setText(FuttoFirebaseMessageService.getNoteTitle());
+        NotificationDO  latestNote = null;
+        if(result != null) latestNote = result.get(result.size()-1);
+
+        if (latestNote != null && !latestNote.getIsReaded()) {
+            notification.setText(latestNote.getTitle());
         } else {
             notification.setText("You don't have new message now.");
         }

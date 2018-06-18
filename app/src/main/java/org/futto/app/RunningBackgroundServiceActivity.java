@@ -40,6 +40,7 @@ import com.muddzdev.styleabletoastlibrary.StyleableToast;
 import org.futto.app.BackgroundService.BackgroundServiceBinder;
 import org.futto.app.nosql.NotificationDO;
 import org.futto.app.storage.PersistentData;
+import org.futto.app.ui.coupon.NotificationActivity;
 import org.futto.app.ui.user.AboutActivityLoggedOut;
 import org.futto.app.ui.user.JobsActivity;
 import org.futto.app.ui.user.MapsActivity;
@@ -160,6 +161,7 @@ public class RunningBackgroundServiceActivity extends AppCompatActivity {
         newItem.setUserId(PersistentData.getPatientID());
         newItem.setCreationDate((double) System.currentTimeMillis());
         newItem.setTitle(title);
+        newItem.setIsReaded(false);
         newItem.setContent(content);
 
         new Thread(new Runnable() {
@@ -260,6 +262,11 @@ public class RunningBackgroundServiceActivity extends AppCompatActivity {
     @SuppressWarnings("MissingPermission")
     public void transit(View v) {
         Intent i = new Intent(this, MapsActivity.class);
+        startActivity(i);
+    }
+
+    public void notification(View v) {
+        Intent i = new Intent(this, NotificationActivity.class);
         startActivity(i);
     }
 

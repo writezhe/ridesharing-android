@@ -116,13 +116,13 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:25.2.0'
     compile 'com.android.support:design:27.1.1'
     implementation 'com.muddzdev:styleabletoast:2.1.2'
-    implementation ('com.amazonaws:aws-android-sdk-mobile-client:2.6.+@aar') { transitive = true }
+    implementation('com.amazonaws:aws-android-sdk-mobile-client:2.6.+@aar') { transitive = true }
     implementation 'com.amazonaws:aws-android-sdk-core:2.6.+'
     implementation 'com.amazonaws:aws-android-sdk-s3:2.6.+'
     implementation 'com.amazonaws:aws-android-sdk-ddb:2.6.+'
     implementation 'com.amazonaws:aws-android-sdk-ddb-mapper:2.6.+'
     implementation 'com.amazonaws:aws-android-sdk-ddb-document:2.6.+'
-
+    implementation files('libs/zxing-2.1.jar')
 }
 
 

@@ -17,6 +17,7 @@ public class NotificationDO {
     private String _userId;
     private Double _creationDate;
     private String _content;
+    private Boolean _isReaded;
     private String _noteId;
     private String _title;
 
@@ -46,6 +47,14 @@ public class NotificationDO {
     public void setContent(final String _content) {
         this._content = _content;
     }
+    @DynamoDBAttribute(attributeName = "isReaded")
+    public Boolean getIsReaded() {
+        return _isReaded;
+    }
+
+    public void setIsReaded(final Boolean _isReaded) {
+        this._isReaded = _isReaded;
+    }
     @DynamoDBAttribute(attributeName = "noteId")
     public String getNoteId() {
         return _noteId;
@@ -63,14 +72,4 @@ public class NotificationDO {
         this._title = _title;
     }
 
-    @Override
-    public String toString() {
-        return "NotificationDO{" +
-                "_userId='" + _userId + '\'' +
-                ", _creationDate=" + _creationDate +
-                ", _content='" + _content + '\'' +
-                ", _noteId='" + _noteId + '\'' +
-                ", _title='" + _title + '\'' +
-                '}';
-    }
 }
