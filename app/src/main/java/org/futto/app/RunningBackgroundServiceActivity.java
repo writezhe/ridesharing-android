@@ -38,6 +38,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.muddzdev.styleabletoastlibrary.StyleableToast;
 
 import org.futto.app.BackgroundService.BackgroundServiceBinder;
+import org.futto.app.networking.NetworkUtility;
 import org.futto.app.nosql.NotificationDO;
 import org.futto.app.storage.PersistentData;
 import org.futto.app.ui.coupon.NotificationActivity;
@@ -262,14 +263,19 @@ public class RunningBackgroundServiceActivity extends AppCompatActivity {
     @SuppressWarnings("MissingPermission")
     public void transit(View v) {
         Intent i = new Intent(this, MapsActivity.class);
-        startActivity(i);
+        if(NetworkUtility.networkIsAvailable(this))startActivity(i);
+        else NetWorkIsNotAvailable(v);
     }
 
     public void notification(View v) {
         Intent i = new Intent(this, NotificationActivity.class);
-        startActivity(i);
+        if(NetworkUtility.networkIsAvailable(this))startActivity(i);
+        else NetWorkIsNotAvailable(v);
     }
 
+    public void NetWorkIsNotAvailable(View v) {
+        StyleableToast.makeText(this, "Sorry, please turn on your network", R.style.mytoast).show();
+    }
     //display the unavailable feature
     public void featureIsNotAvailable(View v) {
         StyleableToast.makeText(this, "Sorry, this feature is temporary unavailable", R.style.mytoast).show();

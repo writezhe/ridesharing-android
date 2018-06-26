@@ -7,10 +7,10 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 android {
     signingConfigs {
         config {
-            storeFile file(keystoreProperties['storeFile'])
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storePassword keystoreProperties['storePassword']
+            storeFile file('/Users/sharonyu/Documents/GitHub/ridesharing-android/keystore')
+            keyAlias 'alias'
+            keyPassword '170191sen'
+            storePassword '170191sen'
         }
     }
     compileSdkVersion 27
@@ -20,8 +20,8 @@ android {
         applicationId "org.futto.app"
         minSdkVersion 18
         targetSdkVersion 27
-        versionCode 34      //TODO: update this Beiwe version code for new releases
-        versionName '2.4.2'  //TODO: update this Beiwe version number for new releases
+        versionCode 37      //TODO: update this Beiwe version code for new releases
+        versionName '2.5.1'  //TODO: update this Beiwe version number for new releases
         setProperty("archivesBaseName", "Futto-$versionName")
         multiDexEnabled true
     }

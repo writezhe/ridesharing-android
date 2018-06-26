@@ -18,9 +18,12 @@ import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBMapper;
 import com.amazonaws.mobileconnectors.dynamodbv2.dynamodbmapper.DynamoDBQueryExpression;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.muddzdev.styleabletoastlibrary.StyleableToast;
 
 import org.futto.app.R;
+import org.futto.app.fcm.FuttoFirebaseMessageService;
+import org.futto.app.networking.NetworkUtility;
 import org.futto.app.nosql.NotificationDO;
 import org.futto.app.session.SessionActivity;
 import org.futto.app.storage.PersistentData;
@@ -63,7 +66,7 @@ public class MainMenuActivity extends SessionActivity {
         drawerLayout.addDrawerListener(drawerToggle);
 
         setupDrawerContent(nvDrawer);
-        setUpDB();
+        if(NetworkUtility.networkIsAvailable(this))setUpDB();
 
 
         //Button callClinicianButton = (Button) findViewById(R.id.main_menu_call_clinician);
@@ -125,8 +128,8 @@ public class MainMenuActivity extends SessionActivity {
     private void setUpNotification() {
         notification = (TextView) findViewById(R.id.noti_content);
         NotificationDO  latestNote = null;
-        if(result != null) latestNote = result.get(result.size()-1);
-
+        if(result != null && result.size() > 0) latestNote = result.get(result.size()-1);
+        else notification.setText("You don't have new message now.");
         if (latestNote != null && !latestNote.getIsReaded()) {
             notification.setText(latestNote.getTitle());
         } else {

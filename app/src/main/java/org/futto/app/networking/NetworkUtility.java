@@ -52,7 +52,8 @@ public class NetworkUtility {
 	private static boolean oldTimeyWiFiConnectivityCheck( ConnectivityManager connManager ){
 		Log.i("WIFICHECK", "oldTimeyWiFiConnectivityCheck");
 		NetworkInfo networkInfo = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-		return networkInfo.isConnected() && networkInfo.isAvailable();
+		NetworkInfo networkInfo_mobile = connManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+		return (networkInfo_mobile.isConnected() || networkInfo.isConnected()) && networkInfo.isAvailable();
 	}
 	
 	
@@ -65,7 +66,7 @@ public class NetworkUtility {
 		
 		for (Network network : networks ) {
 			NetworkInfo networkInfo = connManager.getNetworkInfo(network);
-			if ( networkInfo.getType() == ConnectivityManager.TYPE_WIFI && networkInfo.isConnected() && networkInfo.isAvailable()) {
+			if ((networkInfo.getType() == ConnectivityManager.TYPE_MOBILE || networkInfo.getType() == ConnectivityManager.TYPE_WIFI )&& networkInfo.isConnected() && networkInfo.isAvailable() ) {
 				return true; } //return true if there is a connected and available wifi connection! 
 		}
 		return false; //there were no wifi-type network connections active and available, return false.

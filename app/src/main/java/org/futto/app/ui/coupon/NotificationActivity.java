@@ -100,7 +100,7 @@ public class NotificationActivity extends AppCompatActivity {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        NotificationReady(result);
+        if(result != null)NotificationReady(result);
     }
 
     private void setUpDB() {
