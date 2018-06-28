@@ -14,6 +14,7 @@ import android.content.ServiceConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -337,6 +338,7 @@ public class RunningBackgroundServiceActivity extends AppCompatActivity {
         powerSettings.addCategory(Intent.CATEGORY_DEFAULT);
         powerSettings.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivityForResult(powerSettings, powerCallbackIdentifier);
+
     }
 
     @Override

@@ -38,7 +38,6 @@ public class SmsSentLogger extends ContentObserver {
 		super(theHandler);
 		theHandler = handler;
 		appContext = context;
-		smsLogFile = TextFileManager.getTextsLogFile();
 	}
 	
 	

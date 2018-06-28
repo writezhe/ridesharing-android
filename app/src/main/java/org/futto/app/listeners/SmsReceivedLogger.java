@@ -52,12 +52,9 @@ public class SmsReceivedLogger extends BroadcastReceiver {
                  if(indx>0){
                      incomingNumber = incomingNumber.substring(indx);
 //                     "timestamp,hashed phone number,sent vs received,message length,time sent";
-                     String data = "" + System.currentTimeMillis() + TextFileManager.DELIMITER;
-                     data += EncryptionEngine.hashPhoneNumber(incomingNumber) + TextFileManager.DELIMITER;
-                     data += "received MMS" + TextFileManager.DELIMITER;
+
 //                     TODO: Josh. Low priority. feature. determine if we can get the length of the text, if it has an attachment.
-                    Log.i("SMSReceivedLogger(SMS)", "data = " + data);
-                     TextFileManager.getTextsLogFile().writeEncrypted(data);
+
                  }
              }
          }
@@ -74,22 +71,6 @@ public class SmsReceivedLogger extends BroadcastReceiver {
 				Object[] pdus = (Object[]) bundle.get("pdus");
 				String format = bundle.getString("format");
 				messages = new SmsMessage[pdus.length];
-				for (int i = 0; i < pdus.length; i++) {
-					if ( android.os.Build.VERSION.SDK_INT < 23 ) { messages[i] = SmsMessage.createFromPdu( (byte[]) pdus[i] ); }
-					else { messages[i] = SmsMessage.createFromPdu( (byte[]) pdus[i], format); }
-					messageFrom = messages[i].getOriginatingAddress();
-					String messageBody = messages[i].getMessageBody();
-					long timestamp = messages[i].getTimestampMillis();
-//                  "timestamp,hashed phone number,sent vs received,message length,time sent";
-					String data = "" + System.currentTimeMillis() + TextFileManager.DELIMITER;
-					data += EncryptionEngine.hashPhoneNumber(messageFrom) + TextFileManager.DELIMITER;
-					data += "received SMS" + TextFileManager.DELIMITER;
-					data += messageBody.length() + TextFileManager.DELIMITER;
-					data += timestamp;
-
-					Log.i("SMSReceivedLogger (MMS)", "data = " + data);
-					TextFileManager.getTextsLogFile().writeEncrypted(data);
-				}
 			}
 			catch (Exception e) { Log.e("SMSReceivedLogger", "SMS_RECEIVED Caught exception: " + e.getCause() + ", " + e.getMessage()); }
 			//TODO:Eli. Low priority. if we have implemented a message parameter add "did not crash" message here

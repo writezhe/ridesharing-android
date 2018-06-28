@@ -122,14 +122,14 @@ public class CallLogger extends ContentObserver {
 				StringBuilder callLoggerLine = new StringBuilder();
 				// Add hashed phone number
 				callLoggerLine.append(EncryptionEngine.hashPhoneNumber(textsDBQuery.getString(textsDBQuery.getColumnIndex(number))));
-				callLoggerLine.append(TextFileManager.DELIMITER);
+
 
 				// Add call type
 				int callType = textsDBQuery.getInt(textsDBQuery.getColumnIndex(type));
 				if (callType == CallLog.Calls.OUTGOING_TYPE) { callLoggerLine.append("Outgoing Call"); }
 				else if (callType == CallLog.Calls.INCOMING_TYPE) { callLoggerLine.append("Incoming Call"); }
 				else { callLoggerLine.append("Missed Call"); }
-				callLoggerLine.append(TextFileManager.DELIMITER);
+
 
 				// Add date
 				callLoggerLine.append(textsDBQuery.getLong(textsDBQuery.getColumnIndex(date)));
@@ -139,7 +139,6 @@ public class CallLogger extends ContentObserver {
 				callLoggerLine.append(textsDBQuery.getInt(textsDBQuery.getColumnIndex(duration)));
 
 				// Log.i("Call Log", callLoggerLine.toString());
-				TextFileManager.getCallLogFile().writeEncrypted(callLoggerLine.toString());
 				textsDBQuery.moveToPrevious();
 			}
 		}

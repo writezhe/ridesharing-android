@@ -130,7 +130,6 @@ public class BluetoothListener extends BroadcastReceiver {
 		scanActive = true;
 		if ( isBluetoothEnabled() ) { tryScanning(); }
 		else { enableBluetooth(); }
-		TextFileManager.getBluetoothLogFile().newFile();
 	}
 	
 	/** Intelligently and safely disables bluetooth.
@@ -166,7 +165,6 @@ public class BluetoothListener extends BroadcastReceiver {
 	private LeScanCallback bluetoothCallback = new LeScanCallback() {
 		@Override
 		public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-			TextFileManager.getBluetoothLogFile().writeEncrypted( System.currentTimeMillis() + "," + EncryptionEngine.safeHash( device.toString() ) + "," + rssi );
 //			Log.i("Bluetooth",  System.currentTimeMillis() + "," + device.toString() + ", " + rssi );
 		} }; 
 	

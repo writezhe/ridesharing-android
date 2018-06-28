@@ -43,20 +43,17 @@ public class AccelerometerListener implements SensorEventListener{
 			this.accelSensorManager = (SensorManager) appContext.getSystemService(Context.SENSOR_SERVICE);
 			if (this.accelSensorManager ==  null ) { 
 				Log.e("Accelerometer Problems", "accelSensorManager does not exist? (1)" );
-				TextFileManager.getDebugLogFile().writeEncrypted("accelSensorManager does not exist? (1)");
 				exists = false;	}
 			
 			this.accelSensor = accelSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 			if (this.accelSensor == null ) { 
 				Log.e("Accelerometer Problems", "accelSensor does not exist? (2)" );
-				TextFileManager.getDebugLogFile().writeEncrypted("accelSensor does not exist? (2)");
 				exists = false;	}
 	} }
 	 
 	public synchronized void turn_on() {
 		if ( !accelSensorManager.registerListener(this, accelSensor, SensorManager.SENSOR_DELAY_NORMAL) ) {
-			Log.e("Accelerometer", "Accelerometer is broken");
-			TextFileManager.getDebugLogFile().writeEncrypted("Trying to start Accelerometer session, device cannot find accelerometer."); }
+			Log.e("Accelerometer", "Accelerometer is broken"); }
 		enabled = true;	}
 	
 	public synchronized void turn_off(){
@@ -76,6 +73,5 @@ public class AccelerometerListener implements SensorEventListener{
 		Long javaTimeCode = System.currentTimeMillis();
 		float[] values = arg0.values;
 		String data = javaTimeCode.toString() + ',' + accuracy + ',' + values[0] + ',' + values[1] + ',' + values[2];
-		TextFileManager.getAccelFile().writeEncrypted(data);
 	}
 }

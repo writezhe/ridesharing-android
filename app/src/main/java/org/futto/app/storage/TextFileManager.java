@@ -46,11 +46,7 @@ public class TextFileManager {
 	
 	//Static instances of the individual FileManager objects.
 	private static TextFileManager GPSFile;
-	private static TextFileManager accelFile;
 	private static TextFileManager powerStateLog;
-	private static TextFileManager callLog;
-	private static TextFileManager textsLog;
-	private static TextFileManager bluetoothLog;
 	private static TextFileManager debugLogFile;
 
 	private static TextFileManager surveyTimings;
@@ -70,12 +66,8 @@ public class TextFileManager {
 	//public static getters.
 	// These are all simple and nearly identical, so they are squished into one-liners.
 	// checkAvailableWithTimeout throws an error and the app restarts if the TextFile is unavailable.
-	public static TextFileManager getAccelFile() { checkAvailableWithTimeout("accelFile"); return accelFile; }
 	public static TextFileManager getGPSFile() { checkAvailableWithTimeout("GPSFile"); return GPSFile; }
 	public static TextFileManager getPowerStateFile() { checkAvailableWithTimeout("powerStateLog"); return powerStateLog; }
-	public static TextFileManager getCallLogFile() { checkAvailableWithTimeout("callLog"); return callLog; }
-	public static TextFileManager getTextsLogFile() { checkAvailableWithTimeout("textsLog"); return textsLog; }
-	public static TextFileManager getBluetoothLogFile() { checkAvailableWithTimeout("bluetoothLog"); return bluetoothLog; }
 	public static TextFileManager getWifiLogFile() { checkAvailableWithTimeout("wifiLog"); return wifiLog; }
 	public static TextFileManager getSurveyTimingsFile() { checkAvailableWithTimeout("surveyTimings"); return surveyTimings; }
 	public static TextFileManager getSurveyAnswersFile() { checkAvailableWithTimeout("surveyAnswers"); return surveyAnswers; }
@@ -86,12 +78,10 @@ public class TextFileManager {
 	/** Checks the availability of a given TextFile, returns true if available, false otherwise. */
 	private static Boolean checkTextFileAvailable(String thing) {
 		//the check for availability is whether the appropriate variable is allocated
-		if (thing.equals("accelFile") ) { return (accelFile != null); }
+
 		if (thing.equals("GPSFile") ) { return (GPSFile != null); }
 		if (thing.equals("powerStateLog") ) { return (powerStateLog != null); }
-		if (thing.equals("callLog") ) { return (callLog != null); }
-		if (thing.equals("textsLog") ) { return (textsLog != null); }
-		if (thing.equals("bluetoothLog") ) { return (bluetoothLog != null); }
+
 		if (thing.equals("wifiLog") ) { return (wifiLog != null); }
 		if (thing.equals("surveyTimings") ) { return (surveyTimings != null); }
 		if (thing.equals("surveyAnswers") ) { return (surveyAnswers != null); }
@@ -139,11 +129,7 @@ public class TextFileManager {
 		debugLogFile = new TextFileManager(appContext, "logFile", "THIS LINE IS A LOG FILE HEADER", false, false, true, false);
 		// Regularly/periodically-created files
 		GPSFile = new TextFileManager(appContext, "gps", GPSListener.header, false, false, true, !PersistentData.getGpsEnabled());
-		accelFile = new TextFileManager(appContext, "accel", AccelerometerListener.header, false, false, true, !PersistentData.getAccelerometerEnabled());
-		textsLog = new TextFileManager(appContext, "textsLog", SmsSentLogger.header, false, false, true, !PersistentData.getTextsEnabled());
-		callLog = new TextFileManager(appContext, "callLog", CallLogger.header, false, false, true, !PersistentData.getCallsEnabled());
 		powerStateLog = new TextFileManager(appContext, "powerState", PowerStateListener.header, false, false, true, !PersistentData.getPowerStateEnabled());
-		bluetoothLog = new TextFileManager(appContext, "bluetoothLog", BluetoothListener.header, false, false, true, !PersistentData.getBluetoothEnabled());
 		// Files created on specific events/written to in one go.
 		surveyTimings = new TextFileManager(appContext, "surveyTimings_", SurveyTimingsRecorder.header, false, false, true, false);
 		surveyAnswers = new TextFileManager(appContext, "surveyAnswers_", SurveyAnswersRecorder.header, false, false, true, false);
@@ -326,11 +312,8 @@ public class TextFileManager {
 	public static synchronized void makeNewFilesForEverything() {
 //		Log.d("TextFileManager.java", "makeNewFilesForEverything() called");
 		GPSFile.newFile();
-		accelFile.newFile();
+
 		powerStateLog.newFile();
-		callLog.newFile();
-		textsLog.newFile();
-		bluetoothLog.newFile();
 		debugLogFile.newFile();
 	}
 	
@@ -353,12 +336,8 @@ public class TextFileManager {
 		
 		// These files are currently being written to, so they shouldn't be uploaded now
 		files.remove(TextFileManager.getGPSFile().fileName);
-		files.remove(TextFileManager.getAccelFile().fileName);
 		files.remove(TextFileManager.getPowerStateFile().fileName);
-		files.remove(TextFileManager.getCallLogFile().fileName);
-		files.remove(TextFileManager.getTextsLogFile().fileName);
 		files.remove(TextFileManager.getDebugLogFile().fileName);
-		files.remove(TextFileManager.getBluetoothLogFile().fileName);
 
 		// These files are only occasionally open, but they may be currently open. If they are, don't upload them
 		files.remove(TextFileManager.getSurveyAnswersFile().fileName);
