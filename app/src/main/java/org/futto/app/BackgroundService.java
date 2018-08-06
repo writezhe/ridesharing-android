@@ -20,6 +20,7 @@ import org.futto.app.listeners.GPSListener;
 import org.futto.app.listeners.PowerStateListener;
 import org.futto.app.listeners.WifiListener;
 import org.futto.app.networking.PostRequest;
+import org.futto.app.networking.SettingUpdate;
 import org.futto.app.networking.SurveyDownloader;
 import org.futto.app.storage.PersistentData;
 import org.futto.app.storage.TextFileManager;
@@ -249,11 +250,19 @@ public class BackgroundService extends Service {
                 timer.setupExactSingleAlarm(PersistentData.getCreateNewDataFilesFrequencyMilliseconds(), Timer.createNewDataFilesIntent);
                 PostRequest.uploadAllFiles();
                 return; }
+
             //Downloads the most recent survey questions and schedules the surveys.
             if (broadcastAction.equals( appContext.getString(R.string.check_for_new_surveys_intent))) {
                 SurveyDownloader.downloadSurveys( getApplicationContext() );
                 timer.setupExactSingleAlarm(PersistentData.getCheckForNewSurveysFrequencyMilliseconds(), Timer.checkForNewSurveysIntent);
                 return; }
+
+            //Downloads the most recent settings
+            if (broadcastAction.equals( appContext.getString(R.string.check_for_new_settings_intent))){
+                SettingUpdate.downloadSetting( getApplicationContext() );
+                timer.setupExactSingleAlarm(1L, Timer.checkForNewSetting);
+                return; }
+
             // Signs out the user. (does not set up a timer, that is handled in activity and sign-in logic)
             if (broadcastAction.equals( appContext.getString(R.string.signout_intent) ) ) {
                 PersistentData.logout();
