@@ -24,6 +24,8 @@ import com.muddzdev.styleabletoastlibrary.StyleableToast;
 import org.futto.app.R;
 import org.futto.app.fcm.FuttoFirebaseMessageService;
 import org.futto.app.networking.NetworkUtility;
+import org.futto.app.networking.SettingUpdate;
+import org.futto.app.networking.SurveyDownloader;
 import org.futto.app.nosql.NotificationDO;
 import org.futto.app.session.SessionActivity;
 import org.futto.app.storage.PersistentData;
@@ -39,11 +41,7 @@ public class MainMenuActivity extends SessionActivity {
     //extends a SessionActivity
     TextView username;
     TextView notification;
-    ViewGroup route;
-    private DrawerLayout drawerLayout;
     private Toolbar toolbar;
-    private NavigationView nvDrawer;
-    private ActionBarDrawerToggle drawerToggle;
     List<NotificationDO> result;
     DynamoDBMapper dynamoDBMapper;
     String user = PersistentData.getPatientID();
@@ -53,24 +51,12 @@ public class MainMenuActivity extends SessionActivity {
         setContentView(R.layout.activity_main_menu);
         displayUsername();
 
-        // Setup drawer view
+
         displayToobar();
-//
-//		// Find our drawer view
-//
-        drawerLayout = (DrawerLayout) findViewById(R.id.main_DrawerLayout);
-        nvDrawer = (NavigationView) findViewById(R.id.nvView);
-        drawerToggle = setupDrawerToggle();
 
-
-        drawerLayout.addDrawerListener(drawerToggle);
-
-        setupDrawerContent(nvDrawer);
         if(NetworkUtility.networkIsAvailable(this))setUpDB();
+//        SettingUpdate.downloadSetting( getApplicationContext() );
 
-
-        //Button callClinicianButton = (Button) findViewById(R.id.main_menu_call_clinician);
-        //callClinicianButton.setText(PersistentData.getCallClinicianButtonText());
     }
 
     private void setUpDB() {
@@ -137,64 +123,6 @@ public class MainMenuActivity extends SessionActivity {
         }
     }
 
-    private ActionBarDrawerToggle setupDrawerToggle() {
-        return new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
-    }
-
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        drawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        // Pass any configuration change to the drawer toggles
-        drawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    private void setupDrawerContent(NavigationView navigationView) {
-        navigationView.setNavigationItemSelectedListener(
-                new NavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        selectDrawerItem(menuItem);
-                        return true;
-                    }
-                });
-    }
-
-    public void selectDrawerItem(MenuItem menuItem) {
-        // Create a new fragment and specify the fragment to show based on nav item clicked
-
-        switch (menuItem.getItemId()) {
-            case R.id.nav_first_fragment:
-                StyleableToast.makeText(this, "Sorry, this feature is temporary unavailable", R.style.mytoast).show();
-                break;
-            case R.id.nav_second_fragment:
-                StyleableToast.makeText(this, "Sorry, this feature is temporary unavailable", R.style.mytoast).show();
-                break;
-            case R.id.nav_third_fragment:
-                StyleableToast.makeText(this, "Sorry, this feature is temporary unavailable", R.style.mytoast).show();
-                break;
-            default:
-                StyleableToast.makeText(this, "Sorry, this feature is temporary unavailable", R.style.mytoast).show();
-                break;
-
-        }
-
-
-        // Highlight the selected item has been done by NavigationView
-        menuItem.setChecked(true);
-        // Set action bar title
-        setTitle(menuItem.getTitle());
-        // Close the navigation drawer
-        drawerLayout.closeDrawers();
-    }
-
-
     private void displayToobar() {
         toolbar = findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
@@ -202,27 +130,9 @@ public class MainMenuActivity extends SessionActivity {
         getSupportActionBar().setTitle("Futto Main Menu");
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (drawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-
-    }
-
 
     private void displayUsername() {
         username = findViewById(R.id.username_name);
-//		usernameNav = findViewById(R.id.nav_header_username);
         username.setText(user);
-//		usernameNav.setText(user);
     }
-
-
-	/*#########################################################################
-	############################## Buttons ####################################
-	#########################################################################*/
-
-//	public void graphResults (View v) { startActivity( new Intent(getApplicationContext(), GraphActivity.class) ); }
 }
