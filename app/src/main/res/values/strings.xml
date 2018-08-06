@@ -23,6 +23,7 @@
 
     <string name="data_upload_url">/upload</string>
     <string name="download_surveys_url">/download_surveys</string>
+    <string name="download_settings_url">/get_study_params</string>
     <string name="forgot_password_url">/forgot_password</string>
     <string name="reset_password_url">/set_password</string>
     <string name="graph_url">/graph</string>
@@ -169,6 +170,7 @@
     <string name="upload_data_files_intent">Upload data files</string>
     <string name="create_new_data_files_intent">Create new data files</string>
     <string name="check_for_new_surveys_intent">Check for new surveys</string>
+    <string name="check_for_new_settings_intent">Check for new settings</string>
     <string name="run_wifi_log">Wifi Log</string>
 
     <!-- Menu Items -->
