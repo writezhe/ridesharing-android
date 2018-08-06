@@ -1,5 +1,17 @@
 package org.futto.app.storage;
 
+import android.content.Context;
+import android.util.Log;
+
+import org.futto.app.CrashHandler;
+import org.futto.app.listeners.GPSListener;
+import org.futto.app.listeners.PowerStateListener;
+import org.futto.app.listeners.WifiListener;
+import org.futto.app.survey.AudioRecorderActivity;
+import org.futto.app.survey.AudioRecorderEnhancedActivity;
+import org.futto.app.survey.SurveyAnswersRecorder;
+import org.futto.app.survey.SurveyTimingsRecorder;
+
 import java.io.BufferedInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -9,22 +21,6 @@ import java.security.spec.InvalidKeySpecException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.futto.app.CrashHandler;
-import org.futto.app.listeners.AccelerometerListener;
-import org.futto.app.listeners.BluetoothListener;
-import org.futto.app.listeners.CallLogger;
-import org.futto.app.listeners.GPSListener;
-import org.futto.app.listeners.PowerStateListener;
-import org.futto.app.listeners.SmsSentLogger;
-import org.futto.app.listeners.WifiListener;
-import org.futto.app.survey.AudioRecorderActivity;
-import org.futto.app.survey.AudioRecorderEnhancedActivity;
-import org.futto.app.survey.SurveyAnswersRecorder;
-import org.futto.app.survey.SurveyTimingsRecorder;
-
-import android.content.Context;
-import android.util.Log;
 
 /**The (Text)FileManager.
  * The FileManager is implemented as a Singleton.  More accurately the static object contains several
@@ -81,7 +77,6 @@ public class TextFileManager {
 
 		if (thing.equals("GPSFile") ) { return (GPSFile != null); }
 		if (thing.equals("powerStateLog") ) { return (powerStateLog != null); }
-
 		if (thing.equals("wifiLog") ) { return (wifiLog != null); }
 		if (thing.equals("surveyTimings") ) { return (surveyTimings != null); }
 		if (thing.equals("surveyAnswers") ) { return (surveyAnswers != null); }

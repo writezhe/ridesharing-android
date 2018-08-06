@@ -1,9 +1,5 @@
 package org.futto.app.listeners;
 
-import org.futto.app.PermissionHandler;
-import org.futto.app.storage.PersistentData;
-import org.futto.app.storage.TextFileManager;
-
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -11,6 +7,10 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+
+import org.futto.app.PermissionHandler;
+import org.futto.app.storage.PersistentData;
+import org.futto.app.storage.TextFileManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -79,8 +79,8 @@ public class GPSListener implements LocationListener {
 		listenerOffMap.put(4d, 80l);
 		listenerOffMap.put(5d, 50l);
 
-		PersistentData.setGpsOnDurationSeconds(60);
-		PersistentData.setGpsOffDurationSeconds(30);
+		PersistentData.setGpsOnDurationSeconds(30);
+		PersistentData.setGpsOffDurationSeconds(100);
 	}
 
 	/** Turns on GPS providers, provided they are accessible. Handles permission errors appropriately */
@@ -145,8 +145,8 @@ public class GPSListener implements LocationListener {
 
 	private void setUpdateFrequency() {
 		if (timeFrameLocations.isEmpty()) {
-			PersistentData.setGpsOffDurationSeconds(30);
-			updateFrequency = 10000;
+			PersistentData.setGpsOffDurationSeconds(900);
+			updateFrequency = 1000L*30;
 			return;
 		}
 		Location start = timeFrameLocations.get(0);
@@ -159,8 +159,8 @@ public class GPSListener implements LocationListener {
 		distance = 0;
 		lastLocation = null;
 		if (!listenerOffMap.containsKey(Math.floor(calculatedSpeed))) {
-			PersistentData.setGpsOffDurationSeconds(30);
-			updateFrequency = 10000;
+			PersistentData.setGpsOffDurationSeconds(900);
+			updateFrequency = 1000L*60;
 			return;
 		}
 		updateFrequency = PersistentData.getGpsOnDurationMilliseconds() / listenerOnMap.get(Math.floor(calculatedSpeed));
@@ -198,7 +198,7 @@ public class GPSListener implements LocationListener {
 	 *  When a provider has a changed we do not need to record it, and we have
 	 *  not encountered any corner cases where these are relevant. */
 
-//  arg0 for Provider Enabled/Disabled is a string saying "network" or "gps".
+	//  arg0 for Provider Enabled/Disabled is a string saying "network" or "gps".
 	@Override
 	public void onProviderDisabled(String arg0) { } // Log.d("A location provider was disabled.", arg0); }
 	@Override
