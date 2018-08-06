@@ -134,7 +134,7 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 				DeviceInfo.initialize(currentActivity.getApplicationContext());
 				parameters= PostRequest.makeParameter("bluetooth_id", DeviceInfo.getBluetoothMAC() ) +
 							PostRequest.makeParameter("new_password", newPassword) +
-							PostRequest.makeParameter("phone_number", ((RegisterActivity) activity).getPhoneNumber() ) +
+							PostRequest.makeParameter("phone_number", "" ) +
 							PostRequest.makeParameter("device_id", DeviceInfo.getAndroidID() ) +
 							PostRequest.makeParameter("device_os", "Android") +
 							PostRequest.makeParameter("os_version", DeviceInfo.getAndroidVersion() ) +
@@ -162,14 +162,7 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 		};
 	}
 	
-	/**This is the fuction that requires SMS permissions.  We need to supply a (unique) identifier for phone numbers to the registration arguments.
-	 * @return */
-	private String getPhoneNumber() {
-		TelephonyManager phoneManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
-		@SuppressLint("MissingPermission") String phoneNumber = phoneManager.getLine1Number(); //We cannot reach this code without having SMS permissions.
-		if (phoneNumber == null) { return EncryptionEngine.hashPhoneNumber(""); }
-		return EncryptionEngine.hashPhoneNumber(phoneNumber);
-	}
+
 	
 	
 	/*####################################################################
@@ -205,12 +198,7 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 			thisResumeCausedByFalseActivityReturn = false;
 			return;
 		}
-		if ( !PermissionHandler.checkAccessReadSms(getApplicationContext()) && !thisResumeCausedByFalseActivityReturn) {
-			if (shouldShowRequestPermissionRationale(Manifest.permission.READ_SMS) ) {
-				if (!prePromptActive && !postPromptActive ) { showPostPermissionAlert(this); }
-			}
-			else if (!prePromptActive && !postPromptActive ) { showPrePermissionAlert(this); }
-		}
+
 	}
 	
 	@Override
@@ -241,20 +229,7 @@ public class RegisterActivity extends RunningBackgroundServiceActivity {
 	
 	/* Message Popping */
 	
-	public static void showPrePermissionAlert(final Activity activity) {
-		// Log.i("reg", "showPreAlert");
-		if (prePromptActive) { return; }
-		prePromptActive = true;
-		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-		builder.setTitle("Permissions Requirement:");
-		builder.setMessage(R.string.permission_registration_read_sms_alert);
-		builder.setOnDismissListener( new DialogInterface.OnDismissListener() { @Override public void onDismiss(DialogInterface dialog) {
-			activity.requestPermissions(new String[]{ Manifest.permission.READ_SMS }, PERMISSION_CALLBACK );
-			prePromptActive = false;
-		} } );
-		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() { @Override public void onClick(DialogInterface arg0, int arg1) { } } ); //Okay button
-		builder.create().show();
-	}
+
 	
 	public static void showPostPermissionAlert(final RegisterActivity activity) {
 		// Log.i("reg", "showPostAlert");
