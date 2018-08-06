@@ -60,38 +60,38 @@ public class TransitManager {
     }
 
     private List<Stop> parseStops(JSONObject response, Step transit, TransitManagerListener listener) {
-        try {
-            JSONArray stopsList = response.getJSONObject("bustime-response").getJSONArray("stops");
-            List<Stop> transitStops = new ArrayList<Stop>();
-            for (int i = 0; i < stopsList.length(); i++) {
-                transitStops.add(new Stop(transit.getBus(), stopsList.getJSONObject(i)));
-            }
-
-            Stop start = transitStops.stream()
-                    .filter(t -> t.getStopName().toLowerCase().contentEquals(transit.getDepartureStop().toLowerCase()))
-                    .findFirst()
-                    .orElse(transitStops.get(0));
-
-            Stop stop = transitStops.stream()
-                    .filter(t -> t.getStopName().toLowerCase().contentEquals(transit.getArrivalStop().toLowerCase()))
-                    .findFirst()
-                    .orElse(transitStops.get(transitStops.size() - 1));
-
-            double distance = getDistance(start.getStop(), stop.getStop());
-
-            List<Stop> stops = new ArrayList<Stop>();
-
-            for (Stop s : transitStops) {
-                if (getDistance(start.getStop(), s.getStop()) <= distance && getDistance(stop.getStop(), s.getStop()) <= distance) {
-                    stops.add(s);
-                }
-            }
-            Log.d("Stops1", stops.toString());
-            return stops;
-
-        } catch (Exception e) {
-            Log.e("Location", e.toString());
-        }
+//        try {
+//            JSONArray stopsList = response.getJSONObject("bustime-response").getJSONArray("stops");
+//            List<Stop> transitStops = new ArrayList<Stop>();
+//            for (int i = 0; i < stopsList.length(); i++) {
+//                transitStops.add(new Stop(transit.getBus(), stopsList.getJSONObject(i)));
+//            }
+//
+//            Stop start = transitStops.stream()
+//                    .filter(t -> t.getStopName().toLowerCase().contentEquals(transit.getDepartureStop().toLowerCase()))
+//                    .findFirst()
+//                    .orElse(transitStops.get(0));
+//
+//            Stop stop = transitStops.stream()
+//                    .filter(t -> t.getStopName().toLowerCase().contentEquals(transit.getArrivalStop().toLowerCase()))
+//                    .findFirst()
+//                    .orElse(transitStops.get(transitStops.size() - 1));
+//
+//            double distance = getDistance(start.getStop(), stop.getStop());
+//
+//            List<Stop> stops = new ArrayList<Stop>();
+//
+//            for (Stop s : transitStops) {
+//                if (getDistance(start.getStop(), s.getStop()) <= distance && getDistance(stop.getStop(), s.getStop()) <= distance) {
+//                    stops.add(s);
+//                }
+//            }
+//            Log.d("Stops1", stops.toString());
+//            return stops;
+//
+//        } catch (Exception e) {
+//            Log.e("Location", e.toString());
+//        }
         return new ArrayList<Stop>();
     }
 
@@ -156,7 +156,7 @@ public class TransitManager {
                 super.onPostExecute(arg);
                 //Toast.makeText(getApplicationContext(), responseCode + "", Toast.LENGTH_SHORT).show();
                 transits.remove(0);
-                stopsList.add(parseStops(response, transit, listener));
+                if(response != null && response.length() > 0) stopsList.add(parseStops(response, transit, listener));
                 if (transits.isEmpty()) {
                     List<Stop> stops = new ArrayList<Stop>();
                     for (List<Stop> s : stopsList) {
