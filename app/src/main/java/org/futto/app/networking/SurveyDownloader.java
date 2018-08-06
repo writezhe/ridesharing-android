@@ -65,7 +65,7 @@ public class SurveyDownloader {
 		String jsonSettingsString;
 
 		for (String surveyString : surveys){
-			try { surveyJSON = new JSONObject(surveyString); }
+			try {  surveyJSON = new JSONObject(surveyString);}
 			catch (JSONException e) {
 				CrashHandler.writeCrashlog(e, appContext);
 				Log.e("Survey Downloader", "JSON fail 1"); return -1; }

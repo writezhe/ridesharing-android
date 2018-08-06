@@ -22,11 +22,11 @@ public class PersistentData {
 	private static int PRIVATE_MODE = 0;
 	private static boolean isInitialized = false;
 
-	// Private things that are encapsulated using functions in this class 
-	private static SharedPreferences pref; 
+	// Private things that are encapsulated using functions in this class
+	private static SharedPreferences pref;
 	private static Editor editor;
 	private static Context appContext;
-	
+
 	/**  Editor key-strings */
 	private static final String PREF_NAME = "BeiwePref";
 	private static final String SERVER_URL_KEY = "serverUrl";
@@ -46,11 +46,6 @@ public class PersistentData {
 	private static final String POWER_STATE = "power_state";
 	private static final String ALLOW_UPLOAD_OVER_CELLULAR_DATA = "allow_upload_over_cellular_data";
 
-	private static final String ACCELEROMETER_OFF_DURATION_SECONDS = "accelerometer_off_duration_seconds";
-	private static final String ACCELEROMETER_ON_DURATION_SECONDS = "accelerometer_on_duration_seconds";
-	private static final String BLUETOOTH_ON_DURATION_SECONDS = "bluetooth_on_duration_seconds";
-	private static final String BLUETOOTH_TOTAL_DURATION_SECONDS = "bluetooth_total_duration_seconds";
-	private static final String BLUETOOTH_GLOBAL_OFFSET_SECONDS = "bluetooth_global_offset_seconds";
 	private static final String CHECK_FOR_NEW_SURVEYS_FREQUENCY_SECONDS = "check_for_new_surveys_frequency_seconds";
 	private static final String CREATE_NEW_DATA_FILES_FREQUENCY_SECONDS = "create_new_data_files_frequency_seconds";
 	private static final String GPS_OFF_DURATION_SECONDS = "gps_off_duration_seconds";
@@ -75,7 +70,7 @@ public class PersistentData {
 		editor = pref.edit();
 		editor.commit();
 		isInitialized = true;
-	} 
+	}
 
 	/*#####################################################################################
 	##################################### User State ######################################
@@ -98,13 +93,13 @@ public class PersistentData {
 		editor.commit(); }
 
 	/**Getter for the IS_REGISTERED value. */
-	public static boolean isRegistered() { 
+	public static boolean isRegistered() {
 		if (pref == null) Log.w("LoginManager", "FAILED AT ISREGISTERED");
 		return pref.getBoolean(IS_REGISTERED, false); }
 
 	/**Setter for the IS_REGISTERED value.
 	 * @param value */
-	public static void setRegistered(boolean value) { 
+	public static void setRegistered(boolean value) {
 		editor.putBoolean(IS_REGISTERED, value);
 		editor.commit(); }
 
@@ -141,7 +136,7 @@ public class PersistentData {
 		editor.commit();
 	}
 
-	
+
 	/*#####################################################################################
 	################################# Listener Settings ###################################
 	#####################################################################################*/
@@ -154,7 +149,7 @@ public class PersistentData {
 	public static boolean getBluetoothEnabled(){ return pref.getBoolean(BLUETOOTH, false); }
 	public static boolean getPowerStateEnabled(){ return pref.getBoolean(POWER_STATE, false); }
 	public static boolean getAllowUploadOverCellularData(){ return pref.getBoolean(ALLOW_UPLOAD_OVER_CELLULAR_DATA, false); }
-	
+
 	public static void setAccelerometerEnabled(boolean enabled) {
 		editor.putBoolean(ACCELEROMETER, enabled);
 		editor.commit(); }
@@ -179,31 +174,23 @@ public class PersistentData {
 	public static void setAllowUploadOverCellularData(boolean enabled) {
 		editor.putBoolean(ALLOW_UPLOAD_OVER_CELLULAR_DATA, enabled);
 		editor.commit(); }
-	
+
 	/*#####################################################################################
 	################################## Timer Settings #####################################
 	#####################################################################################*/
 
 	// Default timings (only used if app doesn't download custom timings)
-	private static final long DEFAULT_ACCELEROMETER_OFF_MINIMUM_DURATION = 10;
-	private static final long DEFAULT_ACCELEROMETER_ON_DURATION = 10 * 60;
-	private static final long DEFAULT_BLUETOOTH_ON_DURATION = 1 * 60;
-	private static final long DEFAULT_BLUETOOTH_TOTAL_DURATION = 5 * 60;
-	private static final long DEFAULT_BLUETOOTH_GLOBAL_OFFSET = 0 * 60;
-	private static final long DEFAULT_CHECK_FOR_NEW_SURVEYS_PERIOD = 24 * 60 * 60;
+
+	private static final long DEFAULT_CHECK_FOR_NEW_SURVEYS_PERIOD = 24 * 60;
 	private static final long DEFAULT_CREATE_NEW_DATA_FILES_PERIOD = 15 * 60;
-	private static final long DEFAULT_GPS_OFF_MINIMUM_DURATION = 5 * 60;
-	private static final long DEFAULT_GPS_ON_DURATION = 5 * 60;
+	private static final long DEFAULT_GPS_OFF_MINIMUM_DURATION = 11 * 60;
+	private static final long DEFAULT_GPS_ON_DURATION = 15 * 60;
 	private static final long DEFAULT_SECONDS_BEFORE_AUTO_LOGOUT = Long.MAX_VALUE;
 	private static final long DEFAULT_UPLOAD_DATA_FILES_PERIOD = 60;
 	private static final long DEFAULT_VOICE_RECORDING_MAX_TIME_LENGTH = 4 * 60;
-	private static final long DEFAULT_WIFI_LOG_FREQUENCY = 5 * 60;
-	
-	public static long getAccelerometerOffDurationMilliseconds() { return 1000L * pref.getLong(ACCELEROMETER_OFF_DURATION_SECONDS, DEFAULT_ACCELEROMETER_OFF_MINIMUM_DURATION); }
-	public static long getAccelerometerOnDurationMilliseconds() { return 1000L * pref.getLong(ACCELEROMETER_ON_DURATION_SECONDS, DEFAULT_ACCELEROMETER_ON_DURATION); }
-	public static long getBluetoothOnDurationMilliseconds() { return 1000L * pref.getLong(BLUETOOTH_ON_DURATION_SECONDS, DEFAULT_BLUETOOTH_ON_DURATION); }
-	public static long getBluetoothTotalDurationMilliseconds() { return 1000L * pref.getLong(BLUETOOTH_TOTAL_DURATION_SECONDS, DEFAULT_BLUETOOTH_TOTAL_DURATION); }
-	public static long getBluetoothGlobalOffsetMilliseconds() { return 1000L * pref.getLong(BLUETOOTH_GLOBAL_OFFSET_SECONDS, DEFAULT_BLUETOOTH_GLOBAL_OFFSET); }
+	private static final long DEFAULT_WIFI_LOG_FREQUENCY = 15 * 60 * 5;
+
+
 	public static long getCheckForNewSurveysFrequencyMilliseconds() { return 1000L * pref.getLong(CHECK_FOR_NEW_SURVEYS_FREQUENCY_SECONDS, DEFAULT_CHECK_FOR_NEW_SURVEYS_PERIOD); }
 	public static long getCreateNewDataFilesFrequencyMilliseconds() { return 1000L * pref.getLong(CREATE_NEW_DATA_FILES_FREQUENCY_SECONDS, DEFAULT_CREATE_NEW_DATA_FILES_PERIOD); }
 	public static long getGpsOffDurationMilliseconds() { return 1000L * pref.getLong(GPS_OFF_DURATION_SECONDS, DEFAULT_GPS_OFF_MINIMUM_DURATION); }
@@ -213,21 +200,7 @@ public class PersistentData {
 	public static long getVoiceRecordingMaxTimeLengthMilliseconds() { return 1000L * pref.getLong(VOICE_RECORDING_MAX_TIME_LENGTH_SECONDS, DEFAULT_VOICE_RECORDING_MAX_TIME_LENGTH); }
 	public static long getWifiLogFrequencyMilliseconds() { return 1000L * pref.getLong(WIFI_LOG_FREQUENCY_SECONDS, DEFAULT_WIFI_LOG_FREQUENCY); }
 
-	public static void setAccelerometerOffDurationSeconds(long seconds) {
-		editor.putLong(ACCELEROMETER_OFF_DURATION_SECONDS, seconds);
-		editor.commit(); }
-	public static void setAccelerometerOnDurationSeconds(long seconds) {
-		editor.putLong(ACCELEROMETER_ON_DURATION_SECONDS, seconds);
-		editor.commit(); }
-	public static void setBluetoothOnDurationSeconds(long seconds) {
-		editor.putLong(BLUETOOTH_ON_DURATION_SECONDS, seconds);
-		editor.commit(); }
-	public static void setBluetoothTotalDurationSeconds(long seconds) {
-		editor.putLong(BLUETOOTH_TOTAL_DURATION_SECONDS, seconds);
-		editor.commit(); }
-	public static void setBluetoothGlobalOffsetSeconds(long seconds) {
-		editor.putLong(BLUETOOTH_GLOBAL_OFFSET_SECONDS, seconds);
-		editor.commit(); }
+
 	public static void setCheckForNewSurveysFrequencySeconds(long seconds) {
 		editor.putLong(CHECK_FOR_NEW_SURVEYS_FREQUENCY_SECONDS, seconds);
 		editor.commit(); }
@@ -253,14 +226,14 @@ public class PersistentData {
 		editor.putLong(WIFI_LOG_FREQUENCY_SECONDS, seconds);
 		editor.commit(); }
 
-	
+
 	//accelerometer, bluetooth, new surveys, create data files, gps, logout,upload, wifilog (not voice recording, that doesn't apply
 	public static void setMostRecentAlarmTime(String identifier, long time) {
 		editor.putLong(identifier + "-prior_alarm", time);
 		editor.commit(); }
 	public static long getMostRecentAlarmTime(String identifier) { return pref.getLong( identifier + "-prior_alarm", 0); }
 	//we want default to be 0 so that checks "is this value less than the current expected value" (eg "did this timer event pass already")
-	
+
 	/*###########################################################################################
 	################################### Text Strings ############################################
 	###########################################################################################*/
@@ -269,7 +242,7 @@ public class PersistentData {
 	private static final String CALL_CLINICIAN_BUTTON_TEXT_KEY = "call_clinician_button_text";
 	private static final String CONSENT_FORM_TEXT_KEY = "consent_form_text";
 	private static final String SURVEY_SUBMIT_SUCCESS_TOAST_TEXT_KEY = "survey_submit_success_toast_text";
-	
+
 	public static String getAboutPageText() {
 		String defaultText = appContext.getString(R.string.default_about_page_text);
 		return pref.getString(ABOUT_PAGE_TEXT_KEY, defaultText); }
@@ -282,7 +255,7 @@ public class PersistentData {
 	public static String getSurveySubmitSuccessToastText() {
 		String defaultText = appContext.getString(R.string.default_survey_submit_success_message);
 		return pref.getString(SURVEY_SUBMIT_SUCCESS_TOAST_TEXT_KEY, defaultText); }
-	
+
 	public static void setAboutPageText(String text) {
 		editor.putString(ABOUT_PAGE_TEXT_KEY, text);
 		editor.commit(); }
@@ -341,7 +314,7 @@ public class PersistentData {
 	/*###########################################################################################
 	###################################### Survey Info ##########################################
 	###########################################################################################*/
-	
+
 	public static List<String> getSurveyIds() { return JSONUtils.jsonArrayToStringList(getSurveyIdsJsonArray()); }
 	public static List<String> getSurveyQuestionMemory(String surveyId) { return JSONUtils.jsonArrayToStringList(getSurveyQuestionMemoryJsonArray(surveyId)); }
 	public static String getSurveyTimes(String surveyId){ return pref.getString(surveyId + "-times", null); }
@@ -350,7 +323,7 @@ public class PersistentData {
 	public static String getSurveySettings(String surveyId){ return pref.getString(surveyId + "-settings", null); }
 	public static Boolean getSurveyNotificationState( String surveyId) { return pref.getBoolean(surveyId + "-notificationState", false ); }
 	public static long getMostRecentSurveyAlarmTime(String surveyId) { return pref.getLong( surveyId + "-prior_alarm", MAX_LONG); }
-	
+
 	public static void createSurveyData(String surveyId, String content, String timings, String type, String settings){
 		setSurveyContent(surveyId,  content);
 		setSurveyTimes(surveyId, timings);
@@ -372,7 +345,7 @@ public class PersistentData {
 		editor.putString(surveyId + "-settings", settings);
 		editor.commit();
 	}
-	
+
 	//survey state storage
 	public static void setSurveyNotificationState(String surveyId, Boolean bool ) {
 		editor.putBoolean(surveyId + "-notificationState", bool );
@@ -380,8 +353,8 @@ public class PersistentData {
 	public static void setMostRecentSurveyAlarmTime(String surveyId, long time) {
 		editor.putLong(surveyId + "-prior_alarm", time);
 		editor.commit(); }
-	
-	
+
+
 	public static void deleteSurvey(String surveyId) {
 		editor.remove(surveyId + "-content");
 		editor.remove(surveyId + "-times");
@@ -392,8 +365,8 @@ public class PersistentData {
 		editor.commit();
 		removeSurveyId(surveyId);
 	}
-	
-	//array style storage and removal for surveyIds and questionIds	
+
+	//array style storage and removal for surveyIds and questionIds
 	private static JSONArray getSurveyIdsJsonArray() {
 		String jsonString = pref.getString(SURVEY_IDS, "0");
 		// Log.d("persistant data", "getting ids: " + jsonString);
@@ -401,7 +374,7 @@ public class PersistentData {
 		try { return new JSONArray(jsonString); }
 		catch (JSONException e) { throw new NullPointerException("getSurveyIds failed, json string was: " + jsonString ); }
 	}
-		
+
 	public static void addSurveyId(String surveyId) {
 		List<String> list = JSONUtils.jsonArrayToStringList( getSurveyIdsJsonArray() );
 		if ( !list.contains(surveyId) ) {
@@ -411,7 +384,7 @@ public class PersistentData {
 		}
 		else { throw new NullPointerException("duplicate survey id added: " + surveyId); } //we ensure uniqueness in the downloader, this should be unreachable.
 	}
-	
+
 	private static void removeSurveyId(String surveyId) {
 		List<String> list = JSONUtils.jsonArrayToStringList( getSurveyIdsJsonArray() );
 		if ( list.contains(surveyId) ) {
@@ -421,7 +394,7 @@ public class PersistentData {
 		}
 		else { throw new NullPointerException("survey id does not exist: " + surveyId); } //we ensure uniqueness in the downloader, this should be unreachable.
 	}
-	
+
 
 	private static JSONArray getSurveyQuestionMemoryJsonArray( String surveyId ) {
 		String jsonString = pref.getString(surveyId + "-questionIds", "0");
@@ -429,7 +402,7 @@ public class PersistentData {
 		try { return new JSONArray(jsonString); }
 		catch (JSONException e) { throw new NullPointerException("getSurveyIds failed, json string was: " + jsonString ); }
 	}
-		
+
 	public static void addSurveyQuestionMemory(String surveyId, String questionId) {
 		List<String> list = getSurveyQuestionMemory(surveyId);
 		// Log.d("persistent data", "adding questionId: " + questionId);
@@ -440,7 +413,7 @@ public class PersistentData {
 		}
 		else { throw new NullPointerException("duplicate question id added: " + questionId); } //we ensure uniqueness in the downloader, this should be unreachable.
 	}
-	
+
 	public static void clearSurveyQuestionMemory(String surveyId) {
 		editor.putString(surveyId + "-questionIds", new JSONArray().toString() );
 		editor.commit();

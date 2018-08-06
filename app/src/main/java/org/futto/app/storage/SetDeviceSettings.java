@@ -27,16 +27,7 @@ public class SetDeviceSettings {
 		PersistentData.setAllowUploadOverCellularData(allowUploadOverCellularData);
 		
 		// Write timer settings
-		int accelerometerOffDuration = deviceSettings.getInt("accelerometer_off_duration_seconds");
-		PersistentData.setAccelerometerOffDurationSeconds(accelerometerOffDuration);
-		int accelerometerOnDuration = deviceSettings.getInt("accelerometer_on_duration_seconds");
-		PersistentData.setAccelerometerOnDurationSeconds(accelerometerOnDuration);
-		int bluetoothOnDurationSeconds = deviceSettings.getInt("bluetooth_on_duration_seconds");
-		PersistentData.setBluetoothOnDurationSeconds(bluetoothOnDurationSeconds);
-		int bluetoothTotalDurationSeconds = deviceSettings.getInt("bluetooth_total_duration_seconds");
-		PersistentData.setBluetoothTotalDurationSeconds(bluetoothTotalDurationSeconds);
-		int bluetoothGlobalOffsetSeconds = deviceSettings.getInt("bluetooth_global_offset_seconds");
-		PersistentData.setBluetoothGlobalOffsetSeconds(bluetoothGlobalOffsetSeconds);
+
 		int checkForNewSurveysSeconds = deviceSettings.getInt("check_for_new_surveys_frequency_seconds");
 		PersistentData.setCheckForNewSurveysFrequencySeconds(checkForNewSurveysSeconds);
 		int createNewDataFilesFrequencySeconds = deviceSettings.getInt("create_new_data_files_frequency_seconds");
@@ -54,7 +45,7 @@ public class SetDeviceSettings {
 		int wifiLogFrequencySeconds = deviceSettings.getInt("wifi_log_frequency_seconds");
 		PersistentData.setWifiLogFrequencySeconds(wifiLogFrequencySeconds);
 		
-		// Write text strings
+		// Write text strinFgs
 		String aboutPageText = deviceSettings.getString("about_page_text");
 		PersistentData.setAboutPageText(aboutPageText);
 		String callClinicianButtonText = deviceSettings.getString("call_clinician_button_text");
