@@ -123,7 +123,6 @@ dependencies {
     implementation 'com.amazonaws:aws-android-sdk-ddb-mapper:2.6.+'
     implementation 'com.amazonaws:aws-android-sdk-ddb-document:2.6.+'
     implementation files('libs/zxing-2.1.jar')
-    compile 'com.google.android.gms:play-services-analytics:10.2.4'
 }
 
 

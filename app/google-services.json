@@ -1,35 +1,35 @@
 {
   "project_info": {
-    "project_number": "979992101354",
-    "firebase_url": "https://ridesharing-android.firebaseio.com",
-    "project_id": "ridesharing-android",
-    "storage_bucket": "ridesharing-android.appspot.com"
+    "project_number": "969770745286",
+    "firebase_url": "https://futto-ios.firebaseio.com",
+    "project_id": "futto-ios",
+    "storage_bucket": "futto-ios.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:979992101354:android:fa8f69a2db07745c",
+        "mobilesdk_app_id": "1:969770745286:android:fa8f69a2db07745c",
         "android_client_info": {
           "package_name": "org.futto.app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "979992101354-26bfp8op72l0t854j8ktjlqoitdqsmrh.apps.googleusercontent.com",
+          "client_id": "969770745286-ugro2bgu6nu1i48741eq5arqsetlv0h4.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "org.futto.app",
-            "certificate_hash": "9937e0ead0e8b2a35db47aede038e9e329eb6dff"
+            "certificate_hash": "6155a23611f000da991af4fb623bcf1c47bb0e9d"
           }
         },
         {
-          "client_id": "979992101354-an95fvbd908jkqhpi0ajiu1ra71vri8a.apps.googleusercontent.com",
+          "client_id": "969770745286-ej0g7v2h17q5i33m863o7k9dpjtfv1i8.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDcf8_3-3X9w09IwujeAQltYWhbuI37y94"
+          "current_key": "AIzaSyAd-4iAd9m82Ud4npIrqEi1GcYna5bwK_Y"
         }
       ],
       "services": {
@@ -40,8 +40,15 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "979992101354-an95fvbd908jkqhpi0ajiu1ra71vri8a.apps.googleusercontent.com",
+              "client_id": "969770745286-ej0g7v2h17q5i33m863o7k9dpjtfv1i8.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "969770745286-mjn47sbvfnu0i0857k7b349psqt2msuj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.CarnegieMellon.Futto"
+              }
             }
           ]
         },
